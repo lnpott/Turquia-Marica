@@ -1,0 +1,12 @@
+{
+  "routes": [
+    { "slug": "/", "title": "Home", "placeholder": "{{DATA:SCREEN:SCREEN_43}}" },
+    { "slug": "/cardapio", "title": "Cardápio", "placeholder": "{{DATA:SCREEN:SCREEN_42}}" },
+    { "slug": "/produto", "title": "Detalhes do Produto", "placeholder": "{{DATA:SCREEN:SCREEN_22}}" },
+    { "slug": "/sacola", "title": "Sacola", "placeholder": "{{DATA:SCREEN:SCREEN_21}}" },
+    { "slug": "/checkout", "title": "Checkout", "placeholder": "{{DATA:SCREEN:SCREEN_20}}" },
+    { "slug": "/localizacao", "title": "Localização", "placeholder": "{{DATA:SCREEN:SCREEN_35}}" },
+    { "slug": "/confirmacao", "title": "Pedido Confirmado", "placeholder": "{{DATA:SCREEN:SCREEN_17}}" }
+  ],
+  "message": "Utilize estes placeholders como referência para gerar os arquivos HTML limpos na exportação final."
+}

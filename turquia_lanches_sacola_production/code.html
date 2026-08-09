@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Minha Sacola - Turquia Lanches</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&amp;family=Rubik:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#ffdad6",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#fdc008",
+                        "surface-container-highest": "#f5ded5",
+                        "tertiary": "#874200",
+                        "tertiary-fixed": "#ffdcc6",
+                        "tertiary-container": "#ac5500",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#5d3f3c",
+                        "surface-container-low": "#fff1ec",
+                        "background": "#fff8f6",
+                        "primary-fixed-dim": "#ffb4ab",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#ffece9",
+                        "on-surface": "#251913",
+                        "primary": "#ae0011",
+                        "on-secondary-container": "#6c5000",
+                        "on-tertiary-fixed": "#311300",
+                        "surface": "#fff8f6",
+                        "on-secondary-fixed": "#251a00",
+                        "error": "#ba1a1a",
+                        "outline": "#926f6b",
+                        "surface-tint": "#c00014",
+                        "surface-variant": "#f5ded5",
+                        "surface-bright": "#fff8f6",
+                        "on-background": "#251913",
+                        "outline-variant": "#e6bdb8",
+                        "inverse-on-surface": "#ffede6",
+                        "on-primary-fixed": "#410002",
+                        "on-secondary-fixed-variant": "#5b4300",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#3b2d27",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#ecd5cc",
+                        "surface-container-high": "#fbe3da",
+                        "on-tertiary-container": "#ffede3",
+                        "secondary": "#785a00",
+                        "on-primary-fixed-variant": "#93000d",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#ffb786",
+                        "secondary-fixed": "#ffdf9d",
+                        "secondary-fixed-dim": "#f9bd00",
+                        "inverse-primary": "#ffb4ab",
+                        "primary-container": "#d71920",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "surface-container": "#ffeae1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "stack-loose": "32px",
+                        "gutter": "16px",
+                        "margin-desktop": "64px",
+                        "unit": "4px",
+                        "stack-tight": "8px"
+                    },
+                    "fontFamily": {
+                        "display-xl": ["Rubik"],
+                        "headline-md": ["Rubik"],
+                        "body-md": ["DM Sans"],
+                        "headline-lg": ["Rubik"],
+                        "display-xl-mobile": ["Rubik"],
+                        "price-lg": ["Rubik"],
+                        "body-lg": ["DM Sans"],
+                        "label-bold": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "display-xl": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-md": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "display-xl-mobile": ["36px", { "lineHeight": "1.1", "fontWeight": "800" }],
+                        "price-lg": ["28px", { "lineHeight": "1", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-bold": ["14px", { "lineHeight": "1", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="antialiased text-on-background">
+<!-- TopNavBar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-surface-dim shadow-sm dark:bg-surface-container z-50">
+<div class="flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop max-w-[1280px] mx-auto">
+<a class="font-display-xl text-display-xl text-primary dark:text-primary-fixed-dim hover:scale-105 transition-transform duration-200" href="{{DATA:SCREEN:SCREEN_36}}">Turquia Lanches</a>
+<nav class="hidden md:flex gap-stack-loose">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors hover:scale-105 duration-200" href="{{DATA:SCREEN:SCREEN_62}}">Cardápio</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors hover:scale-105 duration-200" href="#">Sobre Nós</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors hover:scale-105 duration-200" href="{{DATA:SCREEN:SCREEN_54}}">Localização</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors hover:scale-105 duration-200" href="#">Avaliações</a>
+</nav>
+<button class="md:hidden text-primary p-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-3xl">menu</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="max-w-[1280px] mx-auto px-4 md:px-margin-desktop py-8 md:py-stack-loose">
+<h1 class="font-headline-lg text-on-surface mb-6 md:mb-stack-loose">Minha Sacola</h1>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-stack-loose">
+<!-- Left Column: Cart Items -->
+<div class="lg:col-span-8 flex flex-col gap-6 md:gap-gutter">
+<!-- Cart Item 1 -->
+<div class="shadow-sm p-4 md:p-gutter flex flex-col sm:flex-row gap-4 md:gap-gutter relative overflow-hidden group hover:shadow-md transition-shadow bg-surface-container-low rounded-lg border border-surface-variant">
+<div class="w-full sm:w-40 h-48 sm:h-40 shrink-0 rounded-lg overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A massive, mouth-watering Brazilian street burger (X-Tudo) stacked high with a beef patty, melted mozzarella cheese, crispy bacon strips, a fried egg, fresh green lettuce, and bright red tomato slices, served on a soft sesame seed bun." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHqvQBA3bO22hkXLOwPzNxG4tvfv4-ScD7pDhHKEnkhV25kkp3NMTGSY_0hfiZVLywuJOtZiPLHEFahiNuQ1um2jCDYlcm7ma2QudrlGwoR4-P1Swv3MkxAai2H9mEeVYue4hB45xn7gNQ-VoO3-Kfqw7c7kl068-nP4-2QNneJCLMyfkUtu-z_pX4nvP1v8uF30zo1E8W9F3jxbWtJHzr9cCvY01q7aYN64eWvNpB16sb4EHteERopg"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div class="flex justify-between items-start gap-4">
+<div>
+<h3 class="font-headline-md text-on-surface md:text-2xl">Super X-Tudo Turquia</h3>
+<p class="font-body-md text-on-surface-variant mt-unit">Pão, hambúrguer artesanal 180g, queijo, presunto, ovo, bacon, alface, tomate e milho.</p>
+<p class="font-body-md text-secondary-container mt-unit font-medium">+ Adicional de Cheddar</p>
+</div>
+<button aria-label="Remover item" class="text-outline hover:text-error transition-colors p-2 shrink-0">
+<span class="material-symbols-outlined text-2xl">delete</span>
+</button>
+</div>
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mt-4 gap-4 sm:gap-0">
+<div class="flex items-center border border-outline-variant rounded-full bg-surface-container">
+<button class="w-10 h-10 flex items-center justify-center text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<span class="font-label-bold text-on-surface w-8 text-center">1</span>
+<button class="w-10 h-10 flex items-center justify-center text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<span class="font-price-lg text-primary self-end sm:self-auto">R$ 38,90</span>
+</div>
+</div>
+</div>
+<!-- Cart Item 2 -->
+<div class="shadow-sm p-4 md:p-gutter flex flex-col sm:flex-row gap-4 md:gap-gutter relative overflow-hidden group hover:shadow-md transition-shadow bg-surface-container-low rounded-lg border border-surface-variant">
+<div class="w-full sm:w-40 h-48 sm:h-40 shrink-0 rounded-lg overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A generous portion of golden, crispy crinkle-cut french fries piled high on a white ceramic plate. The fries are smothered in a vibrant, glossy yellow cheddar cheese sauce and topped with generous crumbles of dark, crispy bacon bits." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbyQV0FD29AX8g-pot4sMmt1nrXltTgbH_gU1YMqdIyWE4M2OfpdaxR51KnnC7dHvPQXd8lcP08Ueaii3mTloaRLrQ6DYA6dS-a84JX_G0klCsS0fG0Tf2U61J-dpjFqfd0Bhlw909sam-69SQDgtf2Ba3Lp82ss5anQ-YGQxI9Dk-6Xd1mQsaDv7mh2aFieyjvBm3Ynba2EOoeeHAWGp20ynsoOPA3qz12eo-j4QaNgFCGiLYybwXBw"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div class="flex justify-between items-start gap-4">
+<div>
+<h3 class="font-headline-md text-on-surface md:text-2xl">Fritas Supreme c/ Cheddar e Bacon</h3>
+<p class="font-body-md text-on-surface-variant mt-unit">Porção generosa de batatas fritas crocantes, cobertas com creme de cheddar original e farofa de bacon artesanal.</p>
+<p class="font-body-md text-on-surface-variant mt-unit italic">Sem observações.</p>
+</div>
+<button aria-label="Remover item" class="text-outline hover:text-error transition-colors p-2 shrink-0">
+<span class="material-symbols-outlined text-2xl">delete</span>
+</button>
+</div>
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mt-4 gap-4 sm:gap-0">
+<div class="flex items-center border border-outline-variant rounded-full bg-surface-container">
+<button class="w-10 h-10 flex items-center justify-center text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<span class="font-label-bold text-on-surface w-8 text-center">1</span>
+<button class="w-10 h-10 flex items-center justify-center text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<span class="font-price-lg text-primary self-end sm:self-auto">R$ 25,50</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Order Summary -->
+<div class="lg:col-span-4">
+<div class="rounded-xl shadow-lg p-6 md:p-stack-loose sticky top-[104px] border border-surface-variant bg-surface-container-low">
+<h2 class="font-headline-md text-on-surface mb-4 md:mb-gutter pb-4 md:pb-gutter border-b border-surface-variant">Resumo do Pedido</h2>
+<div class="flex flex-col gap-2 md:gap-unit mb-4 md:mb-gutter">
+<div class="flex justify-between font-body-md text-on-surface-variant">
+<span class="">Subtotal (2 itens)</span>
+<span class="">R$ 64,40</span>
+</div>
+<div class="flex justify-between font-body-md text-on-surface-variant">
+<span class="">Taxa de Entrega</span>
+<span class="text-secondary-container font-medium text-right ml-4">A calcular</span>
+</div>
+<div class="flex justify-between font-body-md text-error mt-2">
+<span class="">Desconto</span>
+<span class="">- R$ 0,00</span>
+</div>
+</div>
+<div class="border-t border-surface-variant pt-4 md:pt-gutter mb-6 md:mb-stack-loose">
+<div class="flex justify-between items-center">
+<span class="font-headline-md text-on-surface">Total</span>
+<span class="font-display-xl-mobile md:font-display-xl text-primary">R$ 64,40</span>
+</div>
+<p class="font-body-md text-[12px] text-on-surface-variant text-right mt-1">Não inclui taxa de entrega</p>
+</div>
+<div class="flex flex-col gap-4 md:gap-gutter">
+<button class="w-full bg-primary text-on-primary font-label-bold py-4 rounded-lg hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2" onclick="alert('Ir para o Pagamento - Funcionalidade em desenvolvimento.')">
+    Finalizar Pedido
+    <span class="material-symbols-outlined text-lg">check_circle</span>
+</button>
+<button class="w-full border border-outline text-on-surface font-label-bold py-4 rounded-lg hover:bg-surface-container-low active:scale-95 transition-all" onclick="window.location.href='{{DATA:SCREEN:SCREEN_62}}'">
+    Continuar Comprando
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-16 bg-surface-container-highest dark:bg-surface-container-low mt-12 md:mt-margin-desktop">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-stack-loose px-margin-mobile md:px-margin-desktop max-w-[1280px] mx-auto">
+<div class="md:col-span-1">
+<a class="font-headline-lg text-headline-lg text-primary mb-4 block" href="{{DATA:SCREEN:SCREEN_36}}">Turquia Lanches</a>
+<p class="font-body-md text-body-md text-on-surface-variant">© 2024 Turquia Lanches. O sabor da tradição em cada mordida.</p>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="font-label-bold text-on-surface">Links Úteis</h4>
+<nav class="flex flex-col gap-2">
+<a class="font-body-md text-on-surface-variant hover:text-primary hover:underline transition-all duration-300" href="#">Termos de Uso</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary hover:underline transition-all duration-300" href="#">Privacidade</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary hover:underline transition-all duration-300" href="#">Trabalhe Conosco</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary hover:underline transition-all duration-300" href="#">Contato</a>
+</nav>
+</div>
+</div>
+</footer>
+<nav class="fixed bottom-0 w-full flex justify-around items-center py-3 px-margin-mobile md:hidden bg-surface dark:bg-surface-dim shadow-[0_-4px_10px_rgba(0,0,0,0.05)] border-t border-outline-variant z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-110 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_36}}">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-bold text-label-bold-mobile">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-110 transition-transform duration-150" href="{{DATA:SCREEN:SCREEN_62}}">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="font-label-bold text-label-bold-mobile">Cardápio</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 active:scale-110 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-bold text-label-bold-mobile">Pedidos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-110 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-bold text-label-bold-mobile">Perfil</span>
+</a>
+</nav></body></html>

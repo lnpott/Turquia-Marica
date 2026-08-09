@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Turquia Lanches - Pedido Recebido</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;700&amp;family=Rubik:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#ffece9",
+                    "inverse-surface": "#3b2d27",
+                    "surface": "#fff8f6",
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#ffb4ab",
+                    "on-secondary-container": "#6c5000",
+                    "primary": "#ae0011",
+                    "surface-container-high": "#fbe3da",
+                    "on-secondary-fixed": "#251a00",
+                    "on-primary-fixed-variant": "#93000d",
+                    "inverse-on-surface": "#ffede6",
+                    "error-container": "#ffdad6",
+                    "surface-container-highest": "#f5ded5",
+                    "on-tertiary": "#ffffff",
+                    "secondary": "#785a00",
+                    "on-primary-fixed": "#410002",
+                    "surface-container-low": "#fff1ec",
+                    "on-error": "#ffffff",
+                    "outline-variant": "#e6bdb8",
+                    "on-tertiary-fixed-variant": "#723600",
+                    "on-secondary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "background": "#fff8f6",
+                    "tertiary-container": "#ac5500",
+                    "surface-container": "#ffeae1",
+                    "surface-dim": "#ecd5cc",
+                    "surface-variant": "#f5ded5",
+                    "secondary-fixed": "#ffdf9d",
+                    "primary-fixed-dim": "#ffb4ab",
+                    "secondary-container": "#fdc008",
+                    "on-error-container": "#93000a",
+                    "on-primary": "#ffffff",
+                    "tertiary": "#874200",
+                    "on-tertiary-fixed": "#311300",
+                    "on-tertiary-container": "#ffede3",
+                    "outline": "#926f6b",
+                    "surface-bright": "#fff8f6",
+                    "secondary-fixed-dim": "#f9bd00",
+                    "tertiary-fixed-dim": "#ffb786",
+                    "on-surface": "#251913",
+                    "on-background": "#251913",
+                    "on-surface-variant": "#5d3f3c",
+                    "primary-container": "#d71920",
+                    "surface-tint": "#c00014",
+                    "primary-fixed": "#ffdad6",
+                    "tertiary-fixed": "#ffdcc6",
+                    "on-secondary-fixed-variant": "#5b4300"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "stack-tight": "8px",
+                    "stack-loose": "32px",
+                    "gutter": "16px",
+                    "margin-desktop": "64px",
+                    "margin-mobile": "20px"
+            },
+            "fontFamily": {
+                    "display-xl-mobile": [
+                            "Rubik"
+                    ],
+                    "headline-lg": [
+                            "Rubik"
+                    ],
+                    "label-bold": [
+                            "DM Sans"
+                    ],
+                    "headline-md": [
+                            "Rubik"
+                    ],
+                    "display-xl": [
+                            "Rubik"
+                    ],
+                    "body-md": [
+                            "DM Sans"
+                    ],
+                    "body-lg": [
+                            "DM Sans"
+                    ],
+                    "price-lg": [
+                            "Rubik"
+                    ]
+            },
+            "fontSize": {
+                    "display-xl-mobile": [
+                            "36px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "fontWeight": "800"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "label-bold": [
+                            "14px",
+                            {
+                                    "lineHeight": "1",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "display-xl": [
+                            "48px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "800"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "price-lg": [
+                            "28px",
+                            {
+                                    "lineHeight": "1",
+                                    "fontWeight": "800"
+                            }
+                    ]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- Main Content Canvas -->
+<main class="flex-grow flex items-center justify-center py-16 px-margin-mobile md:px-margin-desktop">
+<div class="max-w-2xl w-full mx-auto text-center space-y-stack-loose">
+<!-- Success Visual & Messaging -->
+<div class="space-y-stack-tight flex flex-col items-center">
+<div class="w-32 h-32 md:w-48 md:h-48 rounded-full overflow-hidden shadow-lg border-4 border-surface-container-highest mb-6 mx-auto bg-surface-container-low flex items-center justify-center">
+<img alt="Turquia Lanches Logo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNuzk77OAtNIrzQ1VbzoDs6ObI8OyCXrxyP0Yfg8PqRpyA_HqXfPUIiVvfymJ-H08lFEJKZwesKqwuOU1k9d8rQ8sS0oewRrzy_5aFKCRf2n6MYyhtQa5PFl2vWjWswlMzrDF5kpHm0WR-QsMXSkWJji5v666p-XAbcdJ3aiwLwRADuJkYS6ENUbob9L3mpOUT2z_U__Niwz8erOunxeBDOoeP6sJ-GsXZ9NiFB6kxDsk93FX5_MDvKr-olhTcrlc8hkw"/>
+</div>
+<h1 class="font-display-xl text-display-xl-mobile md:text-display-xl text-primary">
+                    Pedido Recebido com Sucesso!
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg mx-auto">
+                    Obrigado pelo seu pedido! Estamos preparando seu lanche com todo carinho e aquele sabor inconfundível.
+                </p>
+</div>
+<!-- Order Summary Card (Bento Style) -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_15px_rgba(59,45,39,0.12)] p-8 text-left border border-surface-container mx-auto max-w-md relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary-container rounded-bl-full -mr-16 -mt-16 opacity-20"></div>
+<div class="flex justify-between items-center mb-6 border-b border-surface-container-highest pb-4">
+<span class="font-label-bold text-label-bold text-on-surface-variant">Pedido #0000</span>
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-bold text-label-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span> Aguardando
+                    </span>
+</div>
+<div class="space-y-4 mb-6">
+<div class="flex justify-between items-center">
+<span class="font-body-md text-on-surface">Total do Pedido:</span>
+<span class="font-price-lg text-price-lg text-primary">R$ 0,00</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary-container mt-1">info</span>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">
+                        Assim que seu pedido for confirmado pelo restaurante, você será notificado.
+                    </p>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4 max-w-md mx-auto">
+<button class="w-full sm:w-auto bg-primary text-on-primary font-headline-md px-8 py-4 rounded-lg hover:scale-105 active:scale-95 transition-all duration-200 shadow-md flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+                    Acompanhar Pedido
+                </button>
+<button class="w-full sm:w-auto bg-surface-container text-primary font-headline-md px-8 py-4 rounded-lg hover:bg-surface-container-high active:scale-95 transition-all duration-200 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">restaurant_menu</span>
+                    Voltar ao Cardápio
+                </button>
+</div>
+<!-- WhatsApp Contact -->
+<div class="mt-8 pt-8 border-t border-surface-container-highest">
+<p class="font-body-md text-on-surface-variant mb-4">Dúvidas sobre o pedido?</p>
+<button class="inline-flex items-center gap-2 bg-[#25D366] text-white font-headline-md px-6 py-3 rounded-lg hover:scale-105 transition-transform duration-200 shadow-sm">
+<span class="material-symbols-outlined">chat</span>
+  Falar no WhatsApp
+</button>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-highest dark:bg-surface-container-low font-body-md text-body-md w-full py-16 no-shadows">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-stack-loose px-margin-mobile md:px-margin-desktop max-w-[1280px] mx-auto">
+<div class="md:col-span-1">
+<div class="font-headline-lg text-headline-lg text-primary mb-4">Turquia Lanches</div>
+<p class="text-on-surface-variant mt-2">© 2024 Turquia Lanches. O sabor da tradição em cada mordida.</p>
+</div>
+<div class="flex flex-col space-y-2">
+<a class="text-on-surface-variant hover:text-primary hover:underline transition-all duration-300" href="#">Termos de Uso</a>
+<a class="text-on-surface-variant hover:text-primary hover:underline transition-all duration-300" href="#">Privacidade</a>
+</div>
+<div class="flex flex-col space-y-2">
+<a class="text-on-surface-variant hover:text-primary hover:underline transition-all duration-300" href="#">Trabalhe Conosco</a>
+<a class="text-on-surface-variant hover:text-primary hover:underline transition-all duration-300" href="#">Contato</a>
+</div>
+<div class="flex flex-col space-y-2">
+</div>
+</div>
+</footer>
+</body></html>
