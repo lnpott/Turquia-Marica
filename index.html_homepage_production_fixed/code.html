@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Turquia Lanches - O Sabor da Tradição</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&amp;family=Rubik:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "outline-variant": "#e6bdb8",
+                "secondary-fixed": "#ffdf9d",
+                "surface-container-lowest": "#ffffff",
+                "on-surface": "#251913",
+                "outline": "#926f6b",
+                "on-tertiary": "#ffffff",
+                "tertiary": "#874200",
+                "surface": "#fff8f6",
+                "on-secondary-container": "#6c5000",
+                "inverse-on-surface": "#ffede6",
+                "surface-variant": "#f5ded5",
+                "on-primary": "#ffffff",
+                "primary-fixed": "#ffdad6",
+                "primary": "#ae0011",
+                "on-error": "#ffffff",
+                "surface-bright": "#fff8f6",
+                "tertiary-fixed": "#ffdcc6",
+                "on-error-container": "#93000a",
+                "primary-fixed-dim": "#ffb4ab",
+                "on-primary-container": "#ffece9",
+                "primary-container": "#d71920",
+                "on-background": "#251913",
+                "on-secondary-fixed": "#251a00",
+                "inverse-primary": "#ffb4ab",
+                "secondary-fixed-dim": "#f9bd00",
+                "on-tertiary-container": "#ffede3",
+                "tertiary-container": "#ac5500",
+                "on-primary-fixed-variant": "#93000d",
+                "surface-container-high": "#fbe3da",
+                "background": "#fff8f6",
+                "on-secondary": "#ffffff",
+                "on-secondary-fixed-variant": "#5b4300",
+                "surface-container": "#ffeae1",
+                "tertiary-fixed-dim": "#ffb786",
+                "secondary-container": "#fdc008",
+                "surface-dim": "#ecd5cc",
+                "on-tertiary-fixed-variant": "#723600",
+                "error-container": "#ffdad6",
+                "on-surface-variant": "#5d3f3c",
+                "on-tertiary-fixed": "#311300",
+                "surface-container-highest": "#f5ded5",
+                "inverse-surface": "#3b2d27",
+                "on-primary-fixed": "#410002",
+                "error": "#ba1a1a",
+                "surface-container-low": "#fff1ec",
+                "surface-tint": "#c00014",
+                "secondary": "#785a00"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "margin-mobile": "20px",
+                "margin-desktop": "64px",
+                "stack-loose": "32px",
+                "gutter": "16px",
+                "unit": "4px",
+                "stack-tight": "8px"
+        },
+        "fontFamily": {
+                "price-lg": [
+                        "Rubik"
+                ],
+                "display-xl": [
+                        "Rubik"
+                ],
+                "label-bold": [
+                        "DM Sans"
+                ],
+                "body-md": [
+                        "DM Sans"
+                ],
+                "display-xl-mobile": [
+                        "Rubik"
+                ],
+                "headline-md": [
+                        "Rubik"
+                ],
+                "body-lg": [
+                        "DM Sans"
+                ],
+                "headline-lg": [
+                        "Rubik"
+                ]
+        },
+        "fontSize": {
+                "price-lg": [
+                        "28px",
+                        {
+                                "lineHeight": "1",
+                                "fontWeight": "800"
+                        }
+                ],
+                "display-xl": [
+                        "48px",
+                        {
+                                "lineHeight": "1.1",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "800"
+                        }
+                ],
+                "label-bold": [
+                        "14px",
+                        {
+                                "lineHeight": "1",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                        }
+                ],
+                "display-xl-mobile": [
+                        "36px",
+                        {
+                                "lineHeight": "1.1",
+                                "fontWeight": "800"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "1.2",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "1.2",
+                                "fontWeight": "700"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+/* Utilities */
+.ambient-shadow {
+    box-shadow: 0 4px 20px -2px rgba(var(--tw-colors-primary), 0.2);
+}
+.docked {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+</style>
+</head>
+<body class="bg-background text-on-background font-body-lg">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface-dim w-full top-0 sticky shadow-sm dark:bg-surface-container z-50">
+<div class="flex justify-between items-center h-20 px-4 lg:px-20 max-w-[1280px] mx-auto md:flex hidden">
+<div class="font-display-xl text-display-xl text-primary dark:text-primary-fixed-dim"><a class="block" href="index.html"><img alt="Turquia Lanches Logo" class="h-16 w-auto object-contain rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArpWXG0gYWYMTkPlb5Fz6tRl2U4IJUM9iF_JPUw6JOg1C5JgWm0GyGap3PNeolOs0SwPcUbNbuRmmSknutVut7z1UcUMlt118_C2npCUknnuyRPpOVD0PIbcFvjvc3XCO_vomkTU46ROq_B96SwnZFV4_naBfwP66YBmrPextdftYfgo4oBj7-813Qd-jvuPAHIibUAklQipSxThw1ZWSJLQGnY7wasEXywTcziAFZeoU9HIuLVOnq4DutczwuuCGf3cM"/></a></div>
+<nav class="flex gap-gutter items-center"><a class="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1" href="cardapio.html">Cardápio</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors hover:scale-105 transition-transform duration-200" href="sobre.html">Sobre Nós</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors hover:scale-105 transition-transform duration-200" href="localizacao.html">Localização</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors hover:scale-105 transition-transform duration-200" href="contato.html">Contato</a></nav>
+<a class="bg-primary-container text-on-primary-container font-label-bold text-label-bold px-6 py-3 rounded-full hover:bg-primary transition-colors ambient-shadow block" href="cardapio.html">Peça Agora</a>
+</div>
+<!-- Mobile Nav Placeholder (Simplistic) -->
+<div class="flex justify-between items-center h-16 px-4 md:hidden">
+<div class="font-display-xl-mobile text-display-xl-mobile text-primary"><a class="block" href="index.html"><img alt="Turquia Lanches Logo" class="h-12 w-auto object-contain rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxQqmgwOlPxTC1oKAGjX6A0no6WQuNBr14U-ugls0yJ-K78FBswpIQq-6HUL-ymv_Fr3PahPXcjlcyrPPuqg1QMmctQGg5SDCWZm1Q3_lENx7iWPsmpvG9jOPNfBM_6620qv1I3L3iMOYouopHUQGdgc4cGaDthLWtdUgXYw6Gkh4pV1IThOQheDhzOoXFeGta6uf7tQh5XnFWiFySHXxdH6QIRO72mJ6HbdMrP_Mu5SAmNgotMR9yxNvX4PFT0eimkq4"/></a></div>
+<span class="material-symbols-outlined text-primary text-3xl">menu</span>
+</div>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative w-full min-h-[600px] flex items-center justify-center overflow-hidden py-12 md:py-0 md:h-[819px]">
+<div class="absolute inset-0 w-full h-full bg-surface-container hidden md:block">
+<div class="bg-cover bg-center w-full h-full opacity-70 mix-blend-multiply" data-alt="Hero Image" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB23gN_xQ8eX1145_71mR01R65Qn7zBw3E8R9Nl4q5y1u1O7mJ7O5J57D2_95mD_P7U8f2Z3Kj5E5gYxO9w1vN6t8K9A6F_z4a4eZ4M0y0v9m2h9w6M7Qz_B2I1w9vX1X4S0v3fH0tQ1l4t_g_P0e2A8L3Q1G9F8c_U3B9d_C8J3d7V_t3E7P0b1A7L2H1G3F5J2B4Z5J8K7P0v_J6K3U4I_C3g2I9P4X_P9Q2A3');"></div>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent hidden md:block"></div>
+<div class="relative z-10 w-full px-4 lg:px-20 max-w-[1280px] mx-auto flex flex-col md:flex-row items-center justify-between">
+<div class="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left z-20 bg-background/50 backdrop-blur-sm p-8 rounded-2xl md:bg-transparent md:backdrop-blur-none md:p-0 overflow-hidden">
+<h1 class="font-display-xl-mobile md:font-display-xl text-display-xl-mobile md:text-display-xl text-on-background mb-stack-tight drop-shadow-md">Fome de Leão?<br/> <span class="text-primary">Lanche Especial.</span></h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-stack-loose max-w-lg font-bold bg-background/30 px-2 rounded">
+                    Sabor raiz, ingredientes frescos e aquele exagero que a gente ama. O melhor lanche da cidade te espera.
+                </p>
+<div class="flex flex-col sm:flex-row gap-gutter w-full sm:w-auto"><a class="w-full sm:w-auto bg-primary-container text-on-primary-container font-label-bold text-label-bold px-8 py-4 rounded-xl hover:scale-[1.02] transition-transform duration-200 ambient-shadow flex items-center justify-center gap-2" href="cardapio.html"><span class="material-symbols-outlined" data-weight="fill">shopping_cart</span>PEÇA AGORA</a><a class="w-full sm:w-auto bg-surface-container text-primary font-label-bold text-label-bold px-8 py-4 rounded-xl border border-outline-variant hover:bg-surface-variant transition-colors flex items-center justify-center gap-2" href="cardapio.html"><span class="material-symbols-outlined">restaurant_menu</span>VER CARDÁPIO</a></div>
+</div>
+<div class="w-full md:w-1/2 mt-8 md:mt-0 md:hidden block">
+<img alt="Burger" class="w-full h-auto object-cover rounded-xl shadow-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB23gN_xQ8eX1145_71mR01R65Qn7zBw3E8R9Nl4q5y1u1O7mJ7O5J57D2_95mD_P7U8f2Z3Kj5E5gYxO9w1vN6t8K9A6F_z4a4eZ4M0y0v9m2h9w6M7Qz_B2I1w9vX1X4S0v3fH0tQ1l4t_g_P0e2A8L3Q1G9F8c_U3B9d_C8J3d7V_t3E7P0b1A7L2H1G3F5J2B4Z5J8K7P0v_J6K3U4I_C3g2I9P4X_P9Q2A3"/>
+</div>
+</div>
+</section>
+<!-- Ambience Section -->
+<section class="w-full py-16 bg-surface px-4 lg:px-20">
+<div class="max-w-[1280px] mx-auto flex flex-col md:flex-row items-center gap-stack-loose">
+<div class="w-full md:w-1/2">
+<h2 class="font-display-xl-mobile md:font-headline-lg text-primary mb-stack-tight">Nosso Espaço</h2>
+<p class="font-body-lg text-on-surface-variant mb-stack-loose">
+                Venha conhecer um ambiente aconchegante, ideal para reunir os amigos, assistir ao jogo do seu time e aproveitar momentos inesquecíveis. Nossa casa é a sua casa, com aquele clima que só a Turquia Lanches tem.
+            </p>
+</div>
+<div class="w-full md:w-1/2">
+<img alt="Nosso Espaço" class="w-full h-[400px] object-cover rounded-2xl shadow-xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB92M_gX_Q0I0E3G2w7g0X_S0E4z0X_X7P4u4E8q7V3d1e9_f7G1e8_N7C4C_t4N9_v3K_D2f4H9F0_U_G9V_t7e9G_n2L8y6q8w3K3H9S8d2T6v3K9v0w2G4u4C9S3L4h7f6u2G4w8F1L_u5F5E4z9K8T_b9V4a9d7v0V3x2J9c7_A_k_S_A7"/>
+</div>
+</div>
+</section>
+<!-- Experience Section -->
+<section class="w-full py-16 bg-surface-container-low px-4 lg:px-20">
+<div class="max-w-[1280px] mx-auto">
+<h2 class="font-display-xl-mobile md:font-headline-lg text-center text-primary mb-12">Momentos Turquia</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px] overflow-hidden">
+<div class="col-span-1 md:col-span-2 row-span-2 rounded-2xl overflow-hidden shadow-lg relative group">
+<img alt="Experiência 1" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9z_G5t8H4M7u_k_Y9c0N3d_p9d2y9J2T4G9J9q8h5L4g9P4D3C_z_d5K_D4M2g3h_D5d4t_X_b0d9S_j0E3C2n_q6T9x_b2D6y5Q4h9a8v2A7F3t9K4_g_K_D_x4T3w4k7K2K_b9Y9_F4w_b9W_e9V4E4P7f9N_u_Q2d3h7r_v7E5q_J2c"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+<span class="text-white font-headline-md font-bold">Alegria que Contagia</span>
+</div>
+</div>
+<div class="col-span-1 row-span-1 rounded-2xl overflow-hidden shadow-lg relative group">
+<img alt="Experiência 2" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9p6m3T9G4f5S_Y_R2J8t4r_d3F_y8r2P8G_b8N9R2H_q5c8N2S_g_B9F2x6W2y4v4y9h_e5d2D_g6_b9F4G2T9k5w_W8h9S6t6k3J_t8v5N2B_r9D5R_B3t4f8W5u4z4H9Q8v_h4N2v_F2c_H9_C_V_g5_v_J2k9V2d2D7R8W4n8F9w"/>
+</div>
+<div class="col-span-1 row-span-1 rounded-2xl overflow-hidden shadow-lg relative group">
+<img alt="Experiência 3" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDz4T9H_G_Q2X8M5M2V9u4L9J_s8H7Y_P4t8E5Q9c7y_b2P4t3X_K6C_t8X2V3g4d3N9B7E3r_e3Q3W8N_G4_n8C3N6H2V2T8r_Q_k4r8k3S9b3N4Y5g_K9Q_v8u_S9G2G4T5x3f3J5E2N_K4T9u8u8u8d9k_S_g8r_D_M6H9z3_P4F_A"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Food Highlights -->
+<section class="w-full py-16 bg-surface px-4 lg:px-20">
+<div class="max-w-[1280px] mx-auto text-center mb-12">
+<h2 class="font-display-xl-mobile md:font-headline-lg text-primary mb-stack-tight">O Irresistível</h2>
+<p class="font-body-lg text-on-surface-variant max-w-2xl mx-auto">Preparados com maestria para despertar todos os seus sentidos.</p>
+</div>
+<div class="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="relative rounded-2xl overflow-hidden shadow-2xl group h-[400px]">
+<img alt="Destaque Salgado" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJ3iQi-EWDhu3rLpYNp6uTwhn2IZay6QSfSv4zrHg4GnUWZ7p9bMCiE3q8vMwuCoN7ogMkYufWUTob22Oorw0rottDEfgXmjOJ1VmHzZRdJjo-MrFw5xQyjU23lXo8ibNA0eFy9lwHZgHLMP9LUgJGQhf0EW66dxohW7gZxoYAmAkP9p8FFtOKvKdLO7n3HPZNQC1QQMgBVCuueHC-KKD6n9ID0iOnEinRccouvbGnOZTPGZZFWfiMLxbb5ru2hx0ijZg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-8">
+<h3 class="text-white font-headline-lg mb-2 drop-shadow-md">Gigante do Sabor</h3>
+<p class="text-surface-container-low font-body-md drop-shadow-sm">Para saciar a fome de leão.</p>
+</div>
+</div>
+<div class="relative rounded-2xl overflow-hidden shadow-2xl group h-[400px]">
+<img alt="Destaque Doce" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzXtRqwUtOyOXW_Lbfs7cyeiXKWFUQo_M-zXpaPzrEEftx06s0ILBuWqVpVnY_QtD2vmbmT-LHc6CtE12scYJ6VGCte36V-FwH5HItyIXz_-J-d3wvi6bdARDGcDHfLO14S1FC6cAGa2CvzZ5xR-1yHS3__qy3Sjo4hWZ9vsgluZVKtHZn-ASFFblFVdgqv36zR9c09qlo0cfyKj_Z8f-AZAvqM5O2yCtPeZ4kJfC0uKmAwIBBqMvzm0El3MTaGyTtDv0"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-8">
+<h3 class="text-white font-headline-lg mb-2 drop-shadow-md">Doce Tentação</h3>
+<p class="text-surface-container-low font-body-md drop-shadow-sm">A sobremesa que você merece.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Menu & Order Section (Placeholder for existing content if any, added simple layout to represent it) -->
+<section class="w-full py-16 bg-surface-container-low px-4 lg:px-20" id="cardapio">
+<div class="max-w-[1280px] mx-auto">
+<div class="flex justify-between items-end mb-12 border-b border-outline-variant pb-4">
+<div>
+<h2 class="font-display-xl-mobile md:font-headline-lg text-primary">Cardápio</h2>
+<p class="font-body-md text-on-surface-variant mt-2">Escolha seus favoritos e faça seu pedido.</p>
+</div>
+<a class="hidden md:flex bg-primary text-on-primary font-label-bold px-6 py-3 rounded-xl hover:bg-primary-container hover:text-on-primary-container transition-colors items-center gap-2 shadow-md" href="sacola.html"><span class="material-symbols-outlined" data-weight="fill">shopping_bag</span>Ver Sacola</a>
+</div>
+<!-- Mock Menu Items -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-hidden">
+<!-- Product Card 1 -->
+<div class="bg-surface rounded-2xl p-4 shadow-sm border border-surface-variant flex gap-4 items-center">
+<img alt="Item" class="w-24 h-24 rounded-lg object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJ3iQi-EWDhu3rLpYNp6uTwhn2IZay6QSfSv4zrHg4GnUWZ7p9bMCiE3q8vMwuCoN7ogMkYufWUTob22Oorw0rottDEfgXmjOJ1VmHzZRdJjo-MrFw5xQyjU23lXo8ibNA0eFy9lwHZgHLMP9LUgJGQhf0EW66dxohW7gZxoYAmAkP9p8FFtOKvKdLO7n3HPZNQC1QQMgBVCuueHC-KKD6n9ID0iOnEinRccouvbGnOZTPGZZFWfiMLxbb5ru2hx0ijZg"/>
+<div class="flex-1">
+<h4 class="font-label-bold text-on-surface text-lg">Super Burger</h4>
+<p class="text-primary font-price-lg text-xl mt-1">R$ --,--</p>
+</div>
+<button class="bg-surface-container text-primary p-2 rounded-full hover:bg-primary-container hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-surface rounded-2xl p-4 shadow-sm border border-surface-variant flex gap-4 items-center">
+<img alt="Item" class="w-24 h-24 rounded-lg object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzXtRqwUtOyOXW_Lbfs7cyeiXKWFUQo_M-zXpaPzrEEftx06s0ILBuWqVpVnY_QtD2vmbmT-LHc6CtE12scYJ6VGCte36V-FwH5HItyIXz_-J-d3wvi6bdARDGcDHfLO14S1FC6cAGa2CvzZ5xR-1yHS3__qy3Sjo4hWZ9vsgluZVKtHZn-ASFFblFVdgqv36zR9c09qlo0cfyKj_Z8f-AZAvqM5O2yCtPeZ4kJfC0uKmAwIBBqMvzm0El3MTaGyTtDv0"/>
+<div class="flex-1">
+<h4 class="font-label-bold text-on-surface text-lg">Porção Mista</h4>
+<p class="text-primary font-price-lg text-xl mt-1">R$ --,--</p>
+</div>
+<button class="bg-surface-container text-primary p-2 rounded-full hover:bg-primary-container hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<!-- Product Card 3 -->
+<div class="bg-surface rounded-2xl p-4 shadow-sm border border-surface-variant flex gap-4 items-center">
+<img alt="Item" class="w-24 h-24 rounded-lg object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzXtRqwUtOyOXW_Lbfs7cyeiXKWFUQo_M-zXpaPzrEEftx06s0ILBuWqVpVnY_QtD2vmbmT-LHc6CtE12scYJ6VGCte36V-FwH5HItyIXz_-J-d3wvi6bdARDGcDHfLO14S1FC6cAGa2CvzZ5xR-1yHS3__qy3Sjo4hWZ9vsgluZVKtHZn-ASFFblFVdgqv36zR9c09qlo0cfyKj_Z8f-AZAvqM5O2yCtPeZ4kJfC0uKmAwIBBqMvzm0El3MTaGyTtDv0"/>
+<div class="flex-1">
+<h4 class="font-label-bold text-on-surface text-lg">Pizza Doce</h4>
+<p class="text-primary font-price-lg text-xl mt-1">R$ --,--</p>
+</div>
+<button class="bg-surface-container text-primary p-2 rounded-full hover:bg-primary-container hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<div class="mt-12 flex justify-center">
+<a class="bg-primary-container text-on-primary-container font-label-bold text-label-bold px-10 py-4 rounded-xl hover:scale-[1.02] transition-transform duration-200 ambient-shadow flex items-center justify-center gap-2" href="cardapio.html">VER CARDÁPIO COMPLETO</a>
+</div>
+</div>
+</section>
+<!-- Spacer -->
+<div class="h-stack-loose md:h-margin-desktop"></div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-highest dark:bg-surface-container-low w-full py-16 grid grid-cols-1 md:grid-cols-4 gap-stack-loose px-4 lg:px-20 max-w-[1280px] mx-auto pb-24 md:pb-16 items-start">
+<div class="flex flex-col">
+<a class="block mb-stack-tight" href="index.html"><img alt="Turquia Lanches Logo" class="h-12 w-auto object-contain rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArpWXG0gYWYMTkPlb5Fz6tRl2U4IJUM9iF_JPUw6JOg1C5JgWm0GyGap3PNeolOs0SwPcUbNbuRmmSknutVut7z1UcUMlt118_C2npCUknnuyRPpOVD0PIbcFvjvc3XCO_vomkTU46ROq_B96SwnZFV4_naBfwP66YBmrPextdftYfgo4oBj7-813Qd-jvuPAHIibUAklQipSxThw1ZWSJLQGnY7wasEXywTcziAFZeoU9HIuLVOnq4DutczwuuCGf3cM"/></a>
+<p class="font-body-md text-body-md text-on-surface-variant mb-stack-tight">© 2024 Turquia Lanches. O sabor da tradição em cada mordida.</p>
+</div>
+<div class="flex flex-col gap-unit"><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-all duration-300 hover:underline" href="termos.html">Termos de Uso</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-all duration-300 hover:underline" href="privacidade.html">Privacidade</a></div>
+<div class="flex flex-col gap-unit"><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-all duration-300 hover:underline" href="trabalhe-conosco.html">Trabalhe Conosco</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-all duration-300 hover:underline" href="contato.html">Contato</a></div>
+<div class="flex flex-col gap-unit"><p class="font-body-md text-body-md text-on-surface-variant opacity-70">* Itens e preços demonstrativos.</p></div></footer>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="bg-surface dark:bg-surface-dim docked full-width bottom-0 z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] border-t border-outline-variant fixed w-full flex justify-around items-center py-3 px-4 md:hidden"><a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1 scale-110 duration-150" href="index.html"><span class="material-symbols-outlined" data-weight="fill">home</span><span class="font-label-bold text-[10px]">Home</span></a><a class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant rounded-full px-4 py-1" href="cardapio.html"><span class="material-symbols-outlined">restaurant_menu</span><span class="font-label-bold text-[10px]">Cardápio</span></a><a class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant rounded-full px-4 py-1" href="sacola.html"><span class="material-symbols-outlined">shopping_cart</span><span class="font-label-bold text-[10px]">Pedidos</span></a><a class="flex flex-col items-center justify-center text-on-surface-variant active:bg-surface-variant rounded-full px-4 py-1" href="perfil.html"><span class="material-symbols-outlined">person</span><span class="font-label-bold text-[10px]">Perfil</span></a></nav>
+</body></html>
