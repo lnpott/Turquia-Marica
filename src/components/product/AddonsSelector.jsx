@@ -10,7 +10,7 @@ function AddonsSelector({ title, options, selected, onToggle, showPrice }) {
           return (
             <label
               key={option.id}
-              className={`flex items-center justify-between gap-3 px-4 py-3 rounded-lg border cursor-pointer transition-colors ${
+              className={`flex items-center justify-between gap-3 px-4 py-3 rounded-lg border cursor-pointer transition-all duration-150 active:scale-[0.99] ${
                 isSelected
                   ? 'border-primary bg-primary/5'
                   : 'border-outline-variant bg-surface-container-low hover:bg-surface-container'

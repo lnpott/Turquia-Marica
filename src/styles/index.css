@@ -15,6 +15,10 @@ body {
   font-family: 'DM Sans', sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 .ambient-shadow {
   box-shadow: 0 4px 15px rgba(37, 25, 19, 0.12);
 }
@@ -42,4 +46,58 @@ body {
 .scrolling-wrapper {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* ---- LOTE 11 — Refinamento visual e UX ---- */
+
+/* Transição de página: fade suave (~260ms). Disparada pela remontagem do
+   conteúdo (key={pathname}) no MainLayout. Sem biblioteca.
+   Obs. (Lote 11): o deslocamento vertical foi removido de propósito — qualquer
+   transform no ancestral cria containing block para position:fixed, o que
+   quebraria o AddToCartBar (/produto/:id). Fade-only resolve. */
+.page-transition {
+  animation: page-fade-in 260ms ease-out both;
+}
+
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Hero da Home: zoom lento e sutil (Ken Burns) no slide ativo do crossfade. */
+.hero-kenburns {
+  animation: hero-kenburns 7200ms ease-out both;
+}
+
+@keyframes hero-kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+/* Foco visível acessível em qualquer elemento interativo (teclado). */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .page-transition {
+    animation: none;
+  }
+
+  .hero-kenburns {
+    animation: none;
+  }
 }

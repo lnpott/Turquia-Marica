@@ -211,6 +211,31 @@
 - **Checkpoint final:** 30 itens verificados — todos PASS.
 - **Deliberadamente NÃO implementado (fora do escopo desta migração):** backend, banco de dados, autenticação, pagamento real, integração WhatsApp com texto formatado (`wa.me`), mapa interativo real, perfil do usuário, página Sobre Nós, página Avaliações, página Termos de Uso/Privacidade, testes unitários automatizados, persistência de formulário/checkout, valor real da taxa de entrega.
 
+### Lote 11 — Refinamento Visual, Imagens e Transições — ✅ CONCLUÍDO
+- **Objetivo:** etapa separada de refinamento visual/UX (sem alterar a arquitetura dos Lotes 1–10): corrigir o uso de imagens (hero da Home), transições de navegação e revisão geral — mantendo rigorosamente o Design System "Sabor e Tradição" e a hierarquia de referências. Resultado = evolução natural, não redesign.
+- **Problema encontrado (auditoria de imagens — 25 imagens, 7 páginas):**
+  - Todas as imagens são **URLs externas** `lh3.googleusercontent.com/aida-public/…` (sem assets locais — não existe `public/` ou `src/assets/`).
+  - **1 imagem quebrada: hero da Home.** A URL `AB6AXuB23gN…` (vinda das variantes `index.html_homepage_production_fixed`/`_final_audit`, base do Lote 3) retorna **HTTP 400**.
+  - **O hero original e funcional é `AB6AXuCSbrOVTg…`** (HTTP 200), presente em `turquia_lanches_homepage_production/code.html` e `index.html_homepage_production/code.html` — **fonte #1 da hierarquia (HTML de produção local)**.
+  - As 2 URLs "fabricadas" do `_fixed` também retornam 400 (nunca existiram). As demais **22 imagens respondem 200** (menu, cardápio, localização, logos — nenhuma outra correção necessária).
+- **Solução adotada (hero):**
+  - **Hero corrigido** para a imagem original de produção (HTTP 200) — em desktop (fundo) e mobile (`<img>` abaixo do texto, composição aprovada preservada).
+  - **Fundo dinâmico elegante (desktop):** crossfade de 3 slides com imagens **já aprovadas nos HTMLs de produção** — hero original + Ambiente "Nosso Espaço" (`AB6AXuAjG-GFqX…`) + galeria "Momentos Turquia" (`AB6AXuC34jlT…`). Dwell confortável de 6s, crossfade suave de 1.6s, Ken Burns sutil (scale 1→1.05 em 7.2s). Atmosfera viva, não banner.
+  - **Performance:** preload apenas da 1ª imagem (slides 2–3 só montados após `hydrated=true` no 1º efeito); altura fixa do hero (`min-h-[600px]`/`md:h-[819px]`) → **zero CLS**.
+  - **`prefers-reduced-motion`:** o interval JS é desativado via `matchMedia` e as animações CSS (`.page-transition`, `.hero-kenburns`, scroll) via `@media` — usuários com menos movimento veem hero estático no slide 1.
+- **Estratégia de transições (sem biblioteca nova):**
+  - `MainLayout` usa `useLocation` + `key={location.pathname}` no wrapper do `<Outlet/>` → a cada rota, a classe `.page-transition` dispara a animação de entrada **fade 260ms**.
+  - Aplica-se a **todas** as navegações: Header, BottomNavBar, CTAs, fluxo linear (Checkout/Confirmação) — sem duplicar páginas mobile/desktop, sem alterar URLs, sem quebrar histórico/back.
+  - `window.scrollTo({ top: 0, behavior: 'instant' })` por pathname (comportamento padrão de SPA); âncoras `#combos`/`#categorias` não mudam pathname → não afetadas.
+  - **Decisão técnica (documentada):** a transição é **fade-only** — o `translateY` foi removido porque qualquer `transform` no ancestral cria *containing block* para `position:fixed`, o que quebraria o `AddToCartBar` (`/produto/:id`). O briefing permitia apenas "fade".
+- **Microinterações (sutis, premium + artesanal):** `:focus-visible` global (outline 2px `--color-primary`) — foco acessível por teclado em toda a interface; `scroll-behavior: smooth` (guard reduced-motion) para âncoras; press feedback `active:scale` em `QuantitySelector` (+/−), `AddonsSelector`, `PaymentSelector` e `DeliverySelector`.
+- **Revisão visual geral:** 7 páginas revisadas sem redesenho. Nenhuma divergência do Design System (tokens `#ae0011`/`#fdc008`/`#fff8f6`/`#251913`, DM Sans/Rubik, `max-w-[1280px]`, Header/BottomNavBar/Footer/Button/Badge/QuantitySelector e CartContext intocados).
+- **Arquivos alterados (7):** `src/components/home/HeroSection.jsx` (hero corrigido + crossfade), `src/layouts/MainLayout.jsx` (transição + scroll top), `src/styles/index.css` (keyframes, focus-visible, smooth scroll, reduced-motion), `src/components/ui/QuantitySelector.jsx`, `src/components/product/AddonsSelector.jsx`, `src/components/checkout/PaymentSelector.jsx`, `src/components/checkout/DeliverySelector.jsx` (press feedback).
+- **Correções pós-revisão (code review):** (1) **conflito `opacity-70` + `opacity-0`** nos slides — a ordem de cascade do Tailwind faria todos os slides visíveis → `opacity-70` removido da base e mantido só na condição ativa; (2) `transform` retido por `animation-fill-mode: both` quebraria `position:fixed` → fade-only; (3) `scrollTo` suave competindo com a transição → `behavior: 'instant'`.
+- **QA / validação:** build ✅ 79 módulos; CSS 35.96 kB; JS 242.75 kB; **0 warnings**. **Verificação real no navegador (Chrome):** Home carrega sem erros de console; hero com imagem carregando (sem quebra); título "Fome de Leão?" presente; navegação Home → `/cardapio` OK; **zero imagens 400/404**. `git diff --check` limpo; 0 HTMLs de produção modificados; `implementation_plan.md` intacto (hash `98bc0141…`); `CartContext` e `package.json` inalterados (sem regressão, sem dependência nova).
+- **Status Git:** **SEM COMMIT / SEM PUSH** — 7 arquivos modificados em working tree; remoto intacto.
+- **Pendências (recomendações, fora deste lote):** heróis do Cardápio e Localização já estão com imagens válidas (200); imagens de produto continuam mock (validação com o cliente); migrar imagens externas frágeis para asset local/CDN próprio permanece recomendado (decisão de negócio).
+
 ---
 
 ## 7. ESTADO FINAL DA MIGRAÇÃO
@@ -322,8 +347,9 @@ dist/assets/index-tu-UIOcT.js   241.23 kB │ gzip: 74.78 kB
 
 ### Estado do Git
 
-- **Nada commitado.** Nenhum commit foi feito durante a migração.
-- **Nada enviado ao remoto.** O repositório `origin` (`https://github.com/lnpott/Turquia-Marica.git`) permanece exatamente como antes da migração.
+- **Atualização pós-Lote 10:** a migração foi commitada e enviada ao remoto após o Lote 10 — commit `a1ae7b6` ("feat: complete checkout confirmation and location flows", push para `origin/main` autorizado pelo usuário).
+- **Lote 11 (refinamento visual):** em andamento/working tree — 7 arquivos modificados, **sem commit e sem push** (aguardando autorização).
+- **Durante a migração (Lotes 1–10):** nada foi commitado até o commit autorizado; o remoto foi alterado apenas pelo push autorizado de `a1ae7b6`.
 - **HTMLs de produção intactos.** Nenhum dos 7 diretórios `*_production/` foi modificado.
 - **`implementation_plan.md` intacto.** Hash idêntico ao commit-base (`98bc0141…`).
 - **Novos arquivos (criados na migração, não commitados):** ~50 arquivos em `src/` (componentes, páginas, contexto, dados, utilitários, layouts, estilos).

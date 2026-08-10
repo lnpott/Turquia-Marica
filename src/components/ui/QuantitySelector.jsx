@@ -15,7 +15,7 @@ function QuantitySelector({ value, onChange, min = 1, className = '', ...rest })
         aria-label="Diminuir quantidade"
         onClick={decrease}
         disabled={value <= min}
-        className="w-10 h-10 flex items-center justify-center text-on-surface hover:text-primary transition-colors disabled:opacity-40"
+        className="w-10 h-10 flex items-center justify-center text-on-surface hover:text-primary transition-all duration-150 active:scale-90 disabled:opacity-40 disabled:active:scale-100"
       >
         <span className="material-symbols-outlined">remove</span>
       </button>
@@ -24,7 +24,7 @@ function QuantitySelector({ value, onChange, min = 1, className = '', ...rest })
         type="button"
         aria-label="Aumentar quantidade"
         onClick={increase}
-        className="w-10 h-10 flex items-center justify-center text-on-surface hover:text-primary transition-colors"
+        className="w-10 h-10 flex items-center justify-center text-on-surface hover:text-primary transition-all duration-150 active:scale-90"
       >
         <span className="material-symbols-outlined">add</span>
       </button>

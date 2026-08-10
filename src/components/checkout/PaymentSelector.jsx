@@ -29,7 +29,7 @@ function PaymentSelector({ value, onChange, cashAmount, onCashAmountChange }) {
               className="peer sr-only"
             />
             <div
-              className={`flex flex-col items-center justify-center p-6 bg-surface-container-lowest border-2 rounded-xl transition-all group-hover:shadow-md ${
+              className={`flex flex-col items-center justify-center p-6 bg-surface-container-lowest border-2 rounded-xl transition-all duration-150 group-hover:shadow-md active:scale-[0.99] ${
                 value === method.id
                   ? 'border-primary bg-surface-bright'
                   : 'border-outline-variant'

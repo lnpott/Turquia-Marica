@@ -14,7 +14,7 @@ function DeliverySelector({ value, onChange }) {
           type="button"
           aria-pressed={value === option.id}
           onClick={() => onChange(option.id)}
-          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-full border font-label-bold transition-colors ${
+          className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-full border font-label-bold transition-all duration-150 active:scale-[0.98] ${
             value === option.id
               ? 'border-primary bg-primary text-on-primary'
               : 'border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:text-primary'
