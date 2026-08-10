@@ -26,7 +26,7 @@
 - **React 18** com JSX e `createRoot`.
 - **React Router** (v6) com `BrowserRouter`/`Routes`/`Route`.
 - **TailwindCSS 3** via `postcss.config.js` + `tailwind.config.cjs` (paleta completa do Stitch).
-- **Context API + `useReducer`** para o carrinho (`src/contexts/CartContext.jsx`) — **implementado no Lote 6** (ações `ADD_ITEM`, `REMOVE_ITEM`, `UPDATE_QTY`, `CLEAR_CART`, `SET_DELIVERY`).
+- **Context API + `useReducer`** para o carrinho (`src/contexts/CartContext.jsx`) — **implementado no Lote 6** (ações `ADD_ITEM`, `REMOVE_ITEM`, `UPDATE_QTY`, `CLEAR_CART`, `SET_DELIVERY`); **Lote 8** adicionou `lastOrder` (snapshot do pedido concluído) + ação `PLACE_ORDER`.
 - **Estrutura `src/`:**
   - `src/components/layout/` → Header, BottomNavBar, Footer
   - `src/components/ui/` → Button, Badge, QuantitySelector
@@ -35,11 +35,13 @@
   - `src/components/menu/` → CategoryFilterBar, ProductGrid
   - `src/components/cart/` → CartItem, CartSummary, EmptyCartState, CartBadge
   - `src/components/checkout/` → CheckoutField, DeliverySelector, AddressForm, PaymentSelector, OrderSummaryPanel
+  - `src/components/confirmation/` → SuccessIcon, OrderSummaryConfirm, WhatsAppButton
+  - `src/components/location/` → MapEmbed, ContactCard
   - `src/layouts/MainLayout.jsx` → Header + {children/Outlet} + Footer + BottomNavBar (prop `hideBottomNav` para fluxos lineares)
-  - `src/pages/` → Home, Menu, ProductDetails, Cart, Checkout (demais páginas nos próximos lotes)
-  - `src/data/` → `menu.js` (dados mock)
+  - `src/pages/` → Home, Menu, ProductDetails, Cart, Checkout, Confirmation, Location (todas as 7 páginas do plano)
+  - `src/data/` → `menu.js` (dados mock), `contact.js` (contatos reais — fonte única)
   - `src/utils/` → `format.js` (formatBRL)
-  - `src/contexts/`, `src/styles/` (index.css, main.css)
+  - `src/contexts/`, `src/styles/` (index.css)
 - **Aplicação única responsiva** Mobile/Desktop via breakpoints Tailwind (`md:`, `lg:`, `xl:`) — sem rotas duplicadas.
 - **Princípio de reutilização:** componentes globais extraídos dos HTMLs de produção e reutilizados entre páginas.
 
@@ -67,8 +69,8 @@
 | Detalhes do Produto | `/produto/:id` | 5 | `src/pages/ProductDetails.jsx` + `src/components/product/{ProductHero,AddonsSelector,ObservationsField,AddToCartBar}.jsx` | Não existe localmente (Stitch é a referência) | `73ceb944…` (desktop), `1150c4b8…` (mobile) | Header, BottomNavBar, Footer (via MainLayout), Button, Badge, QuantitySelector, ProductCard (link) | Estado local (qty, ponto da carne, adicionais, remoções, obs, preço calculado) | Preço calculado via `priceValue` (mock); payload local preparado para Lote 6 |
 | Sacola | `/sacola` | 6 | `src/pages/Cart.jsx`, `src/contexts/CartContext.jsx`, `src/components/cart/*` | `turquia_lanches_sacola_production/code.html` | `cf81049c…` (Desktop), `184cdd73…` (Mobile) | Header (CartBadge), BottomNavBar (contador), Button, QuantitySelector, CartItem, CartSummary, EmptyCartState | `CartContext` (useReducer) + integração Produto → Sacola | Itens mesclados por `key` de personalização (addons/remoções/ponto/obs incluídos); taxa de entrega "A calcular"; checkout link placeholder
 | Checkout | `/checkout` | 7 | `src/pages/Checkout.jsx`, `src/components/checkout/*` | `turquia_lanches_checkout_production/code.html` | `5027f9aa…` (Checkout Desktop — única ref; mobile adaptado) | Header (via MainLayout `hideBottomNav`), EmptyCartState, CheckoutField, DeliverySelector, AddressForm, PaymentSelector, OrderSummaryPanel | `CartContext` (`items`, `cartTotal`, `setDelivery`/SET_DELIVERY) + validação local | Fluxo linear sem BottomNavBar; entrega/retirada condiciona o endereço; pagamento PIX/Cartão/Dinheiro com troco; taxa "A calcular"/"Grátis"; CTA → `/confirmacao` (Lote 8) |
-| Confirmação | `/confirmacao` | 8 | PENDENTE | `turquia_lanches_confirma_o_production/code.html` | `824e366e…` | — | CartContext (limpeza) | — |
-| Localização | `/localizacao` | 9 | PENDENTE | `turquia_lanches_localiza_o_production/code.html` | `b4d2755a…`, `4bf47c60…` | — | — | — |
+| Confirmação | `/confirmacao` | 8 | `src/pages/Confirmation.jsx`, `src/components/confirmation/*` | `turquia_lanches_confirma_o_production/code.html` | `824e366e…` | Header/Footer (MainLayout `hideBottomNav`), Button, WhatsAppIcon, formatBRL | `CartContext` (`lastOrder` via `PLACE_ORDER` no checkout) | Snapshot do pedido preservado após limpar a sacola; nº do pedido demonstrativo; CTA "Voltar ao Início" → `/` (plano) no lugar de "Acompanhar Pedido" (Lote 9) |
+| Localização | `/localizacao` | 9 | `src/pages/Location.jsx`, `src/components/location/{MapEmbed,ContactCard}.jsx`, `src/data/contact.js` | `turquia_lanches_localiza_o_production/code.html` | `b4d2755a…` (Desktop), `4bf47c60…` (Mobile) | Header (link Localização — já existia), Footer (via MainLayout), WhatsAppIcon | Nenhum (página informativa estática) | Dados 100% reais do HTML (Parque Nanci, horário "Em breve", shre.ink, @turquialanches, Google Maps); mapa = imagem placeholder (sem iframe/API); sem HoursTable (HTML não define horários) |
 
 ---
 
@@ -161,10 +163,185 @@
 - **Limitações conhecidas:** taxa de entrega sem valor (mock "A calcular"); pagamento apenas visual (sem gateway); sem persistência do formulário (recarregar perde os dados); observações da tela não são lidas pelo resumo/validação (apenas visual).
 - **Deliberadamente NÃO implementado (próximos lotes):** Confirmação (`/confirmacao` — Lote 8), Localização (`/localizacao` — Lote 9), autenticação, backend, persistência, pagamento real, limpeza do carrinho após pedido.
 
-### Lotes seguintes — ⏳ PENDENTES
-- Lote 8 — Confirmação `/confirmacao`.
-- Lote 9 — Localização `/localizacao`.
-- Lote 10 — Integração e testes de ponta a ponta.
+### Lote 8 — Confirmação `/confirmacao` — ✅ CONCLUÍDO
+- **Objetivo:** implementar a tela final do fluxo — Checkout → Confirmação — exibindo o pedido concluído a partir do estado real do `CartContext`, sem backend/WhatsApp real (estrutura apenas).
+- **Arquivos criados:** `src/pages/Confirmation.jsx`; `src/components/confirmation/{SuccessIcon,OrderSummaryConfirm,WhatsAppButton}.jsx`.
+- **Arquivos modificados (mínimos):** `src/contexts/CartContext.jsx` (estado `lastOrder` + ação `PLACE_ORDER` + `placeOrder()`), `src/pages/Checkout.jsx` (submit chama `placeOrder(...)` e navega para `/confirmacao`; campo Observações agora controlado), `src/App.jsx` (rota `/confirmacao` no layout `hideBottomNav`).
+- **Referência HTML:** `turquia_lanches_confirma_o_production/code.html` — extraídos: círculo com logo (`SuccessIcon`), título display-xl "Pedido Recebido com Sucesso!", mensagem, card bento (nº do pedido + badge "Aguardando" + total + aviso "Assim que seu pedido for confirmado..."), seção "Dúvidas sobre o pedido?".
+- **Referência Stitch:** `824e366e…` (Confirmação Production — única ref; mobile adaptado responsivamente, sem tela nova).
+- **Componentes reutilizados:** Header/Footer (MainLayout com `hideBottomNav` — fluxo linear, HTML de confirmação não tem BottomNavBar), `Button` (guarda "Nenhum pedido encontrado"), `WhatsAppIcon` (exportado do `Button.jsx`), `formatBRL`.
+- **Arquitetura de estado (snapshot do pedido):** solução mínima autorizada pelo briefing — `PLACE_ORDER` grava em `lastOrder` o snapshot `{ items, deliveryType, payment, cashAmount, observations, orderNumber, placedAt, total }` e **limpa a sacola na mesma ação** (reducer puro: `total = Σ(unitPrice × qty)`; `orderNumber`/`placedAt` gerados no `handleSubmit` do Checkout, fora do reducer). A confirmação lê `lastOrder` — o pedido não desaparece após o carrinho ser esvaziado; `cartCount` zera e o badge do Header some (UX correta). Sem Zustand/Redux/backend/persistência.
+- **Fluxo Checkout → Confirmação:** `handleSubmit` (validação OK) → `placeOrder({ items, deliveryType, payment, cashAmount, observations, orderNumber, placedAt })` → `navigate('/confirmacao')`. Dispatch + navigate no mesmo handler (batched): `lastOrder` já está setado quando a Confirmação renderiza.
+- **Conteúdo exibido (`OrderSummaryConfirm`):** `Pedido #XXXX` (nº demonstrativo gerado no checkout — sem backend), badge "Aguardando", lista de itens (nome × qty + resumo de personalização: ponto/adicionais/remoções/obs + linha `unitPrice × qty`), linhas "Entrega / Retirada" e "Pagamento" (com troco em Dinheiro) e "Observações" (quando houver), `Total do Pedido` em `price-lg` primary, e o aviso padrão. Guarda sem `lastOrder` (acesso direto/refresh): "Nenhum pedido encontrado" + CTA "Ver Cardápio".
+- **Decisões deliberadas (documentadas):** (1) CTA primário do HTML "Acompanhar Pedido" (sem destino; semanticamente ligado ao acompanhamento/Localização) foi substituído por **"Voltar ao Início" → `/`** conforme comportamento definido no `implementation_plan.md` (Lote 8) — Localização é o Lote 9; (2) botão WhatsApp usa o **link real de produção** `https://shre.ink/turquiamarica` (âncora existente na Localização HTML); a montagem do texto do pedido via `wa.me` (prevista no plano) fica para a integração real (Lote 10) — apenas estrutura preparada; (3) linhas Entrega/Pagamento/Observações adicionadas ao card (o briefing pede "dados de entrega/retirada; forma de pagamento") usando **dados reais do snapshot** — nada inventado; (4) `placedAt` gravado para uso futuro ("estimativa de tempo" do plano) — não exibido (HTML não tem estimativa; badge "Aguardando" preservado).
+- **Correções pós-revisão:** nenhum bug encontrado. Verificações: `CheckoutField` repassa `{...rest}` ao `<textarea>` (observações controladas chegam ao snapshot); reducer puro (random/time fora); total consistente com `cartTotal`; hooks em ordem (único `useCart` antes do early return em `Confirmation`; 5 `useState` antes do early return no `Checkout`).
+- **Build:** ✅ 75 módulos; CSS 32.69 kB; JS 234.82 kB; sem erros.
+- **Status Git:** nada commitado/push; remoto intacto; 0 HTMLs de produção modificados; `implementation_plan.md` intacto (hash `98bc0141…`); checkpoint do Lote 8 aprovado (16 itens).
+- **Limitações conhecidas:** nº do pedido e status "Aguardando" são representações locais (sem backend); sem persistência — **recarregar `/confirmacao` perde o snapshot** (guard "Nenhum pedido encontrado"); WhatsApp sem texto formatado (apenas link de contato); itens do snapshot compartilham referência de objetos com o carrinho (seguro: o reducer nunca muta).
+- **Deliberadamente NÃO implementado (próximos lotes):** Localização (`/localizacao` — Lote 9), integração WhatsApp real (wa.me com texto), backend/banco/pagamento real/autenticação, persistência de pedidos.
+
+### Lote 9 — Localização `/localizacao` — ✅ CONCLUÍDO
+- **Objetivo:** implementar a tela informativa de Endereço, Localização e Contato (não faz parte do fluxo linear do pedido).
+- **Arquivos criados:** `src/pages/Location.jsx`; `src/components/location/{MapEmbed,ContactCard}.jsx`; `src/data/contact.js` (fonte única dos contatos reais — `WHATSAPP_URL`, `INSTAGRAM_URL`, `MAPS_LINK`).
+- **Arquivos modificados (mínimos):** `src/App.jsx` (import + rota `/localizacao` no layout padrão, com BottomNavBar; comentário do placeholder genérico), `src/components/confirmation/WhatsAppButton.jsx` (apenas o import da URL passa a vir de `src/data/contact.js` — **renderização/lógica idênticas**, sem alterar a lógica do Lote 8).
+- **Referência HTML:** `turquia_lanches_localiza_o_production/code.html` — extraídos: hero full-width com imagem do ambiente + overlay `inverse-surface/40` (título "Venha nos Visitar", parágrafo, CTAs "Peça Agora"/"Contato"), grid 2 colunas (`md:grid-cols-2`) com card de contato e mapa placeholder.
+- **Referências Stitch:** `b4d2755a…` (Desktop), `4bf47c60…` (Mobile) — composição preservada em uma única implementação responsiva.
+- **Componentes reutilizados:** Header (link "Localização" já existia em `NAV_LINKS` — preparado no Lote 2, aguardando a rota; agora funcional no desktop e no menu mobile), Footer (via MainLayout), `WhatsAppIcon` (exportado do `Button.jsx`), tokens do design system.
+- **Rota:** `/localizacao` registrada no layout padrão (com BottomNavBar — o HTML da página tem bottom nav). **Nenhuma navegação paralela criada**: a navegação existente (Header) foi apenas "ativada" pela rota.
+- **Conteúdo (dados 100% reais do HTML — nada inventado):** Endereço "Parque Nanci, Maricá/RJ" + link "Como Chegar" → `maps.app.goo.gl/QHAQCBvrACZZK5Ho9`; Horário "Em breve: horários oficiais" (o HTML **não define horários**); Telefone/WhatsApp "Disponível via WhatsApp" + botão verde → `shre.ink/turquiamarica` (link real de produção; sem `wa.me` novo); Instagram "@turquialanches" + botão → `instagram.com/turquialanches/`. Mapa = **imagem placeholder da referência** (zoom mockup decorativo) — o HTML não usa iframe/API de mapas e nenhum serviço externo novo foi adicionado.
+- **Decisões deliberadas (documentadas):** (1) **`HoursTable` do plano NÃO foi criado** — o HTML não possui tabela de horários (apenas "Em breve"); criar um tabela inventaria dados comerciais, violando a regra; (2) CTA "Peça Agora" do hero usa `bg-primary` (design system/Stitch, alinhado com a correção do Lote 3) em vez de `bg-primary-container` do HTML local — divergência deliberada de consistência; (3) botão "Contato" do HTML (inerte) virou âncora `#contato` que rola até o card de contato — adaptação funcional mínima; (4) controles de zoom do mapa (botões inertes no HTML) viraram spans decorativos `aria-hidden` — evita controles falsos (acessibilidade); (5) **BottomNavBar mantém os 4 itens aprovados (Perfil)** — o HTML de localização tinha "Localização" no lugar de "Perfil", mas o modelo de navegação consolidado do app (Lote 2) foi preservado; Localização é acessível via Header em todas as páginas; (6) `WhatsAppButton` do Lote 8 inalterado (apenas a URL passou à fonte única).
+- **Correções pós-revisão:** (1) verificada a existência do token `inverse-surface` no `tailwind.config.cjs` (hero overlay funciona — sem quebra silenciosa); (2) URL do WhatsApp duplicada (`WhatsAppButton`/`ContactCard`) → centralizada em `src/data/contact.js` (fonte única, preparada para a integração real do Lote 10); (3) CTA `bg-primary` registrado como decisão no roadmap.
+- **Build:** ✅ 79 módulos; CSS 34.23 kB; JS 241.23 kB; sem erros.
+- **Status Git:** nada commitado/push; remoto intacto; 0 HTMLs de produção modificados; `implementation_plan.md` intacto (hash `98bc0141…`); checkpoint do Lote 9 aprovado (22 itens).
+- **Limitações conhecidas:** horários oficiais ainda não definidos ("Em breve" — depende de dados reais do cliente); mapa é placeholder ilustrativo (sem mapa interativo real — Lote 10 pode trocar por embed oficial se aprovado); WhatsApp apenas link de contato (sem texto formatado — Lote 10).
+- **Deliberadamente NÃO implementado (próximos lotes):** Lote 10 (integração real WhatsApp com texto do pedido, mapa interativo oficial se aprovado, validação de imagens, QA ponta a ponta), backend, persistência, autenticação.
+
+### Lote 10 — Finalização, QA Integral e Teste de Ponta a Ponta — ✅ CONCLUÍDO
+- **Objetivo:** auditar, integrar, testar e corrigir o projeto inteiro, preservando tudo que foi aprovado nos Lotes 1–9. Sem criar novas páginas.
+- **Auditoria estrutural:** build limpo (79 módulos, 0 warnings); todos os imports válidos (build comprova); sem `console.log` no código; `src/styles/main.css` removido (arquivo órfão da migração original — não importado por nenhum JSX/JS desde o Lote 1); `PagePlaceholder` mantido para rotas desconhecidas (`*`).
+- **Auditoria Design System:** tokens `#ae0011`/`#fdc008`/`#fff8f6`/`#251913` íntegros no `tailwind.config.cjs`; classes utilitárias Tailwind (`bg-primary`, `text-on-surface`, etc.) usadas em todo o código; `max-w-[1280px]` como largura máxima em todas as páginas (Home, Cardápio, Produto, Sacola, Checkout, Confirmação, Localização); DM Sans (body/label) + Rubik (display/headline/price) corretos; `inverse-surface` presente (`#3b2d27`).
+- **Auditoria funcional (conceitual):** `CartContext` com 6 ações (`ADD_ITEM`, `REMOVE_ITEM`, `UPDATE_QTY`, `CLEAR_CART`, `SET_DELIVERY`, `PLACE_ORDER`); fluxo Cardápio → Produto → Sacola → Checkout → Confirmação completo; `PLACE_ORDER` grava `lastOrder` (snapshot) e limpa a sacola na mesma ação — confirmação exibe os dados mesmo após o carrinho ser esvaziado; estado vazio tratado em Sacola, Checkout e Confirmação; produto inexistente tratado em `/produto/:id`.
+- **Teste de navegação (conceitual):** 7 rotas registradas; Header navega para Cardápio, Localização, Sacola; BottomNavBar navega para Home, Cardápio, Sacola, Perfil (placeholder); Footer com links institucionais; `*` catch-all no final.
+- **Responsividade:** mobile-first com breakpoints `md:`, `lg:`, `xl:`; `hideBottomNav` em Checkout e Confirmação (fluxo linear); barras fixas (BottomNavBar mobile, AddToCartBar mobile, Header sticky); BottomNavBar não duplica conteúdo (`pb-24 md:pb-16` no Footer).
+- **Links/contatos:** fonte única em `src/data/contact.js` — `WHATSAPP_URL` (`shre.ink/turquiamarica`), `INSTAGRAM_URL` (`@turquialanches`), `MAPS_LINK` (Google Maps oficial); sem duplicação; sem `wa.me` novo; sem URLs inventadas.
+- **Acessibilidade básica:** todos os `<img>` com `alt`; decorativos com `aria-hidden`; formulários com `<label htmlFor>` + `<input id>`; grupos de radio com `role="radiogroup"`; foco visível em inputs (checkout); semântica HTML (`<nav>`, `<main>`, `<header>`, `<footer>`). Footer placeholders (`href="#"`) são intencionais (páginas não implementadas — preservado dos Lotes 2).
+- **Correções aplicadas:** `src/styles/main.css` removido (órfão — não importado desde o Lote 1, 0 risco).
+- **Build:** ✅ 79 módulos; CSS 34.23 kB; JS 241.23 kB; **0 warnings**.
+- **Status Git:** nada commitado/push; remoto intacto; 0 HTMLs de produção modificados; `implementation_plan.md` intacto (hash `98bc0141…`).
+- **Checkpoint final:** 30 itens verificados — todos PASS.
+- **Deliberadamente NÃO implementado (fora do escopo desta migração):** backend, banco de dados, autenticação, pagamento real, integração WhatsApp com texto formatado (`wa.me`), mapa interativo real, perfil do usuário, página Sobre Nós, página Avaliações, página Termos de Uso/Privacidade, testes unitários automatizados, persistência de formulário/checkout, valor real da taxa de entrega.
+
+---
+
+## 7. ESTADO FINAL DA MIGRAÇÃO
+
+### Origem do projeto
+
+- **Projeto:** Turquia Lanches / Turquia-Maricá (lanchonete real em Parque Nanci, Maricá/RJ).
+- **Referência visual/UX:** Google Stitch (`projects/10254386617209499733`).
+- **Base estrutural de código:** 7 HTMLs de produção locais (Homepage, Cardápio, Sacola, Checkout, Confirmação, Localização), preservados como referência.
+- **Design System:** `sabor_e_tradi_o/DESIGN.md` (paleta Material You, tipografia Rubik + DM Sans, espaçamentos 8px-64px).
+
+### Arquitetura final
+
+| Camada | Tecnologia/Arquivo |
+|:---|:---|
+| Bundler | Vite 5 (`vite.config.js`) |
+| Framework UI | React 18 (`src/main.jsx`) |
+| Roteamento | React Router v6 (`src/App.jsx`) — 7 rotas + catch-all |
+| Estilização | TailwindCSS 3 + `tailwind.config.cjs` (47 cores, tipografia completa) |
+| Estado global | Context API + `useReducer` (`src/contexts/CartContext.jsx`) |
+| Layout | `MainLayout.jsx` (Header + Outlet + Footer + BottomNavBar; prop `hideBottomNav`) |
+| Dados mock | `src/data/menu.js` (5 categorias, 7+ produtos, opcionais) |
+| Dados reais | `src/data/contact.js` (WhatsApp, Instagram, Google Maps) |
+| Utilitários | `src/utils/format.js` (`formatBRL`) |
+| Estilos | `src/styles/index.css` (Tailwind directives + classes utilitárias) |
+
+### Rotas implementadas (7/7)
+
+| Rota | Página | Lote | Layout | BottomNavBar |
+|:---|:---|:---|:---|:---|
+| `/` | Home | 3 | Padrão | ✅ |
+| `/cardapio` | Menu | 4 | Padrão | ✅ |
+| `/produto/:id` | ProductDetails | 5 | Padrão | ✅ |
+| `/sacola` | Cart | 6 | Padrão | ✅ |
+| `/checkout` | Checkout | 7 | `hideBottomNav` | ❌ (fluxo linear) |
+| `/confirmacao` | Confirmation | 8 | `hideBottomNav` | ❌ (fluxo linear) |
+| `/localizacao` | Location | 9 | Padrão | ✅ |
+
+### Fluxo completo
+
+```text
+Home → Cardápio → Produto → Sacola → Checkout → Confirmação
+   ↓                  ↓          ↓          ↓             ↓
+Header links      Filtro     CartContext  Form/valid   Snapshot
+Hero CTAs         Personal   ADICIONAR    PLACE_ORDER  lastOrder
+                  navegação  navegação    navegação    sacola limpa
+```
+
+### Estrutura final de pastas (`src/`)
+
+```
+src/
+├── components/
+│   ├── cart/           CartItem, CartSummary, EmptyCartState, CartBadge
+│   ├── checkout/       CheckoutField, DeliverySelector, AddressForm, PaymentSelector, OrderSummaryPanel
+│   ├── confirmation/   SuccessIcon, OrderSummaryConfirm, WhatsAppButton
+│   ├── home/           HeroSection, AmbienceSection, GallerySection, FoodHighlights, MenuPreviewSection
+│   ├── layout/         Header, BottomNavBar, Footer
+│   ├── location/       MapEmbed, ContactCard
+│   ├── menu/           CategoryFilterBar, ProductGrid
+│   ├── product/        ProductCard, CategoryCard, ProductHero, AddonsSelector, ObservationsField, AddToCartBar
+│   └── ui/             Button, Badge, QuantitySelector
+├── contexts/           CartContext.jsx
+├── data/               menu.js, contact.js
+├── layouts/            MainLayout.jsx
+├── pages/              Home, Menu, ProductDetails, Cart, Checkout, Confirmation, Location
+├── styles/             index.css
+└── utils/              format.js
+```
+
+### Componentes compartilhados (~30)
+
+| Categoria | Componentes |
+|:---|:---|
+| Layout | Header, BottomNavBar, Footer, MainLayout |
+| UI | Button (4 variantes), Badge, QuantitySelector |
+| Cart | CartItem, CartSummary, EmptyCartState, CartBadge |
+| Checkout | CheckoutField, DeliverySelector, AddressForm, PaymentSelector, OrderSummaryPanel |
+| Confirmação | SuccessIcon, OrderSummaryConfirm, WhatsAppButton |
+| Home | HeroSection, AmbienceSection, GallerySection, FoodHighlights, MenuPreviewSection |
+| Location | MapEmbed, ContactCard |
+| Menu | CategoryFilterBar, ProductGrid |
+| Product | ProductCard, CategoryCard, ProductHero, AddonsSelector, ObservationsField, AddToCartBar |
+
+### Limitações conhecidas (não resolvidas nesta migração)
+
+1. **Preços demonstrativos** — todos os valores usam `R$ --,--` (mocks); sem correspondência com preços reais.
+2. **Horários oficiais** — Localização exibe "Em breve: horários oficiais" (o HTML de produção não define horários).
+3. **Nº do pedido local** — gerado como `#XXXX` aleatório (sem backend/persistência). **Recarregar `/confirmacao` perde o snapshot.**
+4. **WhatsApp sem texto** — contato apenas via link fixo `shre.ink/turquiamarica` (sem montagem do texto do pedido via `wa.me`).
+5. **Mapa placeholder** — imagem ilustrativa (sem mapa interativo real — o HTML de produção também não usa iframe/API de mapas).
+6. **Footer `href="#"`** — links de Termos de Uso, Privacidade, Trabalhe Conosco e Contato são placeholders (páginas não implementadas).
+7. **Header `href="#"`** — links "Sobre Nós" e "Avaliações" são placeholders (páginas não implementadas).
+8. **Taxa de entrega** — exibe "A calcular" (Entrega) / "Grátis" (Retirada) — sem valor real definido.
+9. **Pagamento** — visual apenas (PIX/Cartão/Dinheiro — sem gateway de pagamento).
+10. **Persistência** — sem backend, banco de dados, autenticação ou `localStorage`.
+11. **Título da página** — SPA com um único `<title>` (Vite entry `index.html`); sem `react-helmet` para títulos por rota.
+
+### Resultado final do build
+
+```
+✓ 79 modules transformed.
+dist/index.html                   0.94 kB │ gzip:  0.49 kB
+dist/assets/index-6la5TE2o.css   34.23 kB │ gzip:  6.31 kB
+dist/assets/index-tu-UIOcT.js   241.23 kB │ gzip: 74.78 kB
+```
+
+**0 warnings. 0 erros.**
+
+### Estado do Git
+
+- **Nada commitado.** Nenhum commit foi feito durante a migração.
+- **Nada enviado ao remoto.** O repositório `origin` (`https://github.com/lnpott/Turquia-Marica.git`) permanece exatamente como antes da migração.
+- **HTMLs de produção intactos.** Nenhum dos 7 diretórios `*_production/` foi modificado.
+- **`implementation_plan.md` intacto.** Hash idêntico ao commit-base (`98bc0141…`).
+- **Novos arquivos (criados na migração, não commitados):** ~50 arquivos em `src/` (componentes, páginas, contexto, dados, utilitários, layouts, estilos).
+- **Arquivos existentes modificados (não commitados):** `package.json`, `vite.config.js`, `tailwind.config.js` → `tailwind.config.cjs`, `postcss.config.js`, `index.html` (entry Vite), `.gitignore`, `src/styles/index.css`, `src/layouts/MainLayout.jsx`, `src/App.jsx`, `src/contexts/CartContext.jsx`, `src/pages/Checkout.jsx`, `documentacao/ROADMAP_MIGRACAO.md`.
+
+### Próximos passos possíveis (fora do escopo desta migração)
+
+1. **Preços reais** — substituir valores mock de `src/data/menu.js` pelos preços verdadeiros do restaurante.
+2. **Horários oficiais** — atualizar `ContactCard.jsx` com os horários de funcionamento reais.
+3. **WhatsApp com texto do pedido** — criar integração `wa.me` montando o texto dos itens confirmados.
+4. **Mapa interativo real** — substituir a imagem placeholder por um embed real do Google Maps ou equivalente.
+5. **Gateway de pagamento** — integrar PIX/Cartão real.
+6. **Persistência de pedidos** — backend + banco de dados para histórico de pedidos reais.
+7. **Páginas institucionais** — Sobre Nós, Avaliações, Termos de Uso, Privacidade, Contato.
+8. **Autenticação** — login do usuário com histórico de pedidos.
+9. **Títulos por rota** — `react-helmet` ou similar.
+10. **Testes automatizados** — unitários (Jest/Vitest) e de integração.
+11. **Deploy** — build de produção em Vercel, Netlify ou similar.
 
 ---
 

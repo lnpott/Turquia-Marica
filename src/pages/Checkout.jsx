@@ -33,13 +33,14 @@ function SectionHeader({ icon, title }) {
 }
 
 function Checkout() {
-  const { items, cartTotal, deliveryType, setDelivery } = useCart()
+  const { items, cartTotal, deliveryType, setDelivery, placeOrder } = useCart()
   const navigate = useNavigate()
 
   const [values, setValues] = useState(INITIAL_VALUES)
   const [errors, setErrors] = useState({})
   const [payment, setPayment] = useState('pix')
   const [cashAmount, setCashAmount] = useState('')
+  const [observations, setObservations] = useState('')
 
   if (items.length === 0) {
     return <EmptyCartState />
@@ -69,7 +70,20 @@ function Checkout() {
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length > 0) return
 
-    // Transição preparada para /confirmacao (a tela de confirmação é o Lote 8).
+    // Conclui o pedido: PLACE_ORDER grava o snapshot (itens, entrega, pagamento,
+    // observações) em lastOrder e limpa a sacola — depois navega para a
+    // confirmação, que exibe o snapshot sem perder dados.
+    placeOrder({
+      items,
+      deliveryType,
+      payment,
+      cashAmount,
+      observations: observations.trim(),
+      // Número demonstrativo (sem backend) — gerado no checkout e exibido como
+      // "Pedido #XXXX" na confirmação (decisão registrada no roadmap).
+      orderNumber: String(Math.floor(1000 + Math.random() * 9000)),
+      placedAt: Date.now(),
+    })
     navigate('/confirmacao')
   }
 
@@ -155,6 +169,8 @@ function Checkout() {
                 id="observations"
                 label="Alguma observação?"
                 textarea
+                value={observations}
+                onChange={(e) => setObservations(e.target.value)}
                 placeholder="Tirar cebola, molho à parte, etc..."
               />
             </section>

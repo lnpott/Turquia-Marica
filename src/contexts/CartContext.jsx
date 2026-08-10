@@ -5,6 +5,9 @@ const CartContext = createContext(null)
 const initialState = {
   items: [],
   deliveryType: 'delivery',
+  // Snapshot do último pedido concluído (Lote 8): preserva os dados exibidos
+  // em /confirmacao mesmo após a sacola ser limpa no PLACE_ORDER.
+  lastOrder: null,
 }
 
 function cartReducer(state, action) {
@@ -32,6 +35,13 @@ function cartReducer(state, action) {
           item.key === action.key ? { ...item, qty: Math.max(1, action.qty) } : item,
         ),
       }
+    case 'PLACE_ORDER': {
+      // Conclui o pedido: grava um snapshot (lastOrder) para a tela de
+      // confirmação e limpa a sacola na MESMA ação — o pedido confirmado não
+      // desaparece quando o carrinho é esvaziado.
+      const total = action.order.items.reduce((sum, item) => sum + item.unitPrice * item.qty, 0)
+      return { ...state, lastOrder: { ...action.order, total }, items: [] }
+    }
     case 'CLEAR_CART':
       return { ...state, items: [] }
     case 'SET_DELIVERY':
@@ -48,6 +58,7 @@ export function CartProvider({ children }) {
   const removeItem = (key) => dispatch({ type: 'REMOVE_ITEM', key })
   const updateQty = (key, qty) => dispatch({ type: 'UPDATE_QTY', key, qty })
   const clearCart = () => dispatch({ type: 'CLEAR_CART' })
+  const placeOrder = (order) => dispatch({ type: 'PLACE_ORDER', order })
   const setDelivery = (deliveryType) => dispatch({ type: 'SET_DELIVERY', deliveryType })
 
   const cartCount = useMemo(
@@ -64,15 +75,17 @@ export function CartProvider({ children }) {
     () => ({
       items: state.items,
       deliveryType: state.deliveryType,
+      lastOrder: state.lastOrder,
       addItem,
       removeItem,
       updateQty,
       clearCart,
+      placeOrder,
       setDelivery,
       cartCount,
       cartTotal,
     }),
-    [state.items, state.deliveryType, cartCount, cartTotal],
+    [state.items, state.deliveryType, state.lastOrder, cartCount, cartTotal],
   )
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

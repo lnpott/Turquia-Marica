@@ -6,9 +6,10 @@ import Menu from './pages/Menu'
 import ProductDetails from './pages/ProductDetails'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
+import Confirmation from './pages/Confirmation'
+import Location from './pages/Location'
 
-// Placeholder temporário para rotas ainda não implementadas
-// (Confirmação e Localização).
+// Placeholder para rotas desconhecidas.
 function PagePlaceholder() {
   return (
     <section
@@ -38,10 +39,12 @@ function App() {
             <Route path="/cardapio" element={<Menu />} />
             <Route path="/produto/:id" element={<ProductDetails />} />
             <Route path="/sacola" element={<Cart />} />
+            <Route path="/localizacao" element={<Location />} />
             <Route path="*" element={<PagePlaceholder />} />
           </Route>
           <Route element={<MainLayout hideBottomNav />}>
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/confirmacao" element={<Confirmation />} />
           </Route>
         </Routes>
       </BrowserRouter>
