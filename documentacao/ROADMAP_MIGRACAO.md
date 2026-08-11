@@ -236,6 +236,95 @@
 - **Status Git:** **SEM COMMIT / SEM PUSH** — 7 arquivos modificados em working tree; remoto intacto.
 - **Pendências (recomendações, fora deste lote):** heróis do Cardápio e Localização já estão com imagens válidas (200); imagens de produto continuam mock (validação com o cliente); migrar imagens externas frágeis para asset local/CDN próprio permanece recomendado (decisão de negócio).
 
+### Lote 11.1 — Correção Visual do Hero Dinâmico — ✅ CONCLUÍDO
+- **Objetivo:** corrigir a direção visual do Hero da Home (funcionalidade técnica OK do Lote 11, mas o resultado ficou ruim: imagens do fundo muito obscurecidas/lavadas). Princípio definido: **FOTOGRAFIA PRIMEIRO, OVERLAY APENAS O NECESSÁRIO PARA LEGIBILIDADE**.
+- **Problema identificado:** a foto de fundo parecia "uma mancha escura" atrás do conteúdo; o usuário não conseguia apreciar comida/ambiente/textura.
+- **Causa encontrada (composição herdada fielmente do HTML de produção):**
+  1. `mix-blend-multiply` nos slides sobre `bg-surface-container` — escurecia a foto inteira e, no crossfade, duas imagens multiplicadas → aparência escura durante a troca;
+  2. `opacity-70` na imagem — foto a 70%;
+  3. gradiente full-hero `from-background via-background/80` (80% de `#fff8f6` quase branco) — lavava a fotografia por inteiro.
+- **Solução adotada (divergência deliberada e documentada do HTML de referência, autorizada pelo briefing como melhoria UX justificada):**
+  - Removidos `mix-blend-multiply` e `opacity-70` → slides em **plena opacidade** (`opacity-100` ativo / `opacity-0` inativo, mutuamente exclusivos via ternário — sem conflito de cascade);
+  - Gradiente **localizado** apenas atrás do bloco textual (lado esquerdo): `from-background/70 via-background/20 to-transparent` + `pointer-events-none` + `aria-hidden` — a fotografia permanece nítida na área central/direita;
+  - **Enquadramento configurável por slide** (`backgroundPosition` na config `SLIDES`) — auditado visualmente: burger (slide 1) `center`, ambiente (slide 2) `center`, galeria (slide 3) `center` — os 3 confirmados bem compostos no navegador real, sem cortar o elemento principal;
+  - **Crossfade limpo:** 1.6s, alpha blend puro (sem blend mode) — verificado no navegador que o meio da transição NÃO lava nem escurece;
+  - **Ken Burns quase imperceptível:** scale 1.05 → **1.02**, duration 7200ms → **9000ms**, `ease-in-out` — movimento dá vida sem destruir o enquadramento;
+  - `drop-shadow-sm` adicionado ao parágrafo (legibilidade sobre a foto); CTA/título/posição de texto inalterados (contraste resolvido pela composição, não escondendo a foto).
+- **Comportamento desktop:** fotografia ocupa o hero inteiro (`md:h-[819px]`), plenamente visível, com gradiente localizado apenas à esquerda; texto e CTAs legíveis.
+- **Comportamento mobile:** composição aprovada **preservada** (título + CTAs + burger estático abaixo do texto, **sem slideshow** por simetria); imagem em plena visibilidade; legibilidade do card mantida (`bg-background/50 backdrop-blur-sm`).
+- **Referências utilizadas:** imagens originais de produção (hero `AB6AXuCSbrOVTg…` HTTP 200 — fonte #1; ambiente `AB6AXuAjG-GFqX…`; galeria `AB6AXuC34jlT…`) — nenhuma imagem nova, nenhuma URL fabricada, nenhum stock image.
+- **Decisão estética:** RESTAURANTE ARTESANAL PREMIUM — "TEM COMIDA AQUI": a fotografia tem presença e é reconhecível mesmo sob o texto.
+- **QA visual (navegador real Chrome):**
+  - Ciclo completo de 4 verificações: burger → ambiente → galeria → retorno ao burger — **todas PASS**;
+  - Meio do crossfade: nítido, sem lavar/escurecer — **PASS**;
+  - Enquadramento dos 3 slides: bem compostos, sem cortes estranhos — **PASS**;
+  - Mobile (375×667): título + CTAs + burger estático visível e claro — **PASS**;
+  - Zero erros de console; zero imagens 400/404 — **PASS**.
+- **Acessibilidade/performance preservados:** `prefers-reduced-motion` (interval JS desativado via `matchMedia` + `animation: none` no CSS) → hero estático e legível no slide 1; zero CLS (`min-h-[600px]`/`md:h-[819px]` mantidos); preload apenas da 1ª imagem; sem bibliotecas novas; sem JS desnecessário.
+- **Arquivos alterados (2):** `src/components/home/HeroSection.jsx`, `src/styles/index.css`.
+- **Build:** ✅ 79 módulos; CSS 36.01 kB; JS 242.86 kB; **0 warnings**.
+- **Status Git:** **SEM COMMIT / SEM PUSH** — 2 arquivos modificados em working tree; HTMLs de produção intactos (0 modificados); `implementation_plan.md` intacto (hash `98bc0141…`); rotas inalteradas (7); nenhum Lote 12 antecipado; `CartContext`/`package.json`/demais páginas intactos.
+- **Pendências (fora deste lote):** continua pendente a migração das imagens externas para asset local/CDN próprio (prioridade #1 da fase de produto); imagens de produto continuam mock.
+
+### Lote 12 — Auditoria Estratégica e Direção Visual — ✅ CONCLUÍDO
+- **Documento estratégico utilizado:** "Relatório Estratégico Integrado: Projeto Turquia Lanches" (diagnóstico de marca, análise de mercado do Polo do Parque Nanci, benchmarking UX 2025-2026, direção criativa, wireframe estrutural da Homepage). **Fonte de DIREÇÃO, não autorização de implementação em massa** — regra do próprio lote: absorver → comparar → identificar conflitos → corrigir só o necessário e seguro → registrar.
+- **Princípios estratégicos absorvidos (registrados como direção):** identidade vernacular gaúcha reinterpretada como "premium acessível"; fotografia real com protagonismo (Real-World Imagery); hierarquia visual e menos fricção (Hick's Law); mobile-first; storytelling da marca; desempenho em conexões 4G; SEO local (desambiguação algorítmica do nome "Turquia/Maricá" — DJ Marica, Marcia alla Turca, Ciprian Marica — endereçável no futuro via GBP + Schema).
+- **DECISÃO DE NEGÓCIO (registro oficial):**
+  - **O SITE NÃO É O CANAL DE PEDIDOS.** Propósito atual: apresentar marca/espaço/cardápio/produtos e preços, despertar desejo, orientar localização, fortalecer presença digital e **conduzir o usuário ao negócio físico**.
+  - **Modelo atual: catálogo digital + presença institucional/local. Canal transacional futuro: iFood. E-commerce próprio fora do escopo atual.**
+  - O fluxo Carrinho → Checkout → Confirmação pertence à **migração técnica já realizada** e NÃO será expandido como e-commerce próprio. **NÃO apagado** (sem autorização explícita para remoção). Nenhuma integração iFood criada (sem URL oficial fornecida — não inventar link).
+- **Distinção catálogo × e-commerce (Cardápio):** o Cardápio deve continuar como **CATÁLOGO/MENU DE APRESENTAÇÃO** — navegar categorias, ver produtos/preços, abrir detalhes, conhecer opções — **sem sensação de checkout obrigatório**. O CTA atual (cards → `/produto/:id` → personalização → sacola) foi **analisado à luz da decisão e MANTIDO** (é a experiência de apresentação/detalhe herdada da migração; não será redirecionado ao iFood neste lote; qualquer mudança de CTA para canal de pedido exigirá a URL oficial).
+- **Dívida arquitetural registrada (Produto/Detalhes):** "O modelo transacional atual (personalização + CartContext + sacola) foi herdado da migração para preservar o fluxo original; o modelo comercial final deverá ser reavaliado quando o canal oficial de pedidos for definido." — sem nova arquitetura agora.
+- **Auditoria visual do Hero (navegador real Chrome, desktop + mobile):**
+  - Fotografia nítida e visível como FOTOGRAFIA REAL (não mancha/fundo lavado/textura subordinada) — **PASS**;
+  - Título, subtítulo e CTAs legíveis — **PASS**;
+  - Texto não cobre o assunto principal (foto visível ao redor do bloco textual) — **PASS**;
+  - Meio do crossfade: limpo, sem preto/branco/flash — **PASS**;
+  - Slides 2 (ambiente) e 3 (galeria): bem enquadrados, sem cortes de pessoas/comida — **PASS**;
+  - Ken Burns sutil (quase imperceptível) — **PASS**;
+  - Mobile (375×667): composição estática aprovada, sem slideshow, imagem clara — **PASS**;
+  - Zero erros de console; zero imagens 400/404 — **PASS**.
+  - **Conclusão da auditoria:** o resultado do Lote 11.1 já atende a direção "FOTOGRAFIA PRIMEIRO / overlay mínimo / transição editorial discreta" — **nenhuma alteração de código necessária neste lote** (preservado integralmente).
+- **Auditoria da Homepage como um todo (seções):** Hero, Nosso Espaço, Momentos Turquia, O Irresistível, Cardápio (preview) e Footer — ritmo vertical, espaçamento, hierarquia, equilíbrio vermelho/amarelo/neutros, tipografia, fotografia e CTAs consistentes com marca artesanal premium acessível; **sem problemas evidentes que exijam correção** (não houve redesenho, conforme a regra do lote).
+- **Navegação validada no navegador (7 rotas):** `/` ✓, `/cardapio` ✓, `/produto/combo-master` (Cardápio → Produto) ✓, `/sacola` (estado vazio) ✓, `/checkout` (estado vazio) ✓, `/confirmacao` (guarda "Nenhum pedido encontrado") ✓, `/localizacao` ✓ — todas sem erros de console.
+- **Direção criativa pós-migração (registrada como princípios, NÃO tarefas autorizadas):**
+  - **Fotografia real** — prioridade máxima para fotos reais da marca (nunca stock genérico);
+  - **Premium acessível** — nem genérico de lanchonete, nem sofisticado desconectado;
+  - **Gaúcho contemporâneo** — personalidade/linguagem/generosidade visual/produto, não clichês;
+  - **Artesanal digital** (futuro, somente com assets reais/coerentes) — stickers, doodles, texturas sutis, elementos de embalagem, micro-ilustrações;
+  - **Motion** — movimento comunica qualidade, não chama atenção para si;
+  - **Performance** — toda animação respeita `prefers-reduced-motion`, lazy loading, CLS e mobile performance.
+- **Deliberadamente NÃO implementado (registrado como fases futuras possíveis):** PWA; backend; banco de dados; autenticação; gateway; pagamento real; integração iFood; WhatsApp dinâmico; Google Maps API; Instagram feed; Schema markup; avaliações externas; novas páginas institucionais; redesign completo; mudança de identidade cromática; nova fonte; troca de framework; nova biblioteca de animação. (Todos constam como candidatos futuros na seção de próximos passos da fase de produto.)
+- **Alterações efetivamente realizadas neste lote:** nenhuma em código — apenas auditoria (build + navegador real + git) e **registro documental no ROADMAP**. O working tree continua com as alterações dos Lotes 11 e 11.1 (hero corrigido + transições + microinterações).
+- **Checkpoint:** build ✅ 0 erros/0 warnings; `git diff --check` limpo; nenhum `console.log` novo; nenhum segredo; nenhum HTML de produção alterado; `implementation_plan.md` intacto (hash `98bc0141…`); `CartContext` e `package.json` intactos; 7 rotas validadas no navegador.
+- **Status Git:** **SEM COMMIT / SEM PUSH** — working tree com alterações dos Lotes 11, 11.1 e deste roadmap; remoto intacto (HEAD = origin/main = `b71b843`).
+- **Próximos candidatos de refinamento (registrados, aguardando autorização):** definir CTA do Cardápio quando houver URL oficial do iFood; migração de imagens para assets locais; fotografia real de produto; Schema/GBP para SEO local (quando o domínio de produção existir).
+
+### Lote 13 — Consolidação Visual do Hero + Preparação da Fase de Produto — ✅ CONCLUÍDO (auditoria de confirmação)
+- **Objetivo:** consolidar o Hero da Home como a principal peça visual da marca, **sem redesign** — confirmar por auditoria em navegador real que a solução do Lote 11.1 entrega **FOTOGRAFIA PRIMEIRO** (fotografia reconhecível, nítida e desejável antes de qualquer efeito).
+- **Auditoria das imagens do Hero (3 slides):**
+  - Hero `AB6AXuCSbrOVTg…` (batatas fritas close-up) → **HTTP 200**; presente em `turquia_lanches_homepage_production/code.html` e `index.html_homepage_production/code.html` (fonte #1);
+  - Ambiente `AB6AXuAjG-GFqX…` (brinde com cervejas/ambiente) → **HTTP 200**; presente no HTML auditado;
+  - Galeria `AB6AXuC34jlT…` → **HTTP 200**; presente no HTML auditado.
+  - **Nenhuma URL fabricada/quebrada; nenhuma versão `_fixed`/`_final_audit` quebrada em uso; nenhum stock image.** Migração para assets locais permanece etapa separada da fase de produto (não feita).
+- **Auditoria visual real (navegador Chrome):**
+  - **Desktop 1280×800:** slide 1 (batatas fritas) nítido e desejável, título/CTAs legíveis, texto NÃO cobre o assunto principal, gradiente localizado atrás do texto (não cobre a foto toda) — **PASS**;
+  - **Desktop 1440×900:** fotografia nítida, sem quebra de layout — **PASS**;
+  - **Ciclo completo:** slide 1 → 2 → 3 → retorno ao 1, transições suaves **sem flash preto/branco** no meio do crossfade — **PASS**;
+  - **Enquadramento individual:** slide 1 (fries bem enquadrado), slide 2 (brinde/ambiente bem focado), slide 3 (bem composto) — nenhum slide visualmente pior que os outros — **PASS**;
+  - **Mobile 375×667:** título, descrição, CTAs e burger estático abaixo do texto — tudo visível, com BottomNavBar — **PASS**;
+  - **Mobile 390×844:** hero correto + navegação "VER CARDÁPIO" → `/cardapio` com categorias — **PASS**;
+  - Zero erros de console; zero imagens 400/404 — **PASS**.
+- **Navegação Home → Cardápio:** CTA "VER CARDÁPIO" navega para `/cardapio` com URL correta, categorias renderizando e scroll-to-top; transição de página (fade 260ms do MainLayout) preservada — **sem animação duplicada, sem salto brusco** (já funcionando — não alterado).
+- **Conclusão da auditoria:** **NENHUM problema encontrado** — o Hero está APROVADO e **nenhuma alteração de código foi realizada neste lote** (regra: corrigir somente com evidência visual/funcional clara; não fazer redesign por preferência).
+- **Performance confirmada:** zero CLS (alturas fixas); zero flash branco/preto no crossfade; preload apenas da 1ª imagem; sem novas dependências; bundle inalterado.
+- **Acessibilidade preservada:** `prefers-reduced-motion` (hero estático + sem Ken Burns); `alt` adequado; `aria-hidden` em decorativos; foco por teclado; CTAs acessíveis.
+- **Regra de negócio reconfirmada e registrada:** SITE = catálogo + presença institucional + descoberta da marca; PEDIDO = iFood quando o canal oficial estiver definido. Não foi criado checkout comercial novo, pagamento real, backend de pedidos, nem URL de iFood inventada; o fluxo de carrinho/checkout existente permanece preservado (migração técnica) sem expansão.
+- **Arquivos alterados neste lote:** nenhum em código — **apenas este registro documental** no ROADMAP (working tree permanece com Lote 11.1 + documentação dos Lotes 11.1/12/13).
+- **Checkpoint:** build ✅ 79 módulos · CSS 36.01 kB · JS 242.86 kB · **0 warnings/erros**; `git diff --check` limpo; QA navegador 100% PASS; sem `console.log` novo; sem segredos; HTMLs de produção intactos (0); `implementation_plan.md` intacto (hash `98bc0141…`); `CartContext`/`package.json`/rotas intactos.
+- **Status Git:** **SEM COMMIT / SEM PUSH** — HEAD = origin/main = `b71b843`; working tree com 3 arquivos modificados (Lote 11.1 + docs).
+- **Pendências reais (fase de produto, aguardando autorização):** migração das imagens externas para assets locais/CDN (prioridade #1); preços reais; WhatsApp com texto do pedido; mapa real; definição do CTA do Cardápio quando houver URL oficial do iFood; SEO local (Schema/GBP) quando houver domínio de produção.
+
 ---
 
 ## 7. ESTADO FINAL DA MIGRAÇÃO

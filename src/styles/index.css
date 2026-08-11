@@ -68,9 +68,11 @@ html {
   }
 }
 
-/* Hero da Home: zoom lento e sutil (Ken Burns) no slide ativo do crossfade. */
+/* Hero da Home: zoom lento e quase imperceptível (Ken Burns sutil) no slide
+   ativo do crossfade. Escala mínima (1.02) — dá vida à fotografia sem cortar
+   ou reenquadrar o elemento principal (Lote 11.1). */
 .hero-kenburns {
-  animation: hero-kenburns 7200ms ease-out both;
+  animation: hero-kenburns 9000ms ease-in-out both;
 }
 
 @keyframes hero-kenburns {
@@ -78,7 +80,7 @@ html {
     transform: scale(1);
   }
   to {
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
 }
 
