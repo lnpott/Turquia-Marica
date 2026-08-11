@@ -1,17 +1,9 @@
+import { Link } from 'react-router-dom'
 import Button from '../ui/Button'
-// LOTE 14 — Assets locais.
-// LOTE 15 — Refinamento: eyebrow, border-b alinhado ao DS (outline-variant),
-// card horizontal consistente com MenuPreviewSection do Cardápio (mesma estrutura
-// de ProductCard), preço com estado visual "em breve" para não parecer bug,
-// hover:bg-primary-hover substitui hover:bg-[#b01319] hardcoded.
-import imgHeroAmbience from '../../assets/images/hero/hero-ambience.jpg'
-import imgHighlightSweet from '../../assets/images/home/highlight-sweet.jpg'
+import { products } from '../../data/menu'
+import { formatBRL } from '../../utils/format'
 
-const ITEMS = [
-  { name: 'Super Burger', image: imgHeroAmbience },
-  { name: 'Porção Mista', image: imgHighlightSweet },
-  { name: 'Pizza Doce',   image: imgHighlightSweet },
-]
+const ITEMS = products.slice(0, 3)
 
 function MenuPreviewSection() {
   return (
@@ -45,8 +37,10 @@ function MenuPreviewSection() {
         {/* Cards horizontais — estrutura idêntica ao ProductCard do Cardápio */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {ITEMS.map((item) => (
-            <div
-              key={item.name}
+            <Link
+              key={item.id}
+              to={`/produto/${item.id}`}
+              aria-label={`Ver ${item.name}`}
               className="bg-surface-container-lowest rounded-xl p-4 card-shadow card-shadow-hover transition-all flex gap-4 items-center group border border-surface-variant"
             >
               <div className="w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden shrink-0">
@@ -60,19 +54,14 @@ function MenuPreviewSection() {
                 <h4 className="font-headline-md text-on-background text-lg leading-tight mb-1 truncate">
                   {item.name}
                 </h4>
-                {/* Estado visual "em breve" — não parece bug */}
-                <p className="text-on-surface-variant font-body-md text-sm italic">
-                  Preço em breve
+                <p className="font-price-lg text-primary text-lg">
+                  {formatBRL(item.priceValue)}
                 </p>
               </div>
-              <button
-                type="button"
-                aria-label={`Adicionar ${item.name}`}
-                className="bg-surface-container text-primary w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary hover:text-on-primary transition-colors shrink-0"
-              >
+              <span className="bg-surface-container text-primary w-10 h-10 flex items-center justify-center rounded-full group-hover:bg-primary group-hover:text-on-primary transition-colors shrink-0">
                 <span className="material-symbols-outlined" aria-hidden="true">add</span>
-              </button>
-            </div>
+              </span>
+            </Link>
           ))}
         </div>
 

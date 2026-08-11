@@ -16,14 +16,14 @@ function Location() {
   return (
     <main className="flex-grow">
       {/* Hero com imagem de ambiente */}
-      <section className="w-full relative h-[60vh] min-h-[400px] overflow-hidden">
+      <section className="w-full relative h-[58svh] min-h-[360px] md:min-h-[400px] overflow-hidden">
         <div className="absolute inset-0 bg-inverse-surface/40 z-10 pointer-events-none" aria-hidden="true" />
         <img
           alt="Ambiente interno da Turquia Lanches"
           className="absolute inset-0 w-full h-full object-cover object-center z-0"
           src={HERO_IMAGE}
         />
-        <div className="relative z-20 h-full max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop flex flex-col justify-center items-start">
+        <div className="relative z-20 h-full max-w-[1280px] mx-auto px-4 md:px-margin-desktop flex flex-col justify-center items-start">
           <h1 className="font-display-xl text-display-xl-mobile md:text-display-xl text-on-primary drop-shadow-md mb-stack-tight">
             Venha nos Visitar
           </h1>

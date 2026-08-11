@@ -111,7 +111,7 @@ function Checkout() {
           {/* Coluna esquerda: formulários */}
           <div className="lg:col-span-8 flex flex-col gap-stack-loose">
             {/* 1. Seus Dados */}
-            <section className="bg-surface-container-lowest p-6 md:p-8 rounded-xl shadow-[0_4px_15px_rgba(135,66,0,0.12)]">
+            <section className="bg-surface-container-lowest p-4 sm:p-6 md:p-8 rounded-xl shadow-[0_4px_15px_rgba(135,66,0,0.12)]">
               <SectionHeader icon="person" title="1. Seus Dados" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
                 <CheckoutField
@@ -139,7 +139,7 @@ function Checkout() {
             </section>
 
             {/* 2. Entrega ou Retirada */}
-            <section className="bg-surface-container-lowest p-6 md:p-8 rounded-xl shadow-[0_4px_15px_rgba(135,66,0,0.12)]">
+            <section className="bg-surface-container-lowest p-4 sm:p-6 md:p-8 rounded-xl shadow-[0_4px_15px_rgba(135,66,0,0.12)]">
               <SectionHeader icon="location_on" title="2. Entrega ou Retirada" />
               <div className="flex flex-col gap-gutter">
                 <DeliverySelector value={deliveryType} onChange={setDelivery} />
@@ -152,7 +152,7 @@ function Checkout() {
             </section>
 
             {/* 3. Forma de Pagamento */}
-            <section className="bg-surface-container-lowest p-6 md:p-8 rounded-xl shadow-[0_4px_15px_rgba(135,66,0,0.12)]">
+            <section className="bg-surface-container-lowest p-4 sm:p-6 md:p-8 rounded-xl shadow-[0_4px_15px_rgba(135,66,0,0.12)]">
               <SectionHeader icon="payments" title="3. Forma de Pagamento" />
               <PaymentSelector
                 value={payment}
@@ -163,7 +163,7 @@ function Checkout() {
             </section>
 
             {/* 4. Observações */}
-            <section className="bg-surface-container-lowest p-6 md:p-8 rounded-xl shadow-[0_4px_15px_rgba(135,66,0,0.12)]">
+            <section className="bg-surface-container-lowest p-4 sm:p-6 md:p-8 rounded-xl shadow-[0_4px_15px_rgba(135,66,0,0.12)]">
               <SectionHeader icon="edit_note" title="4. Observações (Opcional)" />
               <CheckoutField
                 id="observations"

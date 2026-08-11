@@ -6,7 +6,7 @@ function ProductCard({ product }) {
 
   return (
     <article className="bg-white rounded-lg overflow-hidden card-shadow card-shadow-hover transition-all flex flex-col group border border-surface-variant h-full">
-      <Link to={productUrl} className="block h-64 overflow-hidden relative" aria-label={`Ver ${product.name}`}>
+      <Link to={productUrl} className="block h-48 sm:h-56 lg:h-64 overflow-hidden relative" aria-label={`Ver ${product.name}`}>
         {product.badge && (
           <Badge
             tone={product.badge === 'Mais Pedido' ? 'primary' : 'secondary'}
@@ -23,7 +23,7 @@ function ProductCard({ product }) {
       </Link>
 
       {product.includes ? (
-        <div className="p-8 flex flex-col flex-grow">
+        <div className="p-4 sm:p-6 lg:p-8 flex flex-col flex-grow">
           <Link to={productUrl}>
             <h3 className="font-headline-md text-2xl mb-4 text-on-background hover:text-primary transition-colors">
               {product.name}
@@ -49,7 +49,7 @@ function ProductCard({ product }) {
             <Link
               to={productUrl}
               aria-label={`Adicionar ${product.name} ao pedido`}
-              className="w-full bg-primary text-white font-label-bold text-label-bold px-6 py-4 rounded-lg hover:bg-primary-hover transition-all flex items-center justify-center gap-2 uppercase tracking-wider"
+              className="w-full min-h-11 bg-primary text-white font-label-bold text-label-bold px-4 py-3 rounded-lg hover:bg-primary-hover transition-all flex items-center justify-center gap-2"
             >
               <span className="material-symbols-outlined" aria-hidden="true">
                 add_shopping_cart
@@ -59,7 +59,7 @@ function ProductCard({ product }) {
           </div>
         </div>
       ) : (
-        <div className="p-6 flex flex-col flex-grow">
+        <div className="p-4 sm:p-6 flex flex-col flex-grow">
           <Link to={productUrl}>
             <h3 className="font-headline-md text-xl mb-2 text-on-background hover:text-primary transition-colors">
               {product.name}
@@ -73,7 +73,7 @@ function ProductCard({ product }) {
             <Link
               to={productUrl}
               aria-label={`Adicionar ${product.name}`}
-              className="bg-primary text-white w-12 h-12 rounded-lg hover:bg-primary-hover transition-all flex items-center justify-center shadow-sm"
+              className="bg-primary text-white w-11 h-11 rounded-lg hover:bg-primary-hover transition-all flex items-center justify-center shadow-sm"
             >
               <span className="material-symbols-outlined" aria-hidden="true">
                 add

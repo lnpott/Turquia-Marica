@@ -28,7 +28,7 @@ function Menu() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative w-full h-[90vh] min-h-[700px] flex items-center overflow-hidden bg-surface-container">
+      <section className="relative w-full min-h-[560px] h-[calc(100svh-64px)] max-h-[760px] md:h-[90vh] md:min-h-[700px] flex items-center overflow-hidden bg-surface-container">
         {/* Fotografia — plena visibilidade, sem opacity reduzida */}
         <div className="absolute inset-0 w-full h-full">
           <div
@@ -46,14 +46,14 @@ function Menu() {
         />
 
         {/* Conteúdo */}
-        <div className="relative z-10 px-4 md:px-margin-desktop max-w-[1280px] mx-auto w-full flex flex-col items-start">
+        <div className="relative z-10 px-4 md:px-margin-desktop max-w-[1280px] mx-auto w-full flex flex-col items-start pb-8 md:pb-0">
           <div className="max-w-[680px]">
             {/* Tag/eyebrow — secondary-container (amarelo) consistente com Home */}
             <span className="section-eyebrow mb-5" aria-hidden="true">
               O Melhor Hambúrguer da Cidade
             </span>
 
-            <h1 className="font-display-xl-mobile md:font-display-xl text-display-xl-mobile md:text-display-xl text-on-background mb-6 leading-[1.05]">
+            <h1 className="font-display-xl-mobile md:font-display-xl text-display-xl-mobile md:text-display-xl text-on-background mb-4 md:mb-6 leading-[1.05] max-w-[12ch]">
               Fome de Leão?
               <br />
               <span className="text-primary">O Rei Chegou.</span>

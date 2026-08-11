@@ -33,7 +33,7 @@ function HeroSection() {
 
   return (
     <section
-      className="relative w-full min-h-[600px] flex items-end md:items-center justify-center overflow-hidden py-12 md:py-0 md:h-[819px]"
+      className="relative w-full min-h-[560px] h-[calc(100svh-64px)] max-h-[760px] flex items-end md:items-center justify-center overflow-hidden py-10 md:py-0 md:h-[819px]"
       aria-label="Apresentação Turquia Lanches"
     >
       {/* Fundo dinâmico desktop — crossfade, sem mix-blend, sem opacity reduzida */}
@@ -77,13 +77,13 @@ function HeroSection() {
 
       {/* Conteúdo */}
       <div className="relative z-10 w-full px-4 lg:px-20 max-w-[1280px] mx-auto flex flex-col md:flex-row items-center justify-between">
-        <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left z-20">
+        <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left z-20 pb-2 md:pb-0">
           {/* Eyebrow — coerente com a tag do Hero do Cardápio */}
           <span className="section-eyebrow mb-4" aria-hidden="true">
             Maricá · RJ
           </span>
 
-          <h1 className="font-display-xl-mobile md:font-display-xl text-display-xl-mobile md:text-display-xl text-on-background mb-stack-tight drop-shadow-md">
+          <h1 className="font-display-xl-mobile md:font-display-xl text-display-xl-mobile md:text-display-xl text-on-background mb-stack-tight drop-shadow-md max-w-[12ch]">
             Fome de Leão?
             <br />
             <span className="text-primary">Lanche Especial.</span>

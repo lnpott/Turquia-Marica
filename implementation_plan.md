@@ -1,4 +1,49 @@
 # PLANO DE IMPLEMENTAÇÃO APROVADO
+
+## Plano de modernização visual e correção mobile — execução iniciada
+
+**Status geral:** Em andamento
+**Registro oficial:** este arquivo deve ser atualizado no mesmo ciclo de cada alteração relevante.
+
+### Etapas
+
+| Etapa | Status | Registro |
+|---|---|---|
+| Registrar plano de modernização | Concluído | Plano incorporado antes das alterações de código. |
+| Corrigir estrutura responsiva e elementos fixos mobile | Em andamento | Ajustados `BottomNavBar`, `AddToCartBar`, layout global, hero, header, cards, checkout e localização. Falta inspeção visual de todas as rotas. |
+| Consolidar tokens e componentes visuais | Em andamento | Adicionados tokens de hover, WhatsApp, largura máxima, altura da navegação mobile e utilitários de segurança no CSS global. |
+| Modernizar header e home | Em andamento | Logo e CTA desktop ajustados; hero mobile redimensionado; faixa de confiança adicionada. Falta inspeção visual final. |
+| Modernizar cardápio e cards | Em andamento | Cards responsivos ajustados; prévia da home usa produtos reais, preços e links de detalhe. |
+| Refinar sacola e checkout | Pendente | — |
+| Implementar assinatura gráfica | Pendente | — |
+| Executar build e validação visual | Em andamento | `npm run build` e `git diff --check` concluídos com sucesso; validação visual multi-viewport ainda pendente. |
+
+### Registro de execução — 2026-08-11
+
+- **Concluído:** build de produção com 95 módulos transformados e Vite 5.4.21.
+- **Alterado:** `src/styles/index.css`, `MainLayout`, `Header`, `BottomNavBar`, `AddToCartBar`, `ProductCard`, `HeroSection`, `Home`, `Menu` e `MenuPreviewSection`.
+- **Correções mobile:** espaço inferior global para a navegação fixa, safe area, barra de produto posicionada acima da navegação, alturas de hero reduzidas e alvos de toque ampliados.
+- **Melhorias visuais:** CTA “Peça agora” no header desktop, faixa de confiança, hover de cards mais sutil e navegação mobile com estado ativo mais legível.
+- **Dados:** prévia da home agora usa `products`, `priceValue` e links para `/produto/:id`; removido o placeholder “Preço em breve”.
+- **Pendente:** inspeção visual real em 320/375/390/430/768/1280 px e revisão das telas de sacola, checkout, confirmação e localização.
+- **Ajuste adicional:** botões receberam alturas mínimas de toque; checkout reduziu padding em mobile; localização e cartão de contato passaram a usar dimensões responsivas.
+- **Validação técnica:** `npm run build` passou com 95 módulos transformados; `git diff --check` passou sem erros.
+
+### Compatibilidade progressiva registrada — 2026-08-11
+
+- **`scrollbar-width: none`:** aviso irrelevante para a funcionalidade. A regra é usada somente para esconder a barra visual de `CategoryFilterBar`; o elemento continua rolável via `overflow-x-auto` e já possui fallback `::-webkit-scrollbar { display: none; }` para WebKit.
+- **`text-wrap: pretty`:** aviso irrelevante para a funcionalidade. A regra é usada somente no texto de apoio do hero para melhorar o equilíbrio das linhas; sem suporte, o navegador aplica a quebra padrão sem perda de conteúdo ou interação.
+- **Decisão:** manter as duas propriedades como progressive enhancement. Não foi criado polyfill nem removida a regra, pois isso não corrigiria um problema visível no fluxo atual.
+
+### Critérios de validação
+
+- Build sem erros com `npm run build`.
+- Nenhum overflow horizontal nos viewports de 320, 375, 390, 430, 768 e 1280 px.
+- Elementos fixos não cobrem conteúdo ou ações.
+- Fluxo home → cardápio → produto → sacola → checkout → confirmação funcionando.
+- Registro atualizado após cada lote concluído.
+
+---
 ## Turquia Lanches — Migração HTML Estático → React/Vite
 > **Projeto Stitch:** `projects/10254386617209499733`  
 > **Workspace:** `turquia-lanches-app` | commit `9bccbf7`  

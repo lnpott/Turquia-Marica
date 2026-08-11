@@ -20,7 +20,7 @@ function MainLayout({ hideBottomNav = false }) {
   return (
     <div className="flex min-h-screen flex-col bg-background text-on-background">
       <Header />
-      <main className="flex-1">
+      <main className="flex-1 mobile-bottom-safe md:pb-0">
         {/* key força a remontagem a cada mudança de rota, disparando a animação
             de entrada .page-transition (fade + deslocamento sutil, ~260ms) em
             TODAS as navegações: Header, BottomNavBar, CTAs e fluxo linear. */}

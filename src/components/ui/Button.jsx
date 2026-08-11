@@ -10,9 +10,9 @@ const VARIANT_CLASSES = {
 }
 
 const SIZE_CLASSES = {
-  sm: 'px-4 py-2 text-label-bold',
-  md: 'px-6 py-3 text-label-bold',
-  lg: 'px-8 py-4 text-label-bold',
+  sm: 'min-h-10 px-4 py-2 text-label-bold',
+  md: 'min-h-11 px-6 py-3 text-label-bold',
+  lg: 'min-h-12 px-8 py-4 text-label-bold',
 }
 
 export function WhatsAppIcon({ className = 'w-5 h-5 fill-current' }) {

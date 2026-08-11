@@ -8,11 +8,16 @@
   --color-background: #fff8f6;
   --color-surface: #fff8f6;
   --color-on-surface: #251913;
+  --color-primary-hover: #8c000e;
+  --color-whatsapp: #25d366;
+  --content-max-width: 1280px;
+  --mobile-nav-height: 72px;
 }
 
 body {
   @apply bg-background text-on-background antialiased;
   font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
 }
 
 html {
@@ -36,7 +41,26 @@ html {
 }
 
 .card-shadow-hover:hover {
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 14px 24px -8px rgba(37, 25, 19, 0.22), 0 6px 12px -6px rgba(37, 25, 19, 0.08);
+  transform: translateY(-2px);
+}
+
+.mobile-bottom-safe {
+  padding-bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom));
+}
+
+.mobile-nav-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.brand-stripe {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-primary) 0,
+    var(--color-primary) 14px,
+    var(--color-secondary-container) 14px,
+    var(--color-secondary-container) 28px
+  );
 }
 
 .scrolling-wrapper::-webkit-scrollbar {

@@ -23,13 +23,13 @@ function Header() {
 
   return (
     <header className="w-full sticky top-0 z-50 bg-surface shadow-sm">
-      <div className="flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop max-w-[1280px] mx-auto">
+      <div className="flex justify-between items-center min-h-16 md:h-20 px-4 md:px-margin-desktop max-w-[1280px] mx-auto gap-3">
         <Link
           to="/"
           aria-label="Turquia Lanches - Início"
           className="text-primary hover:scale-105 transition-transform duration-200"
         >
-          <img src={LOGO_URL} alt="Turquia Lanches Logo" className="h-10 w-auto object-cover" />
+          <img src={LOGO_URL} alt="Turquia Lanches Logo" className="h-11 md:h-12 w-auto object-cover" />
         </Link>
 
         <nav className="hidden md:flex gap-stack-loose items-center" aria-label="Navegação principal">
@@ -46,7 +46,10 @@ function Header() {
           )}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 md:gap-3">
+          <Link to="/cardapio" className="hidden md:inline-flex items-center min-h-11 rounded-lg bg-primary px-5 text-sm font-bold text-on-primary transition-colors hover:bg-primary-hover">
+            Peça agora
+          </Link>
           <Link
             to="/sacola"
             aria-label={`Sacola com ${cartCount} itens`}

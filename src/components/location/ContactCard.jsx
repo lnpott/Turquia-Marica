@@ -12,7 +12,7 @@ function ContactCard() {
   return (
     <div
       id="contato"
-      className="bg-surface-container-lowest rounded-xl p-8 shadow-[0_4px_15px_rgba(37,25,19,0.12)] flex flex-col gap-stack-loose hover:shadow-[0_8px_25px_rgba(37,25,19,0.15)] transition-shadow duration-300"
+      className="bg-surface-container-lowest rounded-xl p-4 sm:p-6 md:p-8 shadow-[0_4px_15px_rgba(37,25,19,0.12)] flex flex-col gap-stack-loose hover:shadow-[0_8px_25px_rgba(37,25,19,0.15)] transition-shadow duration-300"
     >
       {/* Endereço */}
       <div>
