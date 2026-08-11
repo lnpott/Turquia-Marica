@@ -18,6 +18,21 @@
 | Implementar assinatura gráfica | Pendente | — |
 | Executar build e validação visual | Em andamento | `npm run build` e `git diff --check` concluídos com sucesso; validação visual multi-viewport ainda pendente. |
 
+### Correção integrada da HOME e migração de pedidos — 2026-08-11
+
+- **Causa da faixa vermelha/amarela:** a faixa era gerada pelo `TrustStrip` criado na HOME e pela classe `.brand-stripe` em `src/styles/index.css`, que aplicava um `repeating-linear-gradient`. Ambos foram removidos.
+- **HOME/CARDÁPIO:** a HOME agora reutiliza `Menu` com `showHero={false}` dentro da seção `#cardapio`, compartilhando categorias, filtros, cards e espaçamento com o CARDÁPIO.
+- **Navegação do hero:** o CTA secundário aponta para `#cardapio`; o CTA principal aponta para o iFood.
+- **Pedidos:** rotas internas de produto, sacola, checkout e confirmação foram removidas do roteamento alcançável. A árvore principal não depende mais do `CartProvider`.
+- **iFood:** ações de pedido usam `IFOOD_URL` centralizado em `src/data/contact.js`.
+- **Preços:** o cardápio integrado informa que os preços são válidos somente para consumo no estabelecimento.
+- **Estrutura futura:** a HOME mantém seções independentes e identificáveis, permitindo adicionar eventos e promoções sem acoplar a navegação atual.
+- **Validação:** `npm run build` passou com 71 módulos transformados; warning JSX da navegação inferior corrigido.
+- **Ajuste final:** removido link de avaliações sem destino definido do header; a navegação agora aponta apenas para seções/rotas existentes ou para o iFood.
+- **Auditoria estrutural:** removidos os arquivos mortos de `CartContext`, produto interno, carrinho, checkout, confirmação e componentes de personalização que ainda continham links para o fluxo descontinuado.
+- **Auditoria de referências:** nenhuma ocorrência ativa de `CartProvider`, `useCart`, `/produto`, `/sacola`, `/checkout`, `/confirmacao`, `brand-stripe`, `TrustStrip` ou `MenuPreviewSection` permanece em `src`.
+- **Validação final:** `npm run build` passou com 71 módulos transformados; `git diff --check` passou sem erros.
+
 ### Registro de execução — 2026-08-11
 
 - **Concluído:** build de produção com 95 módulos transformados e Vite 5.4.21.

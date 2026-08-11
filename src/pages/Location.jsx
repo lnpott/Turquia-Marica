@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { IFOOD_URL } from '../data/contact'
 import ContactCard from '../components/location/ContactCard'
 import MapEmbed from '../components/location/MapEmbed'
 import imgHeroAmbience from '../assets/images/hero/hero-ambience.jpg'
@@ -32,12 +32,14 @@ function Location() {
             os melhores lanches da região.
           </p>
           <div className="flex gap-gutter flex-wrap">
-            <Link
-              to="/cardapio"
+            <a
+              href={IFOOD_URL}
+              target="_blank"
+              rel="noreferrer"
               className="bg-primary text-on-primary font-headline-md px-6 py-3 rounded shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 text-center"
             >
-              Peça Agora
-            </Link>
+              Peça agora no iFood
+            </a>
             {/* No HTML o botão "Contato" era inerte — aqui vira âncora para o card
                 de contato (adaptação funcional mínima documentada no roadmap). */}
             <a

@@ -4,9 +4,7 @@ import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
 import BottomNavBar from '../components/layout/BottomNavBar'
 
-// hideBottomNav: fluxos lineares (Checkout/Confirmação) não exibem a BottomNavBar
-// mobile, conforme o implementation_plan.md (Lote 7).
-function MainLayout({ hideBottomNav = false }) {
+function MainLayout() {
   const location = useLocation()
 
   // LOTE 11 — Toda navegação recomeça no topo (comportamento padrão de SPA).
@@ -29,7 +27,7 @@ function MainLayout({ hideBottomNav = false }) {
         </div>
       </main>
       <Footer />
-      {!hideBottomNav && <BottomNavBar />}
+      <BottomNavBar />
     </div>
   )
 }

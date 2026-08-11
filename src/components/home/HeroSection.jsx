@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Button from '../ui/Button'
+import { IFOOD_URL } from '../../data/contact'
 import imgHeroFries from '../../assets/images/hero/hero-fries.jpg'
 import imgHeroAmbience from '../../assets/images/hero/hero-ambience.jpg'
 import imgHeroGallery from '../../assets/images/hero/hero-gallery.jpg'
@@ -95,15 +96,15 @@ function HeroSection() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-gutter w-full sm:w-auto">
-            <Button to="/cardapio" size="lg" className="w-full sm:w-auto rounded-xl ambient-shadow">
+            <Button href={IFOOD_URL} target="_blank" rel="noreferrer" size="lg" className="w-full sm:w-auto rounded-xl ambient-shadow">
               <span className="material-symbols-outlined" data-weight="fill" aria-hidden="true">
                 shopping_cart
               </span>
-              PEÇA AGORA
+              PEÇA AGORA NO IFOOD
             </Button>
             {/* Secundário: usa tokens do DS, sem backdrop-blur decorativo */}
             <Button
-              to="/cardapio"
+              href="#cardapio"
               variant="secondary"
               size="lg"
               className="w-full sm:w-auto rounded-xl border-outline/60 bg-surface-container-low/80 text-on-background"

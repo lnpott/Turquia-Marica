@@ -1,23 +1,19 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useCart } from '../../contexts/CartContext'
-import CartBadge from '../cart/CartBadge'
 import logo from '../../assets/images/brand/logo.jpg'
+import { IFOOD_URL } from '../../data/contact'
 
 // LOTE 14 — Logo migrado para asset local (src/assets/images/brand/logo.jpg).
 const LOGO_URL = logo
 
 const NAV_LINKS = [
   { label: 'Cardápio', to: '/cardapio' },
-  { label: 'Sobre Nós', href: '#' },
+  { label: 'Sobre Nós', href: '/#sobre' },
   { label: 'Localização', to: '/localizacao' },
-  { label: 'Avaliações', href: '#' },
 ]
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const { cartCount } = useCart()
-
   const linkClasses =
     'font-body-md text-body-md text-on-surface-variant hover:text-primary transition-all duration-200 hover:scale-105'
 
@@ -47,19 +43,9 @@ function Header() {
         </nav>
 
         <div className="flex items-center gap-1 md:gap-3">
-          <Link to="/cardapio" className="hidden md:inline-flex items-center min-h-11 rounded-lg bg-primary px-5 text-sm font-bold text-on-primary transition-colors hover:bg-primary-hover">
+          <a href={IFOOD_URL} target="_blank" rel="noreferrer" className="hidden md:inline-flex items-center min-h-11 rounded-lg bg-primary px-5 text-sm font-bold text-on-primary transition-colors hover:bg-primary-hover">
             Peça agora
-          </Link>
-          <Link
-            to="/sacola"
-            aria-label={`Sacola com ${cartCount} itens`}
-            className="relative text-primary p-2 hover:scale-105 transition-transform"
-          >
-            <span className="material-symbols-outlined text-2xl" aria-hidden="true">
-              shopping_bag
-            </span>
-            <CartBadge count={cartCount} />
-          </Link>
+          </a>
           <button
             type="button"
             aria-label="Abrir menu"

@@ -53,16 +53,6 @@ html {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-.brand-stripe {
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--color-primary) 0,
-    var(--color-primary) 14px,
-    var(--color-secondary-container) 14px,
-    var(--color-secondary-container) 28px
-  );
-}
-
 .scrolling-wrapper::-webkit-scrollbar {
   display: none;
 }
@@ -77,8 +67,8 @@ html {
 /* Transição de página: fade suave (~260ms). Disparada pela remontagem do
    conteúdo (key={pathname}) no MainLayout. Sem biblioteca.
    Obs. (Lote 11): o deslocamento vertical foi removido de propósito — qualquer
-   transform no ancestral cria containing block para position:fixed, o que
-   quebraria o AddToCartBar (/produto/:id). Fade-only resolve. */
+   transform no ancestral cria containing block para elementos fixos. Fade-only
+   mantém a transição isolada sem criar esse conflito. */
 .page-transition {
   animation: page-fade-in 260ms ease-out both;
 }

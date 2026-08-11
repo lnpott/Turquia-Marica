@@ -4,6 +4,7 @@ import CategoryCard from '../components/product/CategoryCard'
 import CategoryFilterBar from '../components/menu/CategoryFilterBar'
 import ProductGrid from '../components/menu/ProductGrid'
 import imgMenuHero from '../assets/images/menu/menu-hero.jpg'
+import { IFOOD_URL } from '../data/contact'
 
 // LOTE 14 — Hero do Cardápio migrado para asset local (menu/menu-hero.jpg).
 // LOTE 15 — Alinhamento ao Design System:
@@ -13,7 +14,7 @@ import imgMenuHero from '../assets/images/menu/menu-hero.jpg'
 //   • Gradiente usa tokens de background (não black literal).
 //   • Botão secundário alinhado ao padrão do Button component (variant secondary).
 
-function Menu() {
+function Menu({ showHero = true }) {
   const [activeCategory, setActiveCategory] = useState('todos')
 
   const filteredProducts =
@@ -28,7 +29,7 @@ function Menu() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative w-full min-h-[560px] h-[calc(100svh-64px)] max-h-[760px] md:h-[90vh] md:min-h-[700px] flex items-center overflow-hidden bg-surface-container">
+      {showHero && <section className="relative w-full min-h-[560px] h-[calc(100svh-64px)] max-h-[760px] md:h-[90vh] md:min-h-[700px] flex items-center overflow-hidden bg-surface-container">
         {/* Fotografia — plena visibilidade, sem opacity reduzida */}
         <div className="absolute inset-0 w-full h-full">
           <div
@@ -66,7 +67,9 @@ function Menu() {
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
               {/* Primário — usa token primary, sem hover hardcoded */}
               <a
-                href="#combos"
+                href={IFOOD_URL}
+                target="_blank"
+                rel="noreferrer"
                 className="w-full sm:w-auto bg-primary text-on-primary font-label-bold text-label-bold px-10 py-5 rounded-xl hover:bg-primary-hover transition-all ambient-shadow flex items-center justify-center gap-3 text-lg uppercase tracking-wider"
               >
                 <span className="material-symbols-outlined" aria-hidden="true">shopping_cart</span>
@@ -83,7 +86,7 @@ function Menu() {
             </div>
           </div>
         </div>
-      </section>
+      </section>}
 
       {/* Categories Section */}
       <section
@@ -97,7 +100,7 @@ function Menu() {
             <p className="font-body-md text-on-surface-variant mt-1">Escolha por onde começar</p>
           </div>
           <p className="font-body-md text-on-surface-variant text-xs italic hidden md:block">
-            Cardápio demonstrativo. Itens e preços sujeitos a alteração.
+            Preços exibidos válidos somente para consumo no estabelecimento.
           </p>
         </div>
         <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-5">
@@ -129,7 +132,7 @@ function Menu() {
               title="Combos Imperdíveis"
               subtitle="A experiência completa com o melhor custo-benefício"
               products={combos}
-              note="*Itens e preços demonstrativos"
+              note="*Preços válidos somente para consumo no estabelecimento."
             />
           )}
 
@@ -138,7 +141,7 @@ function Menu() {
               title="Mais Pedidos"
               subtitle="Os favoritos da galera"
               products={maisPedidos}
-              note="*Preços sujeitos a alteração"
+              note="*Preços válidos somente para consumo no estabelecimento."
             />
           )}
 
