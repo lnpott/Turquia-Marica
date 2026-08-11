@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom'
+import logo from '../../assets/images/brand/logo.jpg'
 
-const FOOTER_LOGO =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBhKNWDSy7IWQ-5EfTb3aLKzMV3Ia7MSL43-o62nqsMs69UjQDi6G-NFheSNaiL62F2MrubvDqHUXMGKMQENI_sN7urUQzCh4s432zsgY7IfHr8eX7P16uTx0MEsuXm85kQMj4PDm1pLEIqekPA-M_3oiihqLIL1u-OvzB6LUL9uasAD9LaaZ_q3jAabQQPPqemz4O_UtbMwNSJFKmG3Cc_wd-Fyz9kwgSuNbq4pBe_utK55UVfI2jT7KNVVU6bmefPgjY'
+// LOTE 14 — Logo migrado para asset local. MESMA fotografia do logo do Header
+// (duplicata real dos HTMLs de produção confirmada por MD5) — asset único.
+const FOOTER_LOGO = logo
 
 const LINK_CLASSES =
   'font-body-md text-body-md text-on-surface-variant hover:text-primary transition-all duration-300 hover:underline'

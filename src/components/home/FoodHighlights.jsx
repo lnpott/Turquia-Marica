@@ -1,7 +1,11 @@
-const HIGHLIGHT_1 =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCJ3iQi-EWDhu3rLpYNp6uTwhn2IZay6QSfSv4zrHg4GnUWZ7p9bMCiE3q8vMwuCoN7ogMkYufWUTob22Oorw0rottDEfgXmjOJ1VmHzZRdJjo-MrFw5xQyjU23lXo8ibNA0eFy9lwHZgHLMP9LUgJGQhf0EW66dxohW7gZxoYAmAkP9p8FFtOKvKdLO7n3HPZNQC1QQMgBVCuueHC-KKD6n9ID0iOnEinRccouvbGnOZTPGZZFWfiMLxbb5ru2hx0ijZg'
-const HIGHLIGHT_2 =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCzXtRqwUtOyOXW_Lbfs7cyeiXKWFUQo_M-zXpaPzrEEftx06s0ILBuWqVpVnY_QtD2vmbmT-LHc6CtE12scYJ6VGCte36V-FwH5HItyIXz_-J-d3wvi6bdARDGcDHfLO14S1FC6cAGa2CvzZ5xR-1yHS3__qy3Sjo4hWZ9vsgluZVKtHZn-ASFFblFVdgqv36zR9c09qlo0cfyKj_Z8f-AZAvqM5O2yCtPeZ4kJfC0uKmAwIBBqMvzm0El3MTaGyTtDv0'
+// LOTE 14 — Assets locais (mesmas fotografias aprovadas dos HTMLs de produção).
+// HIGHLIGHT_1 é a MESMA fotografia do ambiente do hero (hero-ambience.jpg) e do
+// preview de cardápio (Super Burger) — duplicata real confirmada por MD5.
+import imgHeroAmbience from '../../assets/images/hero/hero-ambience.jpg'
+import imgHighlightSweet from '../../assets/images/home/highlight-sweet.jpg'
+
+const HIGHLIGHT_1 = imgHeroAmbience
+const HIGHLIGHT_2 = imgHighlightSweet
 
 const ITEMS = [
   {

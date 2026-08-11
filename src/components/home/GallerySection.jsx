@@ -1,9 +1,13 @@
-const IMAGE_1 =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuC34jlTjYvblPnWg7zOI7PVTP71KJfm46WsNw_sU3X1HKEtYcCDezYnLsvgn5h6pJRPCKyfMQZdw084Yv7Ds1UAC5OYRxhLWRYN75cqu0IT4LunPqLhtyqp_sxwfN2DnVIjL0FA0cG6ZOqHjRjfVN1k2ZLKSul68BqBTP47loJqxm4xUK9DIifPohzTcQkJeGwv_rBIT054Rao_vRixkMqLGJu3mPIDT7NoRZRImtgZ62e8TKSn3cX5moOXmECv3lm7J-s'
-const IMAGE_2 =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBTeAaTNT7aG4fM-A82-0sxxFGrUbCKF7rE23wqoFjQUCVDoj-isExGnkUVxIWyYBiiG_nHHgEwy5t2QWex6GzHpPJQYpjqwj9Wr-YR0VQaIVbLhhUdkHfxlyEVN6LYNC7ePrg-uK7lTAYds1X3wDueHGHriO9gVjKw0C3sRDCLSgt5ySZdzLC2WDg1DuwvJ_VMCq9YbLkv7_fLKE8F8hCFUGUR0uaEPjRfO3_OzAp1wU9VorDcpgrNBID43VDAFTbQz-E'
-const IMAGE_3 =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuAX8FG3nfQ_9o7iD0ElMyAaAaM1deW-6A4T5EaWvkxKFgnU1z2-vBY7FEu8vPRwRkscuNPnh2hX3Fgv0SwTRruqJVYxSwk_qVWR7kCEV-o81EVMWJppGZ4sQR-s834Md12Od-Nr1IYeDR3Sq1p4zGqvtyeKMc6nA9wpK5bUBf9GSePS4XwLidKw2fxhAzfPY5-2kDc_O0KMyRfQVeLN6cTVfFaz6G3Niq3Zj674WlBtvZugmP_oy22tploKINyzqyPzEto'
+// LOTE 14 — Assets locais (mesmas fotografias aprovadas dos HTMLs de produção).
+// IMAGE_1 é a MESMA fotografia da galeria do hero (hero-gallery.jpg) — duplicata
+// real de conteúdo confirmada por MD5; asset único reutilizado.
+import imgHeroGallery from '../../assets/images/hero/hero-gallery.jpg'
+import imgGallery2 from '../../assets/images/home/gallery-2.jpg'
+import imgGallery3 from '../../assets/images/home/gallery-3.jpg'
+
+const IMAGE_1 = imgHeroGallery
+const IMAGE_2 = imgGallery2
+const IMAGE_3 = imgGallery3
 
 const ITEMS = [
   {

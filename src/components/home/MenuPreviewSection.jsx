@@ -1,9 +1,12 @@
 import Button from '../ui/Button'
+// LOTE 14 — Assets locais. ITEM_IMAGE_1 = fotografia do ambiente (hero-ambience.jpg,
+// mesma do destaque 'Gigante do Sabor'); ITEM_IMAGE_2 = highlight-sweet.jpg.
+// Duplicatas reais dos HTMLs de produção confirmadas por MD5.
+import imgHeroAmbience from '../../assets/images/hero/hero-ambience.jpg'
+import imgHighlightSweet from '../../assets/images/home/highlight-sweet.jpg'
 
-const ITEM_IMAGE_1 =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCJ3iQi-EWDhu3rLpYNp6uTwhn2IZay6QSfSv4zrHg4GnUWZ7p9bMCiE3q8vMwuCoN7ogMkYufWUTob22Oorw0rottDEfgXmjOJ1VmHzZRdJjo-MrFw5xQyjU23lXo8ibNA0eFy9lwHZgHLMP9LUgJGQhf0EW66dxohW7gZxoYAmAkP9p8FFtOKvKdLO7n3HPZNQC1QQMgBVCuueHC-KKD6n9ID0iOnEinRccouvbGnOZTPGZZFWfiMLxbb5ru2hx0ijZg'
-const ITEM_IMAGE_2 =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCzXtRqwUtOyOXW_Lbfs7cyeiXKWFUQo_M-zXpaPzrEEftx06s0ILBuWqVpVnY_QtD2vmbmT-LHc6CtE12scYJ6VGCte36V-FwH5HItyIXz_-J-d3wvi6bdARDGcDHfLO14S1FC6cAGa2CvzZ5xR-1yHS3__qy3Sjo4hWZ9vsgluZVKtHZn-ASFFblFVdgqv36zR9c09qlo0cfyKj_Z8f-AZAvqM5O2yCtPeZ4kJfC0uKmAwIBBqMvzm0El3MTaGyTtDv0'
+const ITEM_IMAGE_1 = imgHeroAmbience
+const ITEM_IMAGE_2 = imgHighlightSweet
 
 const ITEMS = [
   { name: 'Super Burger', image: ITEM_IMAGE_1 },

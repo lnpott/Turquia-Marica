@@ -1,5 +1,6 @@
-const AMBIENCE_IMAGE =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuAjG-GFqXqQ9Q0kWexmiN6naXR6z3rSm5B0hUaGx5mLhSMWgRnZspdzwJzj_2YAf11HYAkFNQk8pjfHbKDJftwXh5oVNrXpvl8VUOmg0EefNbuM4v-1vZKb3ccXmokyXxerfr4qXPZd-Q5r7HUFpxtTbpmaJjaAvAYX3OY6K1vxHvLvypOFvHFnZEKMZGrV8aL8hgP-6b42OfuXCw9el8c4dgKvvbMHRMacvez3KJBNa3lmCOk24grNaV2aV_0IgptC-oY'
+import imgHeroAmbience from '../../assets/images/hero/hero-ambience.jpg'
+
+const AMBIENCE_IMAGE = imgHeroAmbience
 
 function AmbienceSection() {
   return (

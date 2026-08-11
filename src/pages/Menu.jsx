@@ -3,9 +3,10 @@ import { categories, products } from '../data/menu'
 import CategoryCard from '../components/product/CategoryCard'
 import CategoryFilterBar from '../components/menu/CategoryFilterBar'
 import ProductGrid from '../components/menu/ProductGrid'
+import imgMenuHero from '../assets/images/menu/menu-hero.jpg'
 
-const HERO_IMAGE =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCKMe7rVacOeSdiq-hTkQxFOo8l4IbXg6jQKFyYwsAVIFZjxtjm06BNqGUFi1f7iCxTg7uFx-74Ik39JSC9_OlsO0cvPKWlRY_TCKbJhmezmExywHI82K-3IIvd8IpSKExtHI9fimbpayu2dvbGbo93jJmL45MhxpSJIto0ShUAtPrL-VezrvnwfsfDwQd8d10lbj5bb7CkrsdNRUvds95dSo68bwIWFDTeZ0A_JYX0wHE7Dj0DiDD89g'
+// LOTE 14 — Hero do Cardápio migrado para asset local (menu/menu-hero.jpg).
+const HERO_IMAGE = imgMenuHero
 
 function Menu() {
   const [activeCategory, setActiveCategory] = useState('todos')

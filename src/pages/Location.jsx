@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom'
 import ContactCard from '../components/location/ContactCard'
 import MapEmbed from '../components/location/MapEmbed'
+import imgHeroAmbience from '../assets/images/hero/hero-ambience.jpg'
 
 // /localizacao — Lote 9. Migração do HTML de produção
 // (turquia_lanches_localiza_o_production/code.html): hero com imagem de
 // ambiente, card de contato (Endereço/Horário/WhatsApp/Instagram) e mapa
 // placeholder. Página informativa — não faz parte do fluxo linear do pedido.
 // A navegação já existia no Header (desktop + menu mobile) aguardando a rota.
-const HERO_IMAGE =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuC-p5nCTjtM9sND9Z3PzKBwiN2QYOYSewUO49zpQ9xYX_sgTte_IxLtrCbHyEQVg9_Ghw7lMZEsjPpY3BTxSkZxTX2q6yq9_wjekRYAtuacD0LAPry-LlYNiNG1Zbl7pZR8p8JdRV26UFjoEorPU3ws3l_Oo6tliT-T0OaLqtgVkKDQgqKvF857SwfokWueBcSFSHdtiqehia6YYMGjoODRQafM36ncDHMqHTe03ULCmmT5HkY6fFxmYkluPGUV0J-Fy9w'
+// LOTE 14 — Hero migrado para asset local. A fotografia do ambiente da
+// Localização é a MESMA do hero da Home (duplicata real confirmada por MD5).
+const HERO_IMAGE = imgHeroAmbience
 
 function Location() {
   return (

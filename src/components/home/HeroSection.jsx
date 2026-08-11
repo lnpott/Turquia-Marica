@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
 import Button from '../ui/Button'
+import imgHeroFries from '../../assets/images/hero/hero-fries.jpg'
+import imgHeroAmbience from '../../assets/images/hero/hero-ambience.jpg'
+import imgHeroGallery from '../../assets/images/hero/hero-gallery.jpg'
 
 // LOTE 11.1 — Hero da Home (correção visual).
+// LOTE 14 — Imagens migradas para assets locais (src/assets/images/hero).
 // A composição original (heredada do HTML de produção) usava `mix-blend-multiply`
 // + `opacity-70` + gradiente full-hero via-background/80, o que obscurecia/lavava
 // a fotografia a ponto de parecer uma mancha atrás do conteúdo. Esta versão segue
@@ -11,20 +15,26 @@ import Button from '../ui/Button'
 // Referência de imagem: URL original e funcional (HTTP 200) de
 // turquia_lanches_homepage_production/code.html e index.html_homepage_production
 // (fonte #1 da hierarquia). Slides 2 e 3: imagens já aprovadas no HTML auditado.
-const HERO_IMAGE =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCSbrOVTgKWPF_toT_AT1l-XXa7jBf7Hm69j4Qd2sl1ggWLvLxsd6X5y2jGBtQUG2ZRhO-6UpGGI6wCRfIq0cRGvByCuUkYx56OJr3ZAJjZ7YMyV07x67zq02NUQIrqC9wYDTRxh-Sd-jqhUyQ8el0Gf7SK-rTv2OKo7DE3ddsc77Nh4IKbjPdSE1JE1UT4FSoqyHwXTHZpxu-Q4b5r9ZU5dAX5-Ceu7p76VRfZ1j3zQTrRhqrMEKPjO7QSvHsIGq4UAfs'
-const SLIDE_AMBIENCE =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuAjG-GFqXqQ9Q0kWexmiN6naXR6z3rSm5B0hUaGx5mLhSMWgRnZspdzwJzj_2YAf11HYAkFNQk8pjfHbKDJftwXh5oVNrXpvl8VUOmg0EefNbuM4v-1vZKb3ccXmokyXxerfr4qXPZd-Q5r7HUFpxtTbpmaJjaAvAYX3OY6K1vxHvLvypOFvHFnZEKMZGrV8aL8hgP-6b42OfuXCw9el8c4dgKvvbMHRMacvez3KJBNa3lmCOk24grNaV2aV_0IgptC-oY'
-const SLIDE_GALLERY =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuC34jlTjYvblPnWg7zOI7PVTP71KJfm46WsNw_sU3X1HKEtYcCDezYnLsvgn5h6pJRPCKyfMQZdw084Yv7Ds1UAC5OYRxhLWRYN75cqu0IT4LunPqLhtyqp_sxwfN2DnVIjL0FA0cG6ZOqHjRjfVN1k2ZLKSul68BqBTP47loJqxm4xUK9DIifPohzTcQkJeGwv_rBIT054Rao_vRixkMqLGJu3mPIDT7NoRZRImtgZ62e8TKSn3cX5moOXmECv3lm7J-s'
-
-// `position` = enquadramento individual (object-position da foto). Ajustado por
-// imagem para preservar o elemento principal de cada fotografia (Lote 11.1):
-// burger do hero centralizado; ambiente e galeria centralizados (composição ampla).
+// Assets locais (Lote 14) — as MESMAS fotografias aprovadas dos HTMLs de produção:
+// fries close-up, ambiente/brinde e galeria. Composição, ordem, duração, crossfade
+// e Ken Burns permanecem idênticos.
+//
+// LOTE 14 (Hero Desktop + Mobile) — auditoria visual em navegador real (375/390/1280/1440):
+// DESKTOP aprovado e INTOCADO (crossfade 6s + Ken Burns sutil + gradiente localizado à
+// esquerda, sem caixa). MOBILE reavaliado do zero: a composição anterior (bloco textual
+// em caixa translúcida + imagem estática em largura total ABAIXO do texto) produzia uma
+// primeira dobra longa e densa, com sensação de "desktop espremido". Decisão (Opção C —
+// composição mobile própria, ESTÁTICA): a mesma fotografia aprovada (fries) vira o FUNDO
+// full-bleed do hero mobile — como o HTML de produção original, que exibia a foto de
+// fundo também no mobile — com scrim gradiente localizado na base (densidade máxima
+// atrás do texto, dissolvendo até transparência, sem cobrir a foto) e texto alinhado à
+// base. Sem caixa pesada, sem imagem duplicada, primeira dobra curta com comida visível.
+// Slideshow mobile NÃO adotado (Opção B descartada): performance e legibilidade primeiro,
+// conforme diretriz do Lote 12; a fotografia estática entrega a primeira dobra superior.
 const SLIDES = [
-  { src: HERO_IMAGE, label: 'Hero Image', position: 'center' },
-  { src: SLIDE_AMBIENCE, label: 'Ambiente Turquia Lanches', position: 'center' },
-  { src: SLIDE_GALLERY, label: 'Momentos Turquia', position: 'center' },
+  { src: imgHeroFries, label: 'Hero Image', position: 'center' },
+  { src: imgHeroAmbience, label: 'Ambiente Turquia Lanches', position: 'center' },
+  { src: imgHeroGallery, label: 'Momentos Turquia', position: 'center' },
 ]
 
 // Dwell confortável (6s) com crossfade suave (1.6s) — atmosfera, não banner.
@@ -51,7 +61,7 @@ function HeroSection() {
   }, [])
 
   return (
-    <section className="relative w-full min-h-[600px] flex items-center justify-center overflow-hidden py-12 md:py-0 md:h-[819px]">
+    <section className="relative w-full min-h-[600px] flex items-end md:items-center justify-center overflow-hidden py-12 md:py-0 md:h-[819px]">
       {/* Fundo dinâmico (desktop): crossfade entre imagens aprovadas.
           FOTOGRAFIA PRIMEIRO: sem mix-blend-multiply, sem opacity reduzida —
           a foto aparece em plena visibilidade. O crossfade (alpha blend) nunca
@@ -79,6 +89,16 @@ function HeroSection() {
         })}
       </div>
 
+      {/* Fundo mobile (composição própria, ESTÁTICA): a mesma fotografia aprovada
+          (fries) em plena visibilidade como fundo full-bleed — como no HTML de
+          produção original. FOTOGRAFIA PRIMEIRO na primeira dobra mobile. */}
+      <div
+        className="absolute inset-0 w-full h-full bg-cover md:hidden"
+        role="img"
+        aria-label="Batatas fritas artesanais da Turquia Lanches"
+        style={{ backgroundImage: `url('${imgHeroFries}')`, backgroundPosition: 'center' }}
+      />
+
       {/* Overlay LOCALIZADO (apenas atrás do bloco de texto, lado esquerdo no
           desktop): a fotografia permanece nítida no restante do hero. Gradiente
           suave que dissolve em transparência (sem lavar a imagem). */}
@@ -87,8 +107,17 @@ function HeroSection() {
         aria-hidden="true"
       ></div>
 
+      {/* Scrim LOCALIZADO mobile (base → dissolução progressiva): densidade máxima
+          imediatamente atrás do bloco textual inferior, dissolvendo até
+          transparência no topo — a fotografia permanece visível. Sem aparência
+          de card, sem cobrir a foto. */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-background/90 via-background/55 to-transparent md:hidden pointer-events-none"
+        aria-hidden="true"
+      ></div>
+
       <div className="relative z-10 w-full px-4 lg:px-20 max-w-[1280px] mx-auto flex flex-col md:flex-row items-center justify-between">
-        <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left z-20 bg-background/50 backdrop-blur-sm p-8 rounded-2xl md:bg-transparent md:backdrop-blur-none md:p-0 overflow-hidden">
+        <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left z-20">
           <h1 className="font-display-xl-mobile md:font-display-xl text-display-xl-mobile md:text-display-xl text-on-background mb-stack-tight drop-shadow-md">
             Fome de Leão?
             <br /> <span className="text-primary">Lanche Especial.</span>
@@ -120,15 +149,6 @@ function HeroSection() {
               VER CARDÁPIO
             </Button>
           </div>
-        </div>
-        {/* Mobile: composição aprovada preservada (imagem do hero abaixo do texto,
-            estática, sem slideshow) — imagem original de produção em plena visibilidade. */}
-        <div className="w-full md:w-1/2 mt-8 md:mt-0 md:hidden block">
-          <img
-            alt="Burger"
-            className="w-full h-auto object-cover rounded-xl shadow-lg"
-            src={HERO_IMAGE}
-          />
         </div>
       </div>
     </section>

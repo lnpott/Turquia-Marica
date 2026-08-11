@@ -3,8 +3,10 @@
 // nenhum serviço externo de mapas). Os controles de zoom são mockup visual (no HTML são
 // <button> inertes) — renderizados como spans decorativos com aria-hidden para não criar
 // controles falsos (adaptação de acessibilidade documentada no roadmap).
-const MAP_IMAGE =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCWRLF0VJGlxjHtClCnpJ3XaKC-YjuYJ8fcm8DANaxTt3Mnb9bLWJgFBlJh_qWlmpZ6u347i3zLqvmwEx8I2JIwqlbNtJ7reYu5ViRwTEKZZ4qjfZLRHsuxZfPekzGXGCooBas30X6dnwYgI3kbwUqXnfIuPKFIP2vnQ26xh5BC8IBQob6gQ2x1SPNpNEyCYyEJRxl7Lkjt2SAJiZK8F9M-HYCgHf7kfG8jbds2u5WpUQNwGDqXkvtqrQ'
+// LOTE 14 — Imagem migrada para asset local (location/map.png).
+import mapImage from '../../assets/images/location/map.png'
+
+const MAP_IMAGE = mapImage
 
 function MapEmbed() {
   return (

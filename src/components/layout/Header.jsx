@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../../contexts/CartContext'
 import CartBadge from '../cart/CartBadge'
+import logo from '../../assets/images/brand/logo.jpg'
 
-const LOGO_URL =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCrW6vjwO7C27w9Sp86Xkk8v5qPBbn_yes3aPV7uEiAhlcJoGSEthPqEkfAjkxoSUvSEn-ojRG3TE6EJKvH9O2TpG3L4CqHW1dMWzDi2_3NH7aYrkPUuktvKU3BkA5q7ZAr2M7xZ7r4CgpCa7Pn_bCI2eYiVnMR1qBMKUUvPNdG6tRXwxY9qciTuTNxA4RLxasJXmzrjIpmTr0sKT1KeBzHFvxp7QqFCFN9R86YXa_Hh3zq5-gpq9Xu89YrWfN-LZG36Nk'
+// LOTE 14 — Logo migrado para asset local (src/assets/images/brand/logo.jpg).
+const LOGO_URL = logo
 
 const NAV_LINKS = [
   { label: 'Cardápio', to: '/cardapio' },
