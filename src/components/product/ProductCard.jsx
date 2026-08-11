@@ -49,7 +49,7 @@ function ProductCard({ product }) {
             <Link
               to={productUrl}
               aria-label={`Adicionar ${product.name} ao pedido`}
-              className="w-full bg-primary text-white font-label-bold text-label-bold px-6 py-4 rounded-lg hover:bg-[#b01319] transition-all flex items-center justify-center gap-2 uppercase tracking-wider"
+              className="w-full bg-primary text-white font-label-bold text-label-bold px-6 py-4 rounded-lg hover:bg-primary-hover transition-all flex items-center justify-center gap-2 uppercase tracking-wider"
             >
               <span className="material-symbols-outlined" aria-hidden="true">
                 add_shopping_cart
@@ -73,7 +73,7 @@ function ProductCard({ product }) {
             <Link
               to={productUrl}
               aria-label={`Adicionar ${product.name}`}
-              className="bg-primary text-white w-12 h-12 rounded-lg hover:bg-[#b01319] transition-all flex items-center justify-center shadow-sm"
+              className="bg-primary text-white w-12 h-12 rounded-lg hover:bg-primary-hover transition-all flex items-center justify-center shadow-sm"
             >
               <span className="material-symbols-outlined" aria-hidden="true">
                 add

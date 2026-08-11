@@ -6,7 +6,12 @@ import ProductGrid from '../components/menu/ProductGrid'
 import imgMenuHero from '../assets/images/menu/menu-hero.jpg'
 
 // LOTE 14 — Hero do Cardápio migrado para asset local (menu/menu-hero.jpg).
-const HERO_IMAGE = imgMenuHero
+// LOTE 15 — Alinhamento ao Design System:
+//   • Cores hardcoded (#111, bg-[#b01319]) substituídas por tokens.
+//   • backdrop-blur-md no botão secundário removido (contra diretriz do roadmap).
+//   • Tag/eyebrow usa secondary-container (amarelo) consistente com Hero da Home.
+//   • Gradiente usa tokens de background (não black literal).
+//   • Botão secundário alinhado ao padrão do Button component (variant secondary).
 
 function Menu() {
   const [activeCategory, setActiveCategory] = useState('todos')
@@ -23,39 +28,56 @@ function Menu() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative w-full h-[90vh] min-h-[800px] flex items-center overflow-hidden bg-[#111]">
+      <section className="relative w-full h-[90vh] min-h-[700px] flex items-center overflow-hidden bg-surface-container">
+        {/* Fotografia — plena visibilidade, sem opacity reduzida */}
         <div className="absolute inset-0 w-full h-full">
           <div
-            className="bg-cover bg-center w-full h-full opacity-80 scale-105 transition-transform duration-500"
+            className="bg-cover bg-center w-full h-full scale-[1.02] transition-transform duration-700"
             role="img"
-            aria-label="Hambúrguer artesanal"
-            style={{ backgroundImage: `url('${HERO_IMAGE}')` }}
+            aria-label="Hambúrguer artesanal da Turquia Lanches"
+            style={{ backgroundImage: `url('${imgMenuHero}')` }}
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent"></div>
-        <div className="relative z-10 px-margin-mobile md:px-margin-desktop max-w-[1280px] mx-auto w-full flex flex-col items-start">
-          <div className="max-w-[700px]">
-            <span className="inline-block py-2 px-4 rounded-full bg-secondary-container text-on-background font-label-bold text-xs mb-8 tracking-widest uppercase">
-              O MELHOR HAMBÚRGUER DA CIDADE
+
+        {/* Overlay gradiente — tokens do DS, não black literal */}
+        <div
+          className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/50 to-transparent pointer-events-none"
+          aria-hidden="true"
+        />
+
+        {/* Conteúdo */}
+        <div className="relative z-10 px-4 md:px-margin-desktop max-w-[1280px] mx-auto w-full flex flex-col items-start">
+          <div className="max-w-[680px]">
+            {/* Tag/eyebrow — secondary-container (amarelo) consistente com Home */}
+            <span className="section-eyebrow mb-5" aria-hidden="true">
+              O Melhor Hambúrguer da Cidade
             </span>
-            <h1 className="font-display-xl text-display-xl-mobile md:text-display-xl text-white mb-8 leading-[1.05] drop-shadow-2xl font-extrabold">
+
+            <h1 className="font-display-xl-mobile md:font-display-xl text-display-xl-mobile md:text-display-xl text-on-background mb-6 leading-[1.05]">
               Fome de Leão?
-              <br /> <span className="text-secondary-container">O Rei Chegou.</span>
+              <br />
+              <span className="text-primary">O Rei Chegou.</span>
             </h1>
-            <p className="font-body-lg text-[22px] text-gray-100 mb-12 max-w-lg leading-relaxed drop-shadow-lg">
-              Sabor raiz e ingredientes selecionados no seu novo hambúrguer favorito.
+
+            <p className="font-body-lg text-body-lg text-on-surface-variant mb-10 max-w-lg leading-relaxed">
+              Sabor raiz e ingredientes selecionados no seu novo favorito.
             </p>
-            <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto">
+
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+              {/* Primário — usa token primary, sem hover hardcoded */}
               <a
                 href="#combos"
-                className="w-full sm:w-auto bg-primary text-white font-label-bold text-label-bold px-12 py-6 rounded-lg hover:bg-[#b01319] transition-all ambient-shadow flex items-center justify-center gap-3 text-xl uppercase tracking-wider shadow-xl"
+                className="w-full sm:w-auto bg-primary text-on-primary font-label-bold text-label-bold px-10 py-5 rounded-xl hover:bg-primary-hover transition-all ambient-shadow flex items-center justify-center gap-3 text-lg uppercase tracking-wider"
               >
+                <span className="material-symbols-outlined" aria-hidden="true">shopping_cart</span>
                 PEÇA AGORA
               </a>
+              {/* Secundário — tokens do DS, sem backdrop-blur decorativo */}
               <a
                 href="#categorias"
-                className="w-full sm:w-auto bg-white/10 backdrop-blur-md text-white font-label-bold text-label-bold px-12 py-6 rounded-lg border border-white/40 hover:bg-white/20 transition-all flex items-center justify-center gap-3 text-xl uppercase tracking-wider ambient-shadow"
+                className="w-full sm:w-auto bg-surface-container-low text-on-background font-label-bold text-label-bold px-10 py-5 rounded-xl border border-outline/50 hover:bg-surface-container transition-all flex items-center justify-center gap-3 text-lg uppercase tracking-wider"
               >
+                <span className="material-symbols-outlined" aria-hidden="true">restaurant_menu</span>
                 CARDÁPIO
               </a>
             </div>
@@ -66,18 +88,19 @@ function Menu() {
       {/* Categories Section */}
       <section
         id="categorias"
-        className="py-16 md:py-24 px-margin-mobile md:px-margin-desktop max-w-[1280px] mx-auto bg-white"
+        className="py-16 md:py-24 px-4 md:px-margin-desktop max-w-[1280px] mx-auto"
       >
-        <div className="flex justify-between items-end mb-12">
+        <div className="flex justify-between items-end mb-10">
           <div>
+            <span className="section-eyebrow">Explore</span>
             <h2 className="font-headline-lg text-headline-lg text-on-background">Categorias</h2>
-            <p className="font-body-md text-on-surface-variant mt-2">Escolha por onde começar</p>
+            <p className="font-body-md text-on-surface-variant mt-1">Escolha por onde começar</p>
           </div>
-          <p className="font-body-md text-primary text-xs italic mt-2 hidden md:block">
+          <p className="font-body-md text-on-surface-variant text-xs italic hidden md:block">
             Cardápio demonstrativo. Itens e preços sujeitos a alteração.
           </p>
         </div>
-        <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6">
+        <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-5">
           {categories.map((category) => (
             <li
               key={category.id}
@@ -90,9 +113,9 @@ function Menu() {
       </section>
 
       {/* Filter + Products */}
-      <section className="py-16 md:py-24 px-margin-mobile md:px-margin-desktop bg-surface">
+      <section className="py-16 md:py-24 px-4 md:px-margin-desktop bg-surface">
         <div className="max-w-[1280px] mx-auto">
-          <div className="mb-12">
+          <div className="mb-10">
             <CategoryFilterBar
               categories={categories}
               active={activeCategory}

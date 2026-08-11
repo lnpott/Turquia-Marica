@@ -52,6 +52,10 @@ module.exports = {
         'primary-container': '#d71920',
         'on-tertiary-fixed-variant': '#723600',
         'surface-container': '#ffeae1',
+        // Token utilitário: hover do botão primário (um tom abaixo do primary)
+        'primary-hover': '#8c000e',
+        // Token para texto sobre fotografias escuras (substitui text-white cru)
+        'on-image': '#ffffff',
       },
       fontFamily: {
         'display-xl': ['Rubik', 'sans-serif'],
