@@ -75,6 +75,13 @@ html {
   animation: hero-kenburns 9000ms ease-in-out both;
 }
 
+/* LOTE 14.2 — Quebra de linhas editorial do texto de apoio do hero
+   (text-wrap: pretty = CSS nativo, sem dependência nova). Evita linhas
+   órfãs/estranhas e melhora o rag sem alterar o conteúdo. */
+.hero-tagline {
+  text-wrap: pretty;
+}
+
 @keyframes hero-kenburns {
   from {
     transform: scale(1);

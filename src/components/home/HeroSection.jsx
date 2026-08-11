@@ -31,6 +31,13 @@ import imgHeroGallery from '../../assets/images/hero/hero-gallery.jpg'
 // base. Sem caixa pesada, sem imagem duplicada, primeira dobra curta com comida visível.
 // Slideshow mobile NÃO adotado (Opção B descartada): performance e legibilidade primeiro,
 // conforme diretriz do Lote 12; a fotografia estática entrega a primeira dobra superior.
+//
+// LOTE 14.2 — Correção pontual do texto de apoio ("Sabor raiz, ingredientes frescos…"):
+// removido o chip/painel translúcido (`bg-background/30 px-2 rounded`) que fazia o texto
+// parecer uma caixa sobre a foto; largura de leitura reduzida no mobile (max-w-[300px]) e
+// quebra de linhas editorial via `text-wrap: pretty` (classe .hero-tagline no index.css);
+// scrim mobile reduzido ao mínimo necessário (h-3/5 → h-1/2). Conteúdo intacto; desktop
+// preservado exceto a remoção do mesmo chip (gradiente esquerdo localizado mantido).
 const SLIDES = [
   { src: imgHeroFries, label: 'Hero Image', position: 'center' },
   { src: imgHeroAmbience, label: 'Ambiente Turquia Lanches', position: 'center' },
@@ -108,11 +115,14 @@ function HeroSection() {
       ></div>
 
       {/* Scrim LOCALIZADO mobile (base → dissolução progressiva): densidade máxima
-          imediatamente atrás do bloco textual inferior, dissolvendo até
-          transparência no topo — a fotografia permanece visível. Sem aparência
-          de card, sem cobrir a foto. */}
+          imediatamente atrás do bloco textual (título + texto + CTAs, ~366px da
+          base), com piso suave de 35% no topo do scrim — garante contraste do
+          título sem borda dura e sem painel sólido; a fotografia permanece
+          totalmente nítida no topo do hero. LOTE 14.2: h-[70%] cobre o bloco
+          textual inteiro (auditorias 375/390 revelaram título fora da zona densa
+          de h-1/2 e h-[60%]); via/85 + piso/35 = legibilidade robusta do título. */}
       <div
-        className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-background/90 via-background/55 to-transparent md:hidden pointer-events-none"
+        className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-background/95 via-background/85 to-background/35 md:hidden pointer-events-none"
         aria-hidden="true"
       ></div>
 
@@ -122,7 +132,7 @@ function HeroSection() {
             Fome de Leão?
             <br /> <span className="text-primary">Lanche Especial.</span>
           </h1>
-          <p className="font-body-lg text-body-lg text-on-surface-variant mb-stack-loose max-w-lg font-medium bg-background/30 px-2 rounded drop-shadow-sm">
+          <p className="font-body-lg text-body-lg text-on-surface-variant mb-stack-loose max-w-[300px] md:max-w-lg font-medium drop-shadow-sm hero-tagline">
             Sabor raiz, ingredientes frescos e aquele exagero que a gente ama. O melhor lanche da
             cidade te espera.
           </p>

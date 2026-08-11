@@ -368,6 +368,29 @@
 - **Status Git:** **SEM COMMIT / SEM PUSH** — working tree acumula o Lote 14 (12 arquivos + 16 assets) + este Hero (HeroSection.jsx) + roadmap; HEAD = origin/main = `39532c4`; HTMLs de produção intactos (0); `implementation_plan.md` intacto (hash `98bc0141…`); `CartContext`/`package.json`/rotas intactos; `git diff --check` limpo.
 - **Decisão registrada:** mobile = composição própria estática (Opção C), alinhada ao HTML de produção original (foto de fundo no mobile) e à direção "premium acessível + artesanal" — sem e-commerce, sem novas imagens, sem alteração no restante do sistema.
 
+### Lote 14.2 — Correção Pontual do Texto do Hero — ✅ CONCLUÍDO
+- **Objetivo:** fazer o texto de apoio ("Sabor raiz, ingredientes frescos e aquele exagero que a gente ama. O melhor lanche da cidade te espera.") parecer parte de uma composição editorial/premium sobre a fotografia — **sem redesign, sem alterar imagens/slideshow/crossfade/Ken Burns/rotas**. Conteúdo do texto intacto (proibido novo copywriting).
+- **Problema encontrado:**
+  1. O parágrafo tinha um **chip/painel translúcido** (`bg-background/30 px-2 rounded`) atrás do texto — exatamente o tipo de "caixa sobre a foto" vetado pelo briefing;
+  2. `max-w-lg` (512px) era largo demais no mobile (375/390px) → quebras de linha irregulares;
+  3. **Problema de contraste do título**: auditores visuais (390×844) relataram "título marrom escuro sobre fundo escuro". Análise geométrica objetiva (tokens: display-xl-mobile 36px/lh 1.1, body-lg 18px/lh 1.6, stack-tight 8px, stack-loose 32px, gutter 16px, Button lg ≈48px) calculou o bloco textual em **~366px da base** — com o scrim em h-1/2 (300px) e mesmo h-[60%] (360px), o **título ficava ACIMA da zona densa do scrim**, dependendo do recorte da fotografia (inconsistente entre 375 e 390).
+- **Solução adotada (somente HeroSection.jsx + index.css):**
+  - Removido o chip `bg-background/30 px-2 rounded` (parágrafo agora direto sobre a fotografia, apenas `drop-shadow-sm` para legibilidade);
+  - Largura de leitura mobile reduzida: `max-w-[300px] md:max-w-lg` — quebras naturais e foto visível nas laterais;
+  - Quebra de linhas editorial via `text-wrap: pretty` (CSS nativo, sem dependência): classe `.hero-tagline` adicionada em `src/styles/index.css`;
+  - **Scrim mobile ajustado para cobrir todo o bloco textual**: `h-[70%]` `bg-gradient-to-t from-background/95 via-background/85 to-background/35` — densidade máxima atrás de título/texto/CTAs com **piso suave de 35%** no topo do scrim (sem borda dura, sem painel sólido); a fotografia permanece **totalmente nítida no topo do hero** (acima de 70%).
+  - Desktop: preservado integralmente (slideshow, Ken Burns, gradiente esquerdo localizado, enquadramento) — única mudança foi a remoção do mesmo chip do parágrafo (consistência editorial) e o `hero-tagline`.
+- **QA navegador real (Chrome):**
+  - **375×667:** título e parágrafo perfeitamente legíveis sem caixa/chip; foto de batatas nítida no topo; botões legíveis e espaçados; primeira dobra limpa — **PASS**;
+  - **390×844:** idem — contraste resolvido pelo scrim h-[70%]; gradiente NÃO cobre o topo (foto nítida); zero erros — **PASS**;
+  - **Desktop 1280×800:** parágrafo legível sobre o gradiente esquerdo, sem chip; gradiente localizado à esquerda com foto visível à direita; **crossfade confirmado** (fries → brinde após 7s) — **PASS**;
+  - Zero erros de console; zero imagens quebradas (assets locais) — **PASS**.
+  - *Nota de QA:* agentes de screenshot do browser-use são subjetivos/inconsistentes (mesmo layout avaliado ora "perfeitamente legível" ora "contraste deficiente"); a decisão final foi baseada em **análise geométrica determinística** (posição do título vs. zona densa do scrim calculada a partir dos tokens), com confirmação visual em ambos os viewports.
+- **`prefers-reduced-motion`:** preservado — mobile já é estático; o intervalo do crossfade desktop continua desativado via `matchMedia`; Ken Burns desativado via `@media` (regras intactas no index.css).
+- **Arquivos alterados (2):** `src/components/home/HeroSection.jsx` (parágrafo + scrim + comentário documental), `src/styles/index.css` (`.hero-tagline`). Nenhum outro arquivo, componente, asset, rota, CartContext, menu ou package.json alterado.
+- **Build:** ✅ 79 módulos · CSS 36.08 kB · JS 234.65 kB · **0 warnings / 0 erros**.
+- **Status Git:** **SEM COMMIT / SEM PUSH** — 2 arquivos modificados no working tree; HEAD = origin/main = `1ccb210`; HTMLs de produção intactos (0); `implementation_plan.md` intacto (hash `98bc0141…`); `git diff --check` limpo; sem `console.log`; sem dependências novas.
+
 ---
 
 ## 7. ESTADO FINAL DA MIGRAÇÃO
