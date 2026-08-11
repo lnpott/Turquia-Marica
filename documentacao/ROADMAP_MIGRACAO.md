@@ -348,26 +348,46 @@ dist/assets/index-tu-UIOcT.js   241.23 kB │ gzip: 74.78 kB
 ### Estado do Git
 
 - **Atualização pós-Lote 10:** a migração foi commitada e enviada ao remoto após o Lote 10 — commit `a1ae7b6` ("feat: complete checkout confirmation and location flows", push para `origin/main` autorizado pelo usuário).
-- **Lote 11 (refinamento visual):** em andamento/working tree — 7 arquivos modificados, **sem commit e sem push** (aguardando autorização).
+- **Lote 11 (refinamento visual):** commit `66ac14b` ("feat: refine visual experience and image transitions", 8 arquivos) criado e **enviado a `origin/main`** (push autorizado). HEAD = origin/main = `66ac14b`; working tree limpa.
 - **Durante a migração (Lotes 1–10):** nada foi commitado até o commit autorizado; o remoto foi alterado apenas pelo push autorizado de `a1ae7b6`.
 - **HTMLs de produção intactos.** Nenhum dos 7 diretórios `*_production/` foi modificado.
 - **`implementation_plan.md` intacto.** Hash idêntico ao commit-base (`98bc0141…`).
 - **Novos arquivos (criados na migração, não commitados):** ~50 arquivos em `src/` (componentes, páginas, contexto, dados, utilitários, layouts, estilos).
 - **Arquivos existentes modificados (não commitados):** `package.json`, `vite.config.js`, `tailwind.config.js` → `tailwind.config.cjs`, `postcss.config.js`, `index.html` (entry Vite), `.gitignore`, `src/styles/index.css`, `src/layouts/MainLayout.jsx`, `src/App.jsx`, `src/contexts/CartContext.jsx`, `src/pages/Checkout.jsx`, `documentacao/ROADMAP_MIGRACAO.md`.
 
-### Próximos passos possíveis (fora do escopo desta migração)
+### Fase de produto — próximos passos priorizados (pós-Lote 11, fora do escopo da migração)
 
-1. **Preços reais** — substituir valores mock de `src/data/menu.js` pelos preços verdadeiros do restaurante.
-2. **Horários oficiais** — atualizar `ContactCard.jsx` com os horários de funcionamento reais.
-3. **WhatsApp com texto do pedido** — criar integração `wa.me` montando o texto dos itens confirmados.
-4. **Mapa interativo real** — substituir a imagem placeholder por um embed real do Google Maps ou equivalente.
-5. **Gateway de pagamento** — integrar PIX/Cartão real.
-6. **Persistência de pedidos** — backend + banco de dados para histórico de pedidos reais.
-7. **Páginas institucionais** — Sobre Nós, Avaliações, Termos de Uso, Privacidade, Contato.
-8. **Autenticação** — login do usuário com histórico de pedidos.
-9. **Títulos por rota** — `react-helmet` ou similar.
-10. **Testes automatizados** — unitários (Jest/Vitest) e de integração.
-11. **Deploy** — build de produção em Vercel, Netlify ou similar.
+Lista priorizada definida com o usuário (não é um lote formal; ordem de valor de produto):
+
+1. **Imagens próprias/localizadas** — remover a dependência das URLs externas `lh3.googleusercontent.com/aida-public/…` (25 imagens em 7 páginas): baixar/otimizar para `public/` e atualizar os componentes para assets locais.
+2. **Preços e dados reais** — substituir os mocks `R$ --,--` de `src/data/menu.js` pelos valores verdadeiros do restaurante.
+3. **WhatsApp real do pedido** — montar a mensagem do pedido automaticamente a partir da sacola/checkout via `wa.me` (estrutura já preparada no Lote 8; link real `shre.ink/turquiamarica` em `src/data/contact.js`).
+4. **Mapa real** — substituir o placeholder por embed Google Maps ou alternativa (sem SDK/serviço externo novo sem necessidade).
+5. **Persistência do pedido** — backend/banco (ex.: Supabase) para pedidos e histórico.
+6. **Pagamento real** — PIX/cartão via gateway.
+7. **SEO e títulos por rota** — `react-helmet` ou similar + meta tags por rota.
+8. **Testes automatizados** — unitários (Vitest/Jest) + E2E (Playwright).
+9. **Deploy/produção definitivo** — Vercel (ou similar).
+
+Outros itens registrados: horários oficiais ("Em breve" na Localização), páginas institucionais (Sobre Nós, Avaliações, Termos, Privacidade, Contato), autenticação, taxa de entrega real.
+
+### Skills avaliadas para a fase de produto (via `npx skills find` — NENHUMA instalada)
+
+| Área | Skill | Instalações | Fonte |
+|:---|:---|:---|:---|
+| Deploy Vercel | `vercel-labs/agent-skills@deploy-to-vercel` | 106K | **Oficial Vercel** ⭐ |
+| SEO | `addyosmani/web-quality-skills@seo` | 38.7K | **Addy Osmani / Google Chrome** ⭐ |
+| Testes E2E | `bobmatnyc/claude-mpm-skills@playwright-e2e-testing` | 2.7K | comunidade |
+| Testes React | `affaan-m/ecc@react-testing` | 3.1K | comunidade |
+| WhatsApp | `claude-office-skills/skills@whatsapp-automation` | 5.3K | comunidade |
+| WhatsApp | `gokapso/agent-skills@integrate-whatsapp` | 3.4K | comunidade |
+| **Figma** | `heygen-com/hyperframes@figma` | 77.4K | comunidade |
+| **Figma** | `figma/mcp-server-guide@figma-use` / `@implement-design` | ~6K | **Oficial Figma** ⭐ |
+| **Figma** | `openai/skills@figma-implement-design` | 5K | OpenAI |
+
+- **Figma:** úteis para implementar designs React a partir de arquivos/mockups Figma (caso o cliente forneça um design novo em Figma, em vez do Stitch).
+- **Supabase:** skills comunitárias encontradas são fracas (<300 instalações) — usar as skills oficiais `supabase`/`supabase-postgres-best-practices` já pré-carregadas no ambiente do agente.
+- ⭐ = fontes oficiais/respeitáveis (prioridade na instalação). Skills comunitárias não são auditadas.
 
 ---
 
