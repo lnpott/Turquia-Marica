@@ -1,142 +1,64 @@
-import { useEffect, useState } from 'react'
-import Button from '../ui/Button'
-import { IFOOD_URL } from '../../data/contact'
-import imgHeroFries from '../../assets/images/hero/hero-fries.jpg'
-import imgHeroAmbience from '../../assets/images/hero/hero-ambience.jpg'
-import imgHeroGallery from '../../assets/images/hero/hero-gallery.jpg'
-
-// LOTE 15 — Refinamento da Home usando o Cardápio como referência de qualidade.
-// Princípios preservados: FOTOGRAFIA PRIMEIRO, crossfade, Ken Burns sutil,
-// gradiente localizado, composição mobile própria.
-// Melhorias: eyebrow acima do título (consistente com tag do Cardápio),
-// CTA secundário usa tokens do DS (sem backdrop-blur decorativo),
-// dots de navegação do slideshow para orientação contextual no desktop.
-
-const SLIDES = [
-  { src: imgHeroFries,    label: 'Batatas fritas artesanais da Turquia Lanches', position: 'center' },
-  { src: imgHeroAmbience, label: 'Ambiente Turquia Lanches',                     position: 'center' },
-  { src: imgHeroGallery,  label: 'Momentos Turquia',                             position: 'center' },
-]
-
-const SLIDE_MS = 6000
+import { ArrowRight, MapPin, ShoppingBag } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import imgHeroFries from '../../assets/images/hero/hero-fries.webp'
+import imgHeroFriesFallback from '../../assets/images/hero/hero-fries.jpg'
+import { BUSINESS_INFO } from '../../data/contact'
+import ChannelAction from '../ui/ChannelAction'
 
 function HeroSection() {
-  const [active, setActive] = useState(0)
-  const [hydrated, setHydrated] = useState(false)
-
-  useEffect(() => { setHydrated(true) }, [])
-
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
-    const timer = setInterval(() => setActive((i) => (i + 1) % SLIDES.length), SLIDE_MS)
-    return () => clearInterval(timer)
-  }, [])
-
   return (
-    <section
-      className="relative w-full min-h-[560px] h-[calc(100svh-64px)] max-h-[760px] flex items-end md:items-center justify-center overflow-hidden py-10 md:py-0 md:h-[819px]"
-      aria-label="Apresentação Turquia Lanches"
-    >
-      {/* Fundo dinâmico desktop — crossfade, sem mix-blend, sem opacity reduzida */}
-      <div className="absolute inset-0 w-full h-full bg-surface-container hidden md:block">
-        {SLIDES.map((slide, i) => {
-          if (!hydrated && i > 0) return null
-          return (
-            <div
-              key={slide.src}
-              className={`absolute inset-0 w-full h-full bg-cover transition-opacity duration-[1600ms] ease-in-out ${
-                i === active ? 'opacity-100 hero-kenburns' : 'opacity-0'
-              }`}
-              role="img"
-              aria-label={slide.label}
-              aria-hidden={i !== active}
-              style={{ backgroundImage: `url('${slide.src}')`, backgroundPosition: slide.position }}
-            />
-          )
-        })}
-      </div>
-
-      {/* Fundo mobile — estático, full-bleed */}
-      <div
-        className="absolute inset-0 w-full h-full bg-cover md:hidden"
-        role="img"
-        aria-label="Batatas fritas artesanais da Turquia Lanches"
-        style={{ backgroundImage: `url('${imgHeroFries}')`, backgroundPosition: 'center' }}
-      />
-
-      {/* Overlay desktop — gradiente localizado à esquerda */}
-      <div
-        className="absolute inset-0 bg-gradient-to-r from-background/75 via-background/25 to-transparent hidden md:block pointer-events-none"
-        aria-hidden="true"
-      />
-
-      {/* Scrim mobile — base → dissolvendo */}
-      <div
-        className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-background/95 via-background/85 to-background/35 md:hidden pointer-events-none"
-        aria-hidden="true"
-      />
-
-      {/* Conteúdo */}
-      <div className="relative z-10 w-full px-4 lg:px-20 max-w-[1280px] mx-auto flex flex-col md:flex-row items-center justify-between">
-        <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left z-20 pb-2 md:pb-0">
-          {/* Eyebrow — coerente com a tag do Hero do Cardápio */}
-          <span className="section-eyebrow mb-4" aria-hidden="true">
-            Maricá · RJ
-          </span>
-
-          <h1 className="font-display-xl-mobile md:font-display-xl text-display-xl-mobile md:text-display-xl text-on-background mb-stack-tight drop-shadow-md max-w-[12ch]">
-            Fome de Leão?
-            <br />
-            <span className="text-primary">Lanche Especial.</span>
+    <section className="relative overflow-hidden bg-surface-container-low">
+      <div className="mx-auto grid min-h-[640px] max-w-[1280px] items-center gap-10 px-4 py-12 md:min-h-[680px] md:grid-cols-[1.05fr_0.95fr] md:px-margin-desktop md:py-20">
+        <div className="relative z-10 max-w-2xl">
+          <span className="section-eyebrow">Turquia Lanches · Maricá</span>
+          <h1 className="max-w-[12ch] font-display-xl-mobile text-display-xl-mobile leading-[1.02] text-on-background md:font-display-xl md:text-[64px]">
+            Fartura de bairro,
+            <span className="block text-primary">sem pose.</span>
           </h1>
-
-          <p className="font-body-lg text-body-lg text-on-surface-variant mb-stack-loose max-w-[300px] md:max-w-lg font-medium drop-shadow-sm hero-tagline">
-            Sabor raiz, ingredientes frescos e aquele exagero que a gente ama. O melhor lanche da
-            cidade te espera.
+          <p className="mt-6 max-w-xl font-body-lg text-body-lg text-on-surface-variant">
+            Estamos organizando cardápio, preços e canais oficiais para publicar somente informações confirmadas.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-gutter w-full sm:w-auto">
-            <Button href={IFOOD_URL} target="_blank" rel="noreferrer" size="lg" className="w-full sm:w-auto rounded-xl ambient-shadow">
-              <span className="material-symbols-outlined" data-weight="fill" aria-hidden="true">
-                shopping_cart
-              </span>
-              PEÇA AGORA NO IFOOD
-            </Button>
-            {/* Secundário: usa tokens do DS, sem backdrop-blur decorativo */}
-            <Button
-              href="#cardapio"
-              variant="secondary"
-              size="lg"
-              className="w-full sm:w-auto rounded-xl border-outline/60 bg-surface-container-low/80 text-on-background"
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Link
+              to="/cardapio"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-7 py-3 font-label-bold text-on-primary transition-colors hover:bg-primary-hover"
             >
-              <span className="material-symbols-outlined" aria-hidden="true">
-                restaurant_menu
-              </span>
-              VER CARDÁPIO
-            </Button>
+              Ver cardápio
+              <ArrowRight className="h-5 w-5" aria-hidden="true" />
+            </Link>
+            <ChannelAction
+              channel={BUSINESS_INFO.channels.maps}
+              icon={MapPin}
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-outline bg-surface px-7 py-3 font-label-bold text-on-surface transition-colors hover:bg-surface-container"
+            />
           </div>
+
+          <ChannelAction
+            channel={BUSINESS_INFO.channels.ifood}
+            icon={ShoppingBag}
+            unavailableClassName="mt-5 inline-flex items-center gap-2 text-sm font-medium text-on-surface-variant"
+          >
+            iFood não disponível / em construção
+          </ChannelAction>
         </div>
 
-        {/* Dots de navegação do slideshow — orientação contextual, desktop only */}
-        <div
-          className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 gap-2"
-          role="tablist"
-          aria-label="Slides do hero"
-        >
-          {SLIDES.map((slide, i) => (
-            <button
-              key={slide.src}
-              type="button"
-              role="tab"
-              aria-selected={i === active}
-              aria-label={`Slide ${i + 1}: ${slide.label}`}
-              onClick={() => setActive(i)}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === active ? 'w-8 bg-primary' : 'w-2 bg-on-background/30 hover:bg-on-background/50'
-              }`}
+        <figure className="relative mx-auto w-full max-w-[410px] overflow-hidden rounded-[28px] border-8 border-surface shadow-2xl md:rotate-2">
+          <picture>
+            <source srcSet={imgHeroFries} type="image/webp" />
+            <img
+              src={imgHeroFriesFallback}
+              alt="Porção de batatas fritas em material promocional ilustrativo"
+              width="410"
+              height="512"
+              className="h-auto w-full object-cover"
+              fetchPriority="high"
             />
-          ))}
-        </div>
+          </picture>
+          <figcaption className="absolute bottom-3 right-3 rounded-full bg-on-surface/85 px-3 py-1 text-xs font-bold uppercase tracking-wide text-on-image">
+            Imagem ilustrativa
+          </figcaption>
+        </figure>
       </div>
     </section>
   )

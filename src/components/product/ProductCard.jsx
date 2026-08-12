@@ -1,85 +1,31 @@
-import Badge from '../ui/Badge'
-import { IFOOD_URL } from '../../data/contact'
+import { Construction } from 'lucide-react'
 
 function ProductCard({ product }) {
   return (
-    <article className="bg-white rounded-lg overflow-hidden card-shadow card-shadow-hover transition-all flex flex-col group border border-surface-variant h-full">
-      <a href={IFOOD_URL} target="_blank" rel="noreferrer" className="block h-48 sm:h-56 lg:h-64 overflow-hidden relative" aria-label={`Pedir ${product.name} pelo iFood`}>
-        {product.badge && (
-          <Badge
-            tone={product.badge === 'Mais Pedido' ? 'primary' : 'secondary'}
-            className="absolute top-4 left-4 z-10 text-[10px] px-3 py-1"
-          >
-            {product.badge}
-          </Badge>
-        )}
+    <article className="flex h-full flex-col overflow-hidden rounded-xl border border-surface-variant bg-white shadow-sm">
+      <div className="relative aspect-[16/10] overflow-hidden bg-surface-container">
         <img
-          alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          alt={product.imageAlt}
+          className="h-full w-full object-cover"
           src={product.image}
+          width="512"
+          height="320"
+          loading="lazy"
         />
-      </a>
-
-      {product.includes ? (
-        <div className="p-4 sm:p-6 lg:p-8 flex flex-col flex-grow">
-          <h3 className="font-headline-md text-2xl mb-4 text-on-background">
-              {product.name}
-          </h3>
-          <ul className="space-y-2 mb-8">
-            {product.includes.map((item) => (
-              <li key={item} className="flex items-center gap-2 text-on-surface-variant font-body-md">
-                <span className="material-symbols-outlined text-primary text-lg" aria-hidden="true">
-                  check_circle
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
-          <div className="mt-auto">
-            <div className="flex items-baseline gap-2 mb-4">
-              {product.oldPrice && (
-                <span className="text-gray-400 line-through text-sm">{product.oldPrice}</span>
-              )}
-              <span className="font-price-lg text-primary text-3xl">{product.price}</span>
-            </div>
-            <a
-              href={IFOOD_URL}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={`Pedir ${product.name} pelo iFood`}
-              className="w-full min-h-11 bg-primary text-white font-label-bold text-label-bold px-4 py-3 rounded-lg hover:bg-primary-hover transition-all flex items-center justify-center gap-2"
-            >
-              <span className="material-symbols-outlined" aria-hidden="true">
-                add_shopping_cart
-              </span>
-              Pedir no iFood
-            </a>
-          </div>
+        {product.imageStatus === 'illustrative' ? (
+          <span className="absolute bottom-3 right-3 rounded-full bg-on-surface/85 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-on-image">Imagem ilustrativa</span>
+        ) : null}
+      </div>
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="font-headline-md text-xl text-on-background">{product.name}</h3>
+        {product.description ? <p className="mt-2 text-sm text-on-surface-variant">{product.description}</p> : null}
+        <div className="mt-6 flex items-center justify-between gap-3 border-t border-surface-variant pt-4">
+          <span className="font-price-lg text-xl text-primary">{product.price ?? 'Preço não disponível'}</span>
+          <span aria-disabled="true" className="inline-flex h-11 w-11 cursor-not-allowed items-center justify-center rounded-lg bg-surface-container text-outline" title="Pedido em construção">
+            <Construction className="h-5 w-5" aria-hidden="true" />
+          </span>
         </div>
-      ) : (
-        <div className="p-4 sm:p-6 flex flex-col flex-grow">
-          <h3 className="font-headline-md text-xl mb-2 text-on-background">
-            {product.name}
-          </h3>
-          <p className="font-body-md text-on-surface-variant text-sm mb-6 flex-grow leading-relaxed">
-            {product.description}
-          </p>
-          <div className="flex justify-between items-center mt-auto pt-4 border-t border-surface-variant">
-            <span className="font-price-lg text-primary text-2xl">{product.price}</span>
-            <a
-              href={IFOOD_URL}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={`Pedir ${product.name} pelo iFood`}
-              className="bg-primary text-white w-11 h-11 rounded-lg hover:bg-primary-hover transition-all flex items-center justify-center shadow-sm"
-            >
-              <span className="material-symbols-outlined" aria-hidden="true">
-                add
-              </span>
-            </a>
-          </div>
-        </div>
-      )}
+      </div>
     </article>
   )
 }

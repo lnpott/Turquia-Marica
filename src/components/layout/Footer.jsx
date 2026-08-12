@@ -1,62 +1,43 @@
+import { Instagram, MapPin, ShoppingBag } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import logo from '../../assets/images/brand/logo.jpg'
+import logo from '../../assets/images/brand/logo-96.webp'
+import { BUSINESS_INFO } from '../../data/contact'
+import ChannelAction from '../ui/ChannelAction'
 
-// LOTE 14 — Logo migrado para asset local. MESMA fotografia do logo do Header
-// (duplicata real dos HTMLs de produção confirmada por MD5) — asset único.
-const FOOTER_LOGO = logo
-
-const LINK_CLASSES =
-  'font-body-md text-body-md text-on-surface-variant hover:text-primary transition-all duration-300 hover:underline'
-
-const USEFUL_LINKS = [
-  { label: 'Termos de Uso', href: '#' },
-  { label: 'Privacidade', href: '#' },
-]
-
-const INSTITUTIONAL_LINKS = [
-  { label: 'Trabalhe Conosco', href: '#' },
-  { label: 'Contato', href: '#' },
-]
+const actionClasses = 'inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-medium text-on-surface-variant transition-colors hover:bg-surface hover:text-primary'
 
 function Footer() {
   return (
-    <footer className="w-full py-16 pb-24 md:pb-16 bg-surface-container-highest mt-margin-desktop">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-stack-loose px-margin-mobile md:px-margin-desktop max-w-[1280px] mx-auto items-start">
-        <div className="flex flex-col gap-stack-tight">
-          <Link to="/" aria-label="Turquia Lanches - Início" className="text-primary">
-            <img src={FOOTER_LOGO} alt="Turquia Lanches Logo" className="h-10 w-auto object-cover" />
+    <footer className="mt-margin-desktop w-full bg-surface-container-highest pb-24 pt-14 md:pb-14">
+      <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-10 px-margin-mobile md:grid-cols-[1.3fr_1fr_1fr] md:px-margin-desktop">
+        <div className="flex flex-col items-start gap-3">
+          <Link to="/" aria-label="Turquia Lanches — início">
+            <img src={logo} alt="Turquia Lanches" width="48" height="48" className="h-12 w-12 rounded-full object-cover" loading="lazy" />
           </Link>
-          <p className="font-body-md text-body-md text-on-surface-variant">
-            © 2024 Turquia Lanches. O sabor da tradição em cada mordida.
+          <p className="max-w-sm font-body-md text-sm text-on-surface-variant">
+            Catálogo institucional em atualização. Informações comerciais só serão publicadas após confirmação.
           </p>
+          <p className="font-body-md text-sm text-on-surface-variant">© {new Date().getFullYear()} Turquia Lanches.</p>
         </div>
 
-        <div className="flex flex-col gap-4">
-          <h4 className="font-label-bold text-on-surface">Links Úteis</h4>
-          <nav className="flex flex-col gap-2" aria-label="Links úteis">
-            {USEFUL_LINKS.map((link) => (
-              <a key={link.label} href={link.href} className={LINK_CLASSES}>
-                {link.label}
-              </a>
-            ))}
-          </nav>
-        </div>
+        <nav aria-label="Links do site" className="flex flex-col items-start gap-1">
+          <p className="mb-1 font-label-bold text-sm uppercase tracking-wide text-on-surface">Navegue</p>
+          <Link to="/cardapio" className={actionClasses}>Cardápio</Link>
+          <Link to="/localizacao" className={actionClasses}>Localização</Link>
+        </nav>
 
-        <div className="flex flex-col gap-4">
-          <h4 className="font-label-bold text-on-surface">Institucional</h4>
-          <nav className="flex flex-col gap-2" aria-label="Institucional">
-            {INSTITUTIONAL_LINKS.map((link) => (
-              <a key={link.label} href={link.href} className={LINK_CLASSES}>
-                {link.label}
-              </a>
-            ))}
-          </nav>
-        </div>
-
-        <div className="flex flex-col gap-4">
-          <p className="font-body-md text-body-md text-on-surface-variant opacity-70">
-            * Itens e preços demonstrativos.
-          </p>
+        <div className="flex flex-col items-start gap-1">
+          <p className="mb-1 font-label-bold text-sm uppercase tracking-wide text-on-surface">Canais confirmados</p>
+          <ChannelAction channel={BUSINESS_INFO.channels.maps} icon={MapPin} className={actionClasses} />
+          <ChannelAction channel={BUSINESS_INFO.channels.instagram} icon={Instagram} className={actionClasses} />
+          <ChannelAction
+            channel={BUSINESS_INFO.channels.ifood}
+            icon={ShoppingBag}
+            className={actionClasses}
+            unavailableClassName="inline-flex min-h-11 cursor-not-allowed items-center gap-2 px-3 text-sm text-outline"
+          >
+            iFood em construção
+          </ChannelAction>
         </div>
       </div>
     </footer>

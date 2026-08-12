@@ -7,13 +7,17 @@ function CategoryCard({ category, onSelect }) {
       aria-label={`Categoria ${category.name}`}
     >
       <img
-        alt={category.name}
+        alt={category.imageAlt}
         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         src={category.image}
+        width="512"
+        height="320"
+        loading="lazy"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
         <h3 className="text-white font-headline-md text-2xl">{category.name}</h3>
       </div>
+      <span className="absolute right-3 top-3 rounded-full bg-on-surface/85 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-on-image">Imagem ilustrativa</span>
     </button>
   )
 }

@@ -1,86 +1,109 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import logo from '../../assets/images/brand/logo.jpg'
-import { IFOOD_URL } from '../../data/contact'
-
-// LOTE 14 — Logo migrado para asset local (src/assets/images/brand/logo.jpg).
-const LOGO_URL = logo
+import { useEffect, useRef, useState } from 'react'
+import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Menu, ShoppingBag, X } from 'lucide-react'
+import logo from '../../assets/images/brand/logo-96.webp'
+import { BUSINESS_INFO } from '../../data/contact'
+import ChannelAction from '../ui/ChannelAction'
 
 const NAV_LINKS = [
   { label: 'Cardápio', to: '/cardapio' },
-  { label: 'Sobre Nós', href: '/#sobre' },
+  { label: 'Sobre nós', to: '/#sobre' },
   { label: 'Localização', to: '/localizacao' },
 ]
 
+const linkClasses =
+  'inline-flex min-h-11 items-center rounded-lg px-3 font-body-md text-sm font-medium text-on-surface-variant transition-colors hover:bg-surface-container-low hover:text-primary'
+
 function Header() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const linkClasses =
-    'font-body-md text-body-md text-on-surface-variant hover:text-primary transition-all duration-200 hover:scale-105'
+  const menuRef = useRef(null)
+  const toggleRef = useRef(null)
+  const location = useLocation()
+  const routeKey = `${location.pathname}${location.hash}`
+  const [menuState, setMenuState] = useState({ open: false, routeKey })
+  const menuOpen = menuState.open && menuState.routeKey === routeKey
+
+  useEffect(() => {
+    if (!menuOpen) return undefined
+
+    const firstLink = menuRef.current?.querySelector('a')
+    firstLink?.focus()
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setMenuState({ open: false, routeKey })
+        toggleRef.current?.focus()
+        return
+      }
+
+      if (event.key !== 'Tab') return
+      const focusable = [...(menuRef.current?.querySelectorAll('a') ?? []), toggleRef.current].filter(Boolean)
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [menuOpen, routeKey])
 
   return (
-    <header className="w-full sticky top-0 z-50 bg-surface shadow-sm">
-      <div className="flex justify-between items-center min-h-16 md:h-20 px-4 md:px-margin-desktop max-w-[1280px] mx-auto gap-3">
-        <Link
-          to="/"
-          aria-label="Turquia Lanches - Início"
-          className="text-primary hover:scale-105 transition-transform duration-200"
-        >
-          <img src={LOGO_URL} alt="Turquia Lanches Logo" className="h-11 md:h-12 w-auto object-cover" />
+    <header className="sticky top-0 z-50 w-full border-b border-outline-variant bg-surface/95 shadow-sm">
+      <div className="mx-auto flex min-h-16 max-w-[1280px] items-center justify-between gap-3 px-4 md:h-20 md:px-margin-desktop">
+        <Link to="/" aria-label="Turquia Lanches — início" className="rounded-lg focus-visible:outline-offset-4">
+          <img src={logo} alt="Turquia Lanches" width="48" height="48" className="h-11 w-11 rounded-full object-cover md:h-12 md:w-12" />
         </Link>
 
-        <nav className="hidden md:flex gap-stack-loose items-center" aria-label="Navegação principal">
-          {NAV_LINKS.map((link) =>
-            link.to ? (
-              <Link key={link.label} to={link.to} className={linkClasses}>
-                {link.label}
-              </Link>
-            ) : (
-              <a key={link.label} href={link.href} className={linkClasses}>
-                {link.label}
-              </a>
-            ),
-          )}
+        <nav className="hidden items-center gap-2 md:flex" aria-label="Navegação principal">
+          {NAV_LINKS.map((link) => (
+            <NavLink key={link.label} to={link.to} className={linkClasses}>
+              {link.label}
+            </NavLink>
+          ))}
         </nav>
 
-        <div className="flex items-center gap-1 md:gap-3">
-          <a href={IFOOD_URL} target="_blank" rel="noreferrer" className="hidden md:inline-flex items-center min-h-11 rounded-lg bg-primary px-5 text-sm font-bold text-on-primary transition-colors hover:bg-primary-hover">
-            Peça agora
-          </a>
-          <button
-            type="button"
-            aria-label="Abrir menu"
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((open) => !open)}
-            className="md:hidden text-primary p-2 active:scale-95 transition-transform"
+        <div className="flex items-center gap-2">
+          <ChannelAction
+            channel={BUSINESS_INFO.channels.ifood}
+            icon={ShoppingBag}
+            className="hidden min-h-11 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-bold text-on-primary transition-colors hover:bg-primary-hover md:inline-flex"
+            unavailableClassName="hidden min-h-11 cursor-not-allowed items-center gap-2 rounded-lg border border-dashed border-outline bg-surface-container-low px-4 text-xs font-bold uppercase tracking-wide text-on-surface-variant md:inline-flex"
           >
-            <span className="material-symbols-outlined text-3xl">{menuOpen ? 'close' : 'menu'}</span>
+            iFood em construção
+          </ChannelAction>
+          <button
+            ref={toggleRef}
+            type="button"
+            aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+            aria-expanded={menuOpen}
+            aria-controls="menu-mobile"
+            onClick={() => setMenuState({ open: !menuOpen, routeKey })}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-primary transition-colors hover:bg-surface-container-low md:hidden"
+          >
+            {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
           </button>
         </div>
       </div>
 
-      {menuOpen && (
+      {menuOpen ? (
         <nav
+          id="menu-mobile"
+          ref={menuRef}
           aria-label="Menu mobile"
-          className="md:hidden bg-surface border-t border-outline-variant px-margin-mobile pb-6 pt-2 flex flex-col gap-4"
+          className="flex flex-col gap-1 border-t border-outline-variant bg-surface px-margin-mobile pb-6 pt-3 md:hidden"
         >
-          {NAV_LINKS.map((link) =>
-            link.to ? (
-              <Link
-                key={link.label}
-                to={link.to}
-                onClick={() => setMenuOpen(false)}
-                className={linkClasses}
-              >
-                {link.label}
-              </Link>
-            ) : (
-              <a key={link.label} href={link.href} className={linkClasses}>
-                {link.label}
-              </a>
-            ),
-          )}
+          {NAV_LINKS.map((link) => (
+            <NavLink key={link.label} to={link.to} className={linkClasses}>
+              {link.label}
+            </NavLink>
+          ))}
         </nav>
-      )}
+      ) : null}
     </header>
   )
 }

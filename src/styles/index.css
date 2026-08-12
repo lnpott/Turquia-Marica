@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/dm-sans-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Rubik';
+  src: url('/fonts/rubik-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+}
+
 :root {
   --color-primary: #ae0011;
   --color-secondary-container: #fdc008;
@@ -24,20 +40,33 @@ html {
   scroll-behavior: smooth;
 }
 
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  transform: translateY(-200%);
+  border-radius: 0.5rem;
+  background: var(--color-on-surface);
+  color: white;
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+img {
+  max-width: 100%;
+}
+
 .ambient-shadow {
   box-shadow: 0 4px 15px rgba(37, 25, 19, 0.12);
 }
 
 .card-shadow {
   box-shadow: 0 4px 20px rgba(37, 25, 19, 0.08);
-}
-
-.material-symbols-outlined {
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-}
-
-.fill-icon {
-  font-variation-settings: 'FILL' 1;
 }
 
 .card-shadow-hover:hover {

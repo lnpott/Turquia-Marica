@@ -1,36 +1,33 @@
-// Mapa — preserva a solução exata da referência (turquia_lanches_localiza_o_production/code.html):
-// imagem placeholder em estilo mapa, SEM iframe/API/SDK de mapas (o HTML de produção não usa
-// nenhum serviço externo de mapas). Os controles de zoom são mockup visual (no HTML são
-// <button> inertes) — renderizados como spans decorativos com aria-hidden para não criar
-// controles falsos (adaptação de acessibilidade documentada no roadmap).
-// LOTE 14 — Imagem migrada para asset local (location/map.png).
+import { ExternalLink, MapPin } from 'lucide-react'
 import mapImage from '../../assets/images/location/map.png'
-
-const MAP_IMAGE = mapImage
+import { BUSINESS_INFO } from '../../data/contact'
 
 function MapEmbed() {
   return (
-    <div className="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_4px_15px_rgba(37,25,19,0.12)] min-h-[400px] relative group">
+    <a
+      href={BUSINESS_INFO.channels.maps.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group relative block min-h-[400px] overflow-hidden rounded-2xl bg-surface-container-lowest shadow-lg focus-visible:outline-offset-4"
+      aria-label="Abrir a localização da Turquia Lanches no Google Maps"
+    >
       <img
-        src={MAP_IMAGE}
-        alt="Mapa ilustrativo da localização da Turquia Lanches em Maricá/RJ"
-        className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+        src={mapImage}
+        alt="Mapa ilustrativo da região da Turquia Lanches em Parque Nanci, Maricá"
+        width="512"
+        height="512"
+        loading="lazy"
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
       />
-      {/* Overlay interativo (referência) */}
-      <div
-        className="absolute inset-0 bg-surface/10 group-hover:bg-transparent transition-colors duration-300"
-        aria-hidden="true"
-      />
-      {/* Mockup de controles de zoom do mapa (decorativo) */}
-      <div className="absolute bottom-4 right-4 flex flex-col gap-2" aria-hidden="true">
-        <span className="w-10 h-10 bg-white rounded shadow flex items-center justify-center text-on-surface">
-          <span className="material-symbols-outlined">add</span>
+      <div className="absolute inset-0 bg-gradient-to-t from-on-surface/85 via-on-surface/15 to-transparent" aria-hidden="true" />
+      <div className="absolute inset-x-5 bottom-5 flex items-center justify-between gap-4 rounded-xl bg-surface p-4 shadow-lg">
+        <span className="flex items-center gap-3 font-label-bold text-on-surface">
+          <MapPin className="h-5 w-5 text-primary" aria-hidden="true" />
+          Abrir no Google Maps
         </span>
-        <span className="w-10 h-10 bg-white rounded shadow flex items-center justify-center text-on-surface">
-          <span className="material-symbols-outlined">remove</span>
-        </span>
+        <ExternalLink className="h-5 w-5 text-primary" aria-hidden="true" />
       </div>
-    </div>
+    </a>
   )
 }
 
