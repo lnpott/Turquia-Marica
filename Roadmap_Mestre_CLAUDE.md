@@ -803,7 +803,7 @@ Desktop foi preservado.
 
 ---
 
-# 18. ÚLTIMO ESTADO GIT REGISTRADO
+# 18. ÚLTIMO ESTADO GIT REGISTRADO (HISTÓRICO)
 
 Último checkpoint fornecido:
 
@@ -826,6 +826,19 @@ O push desse commit estava aguardando autorização no último estado explicitam
 **Antes de qualquer novo trabalho, verificar o Git real.**
 
 Não presumir que esse estado ainda seja atual.
+
+## Estado atual verificado — 12/08/2026
+
+```text
+HEAD:         951a53a8f994186b4282b7ee3e488eaa56ff2b01
+origin/main:  951a53a8f994186b4282b7ee3e488eaa56ff2b01
+Estado:       sincronizado (ahead 0, behind 0)
+Working tree: limpa
+```
+
+Commit atual: `951a53a refactor(ui): route orders through iFood and unify home menu`.
+
+Esse commit redefine o escopo atual: o site é catálogo institucional e os pedidos são encaminhados externamente ao iFood. O checkout próprio, carrinho, confirmação e detalhes transacionais foram removidos da aplicação ativa. As rotas atuais são `/`, `/cardapio` e `/localizacao`; o restante da migração permanece documentado como histórico.
 
 ---
 

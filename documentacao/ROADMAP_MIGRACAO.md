@@ -3,6 +3,8 @@
 > **Documentação operacional permanente da migração.** Atualizado ao final de cada lote.
 > Qualquer agente futuro deve ler este arquivo antes de alterar o projeto.
 
+> **Estado atual — 12/08/2026:** o Git real é a fonte de verdade. O projeto está sincronizado com `origin/main` no commit `951a53a` (`refactor(ui): route orders through iFood and unify home menu`), com working tree limpa e build aprovado. O produto atual é um catálogo institucional; pedidos são encaminhados externamente ao iFood. As rotas ativas são `/`, `/cardapio` e `/localizacao`. As seções que descrevem carrinho, checkout, confirmação e 7 rotas registram o histórico da migração e não representam a arquitetura atual.
+
 ---
 
 ## 1. Origem do projeto
@@ -500,7 +502,7 @@ dist/assets/index-tu-UIOcT.js   241.23 kB │ gzip: 74.78 kB
 
 **0 warnings. 0 erros.**
 
-### Estado do Git
+### Estado do Git histórico da migração
 
 - **Atualização pós-Lote 10:** a migração foi commitada e enviada ao remoto após o Lote 10 — commit `a1ae7b6` ("feat: complete checkout confirmation and location flows", push para `origin/main` autorizado pelo usuário).
 - **Lote 11 (refinamento visual):** commit `66ac14b` ("feat: refine visual experience and image transitions", 8 arquivos) criado e **enviado a `origin/main`** (push autorizado). HEAD = origin/main = `66ac14b`; working tree limpa.
