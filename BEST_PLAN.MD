@@ -70,7 +70,7 @@
 
 ### Plano total de refinamento visual — Lotes 11 a 14 (proposto por Claude)
 
-> **Estado geral:** Lotes 11, 12, 13 e 15 CONCLUÍDOS; Lote 14 BLOQUEADO/PENDENTE; Lotes 16 e 17 NÃO INICIADOS. A execução continua lote a lote e exige autorização explícita antes de codar, antes de commit e antes de push, como já é regra no restante deste documento.
+> **Estado geral:** Lotes 11, 12, 13, 15, 16 e 17 CONCLUÍDOS; Lote 14 BLOQUEADO/PENDENTE. A execução continua lote a lote e exige autorização explícita antes de codar, antes de commit e antes de push, como já é regra no restante deste documento.
 
 **Origem:** análise comparativa entre as branches `main` e `BEST_ONE` (repositório `lnpott/Turquia-Marica`), cruzada com os dois deploys Vercel (`turquia-marica.vercel.app` e o preview mais recente) e com as evidências visuais já existentes em `documentacao/qa/*-after.png`.
 
@@ -106,7 +106,7 @@
   3. Não alterar a lógica ou os itens da própria `BottomNavBar.jsx` — o problema é de espaçamento de quem está por baixo, não da barra em si.
 - **Fora de escopo:** redesenhar a barra, adicionar/remover itens de navegação, mudar z-index global.
 - **Critério de aceite:** nenhuma foto de hero ou CTA principal parcialmente coberto pela barra em 375–414 px; screenshot mobile de `/cardapio` e `/localizacao` regenerado e comparado ao atual.
-- **Resultado:** o Hero do Cardápio recebeu enquadramento móvel mais baixo e espaçamento compacto; a ação do mapa ganhou distância adicional da barra. As caixas foram medidas contra o topo real da navegação em 375, 390 e 414 px por teste E2E.
+- **Resultado:** o Hero do Cardápio recebeu enquadramento móvel mais baixo e espaçamento compacto; a ação do mapa ganhou distância adicional da barra. Após revisão, a compensação passou a responder também à altura da viewport, e o teste cobre 375×667, 390×740 e 414×844 px por interseção real de retângulos.
 - **Evidências:** `documentacao/qa/cardapio-lote-12-15-mobile.png`, `documentacao/qa/localizacao-lote-12-mobile.png` e auditoria consolidada em `documentacao/qa/AUDITORIA_LOTES_12_13_15.md`.
 
 ---
@@ -158,20 +158,26 @@
 
 #### Lote 16 — Regenerar `og-image.png` após estabilização visual
 
+- **Estado:** CONCLUÍDO — imagem regenerada e auditada em 14/08/2026.
 - **Prioridade:** Baixa. Só faz sentido depois que os Lotes 11–13 (e 15, se executado) estiverem concluídos.
 - **Constatação:** `public/og-image.png` é uma captura estática usada em compartilhamentos sociais (Open Graph/Twitter Card). Se o site mudar visualmente nos lotes acima, essa imagem fica desatualizada em relação à aparência real do site.
 - **Implementação:** gerar novo `og-image.png` a partir do estado final da Home, uma única vez, depois que o restante do plano estabilizar — evita regenerar a imagem mais de uma vez à toa.
 - **Critério de aceite:** `og-image.png` reflete a Home tal como publicada; validado no preview de compartilhamento (ex.: debugger de Open Graph).
+- **Resultado:** `public/og-image.png` foi regenerado a partir da Home final em viewport 1.200×630, preservando marca, tagline aprovada, direção visual e fotografia ilustrativa. O E2E valida publicação, MIME, dimensões e referências Open Graph/Twitter.
+- **Evidência:** `documentacao/qa/AUDITORIA_LOTES_16_17.md` e o próprio `public/og-image.png`.
 
 ---
 
 #### Lote 17 — Decisão de copy/tagline do Hero (decisão do cliente, não de design)
 
+- **Estado:** CONCLUÍDO — tagline da `BEST_ONE` confirmada explicitamente pelo responsável em 14/08/2026.
 - **Prioridade:** Não sequencial — depende de quem decide o tom da marca, não da equipe de implementação.
 - **Constatação:** a branch `main` usa a tagline "Fome de Leão? Lanche Especial." enquanto `BEST_ONE` usa "Turquia Lanches. Fartura sem pose." São duas direções de copy diferentes, não uma evolução técnica uma da outra. Nenhum dos Lotes 11–16 deste plano mexe nisso.
 - **Risco se não for tratado explicitamente:** a tagline de `BEST_ONE` pode ser tratada como "decidida" só por ser a que está no ar, sem que o responsável pela marca tenha de fato validado a escolha entre as duas.
 - **Implementação:** não é tarefa de código. É confirmar com o responsável do projeto/cliente qual tagline (ou uma terceira) representa melhor a marca, e só então tratar como aprovada.
 - **Critério de aceite:** confirmação explícita registrada neste documento (Changelog) antes de considerar a tagline atual como definitiva.
+- **Resultado:** mantida como definitiva a copy “Turquia Lanches. Fartura sem pose.”, já presente no Hero da `BEST_ONE`; nenhuma alteração de código foi necessária.
+- **Evidência:** decisão do responsável registrada no Changelog e auditoria em `documentacao/qa/AUDITORIA_LOTES_16_17.md`.
 
 ---
 
@@ -293,3 +299,5 @@
 - **13/08/2026:** auditoria independente do Lote 6 concluída pelo commit `5239e5f`, com veredito **APROVADO COM RESSALVAS**; a etapa de refinamento definitivo passou a refletir a aprovação auditada de Home, Cardápio e Localização. O checkout não possuía remote configurado, portanto nenhum estado, número ou URL de Pull Request remoto pôde ser confirmado.
 - **14/08/2026:** Lote 11 unificou a apresentação visual de categorias entre Home e Cardápio, preservou os hashes legados e foi auditado como **APROVADO COM RESSALVAS**; Lote 12 permanece como próximo passo, sem início automático.
 - **14/08/2026:** Lotes 12, 13 e 15 concluídos e auditados: áreas críticas respeitam a BottomNavBar em 375–414 px, a consistência global não apresentou novo bloqueio e Bebidas passou a declarar a pendência de acervo sem fotografia enganosa. Lote 14 foi registrado como bloqueado/pendente; Lotes 16 e 17 não foram iniciados.
+- **14/08/2026:** revisão do Lote 12 ampliou a cobertura para alturas móveis curtas (375×667 e 390×740), com compensação responsiva e detecção de interseção real entre conteúdo e BottomNavBar.
+- **14/08/2026:** Lote 16 regenerou `og-image.png` em 1.200×630 a partir da Home estabilizada; Lote 17 registrou a confirmação explícita do responsável por “Turquia Lanches. Fartura sem pose.”. Ambos foram auditados e concluídos, sem desbloquear o Lote 14.

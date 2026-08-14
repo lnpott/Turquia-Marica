@@ -14,8 +14,8 @@
 
 ### Validação
 
-- Um teste E2E mede as caixas reais do Hero, da ação do mapa e da navegação inferior em 375, 390 e 414 px.
-- Em todos os três viewports, a borda inferior do Hero e da ação fica antes ou no topo da navegação.
+- Um teste E2E mede as caixas reais do Hero, da ação do mapa e da navegação inferior em 375×667, 390×740 e 414×844 px.
+- Em todos os três viewports, inclusive nas duas alturas curtas, os retângulos do Hero e da ação não intersectam o retângulo da navegação. A compensação CSS responde à altura disponível em vez de assumir apenas 844 px.
 - As capturas integrais `cardapio-lote-12-15-mobile.png` e `localizacao-lote-12-mobile.png`, ambas em 390 px, confirmam visualmente o afastamento.
 
 **Resultado:** APROVADO. Nenhuma foto do Hero do Cardápio ou CTA do mapa fica parcialmente coberto nos viewports exigidos.
