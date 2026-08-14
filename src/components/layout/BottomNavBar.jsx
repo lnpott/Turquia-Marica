@@ -15,7 +15,7 @@ function BottomNavBar() {
   return (
     <nav
       aria-label="Navegação inferior"
-      className="mobile-nav-safe fixed inset-x-0 bottom-0 z-50 flex min-h-[72px] items-center justify-around border-t border-outline-variant bg-surface px-2 py-2 shadow-[0_-4px_10px_rgba(37,25,19,0.12)] md:hidden"
+      className="mobile-nav-safe fixed inset-x-0 bottom-0 z-50 flex min-h-[72px] items-center justify-around border-t-2 border-on-surface bg-background px-2 py-2 shadow-[0_-8px_24px_rgba(37,25,19,0.14)] md:hidden"
     >
       {ITEMS.map(({ label, Icon, to, unavailable }) =>
         unavailable ? (

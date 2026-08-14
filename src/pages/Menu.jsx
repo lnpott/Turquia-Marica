@@ -1,5 +1,5 @@
 import { ShoppingBag } from 'lucide-react'
-import MenuHighlights from '../components/menu/MenuHighlights'
+import MenuCatalog from '../components/menu/MenuCatalog'
 import UnavailableNotice from '../components/ui/UnavailableNotice'
 import imgMenuHero from '../assets/images/menu/menu-hero.webp'
 import imgMenuHeroFallback from '../assets/images/menu/menu-hero.jpg'
@@ -9,23 +9,31 @@ import ChannelAction from '../components/ui/ChannelAction'
 function Menu() {
   return (
     <>
-      <section className="bg-surface-container-low px-4 py-12 md:px-margin-desktop md:py-20">
-        <div className="mx-auto grid max-w-[1280px] items-center gap-10 md:grid-cols-2">
-          <div>
-            <span className="section-eyebrow">Cardápio Turquia</span>
-            <h1 className="font-display-xl-mobile text-display-xl-mobile text-on-background md:font-display-xl md:text-display-xl">Cardápio em construção</h1>
-            <p className="mt-5 max-w-xl font-body-lg text-body-lg text-on-surface-variant">
-              Estamos confirmando produtos, ingredientes e preços. Nenhum valor provisório será apresentado como oferta.
+      <section className="editorial-grid bg-on-surface px-4 py-10 text-on-image md:px-margin-desktop md:py-16">
+        <div className="mx-auto grid max-w-[1280px] items-center gap-8 md:grid-cols-[1.05fr_0.95fr] md:gap-14">
+          <div className="relative z-10">
+            <span className="mb-5 inline-flex border-2 border-on-image bg-secondary-container px-3 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-on-surface shadow-[3px_3px_0_#ae0011]">Cardápio Turquia</span>
+            <h1 className="display-balance max-w-[11ch] font-display-xl-mobile text-[46px] font-extrabold leading-[0.92] tracking-[-0.05em] text-on-image md:text-[68px]">
+              Veja o que está previsto.<span className="block text-secondary-container">Sem promessa vazia.</span>
+            </h1>
+            <p className="mt-6 max-w-xl border-l-4 border-primary pl-4 text-base leading-relaxed text-on-image/75 md:text-lg">
+              A estrutura do futuro cardápio está aqui. Produtos, preços e pedidos continuam indisponíveis até confirmação oficial.
             </p>
+            <a
+              href="#categorias"
+              className="mt-7 inline-flex min-h-12 items-center justify-center border-2 border-on-image bg-primary px-6 py-3 text-sm font-extrabold uppercase tracking-wide text-on-primary shadow-[4px_4px_0_#fdc008] transition-transform hover:-translate-y-1"
+            >
+              Ver categorias previstas
+            </a>
             <ChannelAction
               channel={BUSINESS_INFO.channels.ifood}
               icon={ShoppingBag}
-              unavailableClassName="mt-6 inline-flex min-h-12 cursor-not-allowed items-center gap-2 rounded-xl border border-dashed border-outline bg-surface px-6 py-3 font-label-bold text-on-surface-variant"
+              unavailableClassName="mt-5 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-on-image/55"
             >
               iFood não disponível / em construção
             </ChannelAction>
           </div>
-          <figure className="overflow-hidden rounded-2xl border-8 border-surface bg-surface shadow-xl">
+          <figure className="relative overflow-hidden border-2 border-on-image bg-background p-2 shadow-[8px_8px_0_#fdc008] md:rotate-1">
             <picture>
               <source srcSet={imgMenuHero} type="image/webp" />
               <img
@@ -33,20 +41,20 @@ function Menu() {
                 alt="Hambúrguer com batatas em cenário ilustrativo"
                 width="512"
                 height="279"
-                className="aspect-[16/9] h-auto w-full object-cover"
-                fetchPriority="high"
+                className="aspect-[4/3] h-auto w-full object-cover"
+                fetchpriority="high"
               />
             </picture>
-            <figcaption className="bg-on-surface px-4 py-2 text-center text-xs font-bold uppercase tracking-wide text-on-image">Imagem ilustrativa</figcaption>
+            <figcaption className="absolute bottom-4 right-4 bg-secondary-container px-3 py-2 text-[9px] font-extrabold uppercase tracking-wide text-on-surface">Imagem ilustrativa</figcaption>
           </figure>
         </div>
       </section>
 
-      <MenuHighlights showAll />
+      <MenuCatalog />
 
-      <section className="px-4 pb-4 md:px-margin-desktop">
+      <section className="bg-background px-4 py-10 md:px-margin-desktop md:py-14">
         <UnavailableNotice
-          className="mx-auto max-w-[1280px]"
+          className="mx-auto max-w-[1280px] border-2 border-on-surface bg-surface shadow-[4px_4px_0_#251913]"
           title="Produtos e preços não disponíveis"
           description="Esta área será atualizada quando o cardápio oficial for aprovado."
         />

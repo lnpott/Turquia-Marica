@@ -53,10 +53,11 @@ function Header() {
   }, [menuOpen, routeKey])
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-outline-variant bg-surface/95 shadow-sm">
-      <div className="mx-auto flex min-h-16 max-w-[1280px] items-center justify-between gap-3 px-4 md:h-20 md:px-margin-desktop">
-        <Link to="/" aria-label="Turquia Lanches — início" className="rounded-lg focus-visible:outline-offset-4">
-          <img src={logo} alt="Turquia Lanches" width="48" height="48" className="h-11 w-11 rounded-full object-cover md:h-12 md:w-12" />
+    <header className="sticky top-0 z-50 w-full border-b-2 border-on-surface bg-background/95 backdrop-blur-md">
+      <div className="mx-auto flex min-h-16 max-w-[1280px] items-center justify-between gap-3 px-4 md:h-[76px] md:px-margin-desktop">
+        <Link to="/" aria-label="Turquia Lanches — início" className="flex items-center gap-3 rounded-lg focus-visible:outline-offset-4">
+          <img src={logo} alt="Turquia Lanches" width="48" height="48" className="h-11 w-11 rounded-full border-2 border-on-surface object-cover md:h-12 md:w-12" />
+          <span className="hidden font-headline-md text-base font-extrabold uppercase leading-none tracking-[-0.03em] text-on-surface sm:block">Turquia<br/><span className="text-primary">Lanches</span></span>
         </Link>
 
         <nav className="hidden items-center gap-2 md:flex" aria-label="Navegação principal">
@@ -72,9 +73,9 @@ function Header() {
             channel={BUSINESS_INFO.channels.ifood}
             icon={ShoppingBag}
             className="hidden min-h-11 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-bold text-on-primary transition-colors hover:bg-primary-hover md:inline-flex"
-            unavailableClassName="hidden min-h-11 cursor-not-allowed items-center gap-2 rounded-lg border border-dashed border-outline bg-surface-container-low px-4 text-xs font-bold uppercase tracking-wide text-on-surface-variant md:inline-flex"
+            unavailableClassName="hidden min-h-11 cursor-not-allowed items-center gap-2 px-3 text-xs font-bold uppercase tracking-wide text-on-surface-variant/70 md:inline-flex"
           >
-            iFood em construção
+            Pedidos em breve
           </ChannelAction>
           <button
             ref={toggleRef}
@@ -95,7 +96,7 @@ function Header() {
           id="menu-mobile"
           ref={menuRef}
           aria-label="Menu mobile"
-          className="flex flex-col gap-1 border-t border-outline-variant bg-surface px-margin-mobile pb-6 pt-3 md:hidden"
+          className="flex flex-col gap-1 border-t-2 border-on-surface bg-secondary-container px-margin-mobile pb-6 pt-3 md:hidden"
         >
           {NAV_LINKS.map((link) => (
             <NavLink key={link.label} to={link.to} className={linkClasses}>

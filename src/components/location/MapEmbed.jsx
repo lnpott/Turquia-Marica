@@ -1,5 +1,4 @@
-import { ExternalLink, MapPin } from 'lucide-react'
-import mapImage from '../../assets/images/location/map.png'
+import { ExternalLink, MapPin, Navigation } from 'lucide-react'
 import { BUSINESS_INFO } from '../../data/contact'
 
 function MapEmbed() {
@@ -8,24 +7,27 @@ function MapEmbed() {
       href={BUSINESS_INFO.channels.maps.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative block min-h-[400px] overflow-hidden rounded-2xl bg-surface-container-lowest shadow-lg focus-visible:outline-offset-4"
-      aria-label="Abrir a localização da Turquia Lanches no Google Maps"
+      className="group relative block min-h-[330px] overflow-hidden border-2 border-on-surface bg-surface-container-lowest shadow-[8px_8px_0_#fdc008] focus-visible:outline-offset-4 md:min-h-[440px] md:rotate-1"
+      aria-label="Abrir a ficha Turquia Lanches - Parque Nanci no Google Maps (nova aba)"
     >
-      <img
-        src={mapImage}
-        alt="Mapa ilustrativo da região da Turquia Lanches em Parque Nanci, Maricá"
-        width="512"
-        height="512"
-        loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-on-surface/85 via-on-surface/15 to-transparent" aria-hidden="true" />
-      <div className="absolute inset-x-5 bottom-5 flex items-center justify-between gap-4 rounded-xl bg-surface p-4 shadow-lg">
+      <div className="absolute inset-0 editorial-grid bg-secondary-container" aria-hidden="true">
+        <div className="absolute -right-12 top-12 h-52 w-52 rounded-full border-[18px] border-primary/15 transition-transform duration-300 group-hover:scale-105 md:h-72 md:w-72" />
+        <div className="absolute left-[16%] top-[36%] h-24 w-[68%] rotate-[-8deg] rounded-[50%] border-b-4 border-dashed border-primary/50" />
+        <MapPin className="absolute left-[48%] top-[34%] h-20 w-20 -translate-x-1/2 text-primary drop-shadow-[4px_4px_0_#fdc008] md:h-28 md:w-28" strokeWidth={2.4} />
+      </div>
+      <div className="absolute left-4 top-4 border-2 border-on-surface bg-secondary-container px-3 py-2 text-[10px] font-extrabold uppercase tracking-[0.14em] text-on-surface">
+        Ilustração · não é um mapa
+      </div>
+      <div className="absolute inset-x-4 bottom-40 flex items-center justify-between gap-4 border-2 border-on-surface bg-background p-4 shadow-[4px_4px_0_#251913] md:bottom-4">
         <span className="flex items-center gap-3 font-label-bold text-on-surface">
-          <MapPin className="h-5 w-5 text-primary" aria-hidden="true" />
-          Abrir no Google Maps
+          <Navigation className="h-5 w-5 text-primary" aria-hidden="true" />
+          Conferir ficha
         </span>
-        <ExternalLink className="h-5 w-5 text-primary" aria-hidden="true" />
+        <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-on-surface-variant">
+          <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
+          Google Maps
+          <ExternalLink className="h-4 w-4 text-primary" aria-hidden="true" />
+        </span>
       </div>
     </a>
   )

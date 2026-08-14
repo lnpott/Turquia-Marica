@@ -1,25 +1,43 @@
-import { MapPin } from 'lucide-react'
+import { ExternalLink, MapPin, Navigation } from 'lucide-react'
 import ContactCard from '../components/location/ContactCard'
 import MapEmbed from '../components/location/MapEmbed'
+import { BUSINESS_INFO } from '../data/contact'
 
 function Location() {
   return (
     <>
-      <section className="bg-primary px-4 py-16 text-on-primary md:px-margin-desktop md:py-24">
-        <div className="mx-auto max-w-[1280px]">
-          <span className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-secondary-container">
-            <MapPin className="h-4 w-4" aria-hidden="true" />
-            Parque Nanci · Maricá/RJ
-          </span>
-          <h1 className="mt-4 max-w-[16ch] font-display-xl-mobile text-display-xl-mobile md:font-display-xl md:text-display-xl">Encontre a Turquia Lanches</h1>
-          <p className="mt-5 max-w-2xl font-body-lg text-body-lg text-on-primary/85">
-            O ponto no Google Maps está disponível. Endereço completo, telefone e horários ainda estão em construção.
-          </p>
+      <section className="editorial-grid border-b-2 border-on-surface bg-background px-4 py-10 md:px-margin-desktop md:py-16">
+        <div className="mx-auto grid max-w-[1280px] items-center gap-10 md:grid-cols-[0.9fr_1.1fr] md:gap-14">
+          <div>
+            <span className="mb-5 inline-flex border-2 border-on-surface bg-secondary-container px-3 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-on-surface shadow-[3px_3px_0_#251913]">
+              Parque Nanci · Maricá
+            </span>
+            <h1 className="display-balance max-w-[10ch] font-display-xl-mobile text-[48px] font-extrabold leading-[0.92] tracking-[-0.05em] text-on-surface md:text-[70px]">
+              Turquia Lanches.<span className="block text-primary">Seu destino no bairro.</span>
+            </h1>
+            <p className="mt-6 max-w-xl border-l-4 border-primary pl-4 text-base leading-relaxed text-on-surface-variant md:text-lg">
+              O link disponível abre a ficha “Turquia Lanches - Parque Nanci” no Google Maps. Confira o destino no aplicativo antes de iniciar a rota.
+            </p>
+            <a
+              href={BUSINESS_INFO.channels.maps.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-7 inline-flex min-h-12 items-center justify-center gap-3 border-2 border-on-surface bg-primary px-6 py-3 text-sm font-extrabold uppercase tracking-wide text-on-primary shadow-[4px_4px_0_#fdc008] transition-transform hover:-translate-y-1"
+            >
+              <Navigation className="h-5 w-5" aria-hidden="true" />
+              Como chegar
+              <ExternalLink className="h-4 w-4" aria-hidden="true" />
+            </a>
+            <p className="mt-4 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-on-surface-variant">
+              <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
+              Endereço completo ainda não confirmado
+            </p>
+          </div>
+          <MapEmbed />
         </div>
       </section>
-      <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-start gap-8 px-4 py-16 md:grid-cols-2 md:px-margin-desktop md:py-24">
+      <div className="mx-auto max-w-[1280px] px-4 py-12 md:px-margin-desktop md:py-20">
         <ContactCard />
-        <MapEmbed />
       </div>
     </>
   )
