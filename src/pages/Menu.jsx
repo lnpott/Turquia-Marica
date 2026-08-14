@@ -10,7 +10,7 @@ function Menu() {
   return (
     <>
       <section className="editorial-grid bg-on-surface px-4 py-10 text-on-image md:px-margin-desktop md:py-16">
-        <div className="mx-auto grid max-w-[1280px] items-center gap-8 md:grid-cols-[1.05fr_0.95fr] md:gap-14">
+        <div className="mx-auto grid max-w-[1280px] items-center gap-4 md:grid-cols-[1.05fr_0.95fr] md:gap-14">
           <div className="relative z-10">
             <span className="mb-5 inline-flex border-2 border-on-image bg-secondary-container px-3 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-on-surface shadow-[3px_3px_0_#ae0011]">Cardápio Turquia</span>
             <h1 className="display-balance max-w-[11ch] font-display-xl-mobile text-[46px] font-extrabold leading-[0.92] tracking-[-0.05em] text-on-image md:text-[68px]">
@@ -41,7 +41,7 @@ function Menu() {
                 alt="Hambúrguer com batatas em cenário ilustrativo"
                 width="512"
                 height="279"
-                className="aspect-[4/3] h-auto w-full object-cover"
+                className="aspect-[11/5] h-auto w-full object-cover md:aspect-[4/3]"
                 fetchpriority="high"
               />
             </picture>

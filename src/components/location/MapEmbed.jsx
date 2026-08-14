@@ -18,7 +18,7 @@ function MapEmbed() {
       <div className="absolute left-4 top-4 border-2 border-on-surface bg-secondary-container px-3 py-2 text-[10px] font-extrabold uppercase tracking-[0.14em] text-on-surface">
         Ilustração · não é um mapa
       </div>
-      <div className="absolute inset-x-4 bottom-40 flex items-center justify-between gap-4 border-2 border-on-surface bg-background p-4 shadow-[4px_4px_0_#251913] md:bottom-4">
+      <div className="absolute inset-x-4 bottom-44 flex items-center justify-between gap-4 border-2 border-on-surface bg-background p-4 shadow-[4px_4px_0_#251913] md:bottom-4">
         <span className="flex items-center gap-3 font-label-bold text-on-surface">
           <Navigation className="h-5 w-5 text-primary" aria-hidden="true" />
           Conferir ficha
