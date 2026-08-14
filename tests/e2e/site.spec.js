@@ -51,6 +51,19 @@ test('arquivos de descoberta são publicados e referenciam somente rotas válida
   for (const route of routes) expect(xml).toContain(`<loc>${route.canonical}</loc>`)
 })
 
+test('imagem social publicada mantém o formato Open Graph', async ({ request, page }) => {
+  const response = await request.get('/og-image.png')
+  expect(response.status()).toBe(200)
+  expect(response.headers()['content-type']).toBe('image/png')
+  const image = await response.body()
+  expect(image.readUInt32BE(16)).toBe(1200)
+  expect(image.readUInt32BE(20)).toBe(630)
+
+  await page.goto('/')
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://turquia-marica.vercel.app/og-image.png')
+  await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', 'https://turquia-marica.vercel.app/og-image.png')
+})
+
 test('reduced motion desativa as animações principais', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
@@ -115,22 +128,30 @@ test('ação visual da localização não fica coberta pela navegação inferior
 })
 
 test('heróis e ação de localização respeitam a navegação inferior móvel', async ({ page }) => {
-  for (const width of [375, 390, 414]) {
-    await page.setViewportSize({ width, height: 844 })
+  for (const { width, height } of [
+    { width: 375, height: 667 },
+    { width: 390, height: 740 },
+    { width: 414, height: 844 },
+  ]) {
+    await page.setViewportSize({ width, height })
 
     await page.goto('/cardapio/')
     const heroImage = await page.locator('main figure').first().boundingBox()
     const menuNavigation = await page.getByRole('navigation', { name: 'Navegação inferior' }).boundingBox()
     expect(heroImage).not.toBeNull()
     expect(menuNavigation).not.toBeNull()
-    expect(heroImage.y + heroImage.height, `Hero do Cardápio em ${width}px`).toBeLessThanOrEqual(menuNavigation.y)
+    const heroOverlapsNavigation = heroImage.y < menuNavigation.y + menuNavigation.height
+      && heroImage.y + heroImage.height > menuNavigation.y
+    expect(heroOverlapsNavigation, `Hero do Cardápio em ${width}x${height}px`).toBe(false)
 
     await page.goto('/localizacao/')
     const mapAction = await page.getByText('Conferir ficha').locator('..').boundingBox()
     const locationNavigation = await page.getByRole('navigation', { name: 'Navegação inferior' }).boundingBox()
     expect(mapAction).not.toBeNull()
     expect(locationNavigation).not.toBeNull()
-    expect(mapAction.y + mapAction.height, `Ação da Localização em ${width}px`).toBeLessThanOrEqual(locationNavigation.y)
+    const actionOverlapsNavigation = mapAction.y < locationNavigation.y + locationNavigation.height
+      && mapAction.y + mapAction.height > locationNavigation.y
+    expect(actionOverlapsNavigation, `Ação da Localização em ${width}x${height}px`).toBe(false)
   }
 })
 

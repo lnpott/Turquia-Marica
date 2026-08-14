@@ -33,7 +33,7 @@ function Menu() {
               iFood não disponível / em construção
             </ChannelAction>
           </div>
-          <figure className="relative overflow-hidden border-2 border-on-image bg-background p-2 shadow-[8px_8px_0_#fdc008] md:rotate-1">
+          <figure className="mobile-hero-nav-clearance relative overflow-hidden border-2 border-on-image bg-background p-2 shadow-[8px_8px_0_#fdc008] md:rotate-1">
             <picture>
               <source srcSet={imgMenuHero} type="image/webp" />
               <img
