@@ -70,7 +70,7 @@
 
 ### Plano total de refinamento visual — Lotes 11 a 14 (proposto por Claude)
 
-> **Estado geral:** NÃO INICIADO — nenhum destes lotes tem autorização de implementação ainda. Este bloco existe para servir de base de decisão; a execução lote a lote continua exigindo autorização explícita antes de codar, antes de commit e antes de push, como já é regra no restante deste documento.
+> **Estado geral:** Lote 11 CONCLUÍDO; demais lotes NÃO INICIADOS. A execução continua lote a lote e exige autorização explícita antes de codar, antes de commit e antes de push, como já é regra no restante deste documento.
 
 **Origem:** análise comparativa entre as branches `main` e `BEST_ONE` (repositório `lnpott/Turquia-Marica`), cruzada com os dois deploys Vercel (`turquia-marica.vercel.app` e o preview mais recente) e com as evidências visuais já existentes em `documentacao/qa/*-after.png`.
 
@@ -80,6 +80,7 @@
 
 #### Lote 11 — Consistência visual Home ↔ Cardápio
 
+- **Estado:** CONCLUÍDO — implementação e auditoria aprovadas com ressalvas em 14/08/2026.
 - **Prioridade:** Alta. É o problema mais visível encontrado.
 - **Constatação:** `home-desktop-after.png` / `home-mobile-after.png` mostram `MenuHighlights` (Home) com cards de foto real, moldura preta 2px, sombra offset, selo "Imagem ilustrativa" — coerente com a linguagem *Modern Vernacular* do Lote 4. Já `cardapio-desktop-after.png` mostra que `/cardapio` usa um componente diferente (`MenuCatalog`), lista de texto puro com ícone `Construction`, sem fotografia nenhuma. A página que deveria ser o carro-chefe do catálogo parece mais provisória que a própria Home.
 - **Causa técnica:** `src/pages/Menu.jsx` renderiza `<MenuCatalog />` em vez de `<MenuHighlights showAll />` (componente com foto, já existente e já aprovado, hoje usado só em `src/pages/Home.jsx`).
@@ -89,6 +90,8 @@
   3. Avaliar se `MenuCatalog.jsx` e a lista `menuHighlights` (subconjunto usado em `compact`) seguem necessários após a unificação; não remover arquivo sem confirmar que nada mais o importa.
 - **Fora de escopo:** Hero (Home ou Cardápio), Footer, Header, Location, ContactCard, MapEmbed, tailwind.config.cjs, qualquer dado comercial novo, qualquer merge/cherry-pick de `main`.
 - **Critério de aceite:** `npm run check` aprovado; `/cardapio` visualmente consistente com a Home em 390 e 1280 px; sem regressão nos testes E2E; screenshot antes/depois no padrão já usado em `documentacao/qa/`.
+- **Resultado:** `MenuHighlights showAll` substituiu o catálogo textual preservando copy honesta, âncoras e foco dos hashes legados; `MenuCatalog.jsx`, sem consumidores restantes, foi removido. Auditoria em `documentacao/qa/AUDITORIA_LOTE_11.md` e evidências em `cardapio-lote-11-mobile.png` e `cardapio-lote-11-desktop.png`.
+- **Ressalvas:** a sobreposição móvel da BottomNavBar permanece deliberadamente fora deste escopo para o Lote 12; densidade vertical e precisão semântica das imagens seguem registradas nos Lotes 14/15.
 
 ---
 
@@ -278,3 +281,4 @@
 - **13/08/2026:** auditoria independente do Lote 5 removeu atalhos e cards redundantes, condensou as categorias previstas e aprovou o Cardápio com ressalvas, sem iniciar Localização.
 - **13/08/2026:** Lote 6 pesquisou e refinou a Localização com Maps como ação principal, omitiu dados não confirmados e foi encaminhado para auditoria independente no commit de implementação `4709438`; as evidências foram consolidadas pelo commit documental `63a321b`.
 - **13/08/2026:** auditoria independente do Lote 6 concluída pelo commit `5239e5f`, com veredito **APROVADO COM RESSALVAS**; a etapa de refinamento definitivo passou a refletir a aprovação auditada de Home, Cardápio e Localização. O checkout não possuía remote configurado, portanto nenhum estado, número ou URL de Pull Request remoto pôde ser confirmado.
+- **14/08/2026:** Lote 11 unificou a apresentação visual de categorias entre Home e Cardápio, preservou os hashes legados e foi auditado como **APROVADO COM RESSALVAS**; Lote 12 permanece como próximo passo, sem início automático.

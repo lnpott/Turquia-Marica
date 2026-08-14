@@ -1,5 +1,5 @@
 import { ShoppingBag } from 'lucide-react'
-import MenuCatalog from '../components/menu/MenuCatalog'
+import MenuHighlights from '../components/menu/MenuHighlights'
 import UnavailableNotice from '../components/ui/UnavailableNotice'
 import imgMenuHero from '../assets/images/menu/menu-hero.webp'
 import imgMenuHeroFallback from '../assets/images/menu/menu-hero.jpg'
@@ -50,7 +50,7 @@ function Menu() {
         </div>
       </section>
 
-      <MenuCatalog />
+      <MenuHighlights showAll />
 
       <section className="bg-background px-4 py-10 md:px-margin-desktop md:py-14">
         <UnavailableNotice
