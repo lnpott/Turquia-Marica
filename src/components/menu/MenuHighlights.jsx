@@ -1,4 +1,4 @@
-import { ArrowRight, Construction } from 'lucide-react'
+import { ArrowRight, Construction, CupSoda } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { categories, menuHighlights } from '../../data/menu'
 
@@ -39,20 +39,29 @@ function MenuHighlights({ compact = false, showAll = false }) {
             >
               <figure>
                 <div className="relative aspect-[16/10] overflow-hidden bg-surface-container">
-                  <picture>
-                    <source srcSet={category.image} type="image/webp" />
-                    <img
-                      src={category.fallbackImage}
-                      alt={category.imageAlt}
-                      className="h-full w-full object-cover"
-                      loading="lazy"
-                      width="512"
-                      height="320"
-                    />
-                  </picture>
-                  <span className="absolute bottom-0 right-0 bg-secondary-container px-2.5 py-1.5 text-[9px] font-extrabold uppercase tracking-wide text-on-surface">
-                    Imagem ilustrativa
-                  </span>
+                  {category.image ? (
+                    <>
+                      <picture>
+                        <source srcSet={category.image} type="image/webp" />
+                        <img
+                          src={category.fallbackImage}
+                          alt={category.imageAlt}
+                          className="h-full w-full object-cover"
+                          loading="lazy"
+                          width="512"
+                          height="320"
+                        />
+                      </picture>
+                      <span className="absolute bottom-0 right-0 bg-secondary-container px-2.5 py-1.5 text-[9px] font-extrabold uppercase tracking-wide text-on-surface">
+                        Imagem ilustrativa
+                      </span>
+                    </>
+                  ) : (
+                    <div className="editorial-grid flex h-full flex-col items-center justify-center gap-3 bg-surface-container px-5 text-center text-on-surface-variant">
+                      <CupSoda className="h-12 w-12 text-primary" aria-hidden="true" />
+                      <span className="text-[10px] font-extrabold uppercase tracking-[0.14em]">Imagem pendente de acervo</span>
+                    </div>
+                  )}
                 </div>
                 <figcaption className="flex items-center justify-between gap-3 border-t-2 border-on-surface p-5">
                   <div>

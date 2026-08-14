@@ -28,6 +28,7 @@ describe('dados comerciais', () => {
     expect(categories).toBeInTheDocument()
     expect(categories).toHaveTextContent(/não disponível \/ em construção/i)
     expect(within(categories).getAllByRole('listitem')).toHaveLength(5)
+    expect(within(categories).getByText('Imagem pendente de acervo')).toBeInTheDocument()
     expect(screen.queryByText(/R\$ --,--/)).not.toBeInTheDocument()
     expect(screen.queryByRole('link', { name: /iFood/i })).not.toBeInTheDocument()
   })

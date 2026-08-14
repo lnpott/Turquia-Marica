@@ -65,7 +65,8 @@ test('cardápio apresenta categorias previstas sem filtros ou pedidos falsos', a
 
   await expect(page.locator('a[href*="ifood"]')).toHaveCount(0)
   await expect(page.getByRole('list', { name: 'Categorias previstas' }).getByText('Não disponível / em construção')).toHaveCount(5)
-  await expect(page.locator('#categorias img')).toHaveCount(5)
+  await expect(page.locator('#categorias img')).toHaveCount(4)
+  await expect(page.getByText('Imagem pendente de acervo')).toHaveCount(1)
 })
 
 test('hashes legados das categorias mantêm acesso direto e foco', async ({ page }) => {
@@ -111,6 +112,26 @@ test('ação visual da localização não fica coberta pela navegação inferior
   expect(actionBox).not.toBeNull()
   expect(navigationBox).not.toBeNull()
   expect(actionBox.y + actionBox.height).toBeLessThanOrEqual(navigationBox.y)
+})
+
+test('heróis e ação de localização respeitam a navegação inferior móvel', async ({ page }) => {
+  for (const width of [375, 390, 414]) {
+    await page.setViewportSize({ width, height: 844 })
+
+    await page.goto('/cardapio/')
+    const heroImage = await page.locator('main figure').first().boundingBox()
+    const menuNavigation = await page.getByRole('navigation', { name: 'Navegação inferior' }).boundingBox()
+    expect(heroImage).not.toBeNull()
+    expect(menuNavigation).not.toBeNull()
+    expect(heroImage.y + heroImage.height, `Hero do Cardápio em ${width}px`).toBeLessThanOrEqual(menuNavigation.y)
+
+    await page.goto('/localizacao/')
+    const mapAction = await page.getByText('Conferir ficha').locator('..').boundingBox()
+    const locationNavigation = await page.getByRole('navigation', { name: 'Navegação inferior' }).boundingBox()
+    expect(mapAction).not.toBeNull()
+    expect(locationNavigation).not.toBeNull()
+    expect(mapAction.y + mapAction.height, `Ação da Localização em ${width}px`).toBeLessThanOrEqual(locationNavigation.y)
+  }
 })
 
 test('não há overflow horizontal nos viewports de aceite', async ({ page }) => {

@@ -70,7 +70,7 @@
 
 ### Plano total de refinamento visual — Lotes 11 a 14 (proposto por Claude)
 
-> **Estado geral:** Lote 11 CONCLUÍDO; demais lotes NÃO INICIADOS. A execução continua lote a lote e exige autorização explícita antes de codar, antes de commit e antes de push, como já é regra no restante deste documento.
+> **Estado geral:** Lotes 11, 12, 13 e 15 CONCLUÍDOS; Lote 14 BLOQUEADO/PENDENTE; Lotes 16 e 17 NÃO INICIADOS. A execução continua lote a lote e exige autorização explícita antes de codar, antes de commit e antes de push, como já é regra no restante deste documento.
 
 **Origem:** análise comparativa entre as branches `main` e `BEST_ONE` (repositório `lnpott/Turquia-Marica`), cruzada com os dois deploys Vercel (`turquia-marica.vercel.app` e o preview mais recente) e com as evidências visuais já existentes em `documentacao/qa/*-after.png`.
 
@@ -91,12 +91,13 @@
 - **Fora de escopo:** Hero (Home ou Cardápio), Footer, Header, Location, ContactCard, MapEmbed, tailwind.config.cjs, qualquer dado comercial novo, qualquer merge/cherry-pick de `main`.
 - **Critério de aceite:** `npm run check` aprovado; `/cardapio` visualmente consistente com a Home em 390 e 1280 px; sem regressão nos testes E2E; screenshot antes/depois no padrão já usado em `documentacao/qa/`.
 - **Resultado:** `MenuHighlights showAll` substituiu o catálogo textual preservando copy honesta, âncoras e foco dos hashes legados; `MenuCatalog.jsx`, sem consumidores restantes, foi removido. Auditoria em `documentacao/qa/AUDITORIA_LOTE_11.md` e evidências em `cardapio-lote-11-mobile.png` e `cardapio-lote-11-desktop.png`.
-- **Ressalvas:** a sobreposição móvel da BottomNavBar permanece deliberadamente fora deste escopo para o Lote 12; densidade vertical e precisão semântica das imagens seguem registradas nos Lotes 14/15.
+- **Ressalvas:** a sobreposição móvel da BottomNavBar foi tratada posteriormente no Lote 12; a dependência de fotografias oficiais permanece registrada no Lote 14.
 
 ---
 
 #### Lote 12 — Correção de sobreposição da BottomNavBar (mobile)
 
+- **Estado:** CONCLUÍDO — implementação e auditoria aprovadas em 14/08/2026.
 - **Prioridade:** Alta. É um bug de layout, não uma preferência estética.
 - **Constatação:** em `cardapio-mobile-after.png`, a `BottomNavBar` fixa corta visualmente a parte inferior da foto do hero (o burger) logo abaixo dela. Em `localizacao-mobile-after.png`, a mesma barra sobrepõe parte do card amarelo "Conferir ficha / Google Maps" do `MapEmbed`. O padding de segurança (`mobile-bottom-safe`, `src/styles/index.css`) cobre o fim da página, mas não evita que a barra `fixed` (`z-50`) cubra elementos posicionados logo acima dela na viewport, especialmente quando esses elementos têm forte peso visual (foto, CTA).
 - **Implementação:**
@@ -105,21 +106,27 @@
   3. Não alterar a lógica ou os itens da própria `BottomNavBar.jsx` — o problema é de espaçamento de quem está por baixo, não da barra em si.
 - **Fora de escopo:** redesenhar a barra, adicionar/remover itens de navegação, mudar z-index global.
 - **Critério de aceite:** nenhuma foto de hero ou CTA principal parcialmente coberto pela barra em 375–414 px; screenshot mobile de `/cardapio` e `/localizacao` regenerado e comparado ao atual.
+- **Resultado:** o Hero do Cardápio recebeu enquadramento móvel mais baixo e espaçamento compacto; a ação do mapa ganhou distância adicional da barra. As caixas foram medidas contra o topo real da navegação em 375, 390 e 414 px por teste E2E.
+- **Evidências:** `documentacao/qa/cardapio-lote-12-15-mobile.png`, `documentacao/qa/localizacao-lote-12-mobile.png` e auditoria consolidada em `documentacao/qa/AUDITORIA_LOTES_12_13_15.md`.
 
 ---
 
 #### Lote 13 — Auditoria completa de consistência (Header, Footer, Localização)
 
+- **Estado:** CONCLUÍDO — auditoria aprovada sem nova inconsistência bloqueante em 14/08/2026.
 - **Prioridade:** Média. Nenhum problema concreto identificado ainda — este lote é para *confirmar* que não há outros furos como o do Lote 11, não para corrigir algo já sabido.
 - **Escopo:** revisar `Header.jsx`, `Footer.jsx`, `BottomNavBar.jsx` e a rota `/localizacao` completa (`Location.jsx`, `ContactCard.jsx`, `MapEmbed.jsx`) contra os mesmos critérios do Lote 3 de `BEST_ONE` ("criar continuidade entre rotas: compartilhar grid, tratamentos de hero, seções, superfícies, raios, sombras, iconografia e CTAs").
 - **Observação já feita:** pela inspeção de `localizacao-desktop-after.png` e `localizacao-mobile-after.png`, a página de Localização parece bem alinhada ao padrão visual (mesma tipografia, mesmas bordas/sombras, mesmo tom de "honestidade radical"). Não há indício de um problema do tamanho do Lote 11 aqui — mas isso ainda não foi auditado componente a componente com o mesmo rigor.
 - **Implementação:** checklist de comparação visual e de código entre as três rotas + Header/Footer, registrando achados (se houver) como sub-itens deste lote antes de qualquer alteração de código.
 - **Critério de aceite:** relatório de auditoria (achados ou "nenhuma inconsistência encontrada"), sem necessariamente gerar mudança de código — só vira lote de implementação se algo for encontrado.
+- **Resultado:** Header, Footer, BottomNavBar, Location, ContactCard e MapEmbed foram conferidos em código e renderização. A única interferência concreta era a distância móvel da ação do mapa, corrigida e validada dentro do Lote 12; nenhum redesenho adicional foi necessário.
+- **Evidência:** `documentacao/qa/AUDITORIA_LOTES_12_13_15.md`.
 
 ---
 
 #### Lote 14 — Pendências externas (bloqueadas, fora do controle do agente)
 
+- **Estado:** BLOQUEADO — PENDENTE dos dados e do acervo oficiais listados abaixo.
 - **Prioridade:** Depende do cliente, não é sequencial aos demais.
 - **Itens (já registrados em "Pendências externas" mais abaixo neste documento, repetidos aqui para consolidar o plano):**
   - URL oficial da loja no iFood.
@@ -134,6 +141,7 @@
 
 #### Lote 15 — Precisão semântica das imagens de categoria
 
+- **Estado:** CONCLUÍDO — implementação e auditoria aprovadas com ressalva de acervo em 14/08/2026.
 - **Prioridade:** Média-baixa. Não é erro visível como o Lote 11/12, mas é uma inconsistência de conteúdo que a própria `BEST_ONE` já penalizou em outro lugar (a baseline deste documento registra "associações semânticas incorretas" nas fotografias como pendência desde o início do projeto).
 - **Constatação (verificada em `src/data/menu.js` e `src/assets/images/`):** existem só 4 imagens de menu distintas (`category-combos`, `menu-hero`, `category-sobremesas`, mais `hero-fries` e `hero-gallery` reaproveitadas do Hero) para 5 categorias declaradas (Combos, Lanches, Porções, Bebidas, Sobremesas). Dois reaproveitamentos merecem atenção:
   - `Bebidas` usa `hero-gallery.webp`, cujo `alt` original é "pessoas brindando com copos de cerveja" — é uma foto de ambiente/confraternização, não uma foto de bebida em si. Semanticamente mais fraca que as demais.
@@ -143,6 +151,8 @@
   2. Se nenhuma imagem alternativa existir no acervo local, considerar (com autorização) usar um placeholder visual mais neutro para "Bebidas" em vez de uma foto de pessoas, já que o problema aqui é a foto comunicar algo que não é o produto da categoria.
   3. Não adicionar nenhuma imagem nova de banco de imagens sem aprovação — isso ainda conta como "inventar conteúdo" pelas regras deste documento.
 - **Critério de aceite:** cada categoria com imagem semanticamente compatível com o que anuncia, ou sinalizada como pendência de acervo explícita.
+- **Resultado:** a fotografia de confraternização deixou de representar Bebidas e foi substituída por placeholder editorial neutro, rotulado “Imagem pendente de acervo”. As demais quatro associações são semanticamente compatíveis; a repetição de Porções no Hero permanece não bloqueante até a chegada do acervo oficial.
+- **Evidências:** `documentacao/qa/cardapio-lote-12-15-mobile.png`, `documentacao/qa/cardapio-lote-15-desktop.png` e `documentacao/qa/AUDITORIA_LOTES_12_13_15.md`.
 
 ---
 
@@ -282,3 +292,4 @@
 - **13/08/2026:** Lote 6 pesquisou e refinou a Localização com Maps como ação principal, omitiu dados não confirmados e foi encaminhado para auditoria independente no commit de implementação `4709438`; as evidências foram consolidadas pelo commit documental `63a321b`.
 - **13/08/2026:** auditoria independente do Lote 6 concluída pelo commit `5239e5f`, com veredito **APROVADO COM RESSALVAS**; a etapa de refinamento definitivo passou a refletir a aprovação auditada de Home, Cardápio e Localização. O checkout não possuía remote configurado, portanto nenhum estado, número ou URL de Pull Request remoto pôde ser confirmado.
 - **14/08/2026:** Lote 11 unificou a apresentação visual de categorias entre Home e Cardápio, preservou os hashes legados e foi auditado como **APROVADO COM RESSALVAS**; Lote 12 permanece como próximo passo, sem início automático.
+- **14/08/2026:** Lotes 12, 13 e 15 concluídos e auditados: áreas críticas respeitam a BottomNavBar em 375–414 px, a consistência global não apresentou novo bloqueio e Bebidas passou a declarar a pendência de acervo sem fotografia enganosa. Lote 14 foi registrado como bloqueado/pendente; Lotes 16 e 17 não foram iniciados.

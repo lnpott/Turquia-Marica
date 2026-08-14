@@ -4,8 +4,6 @@ import imgLanches from '../assets/images/menu/menu-hero.webp'
 import imgLanchesFallback from '../assets/images/menu/menu-hero.jpg'
 import imgPorcoes from '../assets/images/hero/hero-fries.webp'
 import imgPorcoesFallback from '../assets/images/hero/hero-fries.jpg'
-import imgBebidas from '../assets/images/hero/hero-gallery.webp'
-import imgBebidasFallback from '../assets/images/hero/hero-gallery.jpg'
 import imgSobremesas from '../assets/images/menu/category-sobremesas.webp'
 import imgSobremesasFallback from '../assets/images/menu/category-sobremesas.jpg'
 
@@ -40,9 +38,9 @@ export const categories = [
     id: 'bebidas',
     name: 'Bebidas',
     status: 'construction',
-    image: imgBebidas,
-    fallbackImage: imgBebidasFallback,
-    imageAlt: 'Pessoas brindando com copos de cerveja em imagem ilustrativa',
+    image: null,
+    fallbackImage: null,
+    imageAlt: null,
   },
   {
     id: 'sobremesas',
