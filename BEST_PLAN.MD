@@ -195,7 +195,7 @@
 
 ### Plano de motion e interatividade — Lotes 18 a 25 (proposto por Claude)
 
-> **Estado geral:** Lotes 18 a 25 NÃO INICIADOS. Mandato ampliado pelo responsável em 14/08/2026: impacto visual real prevalece sobre "menor mudança possível"; a única linha vermelha adicional é preservar o logo (`logo.jpg`/`logo-96.webp`) intocado. As linhas vermelhas anteriores (nenhum dado comercial inventado) continuam valendo.
+> **Estado geral:** Lotes 18, 19, 20 e 23 CONCLUÍDOS; Lotes 21, 22, 24 e 25 NÃO INICIADOS. Mandato ampliado pelo responsável em 14/08/2026: impacto visual real prevalece sobre "menor mudança possível"; a única linha vermelha adicional é preservar o logo (`logo.jpg`/`logo-96.webp`) intocado. As linhas vermelhas anteriores (nenhum dado comercial inventado) continuam valendo.
 
 **Origem:** auditoria do código real da `BEST_ONE` (não de screenshots), motivada pela avaliação do responsável de que a arquitetura visual, apesar de madura, está "pouco chamativa para o cliente comprar a ideia" — falta motion e interatividade, não menos avisos de "em construção".
 
@@ -211,7 +211,7 @@
 
 #### Lote 18 — Sistema de motion compartilhado (fundação)
 
-- **Estado:** NÃO INICIADO.
+- **Estado:** CONCLUÍDO — tokens `tactile` (160 ms), `smooth` (420 ms) e `reveal` (700 ms), com easings correspondentes, registrados no Tailwind e auditados.
 - **Prioridade:** Alta — pré-requisito dos Lotes 19, 20, 21 e 23.
 - **Constatação:** não há nenhum token de `transitionDuration`/`transitionTimingFunction` em `tailwind.config.cjs`; as poucas transições existentes usam valores soltos e inconsistentes (`duration-300` em `MapEmbed.jsx`, `duration-500` em `CategoryCard.jsx` órfão, a maioria sem duração explícita).
 - **Implementação:** definir em `tailwind.config.cjs` 2–3 tokens nomeados de duração/easing (tátil/rápida para clique e hover de botão; suave/média para cards e imagens; lenta para entrada de seção) e documentá-los aqui para os lotes seguintes referenciarem por nome. Não aplicar a nenhum componente ainda.
@@ -222,7 +222,7 @@
 
 #### Lote 19 — Botões com preenchimento, profundidade e clique tátil
 
-- **Estado:** NÃO INICIADO.
+- **Estado:** CONCLUÍDO — CTAs reais usam tokens compartilhados, preenchimento progressivo, profundidade e resposta tátil; `Button.jsx` passou a ter consumidores reais.
 - **Prioridade:** Alta — pedido explícito do responsável.
 - **Constatação:** `Button.jsx` já tem hover/clique bem resolvidos (`hover:shadow-lg hover:scale-[1.02] active:scale-95`) mas está órfão. Os CTAs reais em `HeroSection.jsx` (~linhas 24 e 32), `Location.jsx` (~linha 25), `Header.jsx` (~linhas 75 e 87) e `Footer.jsx` (~linha 7) têm apenas `hover:-translate-y-1`, sem `active:` em nenhum.
 - **Implementação:** levar `Button.jsx` aos tokens do Lote 18, adicionar preenchimento animado no hover dos botões primários (não troca instantânea de cor) e propagar `active:` para todo CTA real, substituindo classes inline por `<Button>` onde fizer sentido.
@@ -233,7 +233,7 @@
 
 #### Lote 20 — Zoom de imagem nos cards de categoria
 
-- **Estado:** NÃO INICIADO.
+- **Estado:** CONCLUÍDO — zoom contido de 105% aplicado em `MenuHighlights`; `CategoryCard.jsx` órfão foi removido para evitar implementações concorrentes.
 - **Prioridade:** Alta — pedido explícito do responsável ("imagem passando").
 - **Constatação:** o efeito já existe pronto em `CategoryCard.jsx` (`group-hover:scale-110 transition-transform duration-500`), órfão. O card real, em `MenuHighlights.jsx` (~linha 38, usado em Home e Cardápio via prop `showAll`), tem `group` e `overflow-hidden` no contêiner da imagem, mas a `<img>` não tem `group-hover`.
 - **Implementação:** adicionar `group-hover:scale-110` (ou valor mais sutil, 105–110%) na `<img>` de `MenuHighlights.jsx`, usando a duração `smooth` do Lote 18. Após validar, decidir e registrar aqui se `CategoryCard.jsx` é removido ou mantido.
@@ -266,7 +266,7 @@
 
 #### Lote 23 — Estado ativo e sublinhado animado na navegação
 
-- **Estado:** NÃO INICIADO.
+- **Estado:** CONCLUÍDO — Header desktop/mobile identifica a rota atual com cor e sublinhado; o hash `/#sobre` é tratado sem falso estado ativo na raiz.
 - **Prioridade:** Média.
 - **Constatação:** `Header.jsx` usa `NavLink`, mas `linkClasses` (~linha 15) é uma string fixa — a rota atual não recebe nenhum destaque visual no menu.
 - **Implementação:** usar a função de `className` do `NavLink` para aplicar estado ativo (cor + sublinhado animado via `transform: scaleX`) com os tokens do Lote 18, em desktop e mobile, sem alterar a lógica de foco/teclado já existente no menu mobile.
@@ -415,4 +415,5 @@
 - **14/08/2026:** Lotes 12, 13 e 15 concluídos e auditados: áreas críticas respeitam a BottomNavBar em 375–414 px, a consistência global não apresentou novo bloqueio e Bebidas passou a declarar a pendência de acervo sem fotografia enganosa. Lote 14 foi registrado como bloqueado/pendente; Lotes 16 e 17 não foram iniciados.
 - **14/08/2026:** revisão do Lote 12 ampliou a cobertura para alturas móveis curtas (375×667 e 390×740), com compensação responsiva e detecção de interseção real entre conteúdo e BottomNavBar.
 - **14/08/2026:** Lote 16 regenerou `og-image.png` em 1.200×630 a partir da Home estabilizada; Lote 17 registrou a confirmação explícita do responsável por “Turquia Lanches. Fartura sem pose.”. Ambos foram auditados e concluídos, sem desbloquear o Lote 14.
-- **14/08/2026:** registrado o plano de motion e interatividade (Lotes 18 a 25), a partir de auditoria do código real da `BEST_ONE` e de mandato ampliado do responsável priorizando impacto visual, com o logo como única restrição adicional. Nenhum código foi alterado neste registro; todos os lotes permanecem NÃO INICIADOS até autorização explícita.
+- **14/08/2026:** registrado o plano de motion e interatividade (Lotes 18 a 25), a partir de auditoria do código real da `BEST_ONE` e de mandato ampliado do responsável priorizando impacto visual, com o logo como única restrição adicional.
+- **14/08/2026:** Lotes 18, 19, 20 e 23 concluídos e auditados como **APROVADOS**: tokens compartilhados, CTAs táteis, zoom contido e navegação ativa foram entregues sem biblioteca nova; Lotes 21, 22, 24 e 25 não foram iniciados.

@@ -94,6 +94,41 @@ img {
   transform: translateY(-2px);
 }
 
+/* Motion compartilhado: o gradiente escuro percorre CTAs primários sem
+   depender de JavaScript e mantém contraste de texto durante toda a ação. */
+.cta-fill-primary {
+  background-image: linear-gradient(90deg, var(--color-primary-hover) 0 50%, transparent 50% 100%);
+  background-position: 100% 0;
+  background-size: 200% 100%;
+  transition-property: background-position, transform, box-shadow, color;
+}
+
+.cta-fill-primary:hover {
+  background-position: 0 0;
+}
+
+/* O traço nasce do centro e também permanece visível na rota atual. */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.35rem;
+  left: 0.75rem;
+  height: 2px;
+  background: currentColor;
+  content: '';
+  transform: scaleX(0);
+  transform-origin: center;
+}
+
+.nav-link:hover::after,
+.nav-link-active::after {
+  transform: scaleX(1);
+}
+
 .mobile-bottom-safe {
   padding-bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom));
 }
@@ -214,5 +249,15 @@ img {
 
   .hero-kenburns {
     animation: none;
+  }
+
+  .cta-fill-primary,
+  .nav-link::after {
+    transition-duration: 0s !important;
+    transition-property: none !important;
+  }
+
+  .cta-fill-primary:hover {
+    background-position: 0 0;
   }
 }

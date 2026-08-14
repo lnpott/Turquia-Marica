@@ -2,6 +2,7 @@ import { ExternalLink, MapPin, Navigation } from 'lucide-react'
 import ContactCard from '../components/location/ContactCard'
 import MapEmbed from '../components/location/MapEmbed'
 import { BUSINESS_INFO } from '../data/contact'
+import Button from '../components/ui/Button'
 
 function Location() {
   return (
@@ -18,16 +19,18 @@ function Location() {
             <p className="mt-6 max-w-xl border-l-4 border-primary pl-4 text-base leading-relaxed text-on-surface-variant md:text-lg">
               O link disponível abre a ficha “Turquia Lanches - Parque Nanci” no Google Maps. Confira o destino no aplicativo antes de iniciar a rota.
             </p>
-            <a
+            <Button
               href={BUSINESS_INFO.channels.maps.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-7 inline-flex min-h-12 items-center justify-center gap-3 border-2 border-on-surface bg-primary px-6 py-3 text-sm font-extrabold uppercase tracking-wide text-on-primary shadow-[4px_4px_0_#fdc008] transition-transform hover:-translate-y-1"
+              variant="editorialPrimary"
+              size="md"
+              className="mt-7 gap-3 text-sm font-extrabold shadow-[4px_4px_0_#fdc008]"
             >
               <Navigation className="h-5 w-5" aria-hidden="true" />
               Como chegar
               <ExternalLink className="h-4 w-4" aria-hidden="true" />
-            </a>
+            </Button>
             <p className="mt-4 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-on-surface-variant">
               <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
               Endereço completo ainda não confirmado

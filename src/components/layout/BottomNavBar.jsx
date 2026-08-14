@@ -9,7 +9,7 @@ const ITEMS = [
   { label: 'Localização', Icon: MapPin, to: '/localizacao' },
 ]
 
-const baseClasses = 'flex min-h-[52px] min-w-[64px] flex-col items-center justify-center rounded-xl px-2 py-1 text-[10px] font-bold transition-colors'
+const baseClasses = 'flex min-h-[52px] min-w-[64px] flex-col items-center justify-center rounded-xl px-2 py-1 text-[10px] font-bold transition-all duration-tactile ease-tactile active:scale-95'
 
 function BottomNavBar() {
   return (

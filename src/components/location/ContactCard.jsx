@@ -30,7 +30,7 @@ function ContactCard() {
           <dt className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.14em] text-primary"><Instagram className="h-4 w-4" aria-hidden="true" />Canal informado</dt>
           <dd className="mt-2 font-bold text-on-surface">{BUSINESS_INFO.channels.instagram.handle}</dd>
           <dd>
-            <ChannelAction channel={BUSINESS_INFO.channels.instagram} className="mt-3 inline-flex min-h-11 items-center gap-2 border-2 border-on-surface bg-background px-4 py-2 text-sm font-extrabold text-on-surface transition-colors hover:bg-secondary-container">
+            <ChannelAction channel={BUSINESS_INFO.channels.instagram} className="mt-3 inline-flex min-h-11 items-center gap-2 border-2 border-on-surface bg-background px-4 py-2 text-sm font-extrabold text-on-surface transition-all duration-tactile ease-tactile hover:-translate-y-1 hover:bg-secondary-container active:scale-95">
               Abrir Instagram
             </ChannelAction>
           </dd>

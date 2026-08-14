@@ -11,14 +11,19 @@ const NAV_LINKS = [
   { label: 'Localização', to: '/localizacao' },
 ]
 
-const linkClasses =
-  'inline-flex min-h-11 items-center rounded-lg px-3 font-body-md text-sm font-medium text-on-surface-variant transition-colors hover:bg-surface-container-low hover:text-primary'
+const linkClasses = (isActive) =>
+  `nav-link inline-flex min-h-11 items-center rounded-lg px-3 font-body-md text-sm font-medium transition-colors duration-tactile ease-tactile after:transition-transform after:duration-smooth after:ease-smooth hover:bg-surface-container-low hover:text-primary active:scale-95 ${isActive ? 'nav-link-active text-primary' : 'text-on-surface-variant'}`
 
 function Header() {
   const menuRef = useRef(null)
   const toggleRef = useRef(null)
   const location = useLocation()
   const routeKey = `${location.pathname}${location.hash}`
+  const isLinkActive = (link, routerIsActive) => (
+    link.to.includes('#')
+      ? location.pathname === '/' && location.hash === `#${link.to.split('#')[1]}`
+      : routerIsActive
+  )
   const [menuState, setMenuState] = useState({ open: false, routeKey })
   const menuOpen = menuState.open && menuState.routeKey === routeKey
 
@@ -62,7 +67,7 @@ function Header() {
 
         <nav className="hidden items-center gap-2 md:flex" aria-label="Navegação principal">
           {NAV_LINKS.map((link) => (
-            <NavLink key={link.label} to={link.to} className={linkClasses}>
+            <NavLink key={link.label} to={link.to} className={({ isActive }) => linkClasses(isLinkActive(link, isActive))}>
               {link.label}
             </NavLink>
           ))}
@@ -72,7 +77,7 @@ function Header() {
           <ChannelAction
             channel={BUSINESS_INFO.channels.ifood}
             icon={ShoppingBag}
-            className="hidden min-h-11 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-bold text-on-primary transition-colors hover:bg-primary-hover md:inline-flex"
+            className="cta-fill-primary hidden min-h-11 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-bold text-on-primary transition-all duration-tactile ease-tactile hover:shadow-lg active:scale-95 md:inline-flex"
             unavailableClassName="hidden min-h-11 cursor-not-allowed items-center gap-2 px-3 text-xs font-bold uppercase tracking-wide text-on-surface-variant/70 md:inline-flex"
           >
             Pedidos em breve
@@ -84,7 +89,7 @@ function Header() {
             aria-expanded={menuOpen}
             aria-controls="menu-mobile"
             onClick={() => setMenuState({ open: !menuOpen, routeKey })}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-primary transition-colors hover:bg-surface-container-low md:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-primary transition-all duration-tactile ease-tactile hover:bg-surface-container-low active:scale-90 md:hidden"
           >
             {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
           </button>
@@ -99,7 +104,7 @@ function Header() {
           className="flex flex-col gap-1 border-t-2 border-on-surface bg-secondary-container px-margin-mobile pb-6 pt-3 md:hidden"
         >
           {NAV_LINKS.map((link) => (
-            <NavLink key={link.label} to={link.to} className={linkClasses}>
+            <NavLink key={link.label} to={link.to} className={({ isActive }) => linkClasses(isLinkActive(link, isActive))}>
               {link.label}
             </NavLink>
           ))}
