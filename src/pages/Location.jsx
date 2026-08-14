@@ -3,6 +3,7 @@ import ContactCard from '../components/location/ContactCard'
 import MapEmbed from '../components/location/MapEmbed'
 import { BUSINESS_INFO } from '../data/contact'
 import Button from '../components/ui/Button'
+import Reveal from '../components/motion/Reveal'
 
 function Location() {
   return (
@@ -39,9 +40,9 @@ function Location() {
           <MapEmbed />
         </div>
       </section>
-      <div className="mx-auto max-w-[1280px] px-4 py-12 md:px-margin-desktop md:py-20">
+      <Reveal className="mx-auto max-w-[1280px] px-4 py-12 md:px-margin-desktop md:py-20">
         <ContactCard />
-      </div>
+      </Reveal>
     </>
   )
 }

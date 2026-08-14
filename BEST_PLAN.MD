@@ -126,7 +126,7 @@
 
 #### Lote 14 — Pendências externas (bloqueadas, fora do controle do agente)
 
-- **Estado:** BLOQUEADO — PENDENTE dos dados e do acervo oficiais listados abaixo.
+- **Estado:** BLOQUEADO — PENDENTE dos dados e do acervo oficiais listados abaixo; reverificado em 14/08/2026 sem novos insumos oficiais.
 - **Prioridade:** Depende do cliente, não é sequencial aos demais.
 - **Itens (já registrados em "Pendências externas" mais abaixo neste documento, repetidos aqui para consolidar o plano):**
   - URL oficial da loja no iFood.
@@ -135,7 +135,8 @@
   - Horários oficiais.
   - Produtos, ingredientes, preços e badges aprovados.
   - Fotografias oficiais da casa e dos produtos (substituindo o acervo "ilustrativo" atual).
-- **Regra:** nenhum destes itens deve ser inventado ou estimado por qualquer agente. Quando o cliente confirmar algum deles, abrir lote específico (ex.: "Lote 15 — CTA iFood oficial") em vez de misturar com os lotes 11–13 acima.
+- **Regra:** nenhum destes itens deve ser inventado ou estimado por qualquer agente. Quando o cliente confirmar algum deles, abrir lote específico em vez de misturar com os lotes anteriores.
+- **Reverificação:** `hours`/`phone` e URLs de iFood/WhatsApp continuam nulos, localização segue parcial, `products` segue vazio e o acervo continua provisório. A auditoria de prontidão foi concluída, mas a implementação comercial permanece bloqueada. Evidência: `documentacao/qa/AUDITORIA_LOTES_18_25_E_LOTE_14.md`.
 
 ---
 
@@ -195,7 +196,7 @@
 
 ### Plano de motion e interatividade — Lotes 18 a 25 (proposto por Claude)
 
-> **Estado geral:** Lotes 18, 19, 20 e 23 CONCLUÍDOS; Lotes 21, 22, 24 e 25 NÃO INICIADOS. Mandato ampliado pelo responsável em 14/08/2026: impacto visual real prevalece sobre "menor mudança possível"; a única linha vermelha adicional é preservar o logo (`logo.jpg`/`logo-96.webp`) intocado. As linhas vermelhas anteriores (nenhum dado comercial inventado) continuam valendo.
+> **Estado geral:** Lotes 18 a 25 CONCLUÍDOS E AUDITADOS; Lote 14 permanece BLOQUEADO/PENDENTE após reverificação. Mandato ampliado pelo responsável em 14/08/2026: impacto visual real prevalece sobre "menor mudança possível"; a única linha vermelha adicional é preservar o logo (`logo.jpg`/`logo-96.webp`) intocado. As linhas vermelhas anteriores (nenhum dado comercial inventado) continuam valendo.
 
 **Origem:** auditoria do código real da `BEST_ONE` (não de screenshots), motivada pela avaliação do responsável de que a arquitetura visual, apesar de madura, está "pouco chamativa para o cliente comprar a ideia" — falta motion e interatividade, não menos avisos de "em construção".
 
@@ -244,7 +245,7 @@
 
 #### Lote 21 — Scroll reveal (conteúdo entra ao rolar)
 
-- **Estado:** NÃO INICIADO.
+- **Estado:** CONCLUÍDO — `IntersectionObserver` nativo revela seções e cards em cascata, com fallback e movimento reduzido auditados.
 - **Prioridade:** Média-alta.
 - **Constatação:** não existe `IntersectionObserver` no projeto; todo conteúdo abaixo do Hero aparece de uma vez, em Home, Cardápio e Localização.
 - **Implementação:** hook nativo baseado em `IntersectionObserver` (sem biblioteca nova); entrada sutil (fade + leve translação) nas seções, em cascata nos cards de categoria; dentro do bloco `prefers-reduced-motion` já existente, conteúdo aparece direto.
@@ -255,7 +256,7 @@
 
 #### Lote 22 — Movimento ambiente no Hero
 
-- **Estado:** NÃO INICIADO — decisão de direção pendente do responsável antes de codar.
+- **Estado:** CONCLUÍDO — direção A (Ken Burns lento) aplicada em CSS puro após autorização para executar o lote; desativada com movimento reduzido.
 - **Prioridade:** Média-alta.
 - **Constatação:** `HeroSection.jsx` renderiza a foto do Hero 100% estática, sem Ken Burns, parallax ou elemento decorativo animado (diferente de `MapEmbed.jsx`, que já anima um círculo decorativo).
 - **Decisão a apresentar ao responsável, não a tomar sozinho:** (A) Ken Burns lento e contínuo na foto; (B) parallax leve entre a foto e a camada decorativa já existente (`before:` em `HeroSection.jsx` ~linha 37); (C) textura/forma flutuante sutil atrás da imagem. Implementar só a opção escolhida.
@@ -277,18 +278,18 @@
 
 #### Lote 24 — Auditoria de performance e acessibilidade do motion
 
-- **Estado:** NÃO INICIADO — obrigatório antes de fechar o bloco 18–23.
+- **Estado:** CONCLUÍDO — Lighthouse mobile marcou 96–97 em Performance e 100 nas demais categorias nas três rotas; axe, reduced motion, teclado, overflow e geometria móvel aprovados, com observação não bloqueante de variação do TBT.
 - **Prioridade:** Alta, sequencial aos demais.
 - **Constatação:** motion mal implementado é a causa mais comum de regressão de Lighthouse (CLS/TBT) e de `prefers-reduced-motion` ignorado; baseline atual é Performance 96, Acessibilidade 100, Boas Práticas 100, SEO 100, LCP 2,5 s, CLS 0, TBT 30 ms.
 - **Implementação:** reexecutar Lighthouse mobile nas três rotas e comparar contra a baseline; confirmar via `axe` que nenhum elemento interativo novo ficou sem `focus-visible`; validar manualmente, com `prefers-reduced-motion: reduce` ativo no sistema operacional, que todo motion dos Lotes 19–23 é desativado ou reduzido.
 - **Fora de escopo:** qualquer mudança de código além de correções de performance encontradas na auditoria.
-- **Critério de aceite:** métricas de baseline mantidas ou melhores; relatório registrado em `documentacao/qa/AUDITORIA_LOTES_18_23.md`.
+- **Resultado:** pontuações de baseline mantidas ou melhores, LCP de 1,91–2,34 s e CLS 0; TBT de 53 ms no Cardápio foi registrado com transparência frente à baseline de 30 ms. Relatório em `documentacao/qa/AUDITORIA_LOTES_18_25_E_LOTE_14.md`.
 
 ---
 
 #### Lote 25 — Fechamento: regenerar `og-image.png`
 
-- **Estado:** NÃO INICIADO — último lote do bloco, só depois que a Home estabilizar com o motion aplicado.
+- **Estado:** CONCLUÍDO — PNG 1.200×630 regenerado da Home final com movimento reduzido para captura determinística e validado pelo E2E.
 - **Prioridade:** Baixa.
 - **Constatação:** `public/og-image.png` foi regenerado no Lote 16 a partir da Home sem motion; a imagem estática de fallback social precisa continuar fiel ao layout final.
 - **Implementação:** regenerar `og-image.png` uma única vez, no padrão do Lote 16 (1.200×630 px), a partir do estado final da Home.
@@ -416,4 +417,5 @@
 - **14/08/2026:** revisão do Lote 12 ampliou a cobertura para alturas móveis curtas (375×667 e 390×740), com compensação responsiva e detecção de interseção real entre conteúdo e BottomNavBar.
 - **14/08/2026:** Lote 16 regenerou `og-image.png` em 1.200×630 a partir da Home estabilizada; Lote 17 registrou a confirmação explícita do responsável por “Turquia Lanches. Fartura sem pose.”. Ambos foram auditados e concluídos, sem desbloquear o Lote 14.
 - **14/08/2026:** registrado o plano de motion e interatividade (Lotes 18 a 25), a partir de auditoria do código real da `BEST_ONE` e de mandato ampliado do responsável priorizando impacto visual, com o logo como única restrição adicional.
-- **14/08/2026:** Lotes 18, 19, 20 e 23 concluídos e auditados como **APROVADOS**: tokens compartilhados, CTAs táteis, zoom contido e navegação ativa foram entregues sem biblioteca nova; Lotes 21, 22, 24 e 25 não foram iniciados.
+- **14/08/2026:** Lotes 18, 19, 20 e 23 concluídos e auditados como **APROVADOS**: tokens compartilhados, CTAs táteis, zoom contido e navegação ativa foram entregues sem biblioteca nova.
+- **14/08/2026:** Lotes 21, 22, 24 e 25 concluídos: reveal nativo, Ken Burns CSS, auditoria Lighthouse/axe/reduced motion e OG final. Bloco 18–25 aprovado com observação de TBT; Lote 14 reverificado e mantido bloqueado por ausência de insumos oficiais.

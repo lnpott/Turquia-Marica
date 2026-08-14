@@ -2,6 +2,7 @@ import { Clock3, MapPin, ShieldCheck } from 'lucide-react'
 import HeroSection from '../components/home/HeroSection'
 import MenuHighlights from '../components/menu/MenuHighlights'
 import { BUSINESS_INFO } from '../data/contact'
+import Reveal from '../components/motion/Reveal'
 
 const FACTS = [
   { Icon: MapPin, title: 'Onde estamos', value: BUSINESS_INFO.location.value },
@@ -13,7 +14,7 @@ function Home() {
   return (
     <>
       <HeroSection />
-      <section aria-label="Informações rápidas" className="bg-on-surface px-4 py-7 text-on-image md:px-margin-desktop">
+      <Reveal as="section" aria-label="Informações rápidas" className="bg-on-surface px-4 py-7 text-on-image md:px-margin-desktop">
         <ul className="mx-auto grid max-w-[1280px] gap-3 md:grid-cols-3 md:gap-0">
           {FACTS.map(({ Icon, title, value }) => (
             <li key={title} className="flex items-center gap-3 border-on-image/20 py-2 md:border-l md:px-6 md:first:border-l-0 md:first:pl-0">
@@ -27,9 +28,9 @@ function Home() {
             </li>
           ))}
         </ul>
-      </section>
+      </Reveal>
       <MenuHighlights compact />
-      <section id="sobre" className="scroll-mt-24 border-t-2 border-on-surface bg-primary px-4 py-16 text-on-primary md:px-margin-desktop md:py-24">
+      <Reveal as="section" id="sobre" className="scroll-mt-24 border-t-2 border-on-surface bg-primary px-4 py-16 text-on-primary md:px-margin-desktop md:py-24">
         <div className="mx-auto grid max-w-[1280px] gap-8 md:grid-cols-[0.55fr_1.45fr] md:items-start">
           <span className="inline-flex w-fit border border-on-primary/50 px-3 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-secondary-container">Sobre a casa</span>
           <div className="border-l-4 border-secondary-container pl-5 md:pl-8">
@@ -39,7 +40,7 @@ function Home() {
             </p>
           </div>
         </div>
-      </section>
+      </Reveal>
     </>
   )
 }
