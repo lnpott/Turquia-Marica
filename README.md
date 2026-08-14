@@ -55,6 +55,8 @@ O acervo atual é provisório. Imagens públicas são identificadas como ilustra
 
 O build gera `dist/index.html`, `dist/cardapio/index.html` e `dist/localizacao/index.html`. O `vercel.json` preserva os deep links e configura cache imutável para assets hasheados.
 
+Antes de publicar, execute `npm run check` para validar lint, testes e build de produção.
+
 ## Governança
 
 - `BEST_PLAN.MD` — plano operacional vivo, estados e evidências;

@@ -64,7 +64,8 @@ test('cardápio apresenta categorias previstas sem filtros ou pedidos falsos', a
   await expect(page.getByRole('list', { name: 'Categorias previstas' }).getByRole('listitem')).toHaveCount(5)
 
   await expect(page.locator('a[href*="ifood"]')).toHaveCount(0)
-  await expect(page.getByText('Conteúdo ainda não publicado')).toHaveCount(5)
+  await expect(page.getByRole('list', { name: 'Categorias previstas' }).getByText('Não disponível / em construção')).toHaveCount(5)
+  await expect(page.locator('#categorias img')).toHaveCount(5)
 })
 
 test('hashes legados das categorias mantêm acesso direto e foco', async ({ page }) => {

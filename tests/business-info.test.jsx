@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import Menu from '../src/pages/Menu'
@@ -24,7 +24,10 @@ describe('dados comerciais', () => {
       </MemoryRouter>,
     )
     expect(screen.getByRole('heading', { level: 1, name: /veja o que está previsto.*sem promessa vazia/i })).toBeInTheDocument()
-    expect(screen.getAllByText(/conteúdo ainda não publicado/i)).toHaveLength(5)
+    const categories = screen.getByRole('list', { name: 'Categorias previstas' })
+    expect(categories).toBeInTheDocument()
+    expect(categories).toHaveTextContent(/não disponível \/ em construção/i)
+    expect(within(categories).getAllByRole('listitem')).toHaveLength(5)
     expect(screen.queryByText(/R\$ --,--/)).not.toBeInTheDocument()
     expect(screen.queryByRole('link', { name: /iFood/i })).not.toBeInTheDocument()
   })
