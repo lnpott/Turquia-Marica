@@ -191,6 +191,120 @@
 6. **Lote 17** (tagline) — paralelo, não bloqueia nem é bloqueado pelos demais; corre em paralelo como pendência de decisão do cliente.
 7. **Lote 14** — não é um lote de trabalho nosso; é a lista do que travar até o cliente responder.
 
+---
+
+### Plano de motion e interatividade — Lotes 18 a 25 (proposto por Claude)
+
+> **Estado geral:** Lotes 18 a 25 NÃO INICIADOS. Mandato ampliado pelo responsável em 14/08/2026: impacto visual real prevalece sobre "menor mudança possível"; a única linha vermelha adicional é preservar o logo (`logo.jpg`/`logo-96.webp`) intocado. As linhas vermelhas anteriores (nenhum dado comercial inventado) continuam valendo.
+
+**Origem:** auditoria do código real da `BEST_ONE` (não de screenshots), motivada pela avaliação do responsável de que a arquitetura visual, apesar de madura, está "pouco chamativa para o cliente comprar a ideia" — falta motion e interatividade, não menos avisos de "em construção".
+
+**Achados centrais da auditoria:**
+- `src/components/ui/Button.jsx` e `src/components/product/CategoryCard.jsx` já implementam boa parte do motion pedido (`active:scale-95`, `group-hover:scale-110`), mas **nenhum dos dois é importado em lugar nenhum do projeto** — código órfão.
+- Os CTAs e cards realmente renderizados (`HeroSection.jsx`, `MenuHighlights.jsx`, `Location.jsx`, `Header.jsx`) usam só `hover:-translate-y-1`, sem preenchimento, sem zoom de imagem, sem feedback de clique.
+- Não existe token de motion compartilhado em `tailwind.config.cjs`, nem estado ativo no `NavLink` do `Header.jsx`.
+- `prefers-reduced-motion` já é respeitado em `src/styles/index.css` (~linha 206) e deve continuar sendo o único bloco usado para desativar motion novo.
+
+**Princípio geral que rege estes lotes:** nenhum deles reabre decisões já auditadas e aprovadas em `BEST_ONE` (Hero sem slideshow, honestidade radical de conteúdo, paleta/tipografia, `ChannelAction`/`BUSINESS_STATUS`, nenhum dado comercial inventado). Não instalar nenhuma biblioteca de animação nova — motion em CSS/Tailwind puro ou `IntersectionObserver` nativo, para preservar o bundle atual (62,67 kB gzip de JS).
+
+---
+
+#### Lote 18 — Sistema de motion compartilhado (fundação)
+
+- **Estado:** NÃO INICIADO.
+- **Prioridade:** Alta — pré-requisito dos Lotes 19, 20, 21 e 23.
+- **Constatação:** não há nenhum token de `transitionDuration`/`transitionTimingFunction` em `tailwind.config.cjs`; as poucas transições existentes usam valores soltos e inconsistentes (`duration-300` em `MapEmbed.jsx`, `duration-500` em `CategoryCard.jsx` órfão, a maioria sem duração explícita).
+- **Implementação:** definir em `tailwind.config.cjs` 2–3 tokens nomeados de duração/easing (tátil/rápida para clique e hover de botão; suave/média para cards e imagens; lenta para entrada de seção) e documentá-los aqui para os lotes seguintes referenciarem por nome. Não aplicar a nenhum componente ainda.
+- **Fora de escopo:** qualquer mudança visível ao usuário.
+- **Critério de aceite:** `npm run check` aprovado; tokens documentados; zero regressão visual.
+
+---
+
+#### Lote 19 — Botões com preenchimento, profundidade e clique tátil
+
+- **Estado:** NÃO INICIADO.
+- **Prioridade:** Alta — pedido explícito do responsável.
+- **Constatação:** `Button.jsx` já tem hover/clique bem resolvidos (`hover:shadow-lg hover:scale-[1.02] active:scale-95`) mas está órfão. Os CTAs reais em `HeroSection.jsx` (~linhas 24 e 32), `Location.jsx` (~linha 25), `Header.jsx` (~linhas 75 e 87) e `Footer.jsx` (~linha 7) têm apenas `hover:-translate-y-1`, sem `active:` em nenhum.
+- **Implementação:** levar `Button.jsx` aos tokens do Lote 18, adicionar preenchimento animado no hover dos botões primários (não troca instantânea de cor) e propagar `active:` para todo CTA real, substituindo classes inline por `<Button>` onde fizer sentido.
+- **Fora de escopo:** mudar texto, destino ou hierarquia (primário/secundário) de qualquer CTA.
+- **Critério de aceite:** todo CTA do site com hover de preenchimento e resposta ao clique; `axe` sem novas violações; preenchimento desativado (mas cor final mantida) com `prefers-reduced-motion`.
+
+---
+
+#### Lote 20 — Zoom de imagem nos cards de categoria
+
+- **Estado:** NÃO INICIADO.
+- **Prioridade:** Alta — pedido explícito do responsável ("imagem passando").
+- **Constatação:** o efeito já existe pronto em `CategoryCard.jsx` (`group-hover:scale-110 transition-transform duration-500`), órfão. O card real, em `MenuHighlights.jsx` (~linha 38, usado em Home e Cardápio via prop `showAll`), tem `group` e `overflow-hidden` no contêiner da imagem, mas a `<img>` não tem `group-hover`.
+- **Implementação:** adicionar `group-hover:scale-110` (ou valor mais sutil, 105–110%) na `<img>` de `MenuHighlights.jsx`, usando a duração `smooth` do Lote 18. Após validar, decidir e registrar aqui se `CategoryCard.jsx` é removido ou mantido.
+- **Fora de escopo:** alterar selo "Imagem ilustrativa", texto "Não disponível / em construção" ou trocar qualquer imagem.
+- **Critério de aceite:** zoom suave e contido na moldura, em Home e Cardápio, testado em 390 e 1280 px, sem overflow.
+
+---
+
+#### Lote 21 — Scroll reveal (conteúdo entra ao rolar)
+
+- **Estado:** NÃO INICIADO.
+- **Prioridade:** Média-alta.
+- **Constatação:** não existe `IntersectionObserver` no projeto; todo conteúdo abaixo do Hero aparece de uma vez, em Home, Cardápio e Localização.
+- **Implementação:** hook nativo baseado em `IntersectionObserver` (sem biblioteca nova); entrada sutil (fade + leve translação) nas seções, em cascata nos cards de categoria; dentro do bloco `prefers-reduced-motion` já existente, conteúdo aparece direto.
+- **Fora de escopo:** qualquer biblioteca externa de animação.
+- **Critério de aceite:** Lighthouse Performance não regride (baseline 96 mobile/Cardápio); `axe` sem violações; validado com `prefers-reduced-motion: reduce` ativo no sistema.
+
+---
+
+#### Lote 22 — Movimento ambiente no Hero
+
+- **Estado:** NÃO INICIADO — decisão de direção pendente do responsável antes de codar.
+- **Prioridade:** Média-alta.
+- **Constatação:** `HeroSection.jsx` renderiza a foto do Hero 100% estática, sem Ken Burns, parallax ou elemento decorativo animado (diferente de `MapEmbed.jsx`, que já anima um círculo decorativo).
+- **Decisão a apresentar ao responsável, não a tomar sozinho:** (A) Ken Burns lento e contínuo na foto; (B) parallax leve entre a foto e a camada decorativa já existente (`before:` em `HeroSection.jsx` ~linha 37); (C) textura/forma flutuante sutil atrás da imagem. Implementar só a opção escolhida.
+- **Fora de escopo:** trocar a foto do Hero ou adicionar carrossel/slideshow — decisão já registrada neste documento (Matriz técnica: "Hero sem slideshow").
+- **Critério de aceite:** movimento perceptível mas não distrativo; desativado com `prefers-reduced-motion`; sem impacto no LCP (baseline 2,5 s).
+
+---
+
+#### Lote 23 — Estado ativo e sublinhado animado na navegação
+
+- **Estado:** NÃO INICIADO.
+- **Prioridade:** Média.
+- **Constatação:** `Header.jsx` usa `NavLink`, mas `linkClasses` (~linha 15) é uma string fixa — a rota atual não recebe nenhum destaque visual no menu.
+- **Implementação:** usar a função de `className` do `NavLink` para aplicar estado ativo (cor + sublinhado animado via `transform: scaleX`) com os tokens do Lote 18, em desktop e mobile, sem alterar a lógica de foco/teclado já existente no menu mobile.
+- **Fora de escopo:** mudar itens do menu ou adicionar novo item de navegação.
+- **Critério de aceite:** rota atual identificável no Header; teclado e `focus-visible` continuam funcionando sem regressão.
+
+---
+
+#### Lote 24 — Auditoria de performance e acessibilidade do motion
+
+- **Estado:** NÃO INICIADO — obrigatório antes de fechar o bloco 18–23.
+- **Prioridade:** Alta, sequencial aos demais.
+- **Constatação:** motion mal implementado é a causa mais comum de regressão de Lighthouse (CLS/TBT) e de `prefers-reduced-motion` ignorado; baseline atual é Performance 96, Acessibilidade 100, Boas Práticas 100, SEO 100, LCP 2,5 s, CLS 0, TBT 30 ms.
+- **Implementação:** reexecutar Lighthouse mobile nas três rotas e comparar contra a baseline; confirmar via `axe` que nenhum elemento interativo novo ficou sem `focus-visible`; validar manualmente, com `prefers-reduced-motion: reduce` ativo no sistema operacional, que todo motion dos Lotes 19–23 é desativado ou reduzido.
+- **Fora de escopo:** qualquer mudança de código além de correções de performance encontradas na auditoria.
+- **Critério de aceite:** métricas de baseline mantidas ou melhores; relatório registrado em `documentacao/qa/AUDITORIA_LOTES_18_23.md`.
+
+---
+
+#### Lote 25 — Fechamento: regenerar `og-image.png`
+
+- **Estado:** NÃO INICIADO — último lote do bloco, só depois que a Home estabilizar com o motion aplicado.
+- **Prioridade:** Baixa.
+- **Constatação:** `public/og-image.png` foi regenerado no Lote 16 a partir da Home sem motion; a imagem estática de fallback social precisa continuar fiel ao layout final.
+- **Implementação:** regenerar `og-image.png` uma única vez, no padrão do Lote 16 (1.200×630 px), a partir do estado final da Home.
+- **Critério de aceite:** imagem reflete o layout final; validada em debugger de Open Graph.
+
+---
+
+### Ordem de execução recomendada — Lotes 18 a 25
+
+1. **Lote 18** — fundação de tokens; pré-requisito dos demais.
+2. **Lote 19 + Lote 20 + Lote 23** — maior impacto/menor risco, podem correr em paralelo depois do 18.
+3. **Lote 21** — depende só do 18, independente de 19/20/23.
+4. **Lote 22** — só depois da decisão de direção do responsável.
+5. **Lote 24** — obrigatório, valida que nada regrediu.
+6. **Lote 25** — sempre por último.
+
 ### Lote 0 — Governança
 
 - **Estado:** CONCLUÍDO
@@ -301,3 +415,4 @@
 - **14/08/2026:** Lotes 12, 13 e 15 concluídos e auditados: áreas críticas respeitam a BottomNavBar em 375–414 px, a consistência global não apresentou novo bloqueio e Bebidas passou a declarar a pendência de acervo sem fotografia enganosa. Lote 14 foi registrado como bloqueado/pendente; Lotes 16 e 17 não foram iniciados.
 - **14/08/2026:** revisão do Lote 12 ampliou a cobertura para alturas móveis curtas (375×667 e 390×740), com compensação responsiva e detecção de interseção real entre conteúdo e BottomNavBar.
 - **14/08/2026:** Lote 16 regenerou `og-image.png` em 1.200×630 a partir da Home estabilizada; Lote 17 registrou a confirmação explícita do responsável por “Turquia Lanches. Fartura sem pose.”. Ambos foram auditados e concluídos, sem desbloquear o Lote 14.
+- **14/08/2026:** registrado o plano de motion e interatividade (Lotes 18 a 25), a partir de auditoria do código real da `BEST_ONE` e de mandato ampliado do responsável priorizando impacto visual, com o logo como única restrição adicional. Nenhum código foi alterado neste registro; todos os lotes permanecem NÃO INICIADOS até autorização explícita.
