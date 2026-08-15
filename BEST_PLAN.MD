@@ -974,7 +974,7 @@ Criar `src/data/reviews.js` com comentários explícitos de demonstração e obj
 
 O texto recebido estava duplicado integralmente. Esta seção é a única versão normativa e incorpora as correções abaixo antes de qualquer código:
 
-1. **Contrato compatível:** o modelo vigente usa `categoryId`; a fixture deve preservar exatamente o contrato consumido por `ProductCard`, `MenuSection` e `CategoryFilterBar`, acrescentando apenas `isPlaceholder: true` e `isMock: true`. Não criar o campo incompatível `category`.
+1. **Contrato compatível:** o modelo vigente usa `categoryId`, `description`, `image`, `imageAlt` e `imageStatus`; a fixture deve preservar exatamente o contrato consumido por `ProductCard`, `MenuSection` e `CategoryFilterBar`, acrescentando apenas `isPlaceholder: true` e `isMock: true`. Não criar os campos incompatíveis `category`, `shortDescription`, `longDescription` ou `imageUrl` sem um adapter explicitamente aprovado.
 2. **Isolamento verificável:** `import()` dinâmico, sozinho, não prova ausência do chunk no build. O build de produção deve ser inspecionado e falhar se `dist/` contiver nomes, textos ou identificadores da fixture.
 3. **Rota e build:** uma rota condicionada por flag ainda pode gerar um chunk, conforme a forma do código e a otimização do bundler. A solução escolhida deverá demonstrar, por teste do artefato, que o build padrão não contém a rota nem os dados.
 4. **Imagens confiáveis:** serviços externos de placeholder prejudicam reprodutibilidade, privacidade e execução offline. A recomendação é versionar imagens neutras em `src/assets/demo/`, sem marcas ou pessoas identificáveis.
@@ -1001,19 +1001,21 @@ Criar `src/data/menu.demo.js`, com aviso explícito e objetos compatíveis com o
 {
   id,
   name,
-  shortDescription,
-  longDescription,
+  description,
   price,
   categoryId,
-  imageUrl,
+  image,
+  imageAlt,
+  imageStatus,
   isPlaceholder: true,
   isMock: true,
 }
 ```
 
-- Categorias: Hambúrgueres, Combos, Bebidas e Sobremesas.
+- Categorias: Lanches (`lanches`), Combos (`combos`), Bebidas (`bebidas`) e Sobremesas (`sobremesas`), usando os IDs já definidos em `src/data/menu.js`.
 - Cobertura: nomes curtos/longos, descrições de 1 e 3+ linhas, diferentes formatos de preço e itens com/sem imagem.
 - Imagens: preferencialmente assets neutros locais em `src/assets/demo/`, na proporção real dos cards.
+- Itens sem imagem devem continuar declarando `image: null`, `imageAlt: null` e um `imageStatus` coerente; se o card atual não oferecer fallback robusto, o achado será documentado e qualquer correção visual dependerá da autorização separada prevista na auditoria.
 - Todos os nomes e textos devem conter linguagem inequívoca de demonstração, sem referência a produtos reais da casa.
 
 ### Isolamento obrigatório
