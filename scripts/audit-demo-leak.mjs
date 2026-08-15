@@ -4,7 +4,7 @@ import process from 'node:process'
 import { URL } from 'node:url'
 
 const root = new URL('../dist/', import.meta.url)
-const sentinels = ['__visual-qa', 'menu.demo', 'demo-lanche-curto', 'DADOS FICTÍCIOS — QA VISUAL', 'isMock']
+const sentinels = ['__visual-qa', 'menu.demo', 'demo-lanche-curto', 'DADOS FICTÍCIOS — QA VISUAL', 'isMock', 'shortDescription', 'longDescription', 'imageUrl']
 const textExtensions = new Set(['.html', '.js', '.css', '.json', '.xml', '.txt', '.map'])
 const leaks = []
 
@@ -14,8 +14,12 @@ async function scan(directory) {
     if (entry.isDirectory()) await scan(path)
     else if (textExtensions.has(extname(entry.name))) {
       const content = await readFile(path, 'utf8')
-      for (const sentinel of sentinels) {
-        if (content.includes(sentinel)) leaks.push(`${relative(root.pathname, path)}: ${sentinel}`)
+      const demoSentinels = sentinels.filter((sentinel) => content.includes(sentinel))
+      for (const sentinel of demoSentinels) leaks.push(`${relative(root.pathname, path)}: ${sentinel}`)
+      // `isPlaceholder` também pertence aos Reviews públicos da Etapa 27; só é
+      // vazamento da Etapa 28 quando aparece no mesmo artefato que uma sentinela demo.
+      if (demoSentinels.length && content.includes('isPlaceholder')) {
+        leaks.push(`${relative(root.pathname, path)}: isPlaceholder (contexto demo)`)
       }
     }
   }

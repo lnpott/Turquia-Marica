@@ -6,18 +6,26 @@ import demoLanches from '../assets/demo/demo-lanches.webp'
 import demoSobremesas from '../assets/demo/demo-sobremesas.webp'
 import demoSemImagem from '../assets/demo/demo-sem-imagem.svg'
 
-const mockProduct = (id, categoryId, name, description, price, image, imageAlt) => ({
-  id: `demo-${id}`,
-  categoryId,
-  name,
-  description,
-  price,
-  image,
-  imageAlt,
-  imageStatus: 'illustrative',
-  isPlaceholder: true,
-  isMock: true,
-})
+const mockProduct = (id, categoryId, name, longDescription, price, imageUrl, imageAlt) => {
+  const shortDescription = longDescription.split('.')[0].concat('.')
+
+  return {
+    id: `demo-${id}`,
+    categoryId,
+    name,
+    shortDescription,
+    longDescription,
+    price,
+    imageUrl: imageUrl === demoSemImagem ? null : imageUrl,
+    isPlaceholder: true,
+    isMock: true,
+    // Interface já consumida pelos componentes aprovados, sem alterá-los.
+    description: longDescription,
+    image: imageUrl,
+    imageAlt,
+    imageStatus: 'illustrative',
+  }
+}
 
 export const demoProducts = [
   mockProduct('lanche-curto', 'lanches', 'Mock X', 'Descrição fictícia curta.', 'R$ 0,00', demoLanches, 'Imagem fictícia de lanche para QA visual'),

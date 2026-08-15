@@ -8,15 +8,15 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npm run verify:no-demo",
+    "build": "vite build && npm run audit:demo-leak",
     "build:demo": "VITE_VISUAL_QA_DEMO=true vite build",
     "preview": "vite preview",
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:demo": "VITE_VISUAL_QA_DEMO=true playwright test --config=playwright.demo.config.js",
-    "verify:no-demo": "node scripts/assert-no-visual-demo.mjs",
-    "check": "npm run lint && npm run test && npm run build"
+    "check": "npm run lint && npm run test && npm run build",
+    "audit:demo-leak": "node scripts/audit-demo-leak.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.300.0",
