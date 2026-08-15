@@ -4,9 +4,9 @@ const VARIANT_CLASSES = {
   primary:
     'cta-fill-primary bg-primary text-on-primary hover:shadow-lg hover:scale-[1.02] active:scale-95',
   editorialPrimary:
-    'cta-fill-primary rounded-none border-2 border-on-surface bg-primary uppercase tracking-wide text-on-primary shadow-[4px_4px_0_#251913] hover:-translate-y-1 active:translate-x-1 active:translate-y-1 active:shadow-none',
+    'cta-fill-primary rounded-sm bg-primary uppercase tracking-[0.08em] text-on-primary shadow-[0_10px_24px_-14px_rgba(174,0,17,0.85)] hover:-translate-y-0.5 hover:shadow-[0_14px_28px_-14px_rgba(174,0,17,0.9)] active:translate-y-0 active:scale-[0.98]',
   editorialSecondary:
-    'rounded-none border-2 border-on-surface bg-background uppercase tracking-wide text-on-surface hover:-translate-y-1 hover:bg-secondary-container active:translate-y-0 active:scale-95',
+    'rounded-sm ring-1 ring-inset ring-on-surface/30 bg-background uppercase tracking-[0.08em] text-on-surface hover:-translate-y-0.5 hover:bg-on-surface hover:text-white active:translate-y-0 active:scale-[0.98]',
   secondary:
     'border border-outline text-on-surface hover:bg-surface-container-low active:scale-95',
   ghost: 'text-primary hover:bg-primary/5 active:scale-95',

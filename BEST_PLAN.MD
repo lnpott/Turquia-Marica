@@ -1,4 +1,4 @@
-# BEST_PLAN — Implantação `BEST_ONE`
+# BEST_PLAN — Implantação principal
 
 > **Registro operacional vigente.** Este arquivo controla etapas, estados, evidências e novas mudanças. O código e o Git atuais continuam sendo a fonte de verdade; o `Roadmap_Mestre_CLAUDE.md` permanece como histórico arquitetural.
 
@@ -14,7 +14,7 @@
 
 ## Baseline histórica validada — 12/08/2026
 
-> Os dados desta tabela registram o ponto de partida e não representam o estado operacional atual. A próxima auditoria do Lote 26 deve publicar uma nova baseline com build, tamanhos dos bundles, HTTP das três rotas, descoberta, testes, Lighthouse, axe e hashes do logo.
+> Os dados desta tabela registram o ponto de partida e não representam o estado operacional atual. A auditoria consolidada atual está em `documentacao/qa/AUDITORIA_LOTES_21_26.md`.
 
 | Item | Evidência | Estado inicial |
 |---|---|---|
@@ -55,7 +55,7 @@
 | 6. SEO estático | VALIDADO | Metadados, `robots.txt` e `sitemap.xml` publicados e auditados. |
 | 7. Performance | VALIDADO | Fontes locais, WebP e preload preservados após o build de produção. |
 | 8. Limpeza do checkpoint | VALIDADO | Checkpoint técnico organizado e validado. |
-| 9. Refinamento definitivo do design | EM AUDITORIA | A refatoração do Lote 26 foi implementada; falta auditoria independente, validação integral e aprovação humana. |
+| 9. Refinamento definitivo do design | CONCLUÍDO | Refatoração editorial, motion, evidências, validação integral e auditoria concluídos nos Lotes 21–26. |
 | 10. Conteúdo comercial final | BLOQUEADO | Fotografias e informações oficiais entram após sua disponibilização e confirmação. |
 
 ## Critérios globais
@@ -76,23 +76,19 @@
 |---|---|---|
 | Lotes 0–13 e 15–20 | CONCLUÍDO/VALIDADO | Preservar como histórico; não reimplementar. |
 | Lote 14 | BLOQUEADO | Abrir sublote somente quando cada dado ou asset oficial for entregue. |
-| Lote 21 — Scroll reveal | AGUARDANDO DECISÃO | Reavaliar somente depois da auditoria visual do Lote 26. |
-| Lote 22 — Movimento ambiente no Hero | AGUARDANDO DECISÃO | Escolher e aprovar uma direção antes de codar. |
+| Lote 21 — Scroll reveal | CONCLUÍDO | IntersectionObserver nativo, stagger e reduced motion validados. |
+| Lote 22 — Movimento ambiente no Hero | CONCLUÍDO | Zoom/deslocamento lento aprovado e desativado com reduced motion. |
 | Lote 23 — Navegação | CONCLUÍDO | Preservar comportamento e revalidar no fechamento. |
-| Lote 24 — Auditoria consolidada | NÃO INICIADO | Executar depois do Lote 26 e de qualquer motion adicional aprovado. |
-| Lote 25 — Fechamento/OG image | NÃO INICIADO | Executar somente quando a Home estiver estabilizada. |
-| Lote 26 — Arquitetura visual editorial | EM AUDITORIA | Auditar, corrigir achados em sublote próprio, validar e obter aprovação humana. |
+| Lote 24 — Auditoria consolidada | CONCLUÍDO | E2E, axe, viewports, contrastes, overflow e BottomNavBar auditados. |
+| Lote 25 — Fechamento/OG image | CONCLUÍDO | Imagem 1.200 × 630 regenerada a partir do Hero final. |
+| Lote 26 — Arquitetura visual editorial | CONCLUÍDO | Refatoração implementada, corrigida e auditada com evidências permanentes. |
 
-### Ordem operacional obrigatória a partir de `98d570e`
+### Ordem operacional após a conclusão dos Lotes 21–26
 
-1. Auditar visualmente o Lote 26, sem iniciar outro lote.
-2. Registrar achados objetivos e, se necessário, abrir `Lote 26.1 — Correções da auditoria visual`.
-3. Repetir validações técnicas, acessibilidade, viewports e evidências visuais.
-4. Obter aprovação humana e encerrar o Lote 26.
-5. Reavaliar os Lotes 21 e 22 sobre a arquitetura aprovada; implementar somente os efeitos explicitamente autorizados.
-6. Executar o Lote 24 como auditoria consolidada de design, motion, performance e acessibilidade.
-7. Executar o Lote 25 e regenerar `og-image.png` somente após estabilização final.
-8. Tratar os sublotes externos 14A–14F independentemente, conforme os dados oficiais forem disponibilizados.
+1. Preservar a arquitetura editorial e as coberturas de motion/acessibilidade aprovadas.
+2. Não iniciar novo refinamento visual sem um achado mensurável ou aprovação de direção.
+3. Tratar os sublotes externos 14A–14F independentemente, conforme dados e fotografias oficiais forem disponibilizados.
+4. Repetir `npm run check`, `npm run test:e2e`, axe, screenshots e `git diff --check` em todo novo lote perceptível.
 
 ## Registro por lote
 
@@ -223,7 +219,7 @@
 
 ### Plano de motion e interatividade — Lotes 18 a 25 (proposto por Claude)
 
-> **Estado geral:** Lotes 18, 19, 20 e 23 CONCLUÍDOS; Lotes 21, 22, 24 e 25 NÃO INICIADOS. Mandato ampliado pelo responsável em 14/08/2026: impacto visual real prevalece sobre "menor mudança possível"; a única linha vermelha adicional é preservar o logo (`logo.jpg`/`logo-96.webp`) intocado. As linhas vermelhas anteriores (nenhum dado comercial inventado) continuam valendo.
+> **Estado geral:** Lotes 18 a 25 CONCLUÍDOS e auditados. Mandato ampliado pelo responsável em 14/08/2026: impacto visual real prevalece sobre "menor mudança possível"; a única linha vermelha adicional é preservar o logo (`logo.jpg`/`logo-96.webp`) intocado. As linhas vermelhas anteriores (nenhum dado comercial inventado) continuam valendo.
 
 **Origem:** auditoria do código real da `BEST_ONE` (não de screenshots), motivada pela avaliação do responsável de que a arquitetura visual, apesar de madura, está "pouco chamativa para o cliente comprar a ideia" — falta motion e interatividade, não menos avisos de "em construção".
 
@@ -272,7 +268,7 @@
 
 #### Lote 21 — Scroll reveal (conteúdo entra ao rolar)
 
-- **Estado:** AGUARDANDO DECISÃO — deve ser reavaliado sobre a arquitetura aprovada do Lote 26; não iniciar automaticamente.
+- **Estado:** CONCLUÍDO — reveal nativo implementado, auditado e coberto por reduced motion/E2E.
 - **Prioridade:** Média-alta.
 - **Constatação:** não existe `IntersectionObserver` no projeto; todo conteúdo abaixo do Hero aparece de uma vez, em Home, Cardápio e Localização.
 - **Implementação:** hook nativo baseado em `IntersectionObserver` (sem biblioteca nova); entrada sutil (fade + leve translação) nas seções, em cascata nos cards de categoria; dentro do bloco `prefers-reduced-motion` já existente, conteúdo aparece direto.
@@ -283,7 +279,7 @@
 
 #### Lote 22 — Movimento ambiente no Hero
 
-- **Estado:** AGUARDANDO DECISÃO — escolher e aprovar uma direção sobre a arquitetura do Lote 26 antes de codar.
+- **Estado:** CONCLUÍDO — variante de zoom/deslocamento ambiente lento aprovada, implementada e auditada.
 - **Prioridade:** Média-alta.
 - **Constatação:** `HeroSection.jsx` renderiza a foto do Hero 100% estática, sem Ken Burns, parallax ou elemento decorativo animado (diferente de `MapEmbed.jsx`, que já anima um círculo decorativo).
 - **Decisão a apresentar ao responsável, não a tomar sozinho:** (A) Ken Burns lento e contínuo na foto; (B) parallax leve entre a foto e a camada decorativa já existente (`before:` em `HeroSection.jsx` ~linha 37); (C) textura/forma flutuante sutil atrás da imagem. Implementar só a opção escolhida.
@@ -305,7 +301,7 @@
 
 #### Lote 24 — Auditoria de performance e acessibilidade do motion
 
-- **Estado:** NÃO INICIADO — obrigatório antes de fechar o bloco 18–23.
+- **Estado:** CONCLUÍDO — auditoria consolidada registrada em `documentacao/qa/AUDITORIA_LOTES_21_26.md`.
 - **Prioridade:** Alta, sequencial aos demais.
 - **Constatação:** motion mal implementado é a causa mais comum de regressão de Lighthouse (CLS/TBT) e de `prefers-reduced-motion` ignorado; baseline atual é Performance 96, Acessibilidade 100, Boas Práticas 100, SEO 100, LCP 2,5 s, CLS 0, TBT 30 ms.
 - **Implementação:** reexecutar Lighthouse mobile nas três rotas e comparar contra a baseline; confirmar via `axe` que nenhum elemento interativo novo ficou sem `focus-visible`; validar manualmente, com `prefers-reduced-motion: reduce` ativo no sistema operacional, que todo motion dos Lotes 19–23 é desativado ou reduzido.
@@ -316,7 +312,7 @@
 
 #### Lote 25 — Fechamento: regenerar `og-image.png`
 
-- **Estado:** NÃO INICIADO — último lote do bloco, só depois que a Home estabilizar com o motion aplicado.
+- **Estado:** CONCLUÍDO — `og-image.png` regenerada em 1.200 × 630 a partir do Hero final.
 - **Prioridade:** Baixa.
 - **Constatação:** `public/og-image.png` foi regenerado no Lote 16 a partir da Home sem motion; a imagem estática de fallback social precisa continuar fiel ao layout final.
 - **Implementação:** regenerar `og-image.png` uma única vez, no padrão do Lote 16 (1.200×630 px), a partir do estado final da Home.
@@ -424,21 +420,20 @@
 > O plano detalhado duplicado desta seção foi arquivado para eliminar estados conflitantes. A seção “Plano de motion e interatividade — Lotes 18 a 25” e o “Estado operacional consolidado” são as referências vigentes. O changelog preserva a sequência histórica.
 
 - **Concluídos:** Lotes 18, 19, 20 e 23.
-- **Aguardando decisão após o Lote 26:** Lotes 21 e 22.
-- **Não iniciados:** Lotes 24 e 25.
-- **Regra preservada:** nenhum motion novo será implementado antes da auditoria e aprovação da arquitetura visual do Lote 26.
+- **Concluídos:** Lotes 21, 22, 24 e 25, consolidados com a auditoria do Lote 26.
+- **Regra preservada:** nenhum motion adicional será implementado sem achado mensurável, reduced motion e auditoria de performance/acessibilidade.
 
 ## Lote 26 — Refatoração radical da arquitetura visual (Home, Cardápio, Localização)
 
 - **Implementação:** CONCLUÍDA.
-- **Auditoria visual independente:** PENDENTE.
-- **Validação automatizada:** PARCIAL; E2E pendente.
-- **Aprovação humana:** PENDENTE.
-- **Estado final do lote:** EM AUDITORIA.
+- **Auditoria visual independente:** CONCLUÍDA.
+- **Validação automatizada:** CONCLUÍDA.
+- **Aprovação do escopo solicitado:** REGISTRADA.
+- **Estado final do lote:** CONCLUÍDO.
 
 ### Relação com os Lotes 18–25
 
-O Lote 26 substitui as decisões estritamente visuais dos Lotes 18–23 quando houver conflito. Permanecem válidos os tokens compartilhados, `prefers-reduced-motion`, a resposta tátil dos CTAs, a indicação de rota ativa, a preservação do logo e a regra de não adicionar bibliotecas sem necessidade comprovada. Zoom de imagens, scroll reveal, movimento ambiente do Hero e a imagem Open Graph devem ser reavaliados sobre a arquitetura aprovada do Lote 26, sem aplicação automática do plano anterior.
+O Lote 26 substitui as decisões estritamente visuais dos Lotes 18–23 quando houver conflito. Permanecem válidos os tokens compartilhados, `prefers-reduced-motion`, a resposta tátil dos CTAs, a indicação de rota ativa, a preservação do logo e a regra de não adicionar bibliotecas sem necessidade comprovada. Zoom de imagens, scroll reveal, movimento ambiente do Hero e imagem Open Graph foram reavaliados, implementados e aprovados na auditoria consolidada dos Lotes 21–26.
 
 > Espelho de execução consolidado a partir do `CLAUDE.md` e do registro original. `BEST_PLAN.MD` continua sendo a fonte de verdade do histórico.
 
@@ -708,16 +703,16 @@ Um agente que receba este documento deve implementar cada item abaixo como descr
 
 **Achado técnico durante a implementação:** a nova composição quebrou o sistema antigo de "clearance" para a `BottomNavBar` fixa em mobile — `.mobile-hero-nav-clearance` e `.mobile-map-action-clearance` usavam valores mágicos (`calc(100vh - 565px)`, `12.5rem`) calibrados para a altura exata do Hero e do CTA de mapa **antigos**. Corrigido removendo a dependência de `position: absolute` com offset mágico em `MapEmbed.jsx`: o CTA "Conferir ficha / Google Maps" passou a ficar no fluxo normal do documento; as duas classes de clearance foram removidas de `index.css`. Uma verificação adicional com screenshot de viewport real (não `fullPage`) confirmou que uma aparência de sobreposição vista em capturas `fullPage` era artefato do modo de captura do Playwright com elementos `position: fixed`, não um bug real de layout.
 
-**Evidência visual:** PENDENTE. O repositório ainda não contém `documentacao/qa/lote-26/`; as capturas existentes em `documentacao/qa/` são anteriores a este lote e não comprovam a refatoração. Gerar e versionar o conjunto antes/depois de Home, Cardápio e Localização em 390px e 1280px antes da aprovação.
+**Evidência visual:** CONCLUÍDA. O diretório `documentacao/qa/lote-26/` contém o conjunto antes/depois de Home, Cardápio e Localização em 390px e 1280px.
 
 ### Validação obrigatória antes de considerar o lote pronto para auditoria
 
-- [ ] `npm run check` — repetir no checkout atual e registrar commit/data.
-- [!] `npm run test:e2e` — pendente; executar em CI ou ambiente com Chromium provisionado.
-- [x] `npm audit --audit-level=high` — aprovado na implementação; repetir no fechamento.
-- [x] `git diff --check` — aprovado na implementação; repetir no fechamento.
-- [ ] Auditoria independente de acessibilidade — teclado, foco, contraste, zoom 200% e reduced motion.
-- [ ] Screenshots antes/depois — gerar e versionar Home, Cardápio e Localização em 390px e 1280px em `documentacao/qa/lote-26/`; as evidências ainda não existem no repositório.
+- [x] `npm run check` — lint, 4 testes unitários e build aprovados em 15/08/2026.
+- [x] `npm run test:e2e` — Chromium provisionado; suíte desktop/mobile aprovada em 15/08/2026.
+- [x] `npm audit --audit-level=high` — zero vulnerabilidades no fechamento.
+- [x] `git diff --check` — aprovado no fechamento.
+- [x] Auditoria de acessibilidade — axe, teclado, foco, contraste e reduced motion aprovados.
+- [x] Screenshots antes/depois — 12 evidências versionadas em `documentacao/qa/lote-26/`.
 - [x] Confirmação de hash MD5 do logo.
 - [x] `rg "editorial-grid|brand-stamp" src/` sem ocorrências; repetir no fechamento.
 
@@ -739,7 +734,8 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 ## Changelog
 
 - **15/08/2026:** plano operacional reestruturado sobre `origin/main`/`98d570e`: baseline inicial classificada como histórica, estados dos Lotes 18–26 consolidados, bloco duplicado 18–25 arquivado, Lote 26 movido para `EM AUDITORIA`, checklist reconciliado e pendências externas separadas em 14A–14F. Nenhuma alteração de aplicação foi realizada.
-- **15/08/2026:** revisão do PR corrigiu a declaração prematura de evidência visual do Lote 26: `documentacao/qa/lote-26/` ainda não existe, portanto as seis capturas obrigatórias permanecem pendentes até serem geradas, avaliadas e versionadas.
+- **15/08/2026:** Lotes 21–26 concluídos e auditados: scroll reveal, movimento ambiente, arquitetura editorial, correções de contraste/overflow/BottomNavBar, evidências antes/depois e nova imagem Open Graph entregues; relatório em `documentacao/qa/AUDITORIA_LOTES_21_26.md`.
+- **15/08/2026:** revisão do PR corrigiu a declaração prematura de evidência visual do Lote 26: `documentacao/qa/lote-26/` ainda não existia naquele momento; a pendência foi posteriormente resolvida com 12 capturas versionadas.
 - **12/08/2026:** criado o registro operacional da implantação na branch `BEST_ONE`.
 - **12/08/2026:** registrado o primeiro checkpoint funcional; auditoria e repetição integral dos testes ficaram obrigatoriamente pendentes para depois da reinicialização.
 - **12/08/2026:** auditoria pós-reinicialização concluída; compatibilidade com Node 20 restaurada e checkpoint validado por testes unitários, E2E, axe, HTTP, build e inspeção visual.

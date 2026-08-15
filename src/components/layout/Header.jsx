@@ -12,7 +12,7 @@ const NAV_LINKS = [
 ]
 
 const linkClasses = (isActive) =>
-  `nav-link inline-flex min-h-11 items-center rounded-lg px-3 font-body-md text-sm font-medium transition-colors duration-tactile ease-tactile after:transition-transform after:duration-smooth after:ease-smooth hover:bg-surface-container-low hover:text-primary active:scale-95 ${isActive ? 'nav-link-active text-primary' : 'text-on-surface-variant'}`
+  `nav-link inline-flex min-h-11 items-center px-3 font-body-md text-sm font-medium transition-colors duration-tactile ease-tactile after:transition-transform after:duration-smooth after:ease-smooth hover:text-primary active:scale-95 ${isActive ? 'nav-link-active text-primary' : 'text-on-surface-variant'}`
 
 function Header() {
   const menuRef = useRef(null)
@@ -58,10 +58,10 @@ function Header() {
   }, [menuOpen, routeKey])
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b-2 border-on-surface bg-background/95 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full bg-[#faf7f2]/95 shadow-[0_1px_0_#e8e0d4] backdrop-blur-md">
       <div className="mx-auto flex min-h-16 max-w-[1280px] items-center justify-between gap-3 px-4 md:h-[76px] md:px-margin-desktop">
         <Link to="/" aria-label="Turquia Lanches — início" className="flex items-center gap-3 rounded-lg focus-visible:outline-offset-4">
-          <img src={logo} alt="Turquia Lanches" width="48" height="48" className="h-11 w-11 rounded-full border-2 border-on-surface object-cover md:h-12 md:w-12" />
+          <img src={logo} alt="Turquia Lanches" width="48" height="48" className="h-11 w-11 rounded-full object-cover md:h-12 md:w-12" />
           <span className="hidden font-headline-md text-base font-extrabold uppercase leading-none tracking-[-0.03em] text-on-surface sm:block">Turquia<br/><span className="text-primary">Lanches</span></span>
         </Link>
 
@@ -101,7 +101,7 @@ function Header() {
           id="menu-mobile"
           ref={menuRef}
           aria-label="Menu mobile"
-          className="flex flex-col gap-1 border-t-2 border-on-surface bg-secondary-container px-margin-mobile pb-6 pt-3 md:hidden"
+          className="flex min-h-[calc(100svh-64px)] flex-col gap-3 bg-[#1a1008]/98 px-margin-mobile pb-8 pt-8 text-white md:hidden"
         >
           {NAV_LINKS.map((link) => (
             <NavLink key={link.label} to={link.to} className={({ isActive }) => linkClasses(isLinkActive(link, isActive))}>

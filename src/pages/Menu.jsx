@@ -6,25 +6,26 @@ import imgMenuHeroFallback from '../assets/images/menu/menu-hero.jpg'
 import { BUSINESS_INFO } from '../data/contact'
 import ChannelAction from '../components/ui/ChannelAction'
 import Button from '../components/ui/Button'
+import Reveal from '../components/ui/Reveal'
 
 function Menu() {
   return (
     <>
-      <section className="editorial-grid bg-on-surface px-4 py-10 text-on-image md:px-margin-desktop md:py-16">
-        <div className="mx-auto grid max-w-[1280px] items-center gap-4 md:grid-cols-[1.05fr_0.95fr] md:gap-14">
+      <section className="bg-[#1a1008] px-5 py-14 text-white md:px-margin-desktop md:py-24">
+        <div className="mx-auto grid max-w-[1280px] items-center gap-10 md:grid-cols-[1.1fr_0.9fr] md:gap-16">
           <div className="relative z-10">
-            <span className="mb-5 inline-flex border-2 border-on-image bg-secondary-container px-3 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-on-surface shadow-[3px_3px_0_#ae0011]">Cardápio Turquia</span>
-            <h1 className="display-balance max-w-[11ch] font-display-xl-mobile text-[46px] font-extrabold leading-[0.92] tracking-[-0.05em] text-on-image md:text-[68px]">
-              Veja o que está previsto.<span className="block text-secondary-container">Sem promessa vazia.</span>
+            <span className="section-eyebrow section-eyebrow-on-dark">Cardápio Turquia</span>
+            <h1 className="display-balance max-w-[10ch] text-[clamp(3.3rem,8vw,7.2rem)] font-extrabold leading-[0.86] tracking-[-0.065em] text-white">
+              Comida farta.<span className="block text-secondary-container">Informação honesta.</span>
             </h1>
-            <p className="mt-6 max-w-xl border-l-4 border-primary pl-4 text-base leading-relaxed text-on-image/75 md:text-lg">
+            <p className="mt-7 max-w-xl text-base leading-relaxed text-white/65 md:text-lg">
               A estrutura do futuro cardápio está aqui. Produtos, preços e pedidos continuam indisponíveis até confirmação oficial.
             </p>
             <Button
               href="#categorias"
               variant="editorialPrimary"
               size="md"
-              className="mt-7 border-on-image text-sm font-extrabold shadow-[4px_4px_0_#fdc008]"
+              className="mt-8 text-sm font-extrabold"
             >
               Ver categorias previstas
             </Button>
@@ -36,7 +37,7 @@ function Menu() {
               iFood não disponível / em construção
             </ChannelAction>
           </div>
-          <figure className="mobile-hero-nav-clearance relative overflow-hidden border-2 border-on-image bg-background p-2 shadow-[8px_8px_0_#fdc008] md:rotate-1">
+          <figure className="menu-hero-visual relative -order-1 overflow-hidden rounded-sm bg-white/5 md:order-none">
             <picture>
               <source srcSet={imgMenuHero} type="image/webp" />
               <img
@@ -44,24 +45,24 @@ function Menu() {
                 alt="Hambúrguer com batatas em cenário ilustrativo"
                 width="512"
                 height="279"
-                className="aspect-[11/5] h-auto w-full object-cover md:aspect-[4/3]"
+                className="aspect-[4/3] h-auto w-full object-cover opacity-80 transition-transform duration-[12s] ease-linear hover:scale-105"
                 fetchpriority="high"
               />
             </picture>
-            <figcaption className="absolute bottom-4 right-4 bg-secondary-container px-3 py-2 text-[9px] font-extrabold uppercase tracking-wide text-on-surface">Imagem ilustrativa</figcaption>
+            <figcaption className="absolute bottom-4 right-4 text-[9px] font-bold uppercase tracking-[0.14em] text-white/55">Fotografia ilustrativa</figcaption>
           </figure>
         </div>
       </section>
 
       <MenuHighlights showAll />
 
-      <section className="bg-background px-4 py-10 md:px-margin-desktop md:py-14">
+      <Reveal as="section" className="bg-[#faf7f2] px-5 py-10 md:px-margin-desktop md:py-16">
         <UnavailableNotice
-          className="mx-auto max-w-[1280px] border-2 border-on-surface bg-surface shadow-[4px_4px_0_#251913]"
+          className="mx-auto max-w-[1280px] border-y border-[#e8e0d4] bg-transparent"
           title="Produtos e preços não disponíveis"
           description="Esta área será atualizada quando o cardápio oficial for aprovado."
         />
-      </section>
+      </Reveal>
     </>
   )
 }

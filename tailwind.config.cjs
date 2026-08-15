@@ -78,7 +78,7 @@ module.exports = {
         'label-bold': ['14px', { lineHeight: '1', fontWeight: '700' }],
       },
       borderRadius: {
-        DEFAULT: '0.25rem',
+        DEFAULT: '2px',
         lg: '0.5rem',
         xl: '0.75rem',
         full: '9999px',

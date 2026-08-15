@@ -23,10 +23,10 @@ describe('dados comerciais', () => {
         <Menu />
       </MemoryRouter>,
     )
-    expect(screen.getByRole('heading', { level: 1, name: /veja o que está previsto.*sem promessa vazia/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: /comida farta.*informação honesta/i })).toBeInTheDocument()
     const categories = screen.getByRole('list', { name: 'Categorias previstas' })
     expect(categories).toBeInTheDocument()
-    expect(categories).toHaveTextContent(/não disponível \/ em construção/i)
+    expect(categories).toHaveTextContent(/conteúdo em confirmação/i)
     expect(within(categories).getAllByRole('listitem')).toHaveLength(5)
     expect(within(categories).getByText('Imagem pendente de acervo')).toBeInTheDocument()
     expect(screen.queryByText(/R\$ --,--/)).not.toBeInTheDocument()
