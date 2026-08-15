@@ -1,7 +1,10 @@
 # Auditoria consolidada — Etapa 27
 
 **Data:** 15/08/2026  
+**Responsável pela execução e auditoria:** Codex (OpenAI)<br>
+**Horário de fechamento:** 14:37 BRT (17:37 UTC)<br>
 **Baseline:** `9cc0f1b`  
+**Integração validada:** `a902d1d` (merge do PR #8 em `main`)<br>
 **Escopo:** SPA por âncoras, Cardápio orientado a produto, Localização integrada, Reviews demonstrativos, redirects e SEO.
 
 ## Veredito

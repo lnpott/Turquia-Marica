@@ -723,7 +723,9 @@ Não marcar o lote como CONCLUÍDO antes de auditoria independente. Registrar em
 ## Etapa 27 — SPA de rolagem, produto em destaque, Localização integrada e fundação de Reviews
 
 - **Estado:** CONCLUÍDO — implementação, auditoria e evidências finalizadas em 15/08/2026.
+- **Registro de fechamento:** Codex (OpenAI), às 14:37 BRT (17:37 UTC), em 15/08/2026.
 - **Base verificada:** `main` (`origin/main`), commit `9cc0f1bf9fa05bd0b47807c36048b69b5e03a5ef` (merge do PR #7).
+- **Integração validada:** commit `a902d1d` (merge do PR #8 em `main`).
 - **Entrega:** sub-etapas 27.1–27.5 implementadas de forma atômica para impedir redirects apontando para âncoras ainda ausentes.
 - **Direção preservada:** arquitetura editorial-quente do Lote 26, integridade do logo, conteúdo comercial honesto, acessibilidade, SEO e reduced motion.
 
