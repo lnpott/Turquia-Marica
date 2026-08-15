@@ -71,6 +71,16 @@ test('reduced motion desativa as animações principais', async ({ page }) => {
   await expect(page.locator('.cta-fill-primary').first()).toHaveCSS('transition-duration', '0s')
   const underlineDuration = await page.locator('.nav-link').first().evaluate((link) => getComputedStyle(link, '::after').transitionDuration)
   expect(underlineDuration, 'sublinhado não deve animar com movimento reduzido').toBe('0s')
+  await expect(page.locator('.hero-ambient')).toHaveCSS('animation-name', 'none')
+  await expect(page.locator('.reveal').first()).toHaveCSS('transition-duration', '0s')
+})
+
+test('scroll reveal entra ao rolar e o Hero mantém movimento ambiente', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('.hero-ambient')).not.toHaveCSS('animation-name', 'none')
+  const section = page.locator('#cardapio .reveal').first()
+  await section.scrollIntoViewIfNeeded()
+  await expect(section).toHaveClass(/reveal-visible/)
 })
 
 test('navegação destaca a rota atual no desktop e no menu mobile', async ({ page }) => {
@@ -108,7 +118,7 @@ test('cardápio apresenta categorias previstas sem filtros ou pedidos falsos', a
   await expect(page.getByRole('list', { name: 'Categorias previstas' }).getByRole('listitem')).toHaveCount(5)
 
   await expect(page.locator('a[href*="ifood"]')).toHaveCount(0)
-  await expect(page.getByRole('list', { name: 'Categorias previstas' }).getByText('Não disponível / em construção')).toHaveCount(5)
+  await expect(page.getByRole('list', { name: 'Categorias previstas' }).getByText('Conteúdo em confirmação')).toHaveCount(5)
   await expect(page.locator('#categorias img')).toHaveCount(4)
   await expect(page.getByText('Imagem pendente de acervo')).toHaveCount(1)
 })
@@ -155,7 +165,9 @@ test('ação visual da localização não fica coberta pela navegação inferior
 
   expect(actionBox).not.toBeNull()
   expect(navigationBox).not.toBeNull()
-  expect(actionBox.y + actionBox.height).toBeLessThanOrEqual(navigationBox.y)
+  const overlapsNavigation = actionBox.y < navigationBox.y + navigationBox.height
+    && actionBox.y + actionBox.height > navigationBox.y
+  expect(overlapsNavigation).toBe(false)
 })
 
 test('heróis e ação de localização respeitam a navegação inferior móvel', async ({ page }) => {

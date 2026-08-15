@@ -7,18 +7,18 @@ function MapEmbed() {
       href={BUSINESS_INFO.channels.maps.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative block min-h-[330px] overflow-hidden border-2 border-on-surface bg-surface-container-lowest shadow-[8px_8px_0_#fdc008] transition-all duration-tactile ease-tactile active:scale-[0.99] focus-visible:outline-offset-4 md:min-h-[440px] md:rotate-1"
+      className="group relative mt-8 flex min-h-[390px] flex-col justify-between overflow-hidden rounded-sm bg-[#e9e0d2] p-5 transition-all duration-smooth ease-smooth hover:-translate-y-1 hover:shadow-xl active:scale-[0.99] focus-visible:outline-offset-4 md:mt-0 md:min-h-[520px] md:p-7"
       aria-label="Abrir a ficha Turquia Lanches - Parque Nanci no Google Maps (nova aba)"
     >
-      <div className="absolute inset-0 editorial-grid bg-secondary-container" aria-hidden="true">
-        <div className="absolute -right-12 top-12 h-52 w-52 rounded-full border-[18px] border-primary/15 transition-transform duration-smooth ease-smooth group-hover:scale-105 md:h-72 md:w-72" />
-        <div className="absolute left-[16%] top-[36%] h-24 w-[68%] rotate-[-8deg] rounded-[50%] border-b-4 border-dashed border-primary/50" />
-        <MapPin className="absolute left-[48%] top-[34%] h-20 w-20 -translate-x-1/2 text-primary drop-shadow-[4px_4px_0_#fdc008] md:h-28 md:w-28" strokeWidth={2.4} />
+      <div className="absolute inset-0 paper-texture" aria-hidden="true">
+        <div className="absolute -right-16 top-8 h-64 w-64 rounded-full border border-primary/20 transition-transform duration-smooth ease-smooth group-hover:scale-110 md:h-96 md:w-96" />
+        <div className="absolute left-[10%] top-[34%] h-28 w-[76%] rotate-[-8deg] rounded-[50%] border-b-2 border-dashed border-primary/35" />
+        <MapPin className="absolute left-1/2 top-[34%] h-20 w-20 -translate-x-1/2 text-primary md:h-28 md:w-28" strokeWidth={1.5} />
       </div>
-      <div className="absolute left-4 top-4 border-2 border-on-surface bg-secondary-container px-3 py-2 text-[10px] font-extrabold uppercase tracking-[0.14em] text-on-surface">
+      <div className="relative text-[10px] font-bold uppercase tracking-[0.16em] text-on-surface/55">
         Ilustração · não é um mapa
       </div>
-      <div className="mobile-map-action-clearance absolute inset-x-4 bottom-44 flex items-center justify-between gap-4 border-2 border-on-surface bg-background p-4 shadow-[4px_4px_0_#251913] md:bottom-4">
+      <div className="relative flex flex-col items-start justify-between gap-3 bg-[#faf7f2] p-5 shadow-sm sm:flex-row sm:items-center">
         <span className="flex items-center gap-3 font-label-bold text-on-surface">
           <Navigation className="h-5 w-5 text-primary" aria-hidden="true" />
           Conferir ficha

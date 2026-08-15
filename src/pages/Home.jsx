@@ -1,6 +1,7 @@
 import { Clock3, MapPin, ShieldCheck } from 'lucide-react'
 import HeroSection from '../components/home/HeroSection'
 import MenuHighlights from '../components/menu/MenuHighlights'
+import Reveal from '../components/ui/Reveal'
 import { BUSINESS_INFO } from '../data/contact'
 
 const FACTS = [
@@ -13,33 +14,33 @@ function Home() {
   return (
     <>
       <HeroSection />
-      <section aria-label="Informações rápidas" className="bg-on-surface px-4 py-7 text-on-image md:px-margin-desktop">
-        <ul className="mx-auto grid max-w-[1280px] gap-3 md:grid-cols-3 md:gap-0">
+      <Reveal as="section" aria-label="Informações rápidas" className="bg-[#faf7f2] px-5 py-10 md:px-margin-desktop">
+        <ul className="mx-auto grid max-w-[1280px] gap-8 border-y border-[#e8e0d4] py-8 md:grid-cols-3 md:gap-0">
           {FACTS.map(({ Icon, title, value }) => (
-            <li key={title} className="flex items-center gap-3 border-on-image/20 py-2 md:border-l md:px-6 md:first:border-l-0 md:first:pl-0">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-secondary-container text-on-surface">
-                <Icon className="h-5 w-5" aria-hidden="true" />
+            <li key={title} className="flex items-start gap-4 md:border-l md:border-[#e8e0d4] md:px-7 md:first:border-l-0 md:first:pl-0">
+              <span className="mt-1 text-primary">
+                <Icon className="h-5 w-5" strokeWidth={1.7} aria-hidden="true" />
               </span>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-secondary-container">{title}</p>
-                <p className="font-body-md text-sm font-medium text-on-image/85">{value}</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">{title}</p>
+                <p className="mt-1 text-sm font-medium text-on-surface/75">{value}</p>
               </div>
             </li>
           ))}
         </ul>
-      </section>
-      <MenuHighlights compact />
-      <section id="sobre" className="scroll-mt-24 border-t-2 border-on-surface bg-primary px-4 py-16 text-on-primary md:px-margin-desktop md:py-24">
-        <div className="mx-auto grid max-w-[1280px] gap-8 md:grid-cols-[0.55fr_1.45fr] md:items-start">
-          <span className="inline-flex w-fit border border-on-primary/50 px-3 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-secondary-container">Sobre a casa</span>
-          <div className="border-l-4 border-secondary-container pl-5 md:pl-8">
-            <h2 className="display-balance max-w-[16ch] font-headline-lg text-[36px] font-extrabold leading-[1.02] tracking-[-0.035em] text-on-primary md:text-[52px]">Bairro no coração. Fartura na mesa.</h2>
-            <p className="mt-6 max-w-2xl font-body-lg text-base text-on-primary/80 md:text-lg">
+      </Reveal>
+      <MenuHighlights />
+      <Reveal as="section" id="sobre" className="scroll-mt-24 bg-[#faf7f2] px-5 py-20 md:px-margin-desktop md:py-32">
+        <div className="mx-auto grid max-w-[1280px] gap-10 md:grid-cols-[0.45fr_1.55fr] md:items-start">
+          <span className="section-eyebrow">Sobre a casa</span>
+          <div>
+            <h2 className="display-balance max-w-[14ch] text-[clamp(2.7rem,6vw,5.5rem)] font-extrabold leading-[0.94] tracking-[-0.055em] text-on-surface">Bairro no coração.<span className="text-primary"> Fartura na mesa.</span></h2>
+            <p className="mt-8 max-w-2xl text-lg leading-relaxed text-on-surface/65 md:text-xl">
               Uma presença local construída com honestidade: primeiro a experiência certa, depois cada informação confirmada.
             </p>
           </div>
         </div>
-      </section>
+      </Reveal>
     </>
   )
 }
