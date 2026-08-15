@@ -594,32 +594,195 @@ O site inteiro é construído sobre um único "kit de peças" repetido mecanicam
 
 ### Nova direção visual — "do neo-brutalista genérico para editorial-quente autoral"
 
-Abandono do padrão "caixa com borda preta de 2px + sombra deslocada + badge amarelo" como linguagem repetida em toda a interface. Nova lógica:
+A mudança central não é de cor ou espaçamento — é de **lógica compositiva**. O sistema anterior separava elementos com bordas e caixas. O novo sistema separa com espaço, escala tipográfica e posição. Um agente que leia esta seção deve ser capaz de abrir qualquer componente e saber exatamente o que remover e o que escrever no lugar.
 
-1. **Vermelho como acento raro e proposital**, nunca fundo de bloco inteiro — reservado a 1–2 elementos por tela no máximo (uma palavra em destaque, um traço, um ícone), reforçando que é usado para chamar atenção pontual, não para pintar seções.
-2. **Amarelo rebaixado a apoio quase-neutro** — usado em traços finos, sublinhados, pontos de pontuação visual; nunca mais como fundo sólido de badge ou menu inteiro.
-3. **Creme/branco como protagonista do espaço** — respiro generoso substitui borda como forma de separar elementos; hierarquia por tamanho tipográfico e posição, não por caixa.
-4. **Tipografia como elemento central da composição**, não decoração dentro de caixa — títulos grandes podem cruzar sobre imagens, ocupar assimetricamente o layout, criar ritmo por variação de escala real (não os mesmos 2–3 tamanhos repetidos).
-5. **Fotografia tratada como textura ambiente quando não é fiel ao conteúdo** (caso do acervo atual) — em vez de emoldurada com etiqueta "imagem ilustrativa", integrada de forma que a composição não prometa uma relação editorial que a imagem não cumpre.
-6. **Cards, quando usados, variam de tamanho/proporção entre si** (grid assimétrico) em vez de grade uniforme repetida — evita a sensação de "catálogo de e-commerce" que o brief pede para não parecer.
-7. **Estados provisórios ("não disponível", "em construção") comunicados com linguagem tipográfica própria e discreta**, não como selo colorido repetido — a honestidade do conteúdo permanece; a forma de comunicá-la muda.
+#### Regra 1 — Acabar com `.brand-stamp` e `border-on-surface` como padrão global
 
-### Escopo técnico (status por arquivo)
+**O problema:** a classe `.brand-stamp` (equivalente a `border-2 border-[#251913] shadow-[4px_4px_0_#251913]`) é aplicada indiscriminadamente a badges, cards, botões e molduras — nivelando tudo ao mesmo peso visual.
 
-**Fundação de tokens (concluído):**
-- [x] `tailwind.config.cjs` — nova escala tipográfica editorial (`editorial-hero`, `editorial-headline`, etc.), `borderRadius` reduzido a quase-reto (2px), mantendo paleta de cor existente (papéis é que mudam, não os hex).
-- [x] `src/styles/index.css` — removidas `.editorial-grid` e `.brand-stamp` como classes globais; adicionadas `.paper-texture`, `.hairline`, `.hairline-top`, `.hairline-bottom` como novo vocabulário de separação; `--color-hairline` adicionado como token; `.card-shadow-hover` suavizado.
-- [x] `src/components/layout/Header.jsx` — recomposto (logo com mais presença própria, navegação silenciosa, removida borda em hover de link).
+**O que fazer:**
+- Remover `.brand-stamp` de todo elemento que não seja explicitamente um bloco de destaque editorial intencional (ex: um único cartão "chamada do dia", se existir).
+- Substituir separação entre seções por espaçamento generoso (`py-16 md:py-24`) e, quando necessário, uma linha fina de 1px (`border-t border-[#e8e0d4]` — token `.hairline`).
+- Botões: usar apenas `ring-1 ring-inset ring-[#251913]` para outline, ou fundo sólido sem sombra deslocada para o primário. A profundidade vem de `hover:shadow-md transition-shadow`, não de sombra estática deslocada.
+- Critério de aceite: `grep -rn "brand-stamp\|shadow-\[4px" src/` retorna zero.
 
-**Concluído na execução:**
-- [x] `src/components/home/HeroSection.jsx` — removido `.brand-stamp`; nova composição tipográfica dominante, imagem como textura de fundo.
-- [x] `src/pages/Home.jsx` — seções reordenadas (marca → local → experiência → comida → ação); bloco vermelho de fundo total removido.
-- [x] `src/components/menu/MenuHighlights.jsx` — grid uniforme substituído por lista editorial numerada (imagem circular pequena, número de ordem, tipografia dominante); `.editorial-grid` residual removido; prop `compact` não utilizada removida.
-- [x] `src/pages/Menu.jsx` — recomposto com nova lógica, mantendo descoberta honesta e proporcional.
-- [x] `src/pages/Location.jsx`, `src/components/location/ContactCard.jsx`, `src/components/location/MapEmbed.jsx` — recompostos, CTA de rota funcional e honesto mantido; `.editorial-grid` residual removido.
-- [x] `src/components/layout/Footer.jsx`, `src/components/layout/BottomNavBar.jsx` — ajustados ao novo sistema visual.
-- [x] `src/components/ui/Button.jsx` — reescrito com tokens compartilhados; passou a ter consumidores reais.
-- [x] `grep -rn "editorial-grid\|brand-stamp" src/` — zero ocorrências confirmado.
+#### Regra 2 — Amarelo só como traço, nunca como superfície
+
+**O problema:** `bg-[#fdc008]` aparece como fundo de badges ("Imagem ilustrativa", "Não disponível"), fundo do menu mobile inteiro e tag de localização — dominando a tela como cor de fundo, não como acento.
+
+**O que fazer:**
+- Badges de estado provisório: remover fundo amarelo. Usar texto em `text-[#7a6a2a]` (amarelo escuro) sobre fundo transparente, com no máximo uma borda de 1px em `border-[#c9a800]`. Exemplo de classe resultante: `text-xs font-medium text-[#7a6a2a] border border-[#c9a800] rounded-sm px-2 py-0.5`.
+- Menu mobile: fundo do overlay passa a ser `bg-[#1a1008]/95` (preto quente escuro) em vez de amarelo. Links em branco/creme.
+- Tag de localização ("Parque Nanci · Maricá"): texto simples, `text-sm text-[#5a4a2a] font-medium`, sem fundo.
+- Eyebrow de seção (`.section-eyebrow`): manter o traço amarelo fino (`border-b-2 border-[#fdc008]`) como único uso de amarelo como cor de superfície — e mesmo assim só como sublinhado, nunca como bloco.
+- Critério de aceite: `grep -rn "bg-\[#fdc008\]\|bg-secondary-container" src/` retorna zero fora de `tailwind.config.cjs`.
+
+#### Regra 3 — Vermelho só em 1–2 pontos por tela, nunca como fundo de bloco
+
+**O problema:** a seção "Sobre a casa" usa `bg-[#ae0011]` como fundo de bloco inteiro — padrão de rede de fast-food, não de marca autoral.
+
+**O que fazer:**
+- Em `Home.jsx`, o bloco institucional ("Sobre a casa" ou equivalente) passa a ter `bg-[#faf7f2]` (creme) como fundo.
+- Vermelho `#ae0011` é reservado para: uma palavra em destaque num título (`<span class="text-[#ae0011]">`) ou um ícone pontual, no máximo um por seção.
+- CTA primário pode manter `bg-[#ae0011]` no botão — botão é elemento pontual, não bloco de seção.
+- Critério de aceite: nenhuma `<section>` ou `<div>` de bloco inteiro usa `bg-[#ae0011]` ou `bg-primary` como fundo de fundo.
+
+#### Regra 4 — Tipografia como estrutura compositiva, não como texto dentro de caixa
+
+**O problema:** todos os títulos seguem o mesmo padrão (`text-2xl font-bold` dentro de um retângulo com borda), sem variação real de escala entre seções. A tipografia não organiza a página — a caixa é que organiza.
+
+**O que fazer, em `tailwind.config.cjs`:** adicionar escala editorial com valores concretos:
+```js
+fontSize: {
+  'editorial-hero':    ['clamp(3rem, 8vw, 6rem)',    { lineHeight: '0.95', letterSpacing: '-0.03em', fontWeight: '800' }],
+  'editorial-headline':['clamp(2rem, 5vw, 3.5rem)',  { lineHeight: '1.05', letterSpacing: '-0.02em', fontWeight: '700' }],
+  'editorial-subhead': ['clamp(1.25rem, 3vw, 1.75rem)',{ lineHeight: '1.2',  letterSpacing: '-0.01em', fontWeight: '600' }],
+  'editorial-label':   ['0.6875rem',                  { lineHeight: '1',    letterSpacing: '0.12em',  fontWeight: '600', textTransform: 'uppercase' }],
+}
+```
+
+**O que fazer nos componentes:**
+- `HeroSection.jsx`: título principal usa `text-editorial-hero`. Não está dentro de um retângulo — está sobre a imagem de fundo ou ao lado dela, com `mix-blend-mode: multiply` ou cor opaca forte. Subtítulo/tagline usa `text-editorial-subhead`. Nenhum `<div>` de borda envolvendo o bloco de texto.
+- Títulos de seção em `Home.jsx` e `Menu.jsx`: alternar entre `text-editorial-headline` e `text-editorial-subhead` conforme hierarquia real — nunca dois títulos consecutivos com o mesmo tamanho.
+- Labels de categoria e eyebrows: `text-editorial-label` — caixa-alta pequena, espaçamento de letra amplo, sem borda ao redor.
+- Critério de aceite: inspeção visual mostra pelo menos 3 tamanhos de título claramente distintos na Home; nenhum título de seção usa `text-2xl` ou `text-xl` como tamanho máximo.
+
+#### Regra 5 — Grade de categorias: lista editorial em vez de grid uniforme de cards
+
+**O problema:** `MenuHighlights.jsx` renderiza 4–5 cards idênticos em largura, altura e tratamento visual. Home e Cardápio ficam intercambiáveis visualmente porque usam o mesmo componente sem variação.
+
+**O que fazer em `MenuHighlights.jsx`:**
+- Substituir o `grid grid-cols-2 md:grid-cols-4` por uma lista vertical numerada com layout assimétrico:
+  ```jsx
+  // Estrutura por item:
+  // [número de ordem grande, cinza claro] [imagem circular pequena, 64px] [nome da categoria, text-editorial-subhead] [descrição curta]
+  // separados por .hairline-bottom
+  ```
+- Número de ordem: `text-[7rem] font-black text-[#e8e0d4] leading-none select-none` — elemento decorativo tipográfico, não funcional.
+- Imagem: `w-16 h-16 rounded-full object-cover opacity-80` — pequena, circular, baixa opacidade. Não é o foco — é apoio visual.
+- Nome da categoria: `text-editorial-subhead text-[#251913]`.
+- Separador entre itens: `border-b border-[#e8e0d4]` (`.hairline`).
+- Na Home: mostrar só as 3 primeiras categorias (prop `compact`). No Cardápio: mostrar todas.
+- Critério de aceite: Home e Cardápio são visivelmente diferentes entre si; não existe grid de cards de foto em tela cheia em nenhuma das duas rotas.
+
+#### Regra 6 — Fotografia como textura, não como quadro emoldurado
+
+**O problema:** imagens semanticamente incorretas (hambúrguer representando Sobremesas, foto de premiação representando Combos) são exibidas em destaque emoldurado com borda e etiqueta "Imagem ilustrativa" — o que chama mais atenção para a inconsistência.
+
+**O que fazer:**
+- Em qualquer card ou bloco onde a imagem disponível não representa fielmente a categoria: usar a imagem como `background-image` com `opacity-20 md:opacity-30` e `object-cover`, não como `<img>` em destaque.
+- Remover completamente a etiqueta "Imagem ilustrativa" como badge visual. Se necessário indicar provisoriedade, usar uma linha de texto discreto abaixo do nome da categoria: `<p class="text-xs text-[#9a8a7a]">Fotografia em atualização</p>`.
+- `HeroSection.jsx`: a foto de fundo do Hero pode manter presença forte, mas sem moldura/borda ao redor — `absolute inset-0 w-full h-full object-cover` com overlay de gradiente `from-[#1a1008]/70 to-transparent`.
+- Critério de aceite: zero badges "Imagem ilustrativa" visíveis; zero imagens de categoria exibidas como foto em destaque com borda.
+
+#### Regra 7 — Estados provisórios com linguagem tipográfica, não com selos coloridos
+
+**O problema:** "Não disponível", "Em construção", "Imagem pendente de acervo" são comunicados como badges coloridos repetidos em série — a honestidade vira ruído visual.
+
+**O que fazer:**
+- Estados de canal indisponível (iFood, WhatsApp): texto `text-sm text-[#9a8a7a] line-through` no nome do canal, seguido de `<span class="not-italic text-xs text-[#9a8a7a]">em breve</span>`. Sem badge, sem caixa, sem ícone de aviso.
+- Estados de categoria "em construção": remover completamente qualquer badge. O nome da categoria aparece normalmente; a ausência de preço ou link de pedido já comunica a indisponibilidade sem decoração extra.
+- Horários não confirmados: simplesmente não exibir o campo. Não exibir "Horários: não confirmados" — omitir até ter dado real.
+- Critério de aceite: `grep -rn "UnavailableNotice\|badge.*construção\|Imagem.*ilustrativa" src/components` retorna zero ocorrências de badge visual colorido para estados provisórios.
+
+#### Regra 8 — Header silencioso, logo com presença própria
+
+**O problema:** o Header usa borda inferior pesada e hover com fundo colorido nos links — compete visualmente com o conteúdo da página.
+
+**O que fazer em `Header.jsx`:**
+- Fundo do header: `bg-[#faf7f2]/95 backdrop-blur-sm` — creme semitransparente, não branco puro nem preto.
+- Borda inferior: remover `border-b`. Substituir por `shadow-[0_1px_0_#e8e0d4]` — separador de 1px, quase invisível.
+- Links de navegação: `text-sm font-medium text-[#3a2a1a] hover:text-[#ae0011] transition-colors duration-150`. Sem fundo no hover — só mudança de cor.
+- Estado ativo (`NavLink isActive`): `text-[#ae0011]` + `underline underline-offset-4 decoration-[#fdc008] decoration-2` — sublinhado amarelo fino, único uso de amarelo neste componente.
+- Logo: remover qualquer borda ou `brand-stamp` ao redor. O logo se sustenta sozinho.
+- Menu mobile: overlay `bg-[#1a1008]/95`, links em `text-white text-2xl font-bold`, sem fundo amarelo.
+
+#### Regra 9 — Footer como encerramento tipográfico, não bloco de cor
+
+**O problema:** o Footer usa fundo escuro com borda, similar ao estilo de "encerramento de fast-food".
+
+**O que fazer em `Footer.jsx`:**
+- Fundo: `bg-[#1a1008]` (preto quente) — manter, é adequado como encerramento.
+- Remover qualquer borda ou sombra deslocada interna.
+- Tipografia: nome da marca em `text-editorial-headline text-[#faf7f2]`, tagline em `text-sm text-[#9a8a7a]`, links em `text-sm text-[#c9b99a] hover:text-white`.
+- Separador entre colunas: linha fina `border-r border-[#3a2a1a]`, não caixa.
+- Critério de aceite: Footer parece o encerramento natural de uma página editorial, não uma seção de rodapé de delivery app.
+
+### Escopo técnico (status por arquivo e o que cada um deve fazer)
+
+Um agente que receba este documento deve implementar cada item abaixo como descrito. Os itens marcados `[x]` foram concluídos na sessão anterior e servem como referência; os itens `[ ]` ainda precisam de verificação ou ajuste conforme as Regras acima.
+
+**`tailwind.config.cjs`** `[x]`
+- Escala `fontSize` com `editorial-hero`, `editorial-headline`, `editorial-subhead`, `editorial-label` (valores na Regra 4).
+- `borderRadius`: `DEFAULT: '2px'` — quase-reto em tudo.
+- Paleta mantida nos hex; papéis mudam (ver Regras 2 e 3).
+- Remover qualquer chave duplicada (erro corrigido: `fontSize` estava duplicado).
+
+**`src/styles/index.css`** `[x]`
+- Removidas: `.editorial-grid` (grade decorativa de fundo), `.brand-stamp` (borda 2px + sombra deslocada).
+- Adicionadas: `.hairline` → `border-b border-[#e8e0d4]`; `.hairline-top` → `border-t border-[#e8e0d4]`; `.paper-texture` → textura sutil de fundo para blocos de texto longos.
+- `--color-hairline: #e8e0d4` como variável CSS.
+- `.card-shadow-hover`: apenas `hover:shadow-md transition-shadow duration-200` — sem sombra deslocada.
+- Removidas: `.mobile-hero-nav-clearance` e `.mobile-map-action-clearance` (valores mágicos de offset que dependiam do layout antigo).
+
+**`src/components/layout/Header.jsx`** `[x → revisar contra Regra 8]`
+- Fundo: `bg-[#faf7f2]/95 backdrop-blur-sm`.
+- Separador: `shadow-[0_1px_0_#e8e0d4]`, sem `border-b`.
+- Links: cor no hover, sem fundo. Estado ativo: sublinhado amarelo fino.
+- Menu mobile: overlay escuro `bg-[#1a1008]/95`, sem fundo amarelo.
+
+**`src/components/home/HeroSection.jsx`** `[x → revisar contra Regra 4 e 6]`
+- Título: `text-editorial-hero`. Não dentro de retângulo — sobre imagem com overlay gradiente.
+- Imagem de fundo: `absolute inset-0 w-full h-full object-cover` + overlay `from-[#1a1008]/70 to-transparent`.
+- Sem `.brand-stamp`, sem borda ao redor do bloco de texto.
+- Tagline: `text-editorial-subhead text-[#faf7f2]`.
+
+**`src/pages/Home.jsx`** `[x → revisar contra Regra 3 e 7]`
+- Ordem das seções: marca (Hero) → local rápido → experiência/institucional → categorias → CTA de ação.
+- Bloco institucional: fundo `bg-[#faf7f2]`, sem `bg-[#ae0011]` como fundo de seção.
+- Vermelho só em acento tipográfico pontual dentro do bloco (uma palavra, um traço).
+- Espaçamento entre seções: `py-16 md:py-24` — separação por espaço, não por borda.
+
+**`src/components/menu/MenuHighlights.jsx`** `[x → revisar contra Regra 5]`
+- Estrutura: lista vertical numerada (ver Regra 5 para o layout exato de cada item).
+- Número de ordem: `text-[7rem] font-black text-[#e8e0d4] leading-none select-none`.
+- Imagem: `w-16 h-16 rounded-full object-cover opacity-80`.
+- Separador: `.hairline-bottom` entre itens.
+- Home usa prop `compact` (3 itens); Cardápio usa sem prop (todos).
+- Sem grid uniforme de cards de foto em tela cheia.
+
+**`src/pages/Menu.jsx`** `[x → revisar contra Regra 5 e 7]`
+- Renderiza `<MenuHighlights />` sem prop `compact`.
+- Hero do Cardápio: título `text-editorial-headline`, sem retângulo de borda.
+- Sem grade decorativa de placeholders. Sem badge de "em construção" — ausência de link de pedido já comunica o estado.
+
+**`src/pages/Location.jsx`** `[x → revisar contra Regra 7]`
+- CTA "Conferir ficha / Google Maps": no fluxo normal do documento (`position: static`), sem `position: absolute` com offset mágico.
+- Estados de canal (iFood, WhatsApp): `text-sm text-[#9a8a7a] line-through` + `"em breve"` discreto. Sem badge colorido.
+
+**`src/components/location/ContactCard.jsx`** `[x → revisar contra Regra 2 e 7]`
+- Sem `.brand-stamp`.
+- Fundo: `bg-[#faf7f2]` ou transparente.
+- Informações indisponíveis: omitir o campo ou usar texto `text-[#9a8a7a]` discreto.
+
+**`src/components/location/MapEmbed.jsx`** `[x → revisar contra Regra 6]`
+- CTA no fluxo normal, sem `position: absolute`.
+- Sem `.brand-stamp` no bloco do mapa.
+
+**`src/components/layout/Footer.jsx`** `[x → revisar contra Regra 9]`
+- Fundo: `bg-[#1a1008]` — manter.
+- Remover bordas internas e sombras deslocadas.
+- Tipografia: `text-editorial-headline` para o nome da marca, `text-sm text-[#9a8a7a]` para tagline.
+
+**`src/components/layout/BottomNavBar.jsx`** `[x]`
+- Fundo: `bg-[#1a1008]/95 backdrop-blur-sm`.
+- Ícone ativo: cor `text-[#fdc008]` (único uso de amarelo como destaque de ícone — admissível).
+- Sem borda superior pesada — `shadow-[0_-1px_0_#3a2a1a]`.
+
+**`src/components/ui/Button.jsx`** `[x]`
+- Primário: `bg-[#ae0011] text-white hover:bg-[#8a000d] active:scale-95 transition-all duration-150`. Sem sombra deslocada estática.
+- Outline: `ring-1 ring-inset ring-[#251913] hover:bg-[#251913] hover:text-white active:scale-95 transition-all duration-150`.
+- Componente está em uso real — não é código órfão.
 
 ### Critérios de sucesso
 
