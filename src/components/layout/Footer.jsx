@@ -4,7 +4,7 @@ import logo from '../../assets/images/brand/logo-96.webp'
 import { BUSINESS_INFO } from '../../data/contact'
 import ChannelAction from '../ui/ChannelAction'
 
-const actionClasses = 'inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-medium text-on-image/80 transition-colors hover:bg-on-image/10 hover:text-secondary-container'
+const actionClasses = 'inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-medium text-on-image/80 transition-all duration-tactile ease-tactile hover:translate-x-1 hover:bg-on-image/10 hover:text-secondary-container active:scale-95'
 
 function Footer() {
   return (

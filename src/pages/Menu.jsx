@@ -5,6 +5,7 @@ import imgMenuHero from '../assets/images/menu/menu-hero.webp'
 import imgMenuHeroFallback from '../assets/images/menu/menu-hero.jpg'
 import { BUSINESS_INFO } from '../data/contact'
 import ChannelAction from '../components/ui/ChannelAction'
+import Button from '../components/ui/Button'
 
 function Menu() {
   return (
@@ -19,12 +20,14 @@ function Menu() {
             <p className="mt-6 max-w-xl border-l-4 border-primary pl-4 text-base leading-relaxed text-on-image/75 md:text-lg">
               A estrutura do futuro cardápio está aqui. Produtos, preços e pedidos continuam indisponíveis até confirmação oficial.
             </p>
-            <a
+            <Button
               href="#categorias"
-              className="mt-7 inline-flex min-h-12 items-center justify-center border-2 border-on-image bg-primary px-6 py-3 text-sm font-extrabold uppercase tracking-wide text-on-primary shadow-[4px_4px_0_#fdc008] transition-transform hover:-translate-y-1"
+              variant="editorialPrimary"
+              size="md"
+              className="mt-7 border-on-image text-sm font-extrabold shadow-[4px_4px_0_#fdc008]"
             >
               Ver categorias previstas
-            </a>
+            </Button>
             <ChannelAction
               channel={BUSINESS_INFO.channels.ifood}
               icon={ShoppingBag}

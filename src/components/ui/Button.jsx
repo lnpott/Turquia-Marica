@@ -2,7 +2,11 @@ import { Link } from 'react-router-dom'
 
 const VARIANT_CLASSES = {
   primary:
-    'bg-primary text-on-primary hover:shadow-lg hover:scale-[1.02] active:scale-95',
+    'cta-fill-primary bg-primary text-on-primary hover:shadow-lg hover:scale-[1.02] active:scale-95',
+  editorialPrimary:
+    'cta-fill-primary rounded-none border-2 border-on-surface bg-primary uppercase tracking-wide text-on-primary shadow-[4px_4px_0_#251913] hover:-translate-y-1 active:translate-x-1 active:translate-y-1 active:shadow-none',
+  editorialSecondary:
+    'rounded-none border-2 border-on-surface bg-background uppercase tracking-wide text-on-surface hover:-translate-y-1 hover:bg-secondary-container active:translate-y-0 active:scale-95',
   secondary:
     'border border-outline text-on-surface hover:bg-surface-container-low active:scale-95',
   ghost: 'text-primary hover:bg-primary/5 active:scale-95',
@@ -32,7 +36,7 @@ function Button({
   children,
   ...rest
 }) {
-  const classes = `inline-flex items-center justify-center gap-2 rounded-lg font-label-bold transition-all duration-200 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`
+  const classes = `inline-flex items-center justify-center gap-2 rounded-lg font-label-bold transition-all duration-tactile ease-tactile ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`
 
   if (to) {
     return (

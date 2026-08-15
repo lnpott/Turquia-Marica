@@ -22,7 +22,7 @@ function MenuHighlights({ compact = false, showAll = false }) {
             </p>
           </div>
           {!showAll ? (
-            <Link to="/cardapio" className="inline-flex min-h-11 items-center gap-2 self-start rounded-lg font-label-bold text-primary hover:underline md:self-auto">
+            <Link to="/cardapio" className="inline-flex min-h-11 items-center gap-2 self-start rounded-lg font-label-bold text-primary transition-all duration-tactile ease-tactile hover:translate-x-1 hover:underline active:scale-95 md:self-auto">
               Abrir cardápio
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
@@ -35,7 +35,7 @@ function MenuHighlights({ compact = false, showAll = false }) {
               key={category.id}
               id={showAll ? `categoria-${category.id}` : undefined}
               tabIndex={showAll ? -1 : undefined}
-              className="group scroll-mt-28 overflow-hidden border-2 border-on-surface bg-white shadow-[5px_5px_0_#251913] transition-transform hover:-translate-y-1 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+              className="group scroll-mt-28 overflow-hidden border-2 border-on-surface bg-white shadow-[5px_5px_0_#251913] transition-transform duration-tactile ease-tactile hover:-translate-y-1 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
             >
               <figure>
                 <div className="relative aspect-[16/10] overflow-hidden bg-surface-container">
@@ -46,7 +46,7 @@ function MenuHighlights({ compact = false, showAll = false }) {
                         <img
                           src={category.fallbackImage}
                           alt={category.imageAlt}
-                          className="h-full w-full object-cover"
+                          className="h-full w-full object-cover transition-transform duration-smooth ease-smooth group-hover:scale-105"
                           loading="lazy"
                           width="512"
                           height="320"

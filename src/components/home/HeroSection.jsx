@@ -1,9 +1,9 @@
 import { ArrowRight, MapPin, ShoppingBag } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import imgHeroFries from '../../assets/images/hero/hero-fries.webp'
 import imgHeroFriesFallback from '../../assets/images/hero/hero-fries.jpg'
 import { BUSINESS_INFO } from '../../data/contact'
 import ChannelAction from '../ui/ChannelAction'
+import Button from '../ui/Button'
 
 function HeroSection() {
   return (
@@ -19,17 +19,18 @@ function HeroSection() {
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link
+            <Button
               to="/cardapio"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-none border-2 border-on-surface bg-primary px-7 py-3 font-label-bold uppercase tracking-wide text-on-primary shadow-[4px_4px_0_#251913] transition-transform hover:-translate-y-1"
+              variant="editorialPrimary"
+              size="lg"
             >
               Ver cardápio
               <ArrowRight className="h-5 w-5" aria-hidden="true" />
-            </Link>
+            </Button>
             <ChannelAction
               channel={BUSINESS_INFO.channels.maps}
               icon={MapPin}
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-none border-2 border-on-surface bg-background px-7 py-3 font-label-bold uppercase tracking-wide text-on-surface transition-transform hover:-translate-y-1"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-none border-2 border-on-surface bg-background px-7 py-3 font-label-bold uppercase tracking-wide text-on-surface transition-all duration-tactile ease-tactile hover:-translate-y-1 hover:bg-secondary-container active:translate-y-0 active:scale-95"
             />
           </div>
 

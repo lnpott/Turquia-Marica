@@ -68,6 +68,37 @@ test('reduced motion desativa as animações principais', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
   await expect(page.locator('.page-transition')).toHaveCSS('animation-name', 'none')
+  await expect(page.locator('.cta-fill-primary').first()).toHaveCSS('transition-duration', '0s')
+  const underlineDuration = await page.locator('.nav-link').first().evaluate((link) => getComputedStyle(link, '::after').transitionDuration)
+  expect(underlineDuration, 'sublinhado não deve animar com movimento reduzido').toBe('0s')
+})
+
+test('navegação destaca a rota atual no desktop e no menu mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto('/cardapio/')
+  const desktopNavigation = page.getByRole('navigation', { name: 'Navegação principal' })
+  await expect(desktopNavigation.getByRole('link', { name: 'Cardápio' })).toHaveClass(/nav-link-active/)
+  await expect(desktopNavigation.getByRole('link', { name: 'Localização' })).not.toHaveClass(/nav-link-active/)
+
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.getByRole('button', { name: 'Abrir menu' }).click()
+  const mobileNavigation = page.getByRole('navigation', { name: 'Menu mobile' })
+  await expect(mobileNavigation.getByRole('link', { name: 'Cardápio' })).toHaveClass(/nav-link-active/)
+
+  await page.goto('/')
+  const aboutLink = page.locator('nav[aria-label="Navegação principal"] a', { hasText: 'Sobre nós' })
+  await expect(aboutLink).not.toHaveClass(/nav-link-active/)
+  await page.goto('/#sobre')
+  await expect(aboutLink).toHaveClass(/nav-link-active/)
+})
+
+test('CTAs e imagens usam os tokens compartilhados de motion', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.getByRole('link', { name: 'Ver cardápio' })).toHaveCSS('transition-duration', '0.16s')
+  const categoryImage = page.locator('#cardapio img').first()
+  await expect(categoryImage).toHaveCSS('transition-duration', '0.42s')
+  await categoryImage.locator('..').hover()
+  await expect(categoryImage).not.toHaveCSS('transform', 'none')
 })
 
 test('cardápio apresenta categorias previstas sem filtros ou pedidos falsos', async ({ page }) => {
