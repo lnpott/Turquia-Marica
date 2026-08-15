@@ -720,6 +720,247 @@ Um agente que receba este documento deve implementar cada item abaixo como descr
 
 Não marcar o lote como CONCLUÍDO antes de auditoria independente. Registrar em `documentacao/qa/` o relatório permanente (diagnóstico, decisões, antes×depois, arquivos modificados, screenshots, testes, commit, ressalvas, estado final). Não iniciar outro lote antes disso.
 
+## Etapa 27 — SPA de rolagem, produto em destaque, Localização integrada e fundação de Reviews
+
+- **Estado:** CONCLUÍDO — implementação, auditoria e evidências finalizadas em 15/08/2026.
+- **Base verificada:** `main` (`origin/main`), commit `9cc0f1bf9fa05bd0b47807c36048b69b5e03a5ef` (merge do PR #7).
+- **Entrega:** sub-etapas 27.1–27.5 implementadas de forma atômica para impedir redirects apontando para âncoras ainda ausentes.
+- **Direção preservada:** arquitetura editorial-quente do Lote 26, integridade do logo, conteúdo comercial honesto, acessibilidade, SEO e reduced motion.
+
+### 27.0 — Auditoria pré-implementação
+
+Esta auditoria consolida o texto recebido, que continha a Etapa 27 duplicada integralmente, e registra conflitos antes de qualquer alteração de aplicação.
+
+#### Decisões confirmadas
+
+1. `/` será a única página com conteúdo real, na ordem: Hero → Informações rápidas → Cardápio (`#cardapio`) → Sobre (`#sobre`) → Localização (`#localizacao`) → Reviews (`#reviews`).
+2. `/cardapio` e `/localizacao` serão URLs legadas com redirect permanente para as âncoras equivalentes da Home e fallback por `<Navigate>` em ambientes sem Vercel.
+3. Header, BottomNavBar e Footer navegarão por âncoras sem troca de pathname; o estado ativo refletirá a seção com maior `intersectionRatio`.
+4. Cardápio terá produto como leitura principal e categoria como filtro secundário.
+5. Localização será absorvida pela Home, com um único CTA de rota e sem repetição de endereço/horário.
+6. Reviews fictícios serão exibidos como demonstração explícita e substituível; nenhuma biblioteca será adicionada.
+
+#### Erros, conflitos e correções incorporadas ao plano
+
+1. **Baseline verificada:** `origin/main` foi consultada e a branch documental deriva exatamente de `9cc0f1b`. A divergência observada no checkout inicial `work` foi eliminada criando esta branch a partir da baseline remota antes do commit do plano.
+2. **Redirect “301” versus Vercel:** `permanent: true` pode resultar em redirect permanente 308. O aceite correto é **301 ou 308**, validando `Location: /#cardapio` ou `/#localizacao`; não exigir exclusivamente 301.
+3. **Fragmentos não chegam ao servidor:** o redirect pode entregar um fragmento no header `Location`, mas o hash é interpretado pelo navegador. O fallback React deve usar `<Navigate replace to="/#cardapio" />`/`"/#localizacao"` e `MainLayout` deve focar a âncora depois da montagem.
+4. **Estado ativo por proporção:** seções muito curtas podem vencer a comparação por `intersectionRatio` mesmo ocupando poucos pixels. O hook deve comparar primeiro a área visível em pixels e usar `intersectionRatio` como desempate, ou normalizar pela área útil do viewport descontando Header/BottomNavBar. A implementação precisa de testes para seções de alturas distintas.
+5. **Reviews fictícios e links de fonte:** um placeholder não pode alegar possuir uma publicação real no Google ou Instagram. `sourceUrl` será opcional/nulo em placeholders; `ReviewCard` exibirá “Demonstração” em vez de link externo quando não houver fonte verdadeira.
+6. **Sinalização dos Reviews:** `isPlaceholder: true` no código não basta. A seção e cada card devem apresentar texto visível como “Conteúdo demonstrativo — avaliações fictícias”, e dados estruturados de review/schema.org não devem ser emitidos enquanto houver placeholders.
+7. **Conflito sobre produtos fictícios:** a solicitação geral permite dados fictícios para conferir o layout, mas a Regra 3 mantém `products = []` e proíbe inventar produto/preço comercial. Resolução conservadora: Reviews fictícios aparecem na Home; produtos fictícios existem somente como fixtures de teste/captura, nunca em `src/data/menu.js`, build de produção, SEO ou deploy público. O estado público do Cardápio permanece honesto e vazio.
+8. **Cardápio vazio versus “produto dominante”:** com `products = []`, a Home não pode demonstrar um produto real. `MenuSection` deve preservar a hierarquia reservando uma única superfície editorial de destaque com `UnavailableNotice`, sem cards falsos, preço, CTA por produto ou grade vazia. Testes com fixture validam o layout preenchido.
+9. **Informações rápidas duplicadas:** o bloco atual repete localização e horários. Na Etapa 27 ele será reduzido a informações não duplicadas (por exemplo compromisso editorial e disponibilidade dos canais), enquanto endereço e horário aparecem apenas em `LocationSection`.
+10. **Rotas e sitemap:** remover shells exige atualizar testes, sitemap, metadados e qualquer documentação que ainda espere HTTP 200 direto em três páginas. O redirect deve ser testado separadamente do fallback SPA local.
+11. **Arquivos potencialmente órfãos:** `Menu.jsx`, `Location.jsx`, `ContactCard.jsx`, `MenuHighlights.jsx` e `ProductGrid.jsx` só serão removidos depois de `rg` confirmar ausência de consumidores. Não apagar componentes apenas porque a nova arquitetura os substitui conceitualmente.
+12. **Autorização incremental versus execução total:** esta etapa está definida, mas continua dividida em sub-etapas auditáveis. Cada sub-etapa atualiza este documento no mesmo commit; nenhuma deve ser marcada como concluída antecipadamente.
+13. **Sequenciamento do redirect de Localização:** o review identificou que ativar o redirect na 27.1 antes de criar `#localizacao` na 27.2 quebraria a URL legada. Correção aplicada: âncora, seção, fallback e redirects são entregues atomicamente neste lote.
+14. **Remount por hash em `MainLayout`:** o review identificou que a key antiga incluía `location.hash` e remontaria toda a Home em cada clique. Correção aplicada: a key usa somente `location.pathname`; o efeito continua responsável por foco e rolagem.
+
+#### Dúvidas não bloqueantes para decisão humana
+
+- **Origem futura de Reviews:** Google, Instagram ou outra plataforma ainda não foi definida. A camada de dados deve permanecer agnóstica.
+- **Demonstração de produtos preenchidos:** por padrão será apenas fixture de teste. Se for desejado um preview visual navegável com produtos fictícios, será necessária autorização separada para um modo de demonstração claramente isolado e impossível de publicar por engano.
+- **Reviews no menu:** `#reviews` será observado e terá estado ativo, mas a inclusão de “Reviews” como item visível no Header/BottomNavBar deve respeitar espaço disponível. Proposta: Header e Footer incluem Reviews; BottomNavBar mantém quatro itens e substitui “Pedir” apenas se aprovado na 27.1.
+
+### 27.1 — Navegação por âncora, estado ativo e redirects
+
+- **Estado:** CONCLUÍDO.
+
+#### Objetivo
+
+Transformar a navegação em uma experiência de página única, sem recarregar nem trocar pathname durante o uso normal da Home.
+
+#### Implementação planejada
+
+- Criar `src/hooks/useActiveSection.js` compartilhado por Header e BottomNavBar.
+- Observar `cardapio`, `sobre`, `localizacao` e `reviews` com `IntersectionObserver` e thresholds múltiplos.
+- Manter um mapa de área/ratio por seção e selecionar deterministicamente a seção mais visível; limpar observers no unmount e oferecer fallback sem API.
+- Header/Footer usarão `<a href="#...">`; “Início” usará `href="#topo"`, com `id="topo"` no início da Home.
+- BottomNavBar usará a mesma fonte de estado; não duplicará lógica de observer.
+- `src/App.jsx` manterá apenas Home como conteúdo e `<Navigate replace>` para as duas URLs legadas.
+- `vercel.json` trocará rewrites por redirects permanentes para `/#cardapio` e `/#localizacao`.
+- `MainLayout` aguardará o alvo existir, fará `scrollIntoView` e moverá foco sem criar histórico duplicado.
+
+#### Critérios de aceite
+
+- Cliques em Header, Footer e BottomNavBar mantêm `location.pathname === '/'` e atualizam somente o hash.
+- Rolagem manual destaca a seção com maior área visível, inclusive entre seções de alturas diferentes.
+- Teclado, foco, Escape e reduced motion permanecem funcionais.
+- `/cardapio` e `/localizacao` retornam redirect permanente 301/308 na Vercel e funcionam via `<Navigate>` no preview local.
+
+### 27.2 — `SectionHeading` e Localização integrada
+
+- **Estado:** CONCLUÍDO.
+
+#### Implementação planejada
+
+- Criar `src/components/ui/SectionHeading.jsx` para eyebrow, título, descrição e alinhamentos previstos pelo design editorial.
+- Criar `src/components/home/LocationSection.jsx` com `id="localizacao"`.
+- Ordem interna: título curto → mapa/ilustração → único CTA de rota → localização parcial + nota → horários via `BUSINESS_INFO.hours` → Instagram.
+- Adaptar `MapEmbed` para ser apresentação sem link próprio se o CTA estiver fora dele; devem existir exatamente um link para Maps na Home.
+- Absorver o conteúdo útil de `ContactCard`; removê-lo apenas após confirmar ausência de consumidores.
+- Remover localização e horário do bloco Informações rápidas para impedir duplicação.
+
+#### Critérios de aceite
+
+- Localização aparece uma única vez e imediatamente depois de `#sobre`.
+- Há exatamente um CTA para `BUSINESS_INFO.channels.maps.url` dentro do conteúdo principal.
+- Endereço parcial e indisponibilidade de horários aparecem uma única vez, sem invenção.
+- A BottomNavBar não cobre o mapa nem o CTA em 375×667, 390×740 e 414×844.
+
+### 27.3 — Cardápio orientado a produto
+
+- **Estado:** CONCLUÍDO.
+
+#### Implementação planejada
+
+- Criar `src/components/menu/MenuSection.jsx` com `id="cardapio"` e `SectionHeading`.
+- Redesenhar `ProductCard` no design editorial vigente: ring sutil, imagem dominante, nome/descrição, estado/preço real e `ChannelAction` quando houver produto e canal disponível.
+- Redesenhar `CategoryFilterBar` como controle secundário horizontal com scroll-snap, foco visível e `aria-pressed`.
+- Filtrar apenas produtos existentes; categorias sem produtos não prometem conteúdo.
+- Quando `products.length === 0`, renderizar exatamente um `UnavailableNotice` em uma superfície de destaque, seguido no máximo de contexto editorial não interativo.
+- Não renderizar filtros vazios, grid de placeholders, preço fictício ou CTA de pedido por produto.
+- Avaliar `MenuHighlights` como contexto secundário; se repetir os mesmos nomes do filtro, removê-lo da Home.
+- Avaliar se `ProductGrid` agrega valor; incorporar a lógica em `MenuSection` se o wrapper apenas duplicar estrutura.
+
+#### Validação do layout preenchido sem dado comercial falso
+
+- Criar fixtures exclusivamente em testes para produtos demonstrativos, marcadas com `isPlaceholder: true`.
+- Renderizar `MenuSection` com fixtures em teste de componente e captura isolada, sem importar as fixtures pelo código de produção.
+- Confirmar visualmente imagem, nome longo, descrição, preço/estado e CTA em mobile/desktop.
+- Confirmar por teste que o build normal continua usando `products = []`.
+
+#### Critérios de aceite
+
+- A primeira leitura da seção é produto/destaque, não categoria.
+- Categoria funciona apenas como filtro de apoio quando existem produtos.
+- Produção mostra um único estado vazio honesto enquanto o catálogo oficial não existe.
+- iFood continua indisponível sem URL falsa.
+
+### 27.4 — Remoção das páginas/shells e consolidação de SEO
+
+- **Estado:** CONCLUÍDO.
+
+#### Implementação planejada
+
+- Remover `src/pages/Menu.jsx` e `src/pages/Location.jsx` após a migração e confirmação de ausência de imports.
+- Remover `cardapio/index.html` e `localizacao/index.html`.
+- Atualizar `public/sitemap.xml` para listar somente `https://turquia-marica.vercel.app/`.
+- Preservar canonical e Open Graph de `/` em `index.html`.
+- Atualizar E2E para separar: navegação SPA, fallback React local e redirects reais no deploy/preview Vercel.
+- Revisar `robots.txt`, links internos, testes de rotas e documentação para eliminar expectativas antigas de três páginas indexáveis.
+
+#### Critérios de aceite
+
+- Nenhum import ou link interno depende das páginas removidas.
+- Sitemap contém uma única URL canônica.
+- Não existem shells HTML órfãos.
+- Redirects não formam loop e preservam a âncora de destino.
+
+### 27.5 — Fundação de Reviews demonstrativos
+
+- **Estado:** CONCLUÍDO.
+
+#### Contrato de dados
+
+Criar `src/data/reviews.js` com comentários explícitos de demonstração e objetos no formato:
+
+```js
+// Dados fictícios exclusivamente para demonstração visual; substituir pela
+// integração oficial antes de tratar como prova social real.
+{
+  id,
+  source: 'google' | 'instagram',
+  authorName,
+  rating, // opcional, 1–5
+  text,
+  date, // ISO
+  sourceUrl: null, // obrigatório enquanto fictício
+  avatarUrl: null,
+  isPlaceholder: true,
+}
+```
+
+#### Implementação planejada
+
+- Criar `src/components/reviews/ReviewCard.jsx` com fonte, autor fictício, texto, nota opcional, data e rótulo visual “Demonstração”.
+- Criar `src/components/reviews/ReviewsSection.jsx` com `id="reviews"`, `SectionHeading`, aviso geral de conteúdo fictício e lista horizontal `overflow-x-auto` + `scroll-snap`.
+- Não usar foto de pessoa real, link externo, aggregateRating, review schema ou alegação de origem verificável em placeholders.
+- Manter a seção renderizada enquanto os dados demonstrativos estiverem explicitamente autorizados; a futura integração substitui apenas a camada de dados.
+
+#### Critérios de aceite
+
+- Todo review possui `isPlaceholder: true` e sinalização visível.
+- Nenhum placeholder é apresentado como avaliação real da casa.
+- Lista funciona por toque, trackpad, teclado e scroll horizontal sem biblioteca.
+- Contraste, foco, nomes acessíveis e reduced motion são preservados.
+
+### Escopo técnico consolidado
+
+| Arquivo | Ação planejada |
+|---|---|
+| `src/App.jsx` | Home real + redirects React de segurança. |
+| `src/layouts/MainLayout.jsx` | Foco e rolagem por hash após montagem. |
+| `src/hooks/useActiveSection.js` | Novo observer compartilhado por maior visibilidade. |
+| `src/components/layout/Header.jsx` | Âncoras e estado ativo por seção. |
+| `src/components/layout/BottomNavBar.jsx` | Âncoras e mesmo estado compartilhado. |
+| `src/components/layout/Footer.jsx` | Links internos por âncora. |
+| `src/pages/Home.jsx` | Nova ordem completa das seções. |
+| `src/components/ui/SectionHeading.jsx` | Novo cabeçalho editorial reutilizável. |
+| `src/components/home/LocationSection.jsx` | Nova Localização integrada. |
+| `src/components/location/MapEmbed.jsx` | Adaptar para existir um único CTA. |
+| `src/components/location/ContactCard.jsx` | Absorver e remover se ficar órfão. |
+| `src/components/menu/MenuSection.jsx` | Nova seção orientada a produto. |
+| `src/components/menu/CategoryFilterBar.jsx` | Redesign como filtro secundário. |
+| `src/components/product/ProductCard.jsx` | Redesign editorial e estados honestos. |
+| `src/components/menu/MenuHighlights.jsx` | Reusar apenas se não duplicar o filtro. |
+| `src/components/menu/ProductGrid.jsx` | Incorporar/remover se não agregar comportamento. |
+| `src/components/reviews/ReviewsSection.jsx` | Nova seção horizontal demonstrativa. |
+| `src/components/reviews/ReviewCard.jsx` | Novo card claramente fictício. |
+| `src/data/reviews.js` | Novos placeholders explicitamente marcados. |
+| `src/pages/Menu.jsx`, `src/pages/Location.jsx` | Remover após migração. |
+| `vercel.json` | Rewrites → redirects permanentes. |
+| `cardapio/`, `localizacao/` | Remover shells após validar redirects. |
+| `public/sitemap.xml` | Manter somente `/`. |
+| `tests/` | Fixtures de produto e cobertura SPA/redirect/reviews/a11y. |
+
+### Critérios globais de sucesso
+
+- Navegação interna não recarrega a aplicação nem troca o pathname.
+- Estado ativo acompanha deterministicamente a seção mais visível.
+- `/cardapio` e `/localizacao` redirecionam permanentemente e preservam o hash.
+- Home contém exatamente uma seção de Cardápio, Sobre, Localização e Reviews.
+- Cardápio reserva protagonismo a produto e usa categoria apenas como apoio.
+- Estado público do catálogo não inventa produto, preço ou pedido.
+- Reviews fictícios ficam visivelmente marcados e não geram prova social estruturada.
+- Localização contém um único CTA de rota e nenhuma duplicação factual.
+- Nenhuma biblioteca, cor, fonte ou breakpoint desnecessário é adicionado.
+- `npm run check`, `npm run test:e2e`, `npm audit --audit-level=high` e `git diff --check` aprovados.
+- Axe sem violações críticas/sérias; foco, Escape, zoom 200%, reduced motion e viewports 320/390/768/1280/1440 validados.
+- Hashes MD5 de `logo.jpg` e `logo-96.webp` idênticos antes/depois.
+- Evidências antes/depois e relatório permanente registrados em `documentacao/qa/etapa-27/`.
+
+### Sequenciamento e gates
+
+1. **27.1:** baseline verificada; âncoras, observer, redirects e navegação.
+2. **Auditoria 27.1:** testes de hash, seção ativa, foco, fallback e redirects.
+3. **27.2:** `SectionHeading` + Localização integrada.
+4. **Auditoria 27.2:** unicidade dos dados/CTA e viewports móveis.
+5. **27.3:** Cardápio orientado a produto + fixtures isoladas de layout.
+6. **Auditoria 27.3:** estado vazio público e cenário preenchido de teste.
+7. **27.4:** remoção de páginas/shells + SEO e E2E.
+8. **Auditoria 27.4:** redirect remoto, sitemap, canonical e ausência de órfãos.
+9. **27.5:** Reviews fictícios, explicitamente sinalizados.
+10. **Auditoria final:** check, E2E, axe, Lighthouse, hashes, screenshots e relatório consolidado.
+
+### Fechamento
+
+- Sub-etapas 27.1–27.5 concluídas no mesmo lote para eliminar estados intermediários inconsistentes.
+- Auditoria permanente registrada em `documentacao/qa/AUDITORIA_ETAPA_27.md`.
+- Evidências visuais registradas em `documentacao/qa/etapa-27/`.
+- Nenhuma pendência P0/P1 conhecida; integrações e dados oficiais continuam externos ao escopo.
+
 ## Pendências externas — Lote 14
 
 Cada dependência deve ser desbloqueada e implementada de forma independente; a ausência de um item não bloqueia os demais. Nenhum dado ou asset pode ser inventado.
@@ -733,6 +974,8 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 
 ## Changelog
 
+- **15/08/2026:** Etapa 27 implementada e auditada: SPA por âncoras, estado ativo por área visível, Cardápio orientado a produto com estado público honesto, Localização integrada com CTA único, Reviews fictícios sinalizados, redirects/SEO consolidados e reviews de código sobre redirect prematuro/remount por hash corrigidos.
+- **15/08/2026:** Etapa 27 auditada e definida apenas em documentação: duplicação do texto-fonte removida; baseline remota `9cc0f1b` verificada; redirects 301/308, seleção de seção ativa, placeholders de Reviews e conflito de produtos fictícios corrigidos; implementação permanece não iniciada até confirmação da 27.1.
 - **15/08/2026:** plano operacional reestruturado sobre `origin/main`/`98d570e`: baseline inicial classificada como histórica, estados dos Lotes 18–26 consolidados, bloco duplicado 18–25 arquivado, Lote 26 movido para `EM AUDITORIA`, checklist reconciliado e pendências externas separadas em 14A–14F. Nenhuma alteração de aplicação foi realizada.
 - **15/08/2026:** Lotes 21–26 concluídos e auditados: scroll reveal, movimento ambiente, arquitetura editorial, correções de contraste/overflow/BottomNavBar, evidências antes/depois e nova imagem Open Graph entregues; relatório em `documentacao/qa/AUDITORIA_LOTES_21_26.md`.
 - **15/08/2026:** revisão do PR corrigiu a declaração prematura de evidência visual do Lote 26: `documentacao/qa/lote-26/` ainda não existia naquele momento; a pendência foi posteriormente resolvida com 12 capturas versionadas.

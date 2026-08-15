@@ -1,18 +1,19 @@
-import { Clock3, MapPin, ShieldCheck } from 'lucide-react'
+import { Instagram, ShieldCheck, ShoppingBag } from 'lucide-react'
 import HeroSection from '../components/home/HeroSection'
-import MenuHighlights from '../components/menu/MenuHighlights'
+import LocationSection from '../components/home/LocationSection'
+import MenuSection from '../components/menu/MenuSection'
+import ReviewsSection from '../components/reviews/ReviewsSection'
 import Reveal from '../components/ui/Reveal'
-import { BUSINESS_INFO } from '../data/contact'
 
 const FACTS = [
-  { Icon: MapPin, title: 'Onde estamos', value: BUSINESS_INFO.location.value },
-  { Icon: Clock3, title: 'Horários', value: 'Não disponível / em construção' },
+  { Icon: ShoppingBag, title: 'Cardápio', value: 'Informações oficiais em confirmação' },
+  { Icon: Instagram, title: 'Canal disponível', value: 'Instagram oficial informado' },
   { Icon: ShieldCheck, title: 'Compromisso', value: 'Só publicamos dados confirmados' },
 ]
 
 function Home() {
   return (
-    <>
+    <div id="topo">
       <HeroSection />
       <Reveal as="section" aria-label="Informações rápidas" className="bg-[#faf7f2] px-5 py-10 md:px-margin-desktop">
         <ul className="mx-auto grid max-w-[1280px] gap-8 border-y border-[#e8e0d4] py-8 md:grid-cols-3 md:gap-0">
@@ -29,7 +30,7 @@ function Home() {
           ))}
         </ul>
       </Reveal>
-      <MenuHighlights />
+      <MenuSection />
       <Reveal as="section" id="sobre" className="scroll-mt-24 bg-[#faf7f2] px-5 py-20 md:px-margin-desktop md:py-32">
         <div className="mx-auto grid max-w-[1280px] gap-10 md:grid-cols-[0.45fr_1.55fr] md:items-start">
           <span className="section-eyebrow">Sobre a casa</span>
@@ -41,7 +42,9 @@ function Home() {
           </div>
         </div>
       </Reveal>
-    </>
+      <LocationSection />
+      <ReviewsSection />
+    </div>
   )
 }
 

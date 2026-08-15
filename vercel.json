@@ -1,8 +1,8 @@
 {
   "cleanUrls": true,
-  "rewrites": [
-    { "source": "/cardapio", "destination": "/cardapio/index.html" },
-    { "source": "/localizacao", "destination": "/localizacao/index.html" }
+  "redirects": [
+    { "source": "/cardapio", "destination": "/#cardapio", "permanent": true },
+    { "source": "/localizacao", "destination": "/#localizacao", "permanent": true }
   ],
   "headers": [
     {
