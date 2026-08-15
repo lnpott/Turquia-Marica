@@ -965,7 +965,7 @@ Criar `src/data/reviews.js` com comentários explícitos de demonstração e obj
 
 ## Etapa 28 — Modo de demonstração visual isolado (dados fictícios de produto)
 
-- **Estado:** AGUARDANDO DECISÃO — plano consolidado; implementação não iniciada sem aprovação explícita do responsável.
+- **Estado:** DECISÃO TÉCNICA CONFIRMADA — rota isolada por flag selecionada; implementação não iniciada sem autorização explícita do responsável.
 - **Origem:** responde à dúvida não bloqueante da Etapa 27.0 sobre uma demonstração preenchida do Cardápio.
 - **Prioridade:** não sequencial; não bloqueia nem é bloqueada pelos demais lotes.
 - **Restrição central:** o Cardápio público continua usando `products = []`; nenhum produto, preço ou descrição fictícia pode alcançar produção, SEO ou deploy público.
@@ -1027,12 +1027,17 @@ Criar `src/data/menu.demo.js`, com aviso explícito e objetos compatíveis com o
 - CI deve construir explicitamente sem a flag e reprovar qualquer vazamento.
 - `ProductCard`, `MenuSection` e `CategoryFilterBar` recebem dados pelo contrato existente e não conhecem a origem fictícia.
 
-### Decisão pendente antes de codar
+### Decisão técnica confirmada — rota isolada por flag
 
-1. **Rota local isolada por flag:** oferece navegação real e melhor inspeção manual, mas exige comprovação rigorosa de que rota e chunk não entram no build padrão.
-2. **Harness de Playwright/teste:** renderiza a superfície com fixture somente no ambiente de teste; é mais seguro e não cria rota no app, mas não oferece uma URL persistente fora da execução de QA.
+**Escolha:** rota local isolada por `VITE_VISUAL_QA_DEMO=true`, preservando import dinâmico, gate de build, auditoria automática de `dist/`, `noindex, nofollow`, namespace reservado e ausência de links internos.
 
-**Recomendação técnica:** opção 2, usando a infraestrutura Playwright existente. Se o responsável exigir exploração manual prolongada por URL, adotar a opção 1 com build/preview exclusivamente local e gate automático de artefato.
+**Critério decisivo:** as duas alternativas atendem ao isolamento exigido; a rota foi escolhida por oferecer o melhor ambiente para refinamento visual em tempo real. Hot reload, DevTools, cursor, hover, scroll, timing e contexto integral com Header/BottomNavBar permitem avaliar os problemas de motion e interação que motivaram os Lotes 18–26 sem reduzir a análise a frames estáticos.
+
+**Papel complementar do Playwright:** depois da estabilização manual, a suíte existente acessará a mesma rota com a flag ativa para produzir evidências e regressões nos viewports 320, 390, 768, 1280 e 1440 px. Playwright permanece como mecanismo formal de fechamento, não como ferramenta principal de refinamento.
+
+**Condição de reabertura:** se o gate não conseguir comprovar a ausência da rota, fixture, chunk ou sentinelas no build padrão, a implementação será revertida e o harness Playwright passará a ser o único consumidor, privilegiando isolamento estrutural.
+
+**Gate de autorização:** esta decisão encerra apenas a escolha técnica. Nenhum arquivo de aplicação, fixture, asset ou configuração deve ser criado até autorização explícita do responsável para iniciar a implementação.
 
 ### Escopo técnico previsto
 
@@ -1079,7 +1084,7 @@ Criar `src/data/menu.demo.js`, com aviso explícito e objetos compatíveis com o
 
 ### Sequenciamento
 
-1. Obter decisão explícita entre rota local e harness de Playwright.
+1. Obter autorização explícita do responsável para implementar a rota isolada já selecionada.
 2. Confirmar o contrato real de produto e registrar hashes/baseline.
 3. Criar fixture e assets demonstrativos isolados.
 4. Implementar o único consumidor autorizado e o gate de build.
@@ -1101,6 +1106,7 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 
 ## Changelog
 
+- **15/08/2026:** decisão técnica da Etapa 28 confirmada: rota isolada por flag será o ambiente de refinamento visual ao vivo; Playwright será usado ao final para evidência/regressão nos cinco viewports. Implementação continua não iniciada até autorização explícita; falha do gate de `dist/` reabre a decisão em favor do harness exclusivo.
 - **15/08/2026:** Etapa 28 registrada e auditada como plano: modo de demonstração visual isolado para produtos fictícios, com recomendação de harness Playwright, contrato alinhado a `categoryId`, assets locais, gate de artefato e rollback. Estado: **AGUARDANDO DECISÃO**; nenhuma alteração de aplicação realizada.
 - **15/08/2026:** Etapa 27 implementada e auditada: SPA por âncoras, estado ativo por área visível, Cardápio orientado a produto com estado público honesto, Localização integrada com CTA único, Reviews fictícios sinalizados, redirects/SEO consolidados e reviews de código sobre redirect prematuro/remount por hash corrigidos.
 - **15/08/2026:** Etapa 27 auditada e definida apenas em documentação: duplicação do texto-fonte removida; baseline remota `9cc0f1b` verificada; redirects 301/308, seleção de seção ativa, placeholders de Reviews e conflito de produtos fictícios corrigidos; implementação permanece não iniciada até confirmação da 27.1.
