@@ -2,15 +2,19 @@
 
 > **Registro operacional vigente.** Este arquivo controla etapas, estados, evidências e novas mudanças. O código e o Git atuais continuam sendo a fonte de verdade; o `Roadmap_Mestre_CLAUDE.md` permanece como histórico arquitetural.
 
-## Controle
+## Controle operacional vigente
 
-- **Branch oficial:** `BEST_ONE`
-- **Baseline:** `d242ed12756e1aa02b3f4d8f502e5eba80f012f1`
+- **Branch de integração e produção:** `main` (`origin/main`).
+- **Fluxo obrigatório:** atualizar `origin/main`, criar uma branch específica para o lote, validar, abrir PR para `main` e somente então fazer merge.
+- **Baseline operacional atual:** `98d570e6b776c85c340421cb3c88a8343f00f544` (`PLANO 26`).
+- **Baseline histórica inicial:** `d242ed12756e1aa02b3f4d8f502e5eba80f012f1`.
 - **Início:** 12/08/2026
 - **Regra:** atualizar este documento no mesmo commit de cada lote.
-- **Estados:** `NÃO INICIADO`, `BLOQUEADO`, `EM EXECUÇÃO`, `VALIDADO`, `CONCLUÍDO`.
+- **Estados:** `NÃO INICIADO`, `AGUARDANDO DECISÃO`, `BLOQUEADO`, `EM EXECUÇÃO`, `EM AUDITORIA`, `VALIDADO`, `CONCLUÍDO`.
 
-## Baseline validada
+## Baseline histórica validada — 12/08/2026
+
+> Os dados desta tabela registram o ponto de partida e não representam o estado operacional atual. A próxima auditoria do Lote 26 deve publicar uma nova baseline com build, tamanhos dos bundles, HTTP das três rotas, descoberta, testes, Lighthouse, axe e hashes do logo.
 
 | Item | Evidência | Estado inicial |
 |---|---|---|
@@ -30,7 +34,7 @@
 | React/Vite/Tailwind | Manter stack e componentes compartilhados. |
 | Rotas | Gerar HTML estático para `/`, `/cardapio/` e `/localizacao/`. |
 | Dados ausentes | Exibir “NÃO DISPONÍVEL / EM CONSTRUÇÃO”; nunca inventar. |
-| Imagens provisórias | Permitir somente como “Imagem ilustrativa”, com `alt` verdadeiro. |
+| Imagens provisórias | Manter `alt` verdadeiro e comunicar a condição provisória sem badges repetitivos; nunca atribuir uma fotografia a um produto que ela não representa. |
 | Home | Remover catálogo completo e apresentar até quatro destaques. |
 | Cardápio | Exibir somente categorias com produtos; futuras categorias não são filtros. |
 | SEO | Metadados estáticos por rota; schema local completo aguarda dados oficiais. |
@@ -51,7 +55,7 @@
 | 6. SEO estático | VALIDADO | Metadados, `robots.txt` e `sitemap.xml` publicados e auditados. |
 | 7. Performance | VALIDADO | Fontes locais, WebP e preload preservados após o build de produção. |
 | 8. Limpeza do checkpoint | VALIDADO | Checkpoint técnico organizado e validado. |
-| 9. Refinamento definitivo do design | CONCLUÍDO | Home, Cardápio e Localização implementados, auditados e aprovados com as ressalvas registradas; conteúdo e assets oficiais permanecem pendentes. |
+| 9. Refinamento definitivo do design | EM AUDITORIA | A refatoração do Lote 26 foi implementada; falta auditoria independente, validação integral e aprovação humana. |
 | 10. Conteúdo comercial final | BLOQUEADO | Fotografias e informações oficiais entram após sua disponibilização e confirmação. |
 
 ## Critérios globais
@@ -64,7 +68,31 @@
 - QA em 320, 390, 768, 1280 e 1440 px.
 - Teclado, Escape, foco, zoom 200%, reduced motion e axe validados.
 - Metadados distintos presentes no HTML bruto.
-- `BEST_ONE` sincronizada; nenhuma alteração em `main`.
+- Branch do lote sincronizada com `origin/main`; nenhuma implementação feita diretamente em `main`.
+
+## Estado operacional consolidado
+
+| Bloco | Estado vigente | Próxima ação |
+|---|---|---|
+| Lotes 0–13 e 15–20 | CONCLUÍDO/VALIDADO | Preservar como histórico; não reimplementar. |
+| Lote 14 | BLOQUEADO | Abrir sublote somente quando cada dado ou asset oficial for entregue. |
+| Lote 21 — Scroll reveal | AGUARDANDO DECISÃO | Reavaliar somente depois da auditoria visual do Lote 26. |
+| Lote 22 — Movimento ambiente no Hero | AGUARDANDO DECISÃO | Escolher e aprovar uma direção antes de codar. |
+| Lote 23 — Navegação | CONCLUÍDO | Preservar comportamento e revalidar no fechamento. |
+| Lote 24 — Auditoria consolidada | NÃO INICIADO | Executar depois do Lote 26 e de qualquer motion adicional aprovado. |
+| Lote 25 — Fechamento/OG image | NÃO INICIADO | Executar somente quando a Home estiver estabilizada. |
+| Lote 26 — Arquitetura visual editorial | EM AUDITORIA | Auditar, corrigir achados em sublote próprio, validar e obter aprovação humana. |
+
+### Ordem operacional obrigatória a partir de `98d570e`
+
+1. Auditar visualmente o Lote 26, sem iniciar outro lote.
+2. Registrar achados objetivos e, se necessário, abrir `Lote 26.1 — Correções da auditoria visual`.
+3. Repetir validações técnicas, acessibilidade, viewports e evidências visuais.
+4. Obter aprovação humana e encerrar o Lote 26.
+5. Reavaliar os Lotes 21 e 22 sobre a arquitetura aprovada; implementar somente os efeitos explicitamente autorizados.
+6. Executar o Lote 24 como auditoria consolidada de design, motion, performance e acessibilidade.
+7. Executar o Lote 25 e regenerar `og-image.png` somente após estabilização final.
+8. Tratar os sublotes externos 14A–14F independentemente, conforme os dados oficiais forem disponibilizados.
 
 ## Registro por lote
 
@@ -181,7 +209,7 @@
 
 ---
 
-### Ordem de execução recomendada
+### Ordem de execução histórica — Lotes 11 a 17
 
 1. **Lote 11** (consistência Home ↔ Cardápio) — maior impacto visual, menor risco, já com solução clara.
 2. **Lote 12** (BottomNavBar sobrepondo conteúdo) — bug real, independente do Lote 11, pode ser feito em paralelo ou logo em seguida.
@@ -244,7 +272,7 @@
 
 #### Lote 21 — Scroll reveal (conteúdo entra ao rolar)
 
-- **Estado:** NÃO INICIADO.
+- **Estado:** AGUARDANDO DECISÃO — deve ser reavaliado sobre a arquitetura aprovada do Lote 26; não iniciar automaticamente.
 - **Prioridade:** Média-alta.
 - **Constatação:** não existe `IntersectionObserver` no projeto; todo conteúdo abaixo do Hero aparece de uma vez, em Home, Cardápio e Localização.
 - **Implementação:** hook nativo baseado em `IntersectionObserver` (sem biblioteca nova); entrada sutil (fade + leve translação) nas seções, em cascata nos cards de categoria; dentro do bloco `prefers-reduced-motion` já existente, conteúdo aparece direto.
@@ -255,7 +283,7 @@
 
 #### Lote 22 — Movimento ambiente no Hero
 
-- **Estado:** NÃO INICIADO — decisão de direção pendente do responsável antes de codar.
+- **Estado:** AGUARDANDO DECISÃO — escolher e aprovar uma direção sobre a arquitetura do Lote 26 antes de codar.
 - **Prioridade:** Média-alta.
 - **Constatação:** `HeroSection.jsx` renderiza a foto do Hero 100% estática, sem Ken Burns, parallax ou elemento decorativo animado (diferente de `MapEmbed.jsx`, que já anima um círculo decorativo).
 - **Decisão a apresentar ao responsável, não a tomar sozinho:** (A) Ken Burns lento e contínuo na foto; (B) parallax leve entre a foto e a camada decorativa já existente (`before:` em `HeroSection.jsx` ~linha 37); (C) textura/forma flutuante sutil atrás da imagem. Implementar só a opção escolhida.
@@ -296,7 +324,9 @@
 
 ---
 
-### Ordem de execução recomendada — Lotes 18 a 25
+### Ordem de execução histórica — Lotes 18 a 25
+
+> Esta ordem registra a sequência originalmente planejada. Para qualquer trabalho novo, prevalece a “Ordem operacional obrigatória a partir de `98d570e`”.
 
 1. **Lote 18** — fundação de tokens; pré-requisito dos demais.
 2. **Lote 19 + Lote 20 + Lote 23** — maior impacto/menor risco, podem correr em paralelo depois do 18.
@@ -389,166 +419,26 @@
 - **Commit final:** commit local específico desta auditoria, com mensagem `fix(location): align route claims with verified evidence`; hash registrado no Summary de entrega.
 - **Ressalvas:** “Como chegar” abre a ficha específica, mas a precisão da entrada e a ação de iniciar rota não foram confirmadas como dados oficiais; validar novamente quando houver canal oficial acessível.
 - **Pendências:** obter confirmação oficial de endereço/entrada, horários, telefone/WhatsApp, operação, estacionamento e acessibilidade; não inferir esses dados da coordenada da ficha.
-## Plano de impacto visual e interação — Lotes 18 a 25 (proposto por Claude, autorizado por [responsável do projeto] em 14/08/2026, redirecionado em 14/08/2026)
+## Plano de impacto visual e interação — Lotes 18 a 25 (consolidado)
 
-> **Mandato explícito deste bloco, diferente dos anteriores:** o responsável autorizou priorizar impacto visual real ("ficar lindo de portfólio") mesmo que isso altere estrutura, componentes ou copy do projeto. A única restrição inegociável é preservar o arquivo de logo (`src/assets/images/brand/logo.jpg` / `logo-96.webp`) sem alteração de arte. Fora isso, este bloco tem liberdade maior que o princípio de "menor mudança possível" que regeu os Lotes 1–17.
->
-> **Correção de foco (mesmo dia):** a primeira versão deste bloco tratava a repetição de badges "não disponível/ilustrativa" como causa principal da percepção de "site ruim". O responsável esclareceu que isso é secundário — o problema real é **falta de motion e de interatividade refinada**: nada convida o mouse, os botões não têm preenchimento/resposta ao passar por cima, não há nada "passando"/vivo na tela, o site não parece um produto de alto acabamento. Dados de preço/produto/endereço seguem propositalmente provisórios e não são o alvo deste bloco. O plano abaixo foi reescrito com esse foco.
->
-> **O que NÃO muda:** não inventar preço, produto, endereço, telefone, horário ou URL de iFood — regra de integridade de conteúdo, não estética, permanece intacta.
+> O plano detalhado duplicado desta seção foi arquivado para eliminar estados conflitantes. A seção “Plano de motion e interatividade — Lotes 18 a 25” e o “Estado operacional consolidado” são as referências vigentes. O changelog preserva a sequência histórica.
 
-### Diagnóstico consolidado (auditoria de código real, não só screenshot)
-
-Inspeção de `Header.jsx`, `HeroSection.jsx`, `MenuHighlights.jsx`, `Home.jsx`, `Button.jsx`, `CategoryCard.jsx`, `Badge.jsx`, `index.css` e `tailwind.config.cjs` na branch `BEST_ONE` (commit `8d25666`).
-
-**O que existe de motion hoje, em toda a base de código:**
-- `page-fade-in` — fade de 260ms na troca de rota (`MainLayout`).
-- `hero-kenburns` — zoom de 1 → 1.02 em 9s, aplicado uma vez, no Hero.
-- Hovers pontuais e genéricos: `hover:-translate-y-1` em cards e botões, `hover:bg-primary-hover` no CTA do Header, `group-hover:scale-110` em `CategoryCard.jsx`.
-- `transition-transform`/`transition-colors` aplicados isoladamente por componente, sem sistema de timing/easing compartilhado.
-
-**O que não existe:**
-- Nenhuma transição de sombra, brilho ou preenchimento animado em botões — o CTA principal (`bg-primary`) troca de cor no hover mas sem nenhuma sensação de profundidade ou resposta tátil além do deslocamento vertical.
-- Nenhum zoom/parallax de imagem nos cards realmente usados. `CategoryCard.jsx`, que tem `group-hover:scale-110` bem construído, **está órfão — zero componentes o importam**. `MenuHighlights.jsx`, que é o componente de fato renderizado em Home e Cardápio, não tem nenhum tratamento de hover na imagem.
-- Nenhum scroll-reveal — todo o conteúdo abaixo da dobra aparece estático, sem entrada quando o usuário rola a página.
-- Nenhum micro-feedback em cliques (ripple, scale-down) fora do que resta em `Button.jsx` — também órfão, zero uso real.
-- Nenhuma composição do tipo "algo passando" — o Hero é uma imagem estática única; não há nenhuma segunda camada de movimento ambiente (parallax leve, textura em deslocamento, contador, ticker, etc.).
-
-**Achado estrutural relevante:** `src/components/ui/Button.jsx` e `src/components/product/CategoryCard.jsx` já têm hover states bem desenhados (scale, shadow, zoom de imagem, active:scale-95) mas **não são usados em nenhuma página real** — os componentes ativos (`HeroSection.jsx`, `MenuHighlights.jsx`, `Home.jsx`) reimplementam botões e cards com classes Tailwind cruas e motion mais pobre. Isso significa que parte do trabalho de "deixar o site chamativo" já foi pensado antes e nunca chegou a ser conectado — não é ausência de ideia, é ausência de fiação.
-
-O acervo fotográfico (`src/assets/images/`) continua sendo genérico/stock até o Lote 14 (bloqueado); os lotes abaixo trabalham com o que existe hoje, mas o objetivo é que a fotografia atual pareça mais viva por causa do movimento e da resposta da interface, não por ser trocada.
-
----
-
-### Lote 18 — Sistema de motion compartilhado (fundação)
-
-- **Estado:** NÃO INICIADO
-- **Prioridade:** Alta — pré-requisito técnico para os lotes seguintes; sem isso, cada componente reinventa timing/easing próprio e o resultado fica inconsistente.
-- **Objetivo:** criar um pequeno conjunto de tokens de motion (duração, easing, distância de translação) em `tailwind.config.cjs`/`index.css`, para que hover, entrada de scroll e feedback de clique usem a mesma "física" em todo o site.
-- **Implementação:**
-  1. Definir 2–3 curvas de easing nomeadas (ex. `ease-premium` para hover — suave e rápida —, `ease-reveal` para entrada de scroll — mais lenta, com leve overshoot) como utilitário CSS reutilizável.
-  2. Definir escala de duração padrão (`150ms` micro-interação de botão, `400–600ms` reveal de seção, `600–900ms` elementos maiores de Hero) documentada em comentário no `index.css`, no mesmo padrão de documentação já usado pelos Lotes 11/11.1/14.2 existentes no arquivo.
-  3. Garantir `prefers-reduced-motion` cobrindo todo o novo sistema, seguindo o padrão já usado para `page-transition`/`hero-kenburns`.
-- **Critério de aceite:** tokens definidos e documentados; nenhum componente alterado ainda neste lote (é só fundação).
-- **Auditoria exigida:** `npm run check`; confirmação visual de que nada mudou ainda na tela (lote é infraestrutura).
-
----
-
-### Lote 19 — Botões com preenchimento, profundidade e resposta ao hover/clique
-
-- **Estado:** NÃO INICIADO
-- **Prioridade:** Alta — é o pedido mais explícito ("botões com preenchimento ao passar o mouse").
-- **Constatação:** o CTA primário do Hero (`bg-primary` com `hover:-translate-y-1`) e o botão do Header (`hover:bg-primary-hover`) trocam cor de forma abrupta e só deslocam verticalmente; `Button.jsx`, com `hover:scale-[1.02]`/`active:scale-95`/`hover:shadow-lg`, existe pronto mas está órfão.
-- **Implementação:**
-  1. Decidir (com preferência técnica registrada aqui): recuperar e conectar `Button.jsx` aos pontos de CTA reais (Hero, Header, Cardápio), ou portar seus estados de hover diretamente para as classes já usadas em `HeroSection.jsx`/`Header.jsx`/`MenuHighlights.jsx` — nesse caso removendo `Button.jsx` como código morto em vez de deixá-lo desconectado.
-  2. Em todo botão preenchido (`bg-primary`), adicionar: preenchimento animado (ex. camada de cor que se expande do centro ou da base no hover, via `::before` com `transform: scaleX` ou `background-position` em gradiente), sombra que ganha profundidade (`shadow-[6px_6px_0_...]` crescendo a partir do offset atual de 4px), e `active:scale-95`/`active:translate-y-0` para feedback tátil de clique.
-  3. Em todo botão outline/secundário (ex. "Como chegar"), inverter preenchimento no hover (borda vira fundo) em vez de só mudar de cor.
-- **Fora de escopo:** mudar texto/copy dos botões, mudar hierarquia de qual botão é primário/secundário.
-- **Critério de aceite:** todo botão do site (Header, Hero, Cardápio, Localização, Footer) responde ao hover com pelo menos dois sinais simultâneos (cor/preenchimento + profundidade) e ao clique com feedback tátil; nenhuma regressão de contraste/acessibilidade; `Button.jsx` ou está em uso real, ou foi removido — nunca os dois estados ao mesmo tempo.
-- **Auditoria exigida:** grep confirmando uso real de `Button.jsx` (ou sua remoção); captura em GIF ou sequência de screenshots do hover em pelo menos 3 botões-chave; teste de teclado (`:focus-visible` preservado).
-
----
-
-### Lote 20 — Cards de categoria com zoom de imagem e elevação no hover
-
-- **Estado:** NÃO INICIADO
-- **Prioridade:** Alta — segundo pedido mais explícito ("imagem passando", "mouse responsivo ao passar em algo").
-- **Constatação:** `CategoryCard.jsx` já resolveu isso (`group-hover:scale-110 transition-transform duration-500` na imagem, gradiente escurecendo a legenda) mas está órfão; o componente realmente usado, `MenuHighlights.jsx`, não tem nenhum tratamento de imagem no hover, só `hover:-translate-y-1` no card inteiro.
-- **Implementação:**
-  1. Portar o padrão de zoom de imagem de `CategoryCard.jsx` para dentro de `MenuHighlights.jsx` (que é o componente ativo em Home e Cardápio): imagem escala suavemente (`scale-105` a `scale-110`) dentro de um contêiner com `overflow-hidden`, sombra do card cresce, borda ganha destaque de cor no hover.
-  2. Aplicar o mesmo tratamento a qualquer outro card de imagem clicável do site (se houver, revisar `ProductGrid.jsx`).
-  3. Depois de portado e confirmado em uso, remover `CategoryCard.jsx` como código morto — não deixar duas implementações divergentes do mesmo padrão convivendo no repositório.
-- **Critério de aceite:** todo card de categoria com imagem responde ao hover com zoom de imagem contido (sem vazar do card), elevação de sombra e transição suave (~400–500ms); zero código de card duplicado/órfão ao final do lote.
-- **Auditoria exigida:** captura antes/depois do hover em desktop; confirmação de que `CategoryCard.jsx` foi removido ou passou a ser genuinamente usado (não os dois estados).
-
----
-
-### Lote 21 — Scroll reveal (entrada de conteúdo ao rolar a página)
-
-- **Estado:** NÃO INICIADO
-- **Prioridade:** Alta — resolve a sensação de "página estática" abaixo da primeira dobra, que hoje nenhuma seção tem.
-- **Constatação:** Home e Cardápio têm múltiplas seções (`FACTS`, `MenuHighlights`, "Sobre a casa") que aparecem inteiras e imóveis assim que a página carrega — nada acontece quando o usuário rola.
-- **Implementação:**
-  1. Implementar reveal de entrada (fade + leve translação, usando os tokens do Lote 18) disparado por `IntersectionObserver` nativo — **sem adicionar biblioteca nova** (`framer-motion`, `aos`, etc. ficam fora, coerente com a regra histórica de não introduzir dependências sem necessidade comprovada); React puro com hook custom é suficiente para este caso de uso.
-  2. Aplicar em: cards de `MenuHighlights`, bloco de "Informações rápidas" (Home), bloco "Sobre a casa", cards de `Location`/`ContactCard`.
-  3. Orquestrar entrada em cascata leve (stagger de ~60–80ms entre itens de uma mesma grade) em vez de todos os elementos aparecendo no mesmo instante.
-  4. Respeitar `prefers-reduced-motion`: quando ativo, conteúdo aparece direto, sem observer/animação.
-- **Critério de aceite:** rolar a Home e o Cardápio do topo ao fim mostra conteúdo entrando de forma orquestrada, não tudo estático; zero dependência nova no `package.json`; `prefers-reduced-motion` testado e funcional.
-- **Auditoria exigida:** gravação/sequência de screenshots do scroll; `npm run check`; confirmação de que `package.json` não ganhou nenhuma dependência nova.
-
----
-
-### Lote 22 — Camada de movimento ambiente no Hero
-
-- **Estado:** NÃO INICIADO
-- **Prioridade:** Média-alta — é o elemento de "algo chamativo passando na tela" que hoje não existe fora do Ken Burns único.
-- **Constatação:** o Hero tem uma única imagem estática com Ken Burns sutil; não há nenhuma segunda camada de movimento que dê sensação de vitalidade/ambiente.
-- **Implementação (avaliar as opções abaixo com captura de protótipo antes de decidir qual seguir — não implementar as três):**
-  1. **Parallax leve** entre a foto do Hero e o texto/CTA sobre ela ao rolar a página (a foto se move a uma velocidade ligeiramente diferente do texto), usando `transform: translateY` calculado a partir do scroll — nativo, sem lib.
-  2. **Textura em movimento** no `editorial-grid` de fundo (já existente como grid de linhas finas) — deslocamento contínuo extremamente sutil (`background-position` animado) para dar sensação de ambiente vivo sem competir com a fotografia.
-  3. **Micro-flutuação** no elemento de moldura do Hero (`brand-stamp`, já rotacionado -3deg) — leve oscilação de rotação/posição em loop lento, reforçando o tratamento "colado/fotografia física" que o design já sugere.
-- **Restrição:** qualquer opção escolhida deve manter `FOTOGRAFIA PRIMEIRO" — o movimento nunca pode escurecer, desfocar ou disputar atenção com a foto principal; violação disso é regressão, não refinamento.
-- **Critério de aceite:** uma opção escolhida e aprovada explicitamente antes do commit; Hero perceptivelmente "vivo" sem comprometer legibilidade do texto ou nitidez da foto; `prefers-reduced-motion` desativa o efeito.
-- **Auditoria exigida:** vídeo curto ou GIF do efeito em ação; teste em 375–414px mobile confirmando que não introduz scroll horizontal nem jank de performance.
-
----
-
-### Lote 23 — Navegação e links com resposta refinada
-
-- **Estado:** NÃO INICIADO
-- **Prioridade:** Média.
-- **Constatação:** links do Header (`NAV_LINKS`) e do Footer usam `hover:bg-surface-container-low hover:text-primary` — funcional, mas sem nenhum movimento (ex. sublinhado animado, indicador de página ativa com transição).
-- **Implementação:**
-  1. Adicionar sublinhado/indicador animado (`transform: scaleX` a partir do centro ou borda) nos links do Header ativados no hover, reservando o estado "página atual" (`NavLink` já expõe `isActive`) com tratamento visual distinto e permanente, não só hover.
-  2. Aplicar padrão coerente ao menu mobile (`menu-mobile`) e ao `BottomNavBar`, que hoje trocam de cor de forma abrupta ao navegar.
-- **Critério de aceite:** navegação inteira (desktop, mobile, bottom bar) com transições consistentes de hover/estado ativo; foco de teclado (`:focus-visible`) preservado em todos os pontos.
-- **Auditoria exigida:** captura de cada superfície de navegação com o novo tratamento; teste de teclado completo (Tab, Shift+Tab, Escape no menu mobile).
-
----
-
-### Lote 24 — Auditoria de performance e acessibilidade do novo motion
-
-- **Estado:** NÃO INICIADO
-- **Prioridade:** Alta — obrigatória antes de considerar os Lotes 18–23 fechados; motion mal implementado é o risco mais concreto deste bloco (jank, CLS, fadiga visual, ou quebra de acessibilidade).
-- **Objetivo:** confirmar que o conjunto de novas animações não degradou performance nem acessibilidade.
-- **Implementação/checklist:**
-  1. Repetir a suíte de testes já usada nos lotes anteriores: `npm run check`, `npm run test:e2e`, `npm audit --audit-level=high`, `git diff --check`.
-  2. Lighthouse mobile em Home e Cardápio, comparando contra a baseline já registrada no Lote 1 (Performance 96, CLS 0, TBT 30ms) — qualquer queda relevante é motivo para simplificar antes de aprovar o lote.
-  3. Confirmar `prefers-reduced-motion` desativando corretamente cada novo efeito (Lotes 19–23), um por um.
-  4. Confirmar zero dependência nova no `package.json` (todo o motion deste bloco é CSS + IntersectionObserver nativo).
-  5. Revisar se a quantidade total de movimento simultâneo na tela não ultrapassa o "movimento perceptível, mas nunca protagonista" já registrado como princípio no roadmap histórico — ler novamente a seção 12 do `Roadmap_Mestre_CLAUDE.md` antes de aprovar.
-- **Critério de aceite:** nenhuma regressão de Lighthouse/CLS/TBT; `prefers-reduced-motion` cobrindo 100% do motion novo; zero dependência nova.
-- **Auditoria exigida:** relatório com números de antes/depois, não impressão subjetiva.
-
----
-
-### Lote 25 — Consistência final e regeneração de `og-image.png`
-
-- **Estado:** NÃO INICIADO
-- **Prioridade:** Baixa — fechamento, só ao final.
-- **Implementação:** checklist comparativo entre as quatro rotas (mesmo espírito do Lote 13) confirmando que o novo motion está aplicado de forma consistente em todo o site, não só em Home/Hero; regenerar `og-image.png` (processo do Lote 16) se a Home mudou visualmente o suficiente para desatualizar a imagem social.
-- **Critério de aceite:** relatório de auditoria; `og-image.png` atualizado se necessário.
-
----
-
-### Ordem de execução recomendada
-
-1. **Lote 18** (fundação de motion) — pré-requisito técnico, sem tela nova ainda.
-2. **Lote 19** (botões) — pedido explícito, maior visibilidade imediata.
-3. **Lote 20** (cards de categoria) — pedido explícito, reaproveita trabalho já existente e órfão.
-4. **Lote 21** (scroll reveal) — resolve a sensação de página estática abaixo da dobra.
-5. **Lote 22** (movimento ambiente do Hero) — maior risco/maior recompensa; exige aprovação de qual variante seguir antes de codar.
-6. **Lote 23** (navegação) — polimento, pode rodar em paralelo ao 21/22.
-7. **Lote 24** (auditoria de performance/acessibilidade) — obrigatório antes de fechar o bloco.
-8. **Lote 25** (fechamento/og-image) — só ao final.
-
-### Regra de execução mantida deste bloco
-
-Mesmo com o mandato de maior liberdade visual, a metodologia de execução do projeto continua valendo: implementar lote a lote, rodar `npm run check`/`npm run build`, gerar evidência visual desktop+mobile (idealmente com captura do próprio hover/motion, não só do estado estático), registrar resultado e ressalvas aqui, e aguardar autorização explícita antes de commit e antes de push. "Liberdade para mudar mais" não significa "liberdade para pular auditoria" — e motion mal auditado é justamente o tipo de mudança que pode piorar performance/acessibilidade sem ninguém perceber até tarde.
+- **Concluídos:** Lotes 18, 19, 20 e 23.
+- **Aguardando decisão após o Lote 26:** Lotes 21 e 22.
+- **Não iniciados:** Lotes 24 e 25.
+- **Regra preservada:** nenhum motion novo será implementado antes da auditoria e aprovação da arquitetura visual do Lote 26.
 
 ## Lote 26 — Refatoração radical da arquitetura visual (Home, Cardápio, Localização)
 
-- **Estado:** EM EXECUÇÃO — implementação concluída, aguardando auditoria independente e testes E2E (bloqueados por ambiente, ver abaixo)
+- **Implementação:** CONCLUÍDA.
+- **Auditoria visual independente:** PENDENTE.
+- **Validação automatizada:** PARCIAL; E2E pendente.
+- **Aprovação humana:** PENDENTE.
+- **Estado final do lote:** EM AUDITORIA.
+
+### Relação com os Lotes 18–25
+
+O Lote 26 substitui as decisões estritamente visuais dos Lotes 18–23 quando houver conflito. Permanecem válidos os tokens compartilhados, `prefers-reduced-motion`, a resposta tátil dos CTAs, a indicação de rota ativa, a preservação do logo e a regra de não adicionar bibliotecas sem necessidade comprovada. Zoom de imagens, scroll reveal, movimento ambiente do Hero e a imagem Open Graph devem ser reavaliados sobre a arquitetura aprovada do Lote 26, sem aplicação automática do plano anterior.
 
 > Espelho de execução consolidado a partir do `CLAUDE.md` e do registro original. `BEST_PLAN.MD` continua sendo a fonte de verdade do histórico.
 
@@ -822,30 +712,33 @@ Um agente que receba este documento deve implementar cada item abaixo como descr
 
 ### Validação obrigatória antes de considerar o lote pronto para auditoria
 
-- [ ] `npm run check`
-- [ ] `npm run test:e2e` (bloqueado por ambiente — rodar em CI)
-- [ ] `npm audit --audit-level=high`
-- [ ] `git diff --check`
-- [ ] Auditoria de acessibilidade (teclado, foco, contraste)
-- [ ] Screenshots antes/depois — Home, Cardápio, Localização — mobile (390px) e desktop (1280px)
-- [ ] Confirmação de hash MD5 do logo
-- [ ] `grep -rn "editorial-grid\|brand-stamp" src/` retornando vazio
+- [ ] `npm run check` — repetir no checkout atual e registrar commit/data.
+- [!] `npm run test:e2e` — pendente; executar em CI ou ambiente com Chromium provisionado.
+- [x] `npm audit --audit-level=high` — aprovado na implementação; repetir no fechamento.
+- [x] `git diff --check` — aprovado na implementação; repetir no fechamento.
+- [ ] Auditoria independente de acessibilidade — teclado, foco, contraste, zoom 200% e reduced motion.
+- [x] Screenshots antes/depois — Home, Cardápio e Localização em 390px e 1280px, armazenados em `documentacao/qa/lote-26/`; falta avaliação independente.
+- [x] Confirmação de hash MD5 do logo.
+- [x] `rg "editorial-grid|brand-stamp" src/` sem ocorrências; repetir no fechamento.
 
 ### Regra de fechamento
 
 Não marcar o lote como CONCLUÍDO antes de auditoria independente. Registrar em `documentacao/qa/` o relatório permanente (diagnóstico, decisões, antes×depois, arquivos modificados, screenshots, testes, commit, ressalvas, estado final). Não iniciar outro lote antes disso.
 
-## Pendências externas
+## Pendências externas — Lote 14
 
-- URL oficial da loja no iFood.
-- Telefone/WhatsApp válido.
-- Endereço completo e CEP.
-- Horários oficiais.
-- Produtos, ingredientes, preços e badges aprovados.
-- Fotografias oficiais da casa e dos produtos.
+Cada dependência deve ser desbloqueada e implementada de forma independente; a ausência de um item não bloqueia os demais. Nenhum dado ou asset pode ser inventado.
+
+- **Lote 14A — iFood:** URL oficial da loja.
+- **Lote 14B — Contato:** telefone/WhatsApp válido.
+- **Lote 14C — Localização:** endereço completo e CEP.
+- **Lote 14D — Funcionamento:** horários oficiais.
+- **Lote 14E — Cardápio comercial:** produtos, ingredientes, preços e badges aprovados.
+- **Lote 14F — Direção fotográfica:** fotografias oficiais da casa e dos produtos; planejar enquadramento, recorte, tratamento, responsividade e atualização da imagem Open Graph, em vez de apenas substituir arquivos.
 
 ## Changelog
 
+- **15/08/2026:** plano operacional reestruturado sobre `origin/main`/`98d570e`: baseline inicial classificada como histórica, estados dos Lotes 18–26 consolidados, bloco duplicado 18–25 arquivado, Lote 26 movido para `EM AUDITORIA`, checklist reconciliado e pendências externas separadas em 14A–14F. Nenhuma alteração de aplicação foi realizada.
 - **12/08/2026:** criado o registro operacional da implantação na branch `BEST_ONE`.
 - **12/08/2026:** registrado o primeiro checkpoint funcional; auditoria e repetição integral dos testes ficaram obrigatoriamente pendentes para depois da reinicialização.
 - **12/08/2026:** auditoria pós-reinicialização concluída; compatibilidade com Node 20 restaurada e checkpoint validado por testes unitários, E2E, axe, HTTP, build e inspeção visual.
