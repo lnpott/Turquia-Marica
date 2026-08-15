@@ -36,11 +36,11 @@
 - `npm run check`: lint, 6 testes unitários e build de página única aprovados.
 - `npm run test:e2e`: 30/30 testes aprovados em desktop/mobile, cobrindo âncoras, estado ativo, fallback, conteúdo honesto, placeholders, sitemap, axe, reduced motion, BottomNavBar e overflow.
 - Lighthouse: Performance 99, Acessibilidade 100, Boas Práticas 100 e SEO 100; LCP 1,9 s, CLS 0 e TBT 70 ms.
+- Preview Vercel: `/cardapio` respondeu 308 com `Location: /#cardapio`; `/localizacao` respondeu 308 com `Location: /#localizacao`.
 - `npm audit --audit-level=high`: sem vulnerabilidades altas.
 - `git diff --check`: aprovado.
 - Hashes do logo preservados.
 
 ## Ressalvas
 
-- O comportamento HTTP 301/308 será confirmado novamente no preview Vercel após o push, pois Vite Preview exercita o fallback React e não a borda Vercel.
 - A origem oficial das futuras avaliações permanece indefinida; a camada atual é deliberadamente agnóstica e demonstrativa.
