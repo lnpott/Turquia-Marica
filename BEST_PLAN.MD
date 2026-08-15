@@ -722,9 +722,9 @@ Não marcar o lote como CONCLUÍDO antes de auditoria independente. Registrar em
 
 ## Etapa 27 — SPA de rolagem, produto em destaque, Localização integrada e fundação de Reviews
 
-- **Estado:** DEFINIDO — plano consolidado e auditado; nenhuma implementação iniciada.
+- **Estado:** CONCLUÍDO — implementação, auditoria e evidências finalizadas em 15/08/2026.
 - **Base verificada:** `main` (`origin/main`), commit `9cc0f1bf9fa05bd0b47807c36048b69b5e03a5ef` (merge do PR #7).
-- **Dependência de início:** receber confirmação explícita para iniciar a sub-etapa 27.1; esta atualização é exclusivamente documental.
+- **Entrega:** sub-etapas 27.1–27.5 implementadas de forma atômica para impedir redirects apontando para âncoras ainda ausentes.
 - **Direção preservada:** arquitetura editorial-quente do Lote 26, integridade do logo, conteúdo comercial honesto, acessibilidade, SEO e reduced motion.
 
 ### 27.0 — Auditoria pré-implementação
@@ -754,6 +754,8 @@ Esta auditoria consolida o texto recebido, que continha a Etapa 27 duplicada int
 10. **Rotas e sitemap:** remover shells exige atualizar testes, sitemap, metadados e qualquer documentação que ainda espere HTTP 200 direto em três páginas. O redirect deve ser testado separadamente do fallback SPA local.
 11. **Arquivos potencialmente órfãos:** `Menu.jsx`, `Location.jsx`, `ContactCard.jsx`, `MenuHighlights.jsx` e `ProductGrid.jsx` só serão removidos depois de `rg` confirmar ausência de consumidores. Não apagar componentes apenas porque a nova arquitetura os substitui conceitualmente.
 12. **Autorização incremental versus execução total:** esta etapa está definida, mas continua dividida em sub-etapas auditáveis. Cada sub-etapa atualiza este documento no mesmo commit; nenhuma deve ser marcada como concluída antecipadamente.
+13. **Sequenciamento do redirect de Localização:** o review identificou que ativar o redirect na 27.1 antes de criar `#localizacao` na 27.2 quebraria a URL legada. Correção aplicada: âncora, seção, fallback e redirects são entregues atomicamente neste lote.
+14. **Remount por hash em `MainLayout`:** o review identificou que a key antiga incluía `location.hash` e remontaria toda a Home em cada clique. Correção aplicada: a key usa somente `location.pathname`; o efeito continua responsável por foco e rolagem.
 
 #### Dúvidas não bloqueantes para decisão humana
 
@@ -762,6 +764,8 @@ Esta auditoria consolida o texto recebido, que continha a Etapa 27 duplicada int
 - **Reviews no menu:** `#reviews` será observado e terá estado ativo, mas a inclusão de “Reviews” como item visível no Header/BottomNavBar deve respeitar espaço disponível. Proposta: Header e Footer incluem Reviews; BottomNavBar mantém quatro itens e substitui “Pedir” apenas se aprovado na 27.1.
 
 ### 27.1 — Navegação por âncora, estado ativo e redirects
+
+- **Estado:** CONCLUÍDO.
 
 #### Objetivo
 
@@ -787,6 +791,8 @@ Transformar a navegação em uma experiência de página única, sem recarregar 
 
 ### 27.2 — `SectionHeading` e Localização integrada
 
+- **Estado:** CONCLUÍDO.
+
 #### Implementação planejada
 
 - Criar `src/components/ui/SectionHeading.jsx` para eyebrow, título, descrição e alinhamentos previstos pelo design editorial.
@@ -804,6 +810,8 @@ Transformar a navegação em uma experiência de página única, sem recarregar 
 - A BottomNavBar não cobre o mapa nem o CTA em 375×667, 390×740 e 414×844.
 
 ### 27.3 — Cardápio orientado a produto
+
+- **Estado:** CONCLUÍDO.
 
 #### Implementação planejada
 
@@ -832,6 +840,8 @@ Transformar a navegação em uma experiência de página única, sem recarregar 
 
 ### 27.4 — Remoção das páginas/shells e consolidação de SEO
 
+- **Estado:** CONCLUÍDO.
+
 #### Implementação planejada
 
 - Remover `src/pages/Menu.jsx` e `src/pages/Location.jsx` após a migração e confirmação de ausência de imports.
@@ -849,6 +859,8 @@ Transformar a navegação em uma experiência de página única, sem recarregar 
 - Redirects não formam loop e preservam a âncora de destino.
 
 ### 27.5 — Fundação de Reviews demonstrativos
+
+- **Estado:** CONCLUÍDO.
 
 #### Contrato de dados
 
@@ -942,12 +954,12 @@ Criar `src/data/reviews.js` com comentários explícitos de demonstração e obj
 9. **27.5:** Reviews fictícios, explicitamente sinalizados.
 10. **Auditoria final:** check, E2E, axe, Lighthouse, hashes, screenshots e relatório consolidado.
 
-### Regra de início e fechamento
+### Fechamento
 
-- A implementação começa pela 27.1 somente após confirmação explícita e baseline `origin/main` verificada.
-- Atualizar esta seção no mesmo commit de cada sub-etapa.
-- Não avançar de sub-etapa com falha P0/P1, inconsistência de conteúdo ou evidência ausente.
-- Não marcar a Etapa 27 como concluída antes da auditoria final consolidada.
+- Sub-etapas 27.1–27.5 concluídas no mesmo lote para eliminar estados intermediários inconsistentes.
+- Auditoria permanente registrada em `documentacao/qa/AUDITORIA_ETAPA_27.md`.
+- Evidências visuais registradas em `documentacao/qa/etapa-27/`.
+- Nenhuma pendência P0/P1 conhecida; integrações e dados oficiais continuam externos ao escopo.
 
 ## Pendências externas — Lote 14
 
@@ -962,6 +974,7 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 
 ## Changelog
 
+- **15/08/2026:** Etapa 27 implementada e auditada: SPA por âncoras, estado ativo por área visível, Cardápio orientado a produto com estado público honesto, Localização integrada com CTA único, Reviews fictícios sinalizados, redirects/SEO consolidados e reviews de código sobre redirect prematuro/remount por hash corrigidos.
 - **15/08/2026:** Etapa 27 auditada e definida apenas em documentação: duplicação do texto-fonte removida; baseline remota `9cc0f1b` verificada; redirects 301/308, seleção de seção ativa, placeholders de Reviews e conflito de produtos fictícios corrigidos; implementação permanece não iniciada até confirmação da 27.1.
 - **15/08/2026:** plano operacional reestruturado sobre `origin/main`/`98d570e`: baseline inicial classificada como histórica, estados dos Lotes 18–26 consolidados, bloco duplicado 18–25 arquivado, Lote 26 movido para `EM AUDITORIA`, checklist reconciliado e pendências externas separadas em 14A–14F. Nenhuma alteração de aplicação foi realizada.
 - **15/08/2026:** Lotes 21–26 concluídos e auditados: scroll reveal, movimento ambiente, arquitetura editorial, correções de contraste/overflow/BottomNavBar, evidências antes/depois e nova imagem Open Graph entregues; relatório em `documentacao/qa/AUDITORIA_LOTES_21_26.md`.

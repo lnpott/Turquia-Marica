@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Menu, ShoppingBag, X } from 'lucide-react'
 import logo from '../../assets/images/brand/logo-96.webp'
 import { BUSINESS_INFO } from '../../data/contact'
 import ChannelAction from '../ui/ChannelAction'
+import useActiveSection from '../../hooks/useActiveSection'
 
 const NAV_LINKS = [
-  { label: 'Cardápio', to: '/cardapio' },
-  { label: 'Sobre nós', to: '/#sobre' },
-  { label: 'Localização', to: '/localizacao' },
+  { label: 'Cardápio', id: 'cardapio' },
+  { label: 'Sobre nós', id: 'sobre' },
+  { label: 'Localização', id: 'localizacao' },
+  { label: 'Reviews', id: 'reviews' },
 ]
 
 const linkClasses = (isActive) =>
@@ -17,15 +18,8 @@ const linkClasses = (isActive) =>
 function Header() {
   const menuRef = useRef(null)
   const toggleRef = useRef(null)
-  const location = useLocation()
-  const routeKey = `${location.pathname}${location.hash}`
-  const isLinkActive = (link, routerIsActive) => (
-    link.to.includes('#')
-      ? location.pathname === '/' && location.hash === `#${link.to.split('#')[1]}`
-      : routerIsActive
-  )
-  const [menuState, setMenuState] = useState({ open: false, routeKey })
-  const menuOpen = menuState.open && menuState.routeKey === routeKey
+  const activeSection = useActiveSection()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     if (!menuOpen) return undefined
@@ -35,7 +29,7 @@ function Header() {
 
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
-        setMenuState({ open: false, routeKey })
+        setMenuOpen(false)
         toggleRef.current?.focus()
         return
       }
@@ -55,21 +49,21 @@ function Header() {
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [menuOpen, routeKey])
+  }, [menuOpen])
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#faf7f2]/95 shadow-[0_1px_0_#e8e0d4] backdrop-blur-md">
       <div className="mx-auto flex min-h-16 max-w-[1280px] items-center justify-between gap-3 px-4 md:h-[76px] md:px-margin-desktop">
-        <Link to="/" aria-label="Turquia Lanches — início" className="flex items-center gap-3 rounded-lg focus-visible:outline-offset-4">
+        <a href="#topo" aria-label="Turquia Lanches — início" className="flex items-center gap-3 rounded-lg focus-visible:outline-offset-4">
           <img src={logo} alt="Turquia Lanches" width="48" height="48" className="h-11 w-11 rounded-full object-cover md:h-12 md:w-12" />
           <span className="hidden font-headline-md text-base font-extrabold uppercase leading-none tracking-[-0.03em] text-on-surface sm:block">Turquia<br/><span className="text-primary">Lanches</span></span>
-        </Link>
+        </a>
 
         <nav className="hidden items-center gap-2 md:flex" aria-label="Navegação principal">
           {NAV_LINKS.map((link) => (
-            <NavLink key={link.label} to={link.to} className={({ isActive }) => linkClasses(isLinkActive(link, isActive))}>
+            <a key={link.label} href={`#${link.id}`} aria-current={activeSection === link.id ? 'location' : undefined} className={linkClasses(activeSection === link.id)}>
               {link.label}
-            </NavLink>
+            </a>
           ))}
         </nav>
 
@@ -88,7 +82,7 @@ function Header() {
             aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
             aria-expanded={menuOpen}
             aria-controls="menu-mobile"
-            onClick={() => setMenuState({ open: !menuOpen, routeKey })}
+            onClick={() => setMenuOpen((open) => !open)}
             className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-primary transition-all duration-tactile ease-tactile hover:bg-surface-container-low active:scale-90 md:hidden"
           >
             {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
@@ -104,9 +98,9 @@ function Header() {
           className="flex min-h-[calc(100svh-64px)] flex-col gap-3 bg-[#1a1008]/98 px-margin-mobile pb-8 pt-8 text-white md:hidden"
         >
           {NAV_LINKS.map((link) => (
-            <NavLink key={link.label} to={link.to} className={({ isActive }) => linkClasses(isLinkActive(link, isActive))}>
+            <a key={link.label} href={`#${link.id}`} onClick={() => setMenuOpen(false)} aria-current={activeSection === link.id ? 'location' : undefined} className={linkClasses(activeSection === link.id)}>
               {link.label}
-            </NavLink>
+            </a>
           ))}
         </nav>
       ) : null}

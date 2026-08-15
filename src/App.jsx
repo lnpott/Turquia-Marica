@@ -1,8 +1,6 @@
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import Home from './pages/Home'
-import Menu from './pages/Menu'
-import Location from './pages/Location'
 
 function PagePlaceholder() {
   return (
@@ -25,8 +23,8 @@ function App() {
       <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/cardapio" element={<Menu />} />
-            <Route path="/localizacao" element={<Location />} />
+            <Route path="/cardapio" element={<Navigate replace to="/#cardapio" />} />
+            <Route path="/localizacao" element={<Navigate replace to="/#localizacao" />} />
             <Route path="*" element={<PagePlaceholder />} />
           </Route>
       </Routes>

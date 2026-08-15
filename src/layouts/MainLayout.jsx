@@ -29,7 +29,7 @@ function MainLayout() {
       <a href="#conteudo-principal" className="skip-link">Pular para o conteúdo</a>
       <Header />
       <main id="conteudo-principal" className="mobile-bottom-safe flex-1 md:pb-0" tabIndex="-1">
-        <div key={`${location.pathname}${location.hash}`} className="page-transition">
+        <div key={location.pathname} className="page-transition">
           <Outlet />
         </div>
       </main>
