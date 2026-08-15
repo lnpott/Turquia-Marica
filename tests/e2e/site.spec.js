@@ -124,6 +124,14 @@ test('descoberta publica somente a Home canônica', async ({ request }) => {
   expect(xml).not.toContain('localizacao')
 })
 
+test('build público não disponibiliza a rota visual de QA', async ({ page }) => {
+  await page.goto('/__visual-qa')
+  await expect(page.getByRole('heading', { name: 'Turquia Lanches' })).toBeVisible()
+  await expect(page.getByText('A página que você procurou não existe.')).toBeVisible()
+  await expect(page.getByText(/Dados fictícios — QA visual isolado/i)).toHaveCount(0)
+  await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0)
+})
+
 test('imagem social mantém formato Open Graph', async ({ request, page }) => {
   const response = await request.get('/og-image.png')
   const image = await response.body()

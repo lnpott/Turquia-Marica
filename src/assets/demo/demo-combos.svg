@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="320" viewBox="0 0 512 320" role="img" aria-labelledby="title description">
+  <title id="title">Ilustração neutra de combo para QA</title>
+  <desc id="description">Formas geométricas abstratas sem representar produto real</desc>
+  <rect width="512" height="320" fill="#7e1f1f"/>
+  <circle cx="174" cy="144" r="70" fill="#f2c94c"/>
+  <rect x="256" y="76" width="92" height="152" rx="8" fill="#faf7f2"/>
+  <path d="M276 114h52M276 144h52M276 174h52" stroke="#7e1f1f" stroke-width="8" stroke-linecap="round"/>
+  <text x="256" y="274" text-anchor="middle" fill="#faf7f2" font-family="sans-serif" font-size="17" font-weight="700" letter-spacing="3">COMBO FICTÍCIO · QA</text>
+</svg>

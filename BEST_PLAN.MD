@@ -965,7 +965,7 @@ Criar `src/data/reviews.js` com comentários explícitos de demonstração e obj
 
 ## Etapa 28 — Modo de demonstração visual isolado (dados fictícios de produto)
 
-- **Estado:** DECISÃO TÉCNICA CONFIRMADA — rota isolada por flag selecionada; implementação não iniciada sem autorização explícita do responsável.
+- **Estado:** CONCLUÍDO E AUDITADO — rota isolada por flag, gate de produção e evidências nos cinco viewports entregues em 15/08/2026.
 - **Origem:** responde à dúvida não bloqueante da Etapa 27.0 sobre uma demonstração preenchida do Cardápio.
 - **Prioridade:** não sequencial; não bloqueia nem é bloqueada pelos demais lotes.
 - **Restrição central:** o Cardápio público continua usando `products = []`; nenhum produto, preço ou descrição fictícia pode alcançar produção, SEO ou deploy público.
@@ -1039,7 +1039,7 @@ Criar `src/data/menu.demo.js`, com aviso explícito e objetos compatíveis com o
 
 **Condição de reabertura:** se o gate não conseguir comprovar a ausência da rota, fixture, chunk ou sentinelas no build padrão, a implementação será revertida e o harness Playwright passará a ser o único consumidor, privilegiando isolamento estrutural.
 
-**Gate de autorização:** esta decisão encerra apenas a escolha técnica. Nenhum arquivo de aplicação, fixture, asset ou configuração deve ser criado até autorização explícita do responsável para iniciar a implementação.
+**Autorização registrada:** o responsável autorizou a implementação integral em 15/08/2026. A entrega preserva o Cardápio público e mantém a rota disponível somente em builds locais iniciados com a flag.
 
 ### Escopo técnico previsto
 
@@ -1095,6 +1095,18 @@ Criar `src/data/menu.demo.js`, com aviso explícito e objetos compatíveis com o
 7. Registrar evidências em `documentacao/qa/etapa-28/`.
 8. Atualizar estado e changelog; manter tudo em commit isolado e reversível.
 
+### 28.1 — Resultado implementado e auditoria
+
+- A rota `/__visual-qa` só é declarada quando `VITE_VISUAL_QA_DEMO=true`; o módulo da página e a fixture entram por importação dinâmica.
+- `npm run build` sempre executa `verify:no-demo` e falha se o artefato público contiver a rota, fixture, IDs, sentinelas ou `isMock`. Mesmo uma flag configurada por engano no deploy torna o build inválido.
+- `src/data/menu.demo.js` contém 16 itens fictícios — quatro por categoria — com nomes, descrições e preços inequivocamente demonstrativos.
+- Assets de QA são locais, removíveis e separados em `src/assets/demo/`; o caso sem fotografia usa um placeholder neutro explícito.
+- A página mantém Header, Footer e BottomNavBar reais, mostra aviso persistente e aplica `noindex, nofollow, noarchive, nosnippet` durante sua montagem.
+- `ProductCard`, `MenuSection`, `CategoryFilterBar`, `src/data/menu.js`, sitemap e metadados públicos permaneceram inalterados.
+- Playwright validou filtro, teclado/contexto de navegação, axe, console, 16 cards e capturas completas em 320, 390, 768, 1280 e 1440 px.
+- Evidências: `documentacao/qa/etapa-28/`; relatório: `documentacao/qa/AUDITORIA_ETAPA_28.md`.
+- **Veredito:** APROVADO — nenhum artefato demonstrativo foi encontrado no build público padrão.
+
 ## Pendências externas — Lote 14
 
 Cada dependência deve ser desbloqueada e implementada de forma independente; a ausência de um item não bloqueia os demais. Nenhum dado ou asset pode ser inventado.
@@ -1108,6 +1120,7 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 
 ## Changelog
 
+- **15/08/2026:** Etapa 28 implementada e auditada: rota local por flag com 16 produtos fictícios, assets isolados, aviso/noindex, gate bloqueante de `dist/`, suíte Playwright em cinco viewports e evidências permanentes. Cardápio real, componentes visuais e sitemap permaneceram inalterados; veredito **APROVADO**.
 - **15/08/2026:** decisão técnica da Etapa 28 confirmada: rota isolada por flag será o ambiente de refinamento visual ao vivo; Playwright será usado ao final para evidência/regressão nos cinco viewports. Implementação continua não iniciada até autorização explícita; falha do gate de `dist/` reabre a decisão em favor do harness exclusivo.
 - **15/08/2026:** Etapa 28 registrada e auditada como plano: modo de demonstração visual isolado para produtos fictícios, com recomendação de harness Playwright, contrato alinhado a `categoryId`, assets locais, gate de artefato e rollback. Estado: **AGUARDANDO DECISÃO**; nenhuma alteração de aplicação realizada.
 - **15/08/2026:** Etapa 27 implementada e auditada: SPA por âncoras, estado ativo por área visível, Cardápio orientado a produto com estado público honesto, Localização integrada com CTA único, Reviews fictícios sinalizados, redirects/SEO consolidados e reviews de código sobre redirect prematuro/remount por hash corrigidos.

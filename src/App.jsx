@@ -1,6 +1,10 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import Home from './pages/Home'
+
+const visualQaDemoEnabled = import.meta.env.VITE_VISUAL_QA_DEMO === 'true'
+const VisualQaDemo = visualQaDemoEnabled ? lazy(() => import('./pages/demo/VisualQaDemo')) : null
 
 function PagePlaceholder() {
   return (
@@ -25,6 +29,9 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/cardapio" element={<Navigate replace to="/#cardapio" />} />
             <Route path="/localizacao" element={<Navigate replace to="/#localizacao" />} />
+            {visualQaDemoEnabled ? (
+              <Route path="/__visual-qa" element={<Suspense fallback={null}><VisualQaDemo /></Suspense>} />
+            ) : null}
             <Route path="*" element={<PagePlaceholder />} />
           </Route>
       </Routes>
