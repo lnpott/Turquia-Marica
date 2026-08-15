@@ -708,7 +708,7 @@ Um agente que receba este documento deve implementar cada item abaixo como descr
 
 **Achado técnico durante a implementação:** a nova composição quebrou o sistema antigo de "clearance" para a `BottomNavBar` fixa em mobile — `.mobile-hero-nav-clearance` e `.mobile-map-action-clearance` usavam valores mágicos (`calc(100vh - 565px)`, `12.5rem`) calibrados para a altura exata do Hero e do CTA de mapa **antigos**. Corrigido removendo a dependência de `position: absolute` com offset mágico em `MapEmbed.jsx`: o CTA "Conferir ficha / Google Maps" passou a ficar no fluxo normal do documento; as duas classes de clearance foram removidas de `index.css`. Uma verificação adicional com screenshot de viewport real (não `fullPage`) confirmou que uma aparência de sobreposição vista em capturas `fullPage` era artefato do modo de captura do Playwright com elementos `position: fixed`, não um bug real de layout.
 
-**Evidência visual:** screenshots antes/depois (Home, Cardápio, Localização; desktop 1280px e mobile 390px) gerados e copiados para `documentacao/qa/lote-26/`.
+**Evidência visual:** PENDENTE. O repositório ainda não contém `documentacao/qa/lote-26/`; as capturas existentes em `documentacao/qa/` são anteriores a este lote e não comprovam a refatoração. Gerar e versionar o conjunto antes/depois de Home, Cardápio e Localização em 390px e 1280px antes da aprovação.
 
 ### Validação obrigatória antes de considerar o lote pronto para auditoria
 
@@ -717,7 +717,7 @@ Um agente que receba este documento deve implementar cada item abaixo como descr
 - [x] `npm audit --audit-level=high` — aprovado na implementação; repetir no fechamento.
 - [x] `git diff --check` — aprovado na implementação; repetir no fechamento.
 - [ ] Auditoria independente de acessibilidade — teclado, foco, contraste, zoom 200% e reduced motion.
-- [x] Screenshots antes/depois — Home, Cardápio e Localização em 390px e 1280px, armazenados em `documentacao/qa/lote-26/`; falta avaliação independente.
+- [ ] Screenshots antes/depois — gerar e versionar Home, Cardápio e Localização em 390px e 1280px em `documentacao/qa/lote-26/`; as evidências ainda não existem no repositório.
 - [x] Confirmação de hash MD5 do logo.
 - [x] `rg "editorial-grid|brand-stamp" src/` sem ocorrências; repetir no fechamento.
 
@@ -739,6 +739,7 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 ## Changelog
 
 - **15/08/2026:** plano operacional reestruturado sobre `origin/main`/`98d570e`: baseline inicial classificada como histórica, estados dos Lotes 18–26 consolidados, bloco duplicado 18–25 arquivado, Lote 26 movido para `EM AUDITORIA`, checklist reconciliado e pendências externas separadas em 14A–14F. Nenhuma alteração de aplicação foi realizada.
+- **15/08/2026:** revisão do PR corrigiu a declaração prematura de evidência visual do Lote 26: `documentacao/qa/lote-26/` ainda não existe, portanto as seis capturas obrigatórias permanecem pendentes até serem geradas, avaliadas e versionadas.
 - **12/08/2026:** criado o registro operacional da implantação na branch `BEST_ONE`.
 - **12/08/2026:** registrado o primeiro checkpoint funcional; auditoria e repetição integral dos testes ficaram obrigatoriamente pendentes para depois da reinicialização.
 - **12/08/2026:** auditoria pós-reinicialização concluída; compatibilidade com Node 20 restaurada e checkpoint validado por testes unitários, E2E, axe, HTTP, build e inspeção visual.
