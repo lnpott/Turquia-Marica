@@ -1,28 +1,35 @@
 import { useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import Header from '../components/layout/Header'
-import Footer from '../components/layout/Footer'
 import BottomNavBar from '../components/layout/BottomNavBar'
+import Footer from '../components/layout/Footer'
+import Header from '../components/layout/Header'
 
 function MainLayout() {
   const location = useLocation()
 
-  // LOTE 11 — Toda navegação recomeça no topo (comportamento padrão de SPA).
-  // 'instant' evita o scroll suave global (scroll-behavior: smooth) para a
-  // navegação não competir com a transição de página. Âncoras internas
-  // (#combos/#categorias) não mudam o pathname, então não são afetadas.
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' })
-  }, [location.pathname])
+    const frame = window.requestAnimationFrame(() => {
+      if (location.hash) {
+        const target = document.getElementById(location.hash.slice(1))
+        if (target) {
+          target.scrollIntoView({ block: 'start' })
+          target.setAttribute('tabindex', '-1')
+          target.focus({ preventScroll: true })
+          return
+        }
+      }
+      window.scrollTo({ top: 0, behavior: 'auto' })
+    })
+
+    return () => window.cancelAnimationFrame(frame)
+  }, [location.pathname, location.hash])
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-on-background">
+      <a href="#conteudo-principal" className="skip-link">Pular para o conteúdo</a>
       <Header />
-      <main className="flex-1 mobile-bottom-safe md:pb-0">
-        {/* key força a remontagem a cada mudança de rota, disparando a animação
-            de entrada .page-transition (fade + deslocamento sutil, ~260ms) em
-            TODAS as navegações: Header, BottomNavBar, CTAs e fluxo linear. */}
-        <div key={location.pathname} className="page-transition">
+      <main id="conteudo-principal" className="mobile-bottom-safe flex-1 md:pb-0" tabIndex="-1">
+        <div key={`${location.pathname}${location.hash}`} className="page-transition">
           <Outlet />
         </div>
       </main>

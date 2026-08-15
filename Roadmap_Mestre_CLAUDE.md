@@ -1,5 +1,7 @@
 # TURQUIA LANCHES — ARQUITETURA MESTRE, HISTÓRICO DE IMPLEMENTAÇÃO E ROADMAP
 
+> **Plano operacional vigente:** as etapas, estados, dependências, evidências e novas mudanças são registradas em `BEST_PLAN.MD`. Este roadmap permanece como histórico arquitetural e documento de handoff. Em caso de divergência, prevalecem: código/Git atual → `BEST_PLAN.MD` → histórico deste roadmap.
+
 > **Documento de handoff para agentes de desenvolvimento e continuidade do projeto.**
 >
 > Este documento descreve somente informações relevantes para que outro agente compreenda **como o projeto foi concebido, como chegou ao estado atual, quais decisões arquiteturais foram tomadas, o que já foi implementado, quais agentes/plataformas participaram do processo e quais são as próximas etapas autorizáveis**.

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://turquia-marica.vercel.app/sitemap.xml

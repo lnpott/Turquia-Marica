@@ -28,6 +28,9 @@ function CategoryFilterBar({ categories, active, onSelect }) {
                 className="w-8 h-8 rounded-full object-cover"
                 src={category.image}
                 aria-hidden="true"
+                width="32"
+                height="32"
+                loading="lazy"
               />
             )}
             {category.name}

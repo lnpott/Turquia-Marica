@@ -1,63 +1,48 @@
-import { IFOOD_URL } from '../data/contact'
+import { ExternalLink, MapPin, Navigation } from 'lucide-react'
 import ContactCard from '../components/location/ContactCard'
 import MapEmbed from '../components/location/MapEmbed'
-import imgHeroAmbience from '../assets/images/hero/hero-ambience.jpg'
-
-// /localizacao — Lote 9. Migração do HTML de produção
-// (turquia_lanches_localiza_o_production/code.html): hero com imagem de
-// ambiente, card de contato (Endereço/Horário/WhatsApp/Instagram) e mapa
-// placeholder. Página informativa — não faz parte do fluxo linear do pedido.
-// A navegação já existia no Header (desktop + menu mobile) aguardando a rota.
-// LOTE 14 — Hero migrado para asset local. A fotografia do ambiente da
-// Localização é a MESMA do hero da Home (duplicata real confirmada por MD5).
-const HERO_IMAGE = imgHeroAmbience
+import { BUSINESS_INFO } from '../data/contact'
+import Button from '../components/ui/Button'
 
 function Location() {
   return (
-    <main className="flex-grow">
-      {/* Hero com imagem de ambiente */}
-      <section className="w-full relative h-[58svh] min-h-[360px] md:min-h-[400px] overflow-hidden">
-        <div className="absolute inset-0 bg-inverse-surface/40 z-10 pointer-events-none" aria-hidden="true" />
-        <img
-          alt="Ambiente interno da Turquia Lanches"
-          className="absolute inset-0 w-full h-full object-cover object-center z-0"
-          src={HERO_IMAGE}
-        />
-        <div className="relative z-20 h-full max-w-[1280px] mx-auto px-4 md:px-margin-desktop flex flex-col justify-center items-start">
-          <h1 className="font-display-xl text-display-xl-mobile md:text-display-xl text-on-primary drop-shadow-md mb-stack-tight">
-            Venha nos Visitar
-          </h1>
-          <p className="font-body-lg text-body-lg text-on-primary/90 drop-shadow-md max-w-2xl mb-stack-loose">
-            O verdadeiro sabor da tradição em um ambiente acolhedor. Sinta a energia e experimente
-            os melhores lanches da região.
-          </p>
-          <div className="flex gap-gutter flex-wrap">
-            <a
-              href={IFOOD_URL}
+    <>
+      <section className="editorial-grid border-b-2 border-on-surface bg-background px-4 py-10 md:px-margin-desktop md:py-16">
+        <div className="mx-auto grid max-w-[1280px] items-center gap-10 md:grid-cols-[0.9fr_1.1fr] md:gap-14">
+          <div>
+            <span className="mb-5 inline-flex border-2 border-on-surface bg-secondary-container px-3 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-on-surface shadow-[3px_3px_0_#251913]">
+              Parque Nanci · Maricá
+            </span>
+            <h1 className="display-balance max-w-[10ch] font-display-xl-mobile text-[48px] font-extrabold leading-[0.92] tracking-[-0.05em] text-on-surface md:text-[70px]">
+              Turquia Lanches.<span className="block text-primary">Seu destino no bairro.</span>
+            </h1>
+            <p className="mt-6 max-w-xl border-l-4 border-primary pl-4 text-base leading-relaxed text-on-surface-variant md:text-lg">
+              O link disponível abre a ficha “Turquia Lanches - Parque Nanci” no Google Maps. Confira o destino no aplicativo antes de iniciar a rota.
+            </p>
+            <Button
+              href={BUSINESS_INFO.channels.maps.url}
               target="_blank"
-              rel="noreferrer"
-              className="bg-primary text-on-primary font-headline-md px-6 py-3 rounded shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 text-center"
+              rel="noopener noreferrer"
+              variant="editorialPrimary"
+              size="md"
+              className="mt-7 gap-3 text-sm font-extrabold shadow-[4px_4px_0_#fdc008]"
             >
-              Peça agora no iFood
-            </a>
-            {/* No HTML o botão "Contato" era inerte — aqui vira âncora para o card
-                de contato (adaptação funcional mínima documentada no roadmap). */}
-            <a
-              href="#contato"
-              className="bg-surface text-primary font-headline-md px-6 py-3 rounded shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200"
-            >
-              Contato
-            </a>
+              <Navigation className="h-5 w-5" aria-hidden="true" />
+              Como chegar
+              <ExternalLink className="h-4 w-4" aria-hidden="true" />
+            </Button>
+            <p className="mt-4 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-on-surface-variant">
+              <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
+              Endereço completo ainda não confirmado
+            </p>
           </div>
+          <MapEmbed />
         </div>
       </section>
-
-      {/* Informações e mapa */}
-      <section className="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-16 grid grid-cols-1 md:grid-cols-2 gap-stack-loose items-start">
+      <div className="mx-auto max-w-[1280px] px-4 py-12 md:px-margin-desktop md:py-20">
         <ContactCard />
-        <MapEmbed />
-      </section>
-    </main>
+      </div>
+    </>
   )
 }
 

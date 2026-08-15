@@ -1,156 +1,66 @@
-import { useState } from 'react'
-import { categories, products } from '../data/menu'
-import CategoryCard from '../components/product/CategoryCard'
-import CategoryFilterBar from '../components/menu/CategoryFilterBar'
-import ProductGrid from '../components/menu/ProductGrid'
-import imgMenuHero from '../assets/images/menu/menu-hero.jpg'
-import { IFOOD_URL } from '../data/contact'
+import { ShoppingBag } from 'lucide-react'
+import MenuHighlights from '../components/menu/MenuHighlights'
+import UnavailableNotice from '../components/ui/UnavailableNotice'
+import imgMenuHero from '../assets/images/menu/menu-hero.webp'
+import imgMenuHeroFallback from '../assets/images/menu/menu-hero.jpg'
+import { BUSINESS_INFO } from '../data/contact'
+import ChannelAction from '../components/ui/ChannelAction'
+import Button from '../components/ui/Button'
 
-// LOTE 14 — Hero do Cardápio migrado para asset local (menu/menu-hero.jpg).
-// LOTE 15 — Alinhamento ao Design System:
-//   • Cores hardcoded (#111, bg-[#b01319]) substituídas por tokens.
-//   • backdrop-blur-md no botão secundário removido (contra diretriz do roadmap).
-//   • Tag/eyebrow usa secondary-container (amarelo) consistente com Hero da Home.
-//   • Gradiente usa tokens de background (não black literal).
-//   • Botão secundário alinhado ao padrão do Button component (variant secondary).
-
-function Menu({ showHero = true }) {
-  const [activeCategory, setActiveCategory] = useState('todos')
-
-  const filteredProducts =
-    activeCategory === 'todos' ? products : products.filter((p) => p.category === activeCategory)
-
-  const combos = filteredProducts.filter((p) => p.category === 'combos')
-  const maisPedidos = filteredProducts.filter((p) => p.category !== 'combos')
-
-  const showCombos = activeCategory === 'todos' || activeCategory === 'combos'
-  const showMaisPedidos = activeCategory === 'todos' || activeCategory === 'lanches'
-
+function Menu() {
   return (
     <>
-      {/* Hero Section */}
-      {showHero && <section className="relative w-full min-h-[560px] h-[calc(100svh-64px)] max-h-[760px] md:h-[90vh] md:min-h-[700px] flex items-center overflow-hidden bg-surface-container">
-        {/* Fotografia — plena visibilidade, sem opacity reduzida */}
-        <div className="absolute inset-0 w-full h-full">
-          <div
-            className="bg-cover bg-center w-full h-full scale-[1.02] transition-transform duration-700"
-            role="img"
-            aria-label="Hambúrguer artesanal da Turquia Lanches"
-            style={{ backgroundImage: `url('${imgMenuHero}')` }}
-          />
-        </div>
-
-        {/* Overlay gradiente — tokens do DS, não black literal */}
-        <div
-          className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/50 to-transparent pointer-events-none"
-          aria-hidden="true"
-        />
-
-        {/* Conteúdo */}
-        <div className="relative z-10 px-4 md:px-margin-desktop max-w-[1280px] mx-auto w-full flex flex-col items-start pb-8 md:pb-0">
-          <div className="max-w-[680px]">
-            {/* Tag/eyebrow — secondary-container (amarelo) consistente com Home */}
-            <span className="section-eyebrow mb-5" aria-hidden="true">
-              O Melhor Hambúrguer da Cidade
-            </span>
-
-            <h1 className="font-display-xl-mobile md:font-display-xl text-display-xl-mobile md:text-display-xl text-on-background mb-4 md:mb-6 leading-[1.05] max-w-[12ch]">
-              Fome de Leão?
-              <br />
-              <span className="text-primary">O Rei Chegou.</span>
+      <section className="editorial-grid bg-on-surface px-4 py-10 text-on-image md:px-margin-desktop md:py-16">
+        <div className="mx-auto grid max-w-[1280px] items-center gap-4 md:grid-cols-[1.05fr_0.95fr] md:gap-14">
+          <div className="relative z-10">
+            <span className="mb-5 inline-flex border-2 border-on-image bg-secondary-container px-3 py-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-on-surface shadow-[3px_3px_0_#ae0011]">Cardápio Turquia</span>
+            <h1 className="display-balance max-w-[11ch] font-display-xl-mobile text-[46px] font-extrabold leading-[0.92] tracking-[-0.05em] text-on-image md:text-[68px]">
+              Veja o que está previsto.<span className="block text-secondary-container">Sem promessa vazia.</span>
             </h1>
-
-            <p className="font-body-lg text-body-lg text-on-surface-variant mb-10 max-w-lg leading-relaxed">
-              Sabor raiz e ingredientes selecionados no seu novo favorito.
+            <p className="mt-6 max-w-xl border-l-4 border-primary pl-4 text-base leading-relaxed text-on-image/75 md:text-lg">
+              A estrutura do futuro cardápio está aqui. Produtos, preços e pedidos continuam indisponíveis até confirmação oficial.
             </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-              {/* Primário — usa token primary, sem hover hardcoded */}
-              <a
-                href={IFOOD_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full sm:w-auto bg-primary text-on-primary font-label-bold text-label-bold px-10 py-5 rounded-xl hover:bg-primary-hover transition-all ambient-shadow flex items-center justify-center gap-3 text-lg uppercase tracking-wider"
-              >
-                <span className="material-symbols-outlined" aria-hidden="true">shopping_cart</span>
-                PEÇA AGORA
-              </a>
-              {/* Secundário — tokens do DS, sem backdrop-blur decorativo */}
-              <a
-                href="#categorias"
-                className="w-full sm:w-auto bg-surface-container-low text-on-background font-label-bold text-label-bold px-10 py-5 rounded-xl border border-outline/50 hover:bg-surface-container transition-all flex items-center justify-center gap-3 text-lg uppercase tracking-wider"
-              >
-                <span className="material-symbols-outlined" aria-hidden="true">restaurant_menu</span>
-                CARDÁPIO
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>}
-
-      {/* Categories Section */}
-      <section
-        id="categorias"
-        className="py-16 md:py-24 px-4 md:px-margin-desktop max-w-[1280px] mx-auto"
-      >
-        <div className="flex justify-between items-end mb-10">
-          <div>
-            <span className="section-eyebrow">Explore</span>
-            <h2 className="font-headline-lg text-headline-lg text-on-background">Categorias</h2>
-            <p className="font-body-md text-on-surface-variant mt-1">Escolha por onde começar</p>
-          </div>
-          <p className="font-body-md text-on-surface-variant text-xs italic hidden md:block">
-            Preços exibidos válidos somente para consumo no estabelecimento.
-          </p>
-        </div>
-        <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-5">
-          {categories.map((category) => (
-            <li
-              key={category.id}
-              className={category.id === 'sobremesas' ? 'md:hidden xl:block' : ''}
+            <Button
+              href="#categorias"
+              variant="editorialPrimary"
+              size="md"
+              className="mt-7 border-on-image text-sm font-extrabold shadow-[4px_4px_0_#fdc008]"
             >
-              <CategoryCard category={category} onSelect={setActiveCategory} />
-            </li>
-          ))}
-        </ul>
+              Ver categorias previstas
+            </Button>
+            <ChannelAction
+              channel={BUSINESS_INFO.channels.ifood}
+              icon={ShoppingBag}
+              unavailableClassName="mt-5 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-on-image/55"
+            >
+              iFood não disponível / em construção
+            </ChannelAction>
+          </div>
+          <figure className="mobile-hero-nav-clearance relative overflow-hidden border-2 border-on-image bg-background p-2 shadow-[8px_8px_0_#fdc008] md:rotate-1">
+            <picture>
+              <source srcSet={imgMenuHero} type="image/webp" />
+              <img
+                src={imgMenuHeroFallback}
+                alt="Hambúrguer com batatas em cenário ilustrativo"
+                width="512"
+                height="279"
+                className="aspect-[11/5] h-auto w-full object-cover md:aspect-[4/3]"
+                fetchpriority="high"
+              />
+            </picture>
+            <figcaption className="absolute bottom-4 right-4 bg-secondary-container px-3 py-2 text-[9px] font-extrabold uppercase tracking-wide text-on-surface">Imagem ilustrativa</figcaption>
+          </figure>
+        </div>
       </section>
 
-      {/* Filter + Products */}
-      <section className="py-16 md:py-24 px-4 md:px-margin-desktop bg-surface">
-        <div className="max-w-[1280px] mx-auto">
-          <div className="mb-10">
-            <CategoryFilterBar
-              categories={categories}
-              active={activeCategory}
-              onSelect={setActiveCategory}
-            />
-          </div>
+      <MenuHighlights showAll />
 
-          {showCombos && (
-            <ProductGrid
-              id="combos"
-              title="Combos Imperdíveis"
-              subtitle="A experiência completa com o melhor custo-benefício"
-              products={combos}
-              note="*Preços válidos somente para consumo no estabelecimento."
-            />
-          )}
-
-          {showMaisPedidos && (
-            <ProductGrid
-              title="Mais Pedidos"
-              subtitle="Os favoritos da galera"
-              products={maisPedidos}
-              note="*Preços válidos somente para consumo no estabelecimento."
-            />
-          )}
-
-          {!showCombos && !showMaisPedidos && (
-            <p className="font-body-md text-on-surface-variant text-center py-12">
-              Nenhum produto nesta categoria ainda.
-            </p>
-          )}
-        </div>
+      <section className="bg-background px-4 py-10 md:px-margin-desktop md:py-14">
+        <UnavailableNotice
+          className="mx-auto max-w-[1280px] border-2 border-on-surface bg-surface shadow-[4px_4px_0_#251913]"
+          title="Produtos e preços não disponíveis"
+          description="Esta área será atualizada quando o cardápio oficial for aprovado."
+        />
       </section>
     </>
   )

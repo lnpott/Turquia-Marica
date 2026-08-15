@@ -1,10 +1,9 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import Home from './pages/Home'
 import Menu from './pages/Menu'
 import Location from './pages/Location'
 
-// Placeholder para rotas desconhecidas.
 function PagePlaceholder() {
   return (
     <section
@@ -12,9 +11,8 @@ function PagePlaceholder() {
       style={{ minHeight: '60vh' }}
     >
       <h1 className="font-headline-lg text-headline-lg text-primary">Turquia Lanches</h1>
-      <p className="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
-        Esta página será implementada nos próximos lotes.
-      </p>
+      <p className="font-body-lg text-body-lg text-on-surface-variant max-w-lg">A página que você procurou não existe.</p>
+      <Link to="/" className="inline-flex min-h-11 items-center rounded-lg bg-primary px-6 py-3 font-label-bold text-on-primary hover:bg-primary-hover">Voltar ao início</Link>
     </section>
   )
 }
@@ -24,15 +22,15 @@ function PagePlaceholder() {
 function App() {
   return (
     <BrowserRouter>
-        <Routes>
+      <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/cardapio" element={<Menu />} />
             <Route path="/localizacao" element={<Location />} />
             <Route path="*" element={<PagePlaceholder />} />
           </Route>
-        </Routes>
-      </BrowserRouter>
+      </Routes>
+    </BrowserRouter>
   )
 }
 

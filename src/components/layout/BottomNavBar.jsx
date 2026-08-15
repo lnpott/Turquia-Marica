@@ -1,39 +1,45 @@
+import { Home, MapPin, ShoppingBag, Utensils } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
-import { IFOOD_URL } from '../../data/contact'
+import { BUSINESS_INFO } from '../../data/contact'
 
 const ITEMS = [
-  { label: 'Home', icon: 'home', to: '/' },
-  { label: 'Cardápio', icon: 'restaurant_menu', to: '/#cardapio' },
-  { label: 'Pedir', icon: 'delivery_dining', external: true },
-  { label: 'Contato', icon: 'location_on', to: '/localizacao' },
+  { label: 'Início', Icon: Home, to: '/' },
+  { label: 'Cardápio', Icon: Utensils, to: '/cardapio' },
+  { label: 'Pedir', Icon: ShoppingBag, unavailable: true },
+  { label: 'Localização', Icon: MapPin, to: '/localizacao' },
 ]
+
+const baseClasses = 'flex min-h-[52px] min-w-[64px] flex-col items-center justify-center rounded-xl px-2 py-1 text-[10px] font-bold transition-all duration-tactile ease-tactile active:scale-95'
 
 function BottomNavBar() {
   return (
     <nav
       aria-label="Navegação inferior"
-      className="fixed bottom-0 left-0 right-0 min-h-[72px] flex justify-around items-center py-2 px-2 mobile-nav-safe md:hidden bg-surface shadow-[0_-4px_10px_rgba(37,25,19,0.12)] border-t border-outline-variant z-50"
+      className="mobile-nav-safe fixed inset-x-0 bottom-0 z-50 flex min-h-[72px] items-center justify-around border-t-2 border-on-surface bg-background px-2 py-2 shadow-[0_-8px_24px_rgba(37,25,19,0.14)] md:hidden"
     >
-      {ITEMS.map((item) => item.external ? (
-        <a key={item.label} href={IFOOD_URL} target="_blank" rel="noreferrer" className="flex min-w-[64px] min-h-[52px] flex-col items-center justify-center rounded-xl px-2 py-1 text-primary transition-colors active:scale-95">
-          <span className="material-symbols-outlined">{item.icon}</span>
-          <span className="font-label-bold text-[10px]">{item.label}</span>
-        </a>
-      ) : <NavLink
-          key={item.label}
-          to={item.to}
-          end={item.to === '/'}
-          className={({ isActive }) =>
-            `flex min-w-[64px] min-h-[52px] flex-col items-center justify-center rounded-xl px-2 py-1 transition-colors duration-150 active:scale-95 ${
-              isActive ? 'bg-primary-fixed text-on-primary-fixed-variant' : 'text-on-surface-variant'
-            }`
-          }
-        >
-          <span className="relative">
-            <span className="material-symbols-outlined">{item.icon}</span>
+      {ITEMS.map(({ label, Icon, to, unavailable }) =>
+        unavailable ? (
+          <span
+            key={label}
+            aria-disabled="true"
+            title={BUSINESS_INFO.channels.ifood.note}
+            className={`${baseClasses} cursor-not-allowed text-outline`}
+          >
+            <Icon className="h-5 w-5" aria-hidden="true" />
+            {label}
           </span>
-          <span className="font-label-bold text-[10px]">{item.label}</span>
-        </NavLink>)}
+        ) : (
+          <NavLink
+            key={label}
+            to={to}
+            end={to === '/'}
+            className={({ isActive }) => `${baseClasses} ${isActive ? 'bg-primary-fixed text-on-primary-fixed-variant' : 'text-on-surface-variant'}`}
+          >
+            <Icon className="h-5 w-5" aria-hidden="true" />
+            {label}
+          </NavLink>
+        ),
+      )}
     </nav>
   )
 }

@@ -1,97 +1,42 @@
-import { WhatsAppIcon } from '../ui/Button'
-import { WHATSAPP_URL, INSTAGRAM_URL, MAPS_LINK } from '../../data/contact'
-
-// Card de contato — extraído 1:1 do HTML de produção
-// (turquia_lanches_localiza_o_production/code.html). Nenhum dado foi inventado:
-// endereço "Parque Nanci, Maricá/RJ", horário "Em breve: horários oficiais"
-// (o HTML NÃO define horários), WhatsApp com o link real de produção
-// (shre.ink/turquiamarica — sem wa.me novo; integração real fica no Lote 10) e
-// Instagram oficial @turquialanches. URLs em src/data/contact.js (fonte única).
+import { Clock3, Instagram, MapPin, Phone } from 'lucide-react'
+import { BUSINESS_INFO } from '../../data/contact'
+import ChannelAction from '../ui/ChannelAction'
 
 function ContactCard() {
   return (
-    <div
-      id="contato"
-      className="bg-surface-container-lowest rounded-xl p-4 sm:p-6 md:p-8 shadow-[0_4px_15px_rgba(37,25,19,0.12)] flex flex-col gap-stack-loose hover:shadow-[0_8px_25px_rgba(37,25,19,0.15)] transition-shadow duration-300"
-    >
-      {/* Endereço */}
-      <div>
-        <h2 className="font-headline-lg text-headline-lg text-primary mb-stack-tight flex items-center gap-unit">
-          <span className="material-symbols-outlined" aria-hidden="true">
-            location_on
-          </span>
-          Endereço
-        </h2>
-        <p className="font-body-lg text-body-lg text-on-surface">Parque Nanci, Maricá/RJ</p>
-        <a
-          className="mt-4 text-primary font-label-bold text-label-bold flex items-center gap-unit hover:underline"
-          href={MAPS_LINK}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Como Chegar
-          <span className="material-symbols-outlined text-[16px]" aria-hidden="true">
-            arrow_forward
-          </span>
-        </a>
+    <section id="contato" className="scroll-mt-24 border-2 border-on-surface bg-white p-5 shadow-[5px_5px_0_#251913] sm:p-7" aria-labelledby="contact-title">
+      <div className="grid gap-7 md:grid-cols-[0.75fr_1.25fr] md:items-end">
+        <div>
+          <span className="section-eyebrow">Antes de sair</span>
+          <h2 id="contact-title" className="display-balance font-headline-lg text-[34px] font-extrabold leading-none tracking-[-0.035em] text-on-surface md:text-[46px]">O essencial para chegar.</h2>
+        </div>
+        <p className="max-w-2xl text-sm leading-relaxed text-on-surface-variant md:text-base">
+          A ficha no Google Maps e o perfil informado estão disponíveis. Horários, telefone e endereço completo continuam omitidos até confirmação.
+        </p>
       </div>
 
-      <hr className="border-outline-variant" />
-
-      {/* Horário de funcionamento */}
-      <div>
-        <h2 className="font-headline-md text-headline-md text-on-surface mb-stack-tight flex items-center gap-unit">
-          <span className="material-symbols-outlined" aria-hidden="true">
-            schedule
-          </span>
-          Horário de Funcionamento
-        </h2>
-        <p className="font-body-lg text-body-lg text-on-surface-variant">Em breve: horários oficiais</p>
-      </div>
-
-      <hr className="border-outline-variant" />
-
-      {/* Telefone / WhatsApp */}
-      <div>
-        <h2 className="font-headline-md text-headline-md text-on-surface mb-stack-tight flex items-center gap-unit">
-          <span className="material-symbols-outlined" aria-hidden="true">
-            call
-          </span>
-          Telefone / WhatsApp
-        </h2>
-        <p className="font-body-lg text-body-lg text-on-surface-variant mb-4">Disponível via WhatsApp</p>
-        <a
-          className="bg-[#25D366] text-white font-label-bold text-label-bold px-4 py-2 rounded shadow-sm hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 w-full md:w-auto"
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <WhatsAppIcon className="w-5 h-5 fill-current" />
-          Chamar no WhatsApp
-        </a>
-      </div>
-
-      <hr className="border-outline-variant" />
-
-      {/* Instagram */}
-      <div>
-        <h2 className="font-headline-md text-headline-md text-on-surface mb-stack-tight flex items-center gap-unit">
-          <span className="material-symbols-outlined" aria-hidden="true">
-            photo_camera
-          </span>
-          Siga-nos no Instagram
-        </h2>
-        <p className="font-body-lg text-body-lg text-on-surface-variant mb-4">@turquialanches</p>
-        <a
-          className="bg-primary text-white font-label-bold text-label-bold px-4 py-2 rounded shadow-sm hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 w-full md:w-auto"
-          href={INSTAGRAM_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Ver Instagram
-        </a>
-      </div>
-    </div>
+      <dl className="mt-8 grid border-t-2 border-on-surface md:grid-cols-3">
+        <div className="border-b border-outline-variant py-5 md:border-b-0 md:border-r md:pr-5">
+          <dt className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.14em] text-primary"><MapPin className="h-4 w-4" aria-hidden="true" />Região informada</dt>
+          <dd className="mt-2 font-headline-md text-xl font-extrabold text-on-surface">{BUSINESS_INFO.location.value}</dd>
+          <dd className="mt-1 text-sm text-on-surface-variant">Confira a ficha no Google Maps antes de iniciar a rota.</dd>
+        </div>
+        <div className="border-b border-outline-variant py-5 md:border-b-0 md:border-r md:px-5">
+          <dt className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.14em] text-primary"><Clock3 className="h-4 w-4" aria-hidden="true" />Horários</dt>
+          <dd className="mt-2 font-bold text-on-surface">Ainda não confirmados</dd>
+          <dd className="mt-1 flex items-center gap-2 text-sm text-on-surface-variant"><Phone className="h-4 w-4" aria-hidden="true" />Telefone também pendente</dd>
+        </div>
+        <div className="py-5 md:pl-5">
+          <dt className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.14em] text-primary"><Instagram className="h-4 w-4" aria-hidden="true" />Canal informado</dt>
+          <dd className="mt-2 font-bold text-on-surface">{BUSINESS_INFO.channels.instagram.handle}</dd>
+          <dd>
+            <ChannelAction channel={BUSINESS_INFO.channels.instagram} className="mt-3 inline-flex min-h-11 items-center gap-2 border-2 border-on-surface bg-background px-4 py-2 text-sm font-extrabold text-on-surface transition-all duration-tactile ease-tactile hover:-translate-y-1 hover:bg-secondary-container active:scale-95">
+              Abrir Instagram
+            </ChannelAction>
+          </dd>
+        </div>
+      </dl>
+    </section>
   )
 }
 
