@@ -963,6 +963,150 @@ Criar `src/data/reviews.js` com comentários explícitos de demonstração e obj
 - Evidências visuais registradas em `documentacao/qa/etapa-27/`.
 - Nenhuma pendência P0/P1 conhecida; integrações e dados oficiais continuam externos ao escopo.
 
+## Etapa 28 — Modo de demonstração visual isolado (dados fictícios de produto)
+
+- **Estado:** CONCLUÍDO E AUDITADO — rota isolada por flag, gate de produção e evidências nos cinco viewports entregues em 15/08/2026.
+- **Origem:** responde à dúvida não bloqueante da Etapa 27.0 sobre uma demonstração preenchida do Cardápio.
+- **Prioridade:** não sequencial; não bloqueia nem é bloqueada pelos demais lotes.
+- **Restrição central:** o Cardápio público continua usando `products = []`; nenhum produto, preço ou descrição fictícia pode alcançar produção, SEO ou deploy público.
+
+### 28.0 — Auditoria e correções do plano recebido
+
+O texto recebido estava duplicado integralmente. Esta seção é a única versão normativa e incorpora as correções abaixo antes de qualquer código:
+
+1. **Contrato compatível:** o modelo vigente usa `categoryId`, `description`, `image`, `imageAlt` e `imageStatus`; a fixture deve preservar exatamente o contrato consumido por `ProductCard`, `MenuSection` e `CategoryFilterBar`, acrescentando apenas `isPlaceholder: true` e `isMock: true`. Não criar os campos incompatíveis `category`, `shortDescription`, `longDescription` ou `imageUrl` sem um adapter explicitamente aprovado.
+2. **Isolamento verificável:** `import()` dinâmico, sozinho, não prova ausência do chunk no build. O build de produção deve ser inspecionado e falhar se `dist/` contiver nomes, textos ou identificadores da fixture.
+3. **Rota e build:** uma rota condicionada por flag ainda pode gerar um chunk, conforme a forma do código e a otimização do bundler. A solução escolhida deverá demonstrar, por teste do artefato, que o build padrão não contém a rota nem os dados.
+4. **Imagens confiáveis:** serviços externos de placeholder prejudicam reprodutibilidade, privacidade e execução offline. A recomendação é versionar imagens neutras em `src/assets/demo/`, sem marcas ou pessoas identificáveis.
+5. **Sem Storybook novo:** o projeto não usa Storybook e a Etapa 27 proíbe dependências desnecessárias. A alternativa conservadora deve usar Playwright/teste de componente já existente, não instalar Storybook apenas para este lote.
+6. **Flag não é controle de segurança:** `VITE_*` é informação pública no cliente. Ela serve para seleção de build local, enquanto a barreira real é ausência do código/dados no artefato padrão, ausência de rota no deploy e validação automática.
+7. **Preço:** fixtures devem usar número em centavos ou o mesmo tipo já aceito pelo componente; a decisão será confirmada pela leitura do contrato atual antes da implementação.
+8. **Ambiguidade de “sem alterar componentes”:** correções de robustez descobertas pelo QA podem ser propostas, mas não entram silenciosamente nesta etapa. Qualquer mudança visual em componente aprovado exige diagnóstico, captura antes/depois e autorização separada.
+
+### Objetivo
+
+Permitir a validação visual completa da hierarquia, espaçamento, proporção, responsividade, filtros e cards do Cardápio com 4–6 produtos fictícios por categoria, sem modificar `src/data/menu.js` ou o comportamento público honesto aprovado na Etapa 27.
+
+### Regra herdada
+
+Produtos fictícios nunca entram em `src/data/menu.js`, build público padrão, metadados, sitemap, dados estruturados, Open Graph ou deploy canônico. A Etapa 28 amplia a fixture de teste para uma superfície de QA, sem reabrir decisões comerciais ou de design.
+
+### Contrato de dados proposto
+
+Criar `src/data/menu.demo.js`, com aviso explícito e objetos compatíveis com o contrato real:
+
+```js
+// DADOS FICTÍCIOS — uso exclusivo em QA visual isolado.
+// Nunca importar no fluxo público ou tratar como informação comercial real.
+{
+  id,
+  name,
+  description,
+  price,
+  categoryId,
+  image,
+  imageAlt,
+  imageStatus,
+  isPlaceholder: true,
+  isMock: true,
+}
+```
+
+- Categorias: Lanches (`lanches`), Combos (`combos`), Bebidas (`bebidas`) e Sobremesas (`sobremesas`), usando os IDs já definidos em `src/data/menu.js`.
+- Cobertura: nomes curtos/longos, descrições de 1 e 3+ linhas, diferentes formatos de preço e itens com/sem imagem.
+- Imagens: preferencialmente assets neutros locais em `src/assets/demo/`, na proporção real dos cards.
+- Itens sem imagem devem continuar declarando `image: null`, `imageAlt: null` e um `imageStatus` coerente; se o card atual não oferecer fallback robusto, o achado será documentado e qualquer correção visual dependerá da autorização separada prevista na auditoria.
+- Todos os nomes e textos devem conter linguagem inequívoca de demonstração, sem referência a produtos reais da casa.
+
+### Isolamento obrigatório
+
+- Fonte fictícia fisicamente separada de `src/data/menu.js`.
+- Ativação em um único ponto por `VITE_VISUAL_QA_DEMO=true`, desligada por padrão e documentada em `.env.example`.
+- Nenhum link no Header, Footer ou BottomNavBar.
+- Se existir rota, usar namespace `__visual-qa`, aviso fixo “DADOS FICTÍCIOS — QA VISUAL” e metatags `noindex, nofollow`.
+- A rota não pode constar de sitemap, robots como caminho público recomendado, prerender, redirects ou links internos.
+- O build padrão deve ser auditado com busca em `dist/` por `menu.demo`, `isMock`, IDs e textos sentinela.
+- CI deve construir explicitamente sem a flag e reprovar qualquer vazamento.
+- `ProductCard`, `MenuSection` e `CategoryFilterBar` recebem dados pelo contrato existente e não conhecem a origem fictícia.
+
+### Decisão técnica confirmada — rota isolada por flag
+
+**Escolha:** rota local isolada por `VITE_VISUAL_QA_DEMO=true`, preservando import dinâmico, gate de build, auditoria automática de `dist/`, `noindex, nofollow`, namespace reservado e ausência de links internos.
+
+**Critério decisivo:** as duas alternativas atendem ao isolamento exigido; a rota foi escolhida por oferecer o melhor ambiente para refinamento visual em tempo real. Hot reload, DevTools, cursor, hover, scroll, timing e contexto integral com Header/BottomNavBar permitem avaliar os problemas de motion e interação que motivaram os Lotes 18–26 sem reduzir a análise a frames estáticos.
+
+**Papel complementar do Playwright:** depois da estabilização manual, a suíte existente acessará a mesma rota com a flag ativa para produzir evidências e regressões nos viewports 320, 390, 768, 1280 e 1440 px. Playwright permanece como mecanismo formal de fechamento, não como ferramenta principal de refinamento.
+
+**Condição de reabertura:** se o gate não conseguir comprovar a ausência da rota, fixture, chunk ou sentinelas no build padrão, a implementação será revertida e o harness Playwright passará a ser o único consumidor, privilegiando isolamento estrutural.
+
+**Autorização registrada:** o responsável autorizou a implementação integral em 15/08/2026. A entrega preserva o Cardápio público e mantém a rota disponível somente em builds locais iniciados com a flag.
+
+### Escopo técnico previsto
+
+| Arquivo | Ação planejada |
+|---|---|
+| `src/data/menu.demo.js` | Novo — fixture fictícia isolada e marcada. |
+| `src/assets/demo/` | Novo, se aprovado — imagens neutras locais e removíveis. |
+| `tests/` ou rota `__visual-qa` | Consumidor exclusivo, conforme decisão do responsável. |
+| `.env.example` | Documentar flag opcional, padrão desligado. |
+| scripts/CI | Validar ausência de fixture e rota no build padrão. |
+| `documentacao/qa/etapa-28/` | Evidências nos cinco viewports de aceite. |
+| `BEST_PLAN.MD` | Atualizar estado, decisão, evidências e veredito no mesmo lote. |
+
+`src/data/menu.js`, sitemap, metadados públicos e componentes visuais aprovados não devem mudar neste lote.
+
+### Riscos e mitigação
+
+- **Vazamento para produção:** flag desligada, consumidor exclusivo, auditoria de `dist/` e CI bloqueante.
+- **Indisponibilidade de imagens:** assets locais neutros, em vez de dependência externa.
+- **Confusão com dados reais:** prefixos `demo`/`Mock`, sentinelas, `isPlaceholder`/`isMock` e aviso visual persistente.
+- **Indexação:** ausência no artefato padrão; `noindex` é somente defesa adicional, nunca a barreira principal.
+- **Desvio de design:** componentes permanecem iguais; achados viram proposta separada, acompanhada de evidência.
+- **Bundle acidental:** inspeção do conteúdo e do manifesto gerado, não apenas revisão do código-fonte.
+
+### Estratégia de rollback
+
+1. Remover o consumidor de QA e a configuração da flag.
+2. Apagar `src/data/menu.demo.js` e `src/assets/demo/`, se existir.
+3. Reverter o commit isolado da Etapa 28.
+4. Executar build padrão e confirmar ausência de `menu.demo`, `isMock`, rota e textos sentinela em `dist/`.
+5. Confirmar que a Home pública voltou — ou permaneceu — com o único `UnavailableNotice` e `products = []`.
+
+### Critérios de aceite
+
+- `src/data/menu.js` permanece inalterado e vazio no fluxo real.
+- Build padrão não contém fixture, rota, chunk, sentinela nem produto fictício.
+- Nenhum dado fictício aparece em sitemap, SEO, Open Graph ou deploy público.
+- Componentes visuais aprovados permanecem estruturalmente idênticos.
+- QA visual cobre 320, 390, 768, 1280 e 1440 px, quatro categorias e casos-limite.
+- Filtros, navegação por teclado, foco, contraste, overflow e reduced motion são testados.
+- `npm run check`, E2E aplicável, build sem flag, auditoria de `dist/`, `npm audit --audit-level=high` e `git diff --check` passam.
+- Hash MD5 do logo permanece idêntico.
+- Evidências e veredito são registrados antes de marcar a etapa como concluída.
+
+### Sequenciamento
+
+1. Obter autorização explícita do responsável para implementar a rota isolada já selecionada.
+2. Confirmar o contrato real de produto e registrar hashes/baseline.
+3. Criar fixture e assets demonstrativos isolados.
+4. Implementar o único consumidor autorizado e o gate de build.
+5. Validar os cinco viewports e acessibilidade.
+6. Auditar `dist/`, sitemap, metadados, links internos e deploy padrão.
+7. Registrar evidências em `documentacao/qa/etapa-28/`.
+8. Atualizar estado e changelog; manter tudo em commit isolado e reversível.
+
+### 28.1 — Resultado implementado e auditoria
+
+- A rota `/__visual-qa` só é declarada quando `VITE_VISUAL_QA_DEMO=true`; o módulo da página e a fixture entram por importação dinâmica.
+- `npm run build` sempre executa `verify:no-demo` e falha se o artefato público contiver a rota, fixture, IDs, sentinelas ou `isMock`. Mesmo uma flag configurada por engano no deploy torna o build inválido.
+- `src/data/menu.demo.js` contém 16 itens fictícios — quatro por categoria — com nomes, descrições e preços inequivocamente demonstrativos.
+- Assets de QA são locais, removíveis e separados em `src/assets/demo/`; o caso sem fotografia usa um placeholder neutro explícito.
+- A página mantém Header, Footer e BottomNavBar reais, mostra aviso persistente e aplica `noindex, nofollow, noarchive, nosnippet` durante sua montagem.
+- `ProductCard`, `MenuSection`, `CategoryFilterBar`, `src/data/menu.js`, sitemap e metadados públicos permaneceram inalterados.
+- Playwright validou filtro, teclado/contexto de navegação, axe, console, 16 cards e capturas completas em 320, 390, 768, 1280 e 1440 px.
+- Evidências: `documentacao/qa/etapa-28/`; relatório: `documentacao/qa/AUDITORIA_ETAPA_28.md`.
+- **Veredito:** APROVADO — nenhum artefato demonstrativo foi encontrado no build público padrão.
+
 ## Pendências externas — Lote 14
 
 Cada dependência deve ser desbloqueada e implementada de forma independente; a ausência de um item não bloqueia os demais. Nenhum dado ou asset pode ser inventado.
@@ -976,6 +1120,9 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 
 ## Changelog
 
+- **15/08/2026:** Etapa 28 implementada e auditada: rota local por flag com 16 produtos fictícios, assets isolados, aviso/noindex, gate bloqueante de `dist/`, suíte Playwright em cinco viewports e evidências permanentes. Cardápio real, componentes visuais e sitemap permaneceram inalterados; veredito **APROVADO**.
+- **15/08/2026:** decisão técnica da Etapa 28 confirmada: rota isolada por flag será o ambiente de refinamento visual ao vivo; Playwright será usado ao final para evidência/regressão nos cinco viewports. Implementação continua não iniciada até autorização explícita; falha do gate de `dist/` reabre a decisão em favor do harness exclusivo.
+- **15/08/2026:** Etapa 28 registrada e auditada como plano: modo de demonstração visual isolado para produtos fictícios, com recomendação de harness Playwright, contrato alinhado a `categoryId`, assets locais, gate de artefato e rollback. Estado: **AGUARDANDO DECISÃO**; nenhuma alteração de aplicação realizada.
 - **15/08/2026:** Etapa 27 implementada e auditada: SPA por âncoras, estado ativo por área visível, Cardápio orientado a produto com estado público honesto, Localização integrada com CTA único, Reviews fictícios sinalizados, redirects/SEO consolidados e reviews de código sobre redirect prematuro/remount por hash corrigidos.
 - **15/08/2026:** Etapa 27 auditada e definida apenas em documentação: duplicação do texto-fonte removida; baseline remota `9cc0f1b` verificada; redirects 301/308, seleção de seção ativa, placeholders de Reviews e conflito de produtos fictícios corrigidos; implementação permanece não iniciada até confirmação da 27.1.
 - **15/08/2026:** plano operacional reestruturado sobre `origin/main`/`98d570e`: baseline inicial classificada como histórica, estados dos Lotes 18–26 consolidados, bloco duplicado 18–25 arquivado, Lote 26 movido para `EM AUDITORIA`, checklist reconciliado e pendências externas separadas em 14A–14F. Nenhuma alteração de aplicação foi realizada.
