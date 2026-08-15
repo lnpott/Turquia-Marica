@@ -52,7 +52,7 @@ function HeroSection() {
                 alt="Porção de batatas fritas em material promocional ilustrativo"
                 width="410"
                 height="512"
-                className="aspect-[4/5] h-auto w-full object-cover"
+                className="hero-kenburns aspect-[4/5] h-auto w-full object-cover"
                 fetchPriority="high"
               />
             </picture>

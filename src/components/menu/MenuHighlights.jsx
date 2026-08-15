@@ -1,13 +1,14 @@
 import { ArrowRight, Construction, CupSoda } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { categories, menuHighlights } from '../../data/menu'
+import Reveal from '../motion/Reveal'
 
 function MenuHighlights({ compact = false, showAll = false }) {
   const items = showAll ? categories : menuHighlights
   const sectionId = showAll ? 'categorias' : 'cardapio'
 
   return (
-    <section id={sectionId} className="scroll-mt-24 bg-background px-4 py-16 md:px-margin-desktop md:py-24">
+    <Reveal as="section" stagger id={sectionId} className="scroll-mt-24 bg-background px-4 py-16 md:px-margin-desktop md:py-24">
       <div className="mx-auto max-w-[1280px]">
         <div className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div>
@@ -75,7 +76,7 @@ function MenuHighlights({ compact = false, showAll = false }) {
           ))}
         </ul>
       </div>
-    </section>
+    </Reveal>
   )
 }
 

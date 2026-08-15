@@ -1,0 +1,43 @@
+{
+  "generatedAt": "2026-08-14",
+  "baseline": {
+    "source": "BEST_PLAN.MD",
+    "performance": 96,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "lcpSeconds": 2.5,
+    "cls": 0,
+    "tbtMs": 30,
+    "route": "cardapio"
+  },
+  "routes": {
+    "home": {
+      "performance": 97,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcp": 2305.7934999999998,
+      "cls": 0,
+      "tbt": 94
+    },
+    "cardapio": {
+      "performance": 97,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcp": 2336.2649250000004,
+      "cls": 0,
+      "tbt": 52.5
+    },
+    "localizacao": {
+      "performance": 96,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcp": 1905.6742500000003,
+      "cls": 0,
+      "tbt": 184
+    }
+  }
+}

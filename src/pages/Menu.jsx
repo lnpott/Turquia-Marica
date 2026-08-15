@@ -6,6 +6,7 @@ import imgMenuHeroFallback from '../assets/images/menu/menu-hero.jpg'
 import { BUSINESS_INFO } from '../data/contact'
 import ChannelAction from '../components/ui/ChannelAction'
 import Button from '../components/ui/Button'
+import Reveal from '../components/motion/Reveal'
 
 function Menu() {
   return (
@@ -55,13 +56,13 @@ function Menu() {
 
       <MenuHighlights showAll />
 
-      <section className="bg-background px-4 py-10 md:px-margin-desktop md:py-14">
+      <Reveal as="section" className="bg-background px-4 py-10 md:px-margin-desktop md:py-14">
         <UnavailableNotice
           className="mx-auto max-w-[1280px] border-2 border-on-surface bg-surface shadow-[4px_4px_0_#251913]"
           title="Produtos e preços não disponíveis"
           description="Esta área será atualizada quando o cardápio oficial for aprovado."
         />
-      </section>
+      </Reveal>
     </>
   )
 }

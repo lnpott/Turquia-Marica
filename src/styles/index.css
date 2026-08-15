@@ -129,6 +129,33 @@ img {
   transform: scaleX(1);
 }
 
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition-property: opacity, transform;
+}
+
+.scroll-reveal.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-reveal-stagger li {
+  opacity: 0;
+  transform: translateY(18px);
+  transition-property: opacity, transform;
+}
+
+.scroll-reveal-stagger.is-revealed li {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-reveal-stagger.is-revealed li:nth-child(2) { transition-delay: 70ms; }
+.scroll-reveal-stagger.is-revealed li:nth-child(3) { transition-delay: 140ms; }
+.scroll-reveal-stagger.is-revealed li:nth-child(4) { transition-delay: 210ms; }
+.scroll-reveal-stagger.is-revealed li:nth-child(5) { transition-delay: 280ms; }
+
 .mobile-bottom-safe {
   padding-bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom));
 }
@@ -182,7 +209,7 @@ img {
    ativo do crossfade. Escala mínima (1.02) — dá vida à fotografia sem cortar
    ou reenquadrar o elemento principal (Lote 11.1). */
 .hero-kenburns {
-  animation: hero-kenburns 9000ms ease-in-out both;
+  animation: hero-kenburns 12000ms ease-in-out infinite alternate;
 }
 
 /* LOTE 14.2 — Quebra de linhas editorial do texto de apoio do hero
@@ -252,12 +279,20 @@ img {
   }
 
   .cta-fill-primary,
-  .nav-link::after {
+  .nav-link::after,
+  .scroll-reveal,
+  .scroll-reveal-stagger li {
     transition-duration: 0s !important;
     transition-property: none !important;
   }
 
   .cta-fill-primary:hover {
     background-position: 0 0;
+  }
+
+  .scroll-reveal,
+  .scroll-reveal-stagger li {
+    opacity: 1;
+    transform: none;
   }
 }

@@ -68,9 +68,22 @@ test('reduced motion desativa as animações principais', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
   await expect(page.locator('.page-transition')).toHaveCSS('animation-name', 'none')
+  await expect(page.locator('.hero-kenburns')).toHaveCSS('animation-name', 'none')
   await expect(page.locator('.cta-fill-primary').first()).toHaveCSS('transition-duration', '0s')
   const underlineDuration = await page.locator('.nav-link').first().evaluate((link) => getComputedStyle(link, '::after').transitionDuration)
   expect(underlineDuration, 'sublinhado não deve animar com movimento reduzido').toBe('0s')
+  await expect(page.locator('.scroll-reveal').first()).toHaveCSS('opacity', '1')
+})
+
+test('seções e cards entram ao alcançar a área visível', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  const menu = page.locator('#cardapio')
+  await expect(menu).toHaveAttribute('data-revealed', 'false')
+  await menu.scrollIntoViewIfNeeded()
+  await expect(menu).toHaveAttribute('data-revealed', 'true')
+  await expect(menu).toHaveCSS('opacity', '1')
+  await expect(menu.getByRole('listitem').first()).toHaveCSS('opacity', '1')
 })
 
 test('navegação destaca a rota atual no desktop e no menu mobile', async ({ page }) => {
