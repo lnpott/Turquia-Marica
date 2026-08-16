@@ -1121,6 +1121,7 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 
 ## Changelog
 
+- **16/08/2026:** Etapa 35 concluída — `api/reviews.js` migrado para a Places API (New) (`POST /v1/places/{placeId}` com `X-Goog-Api-Key`/`X-Goog-FieldMask`), mapeamento de campos atualizado, erro tratado via campo `error` do body e logs temporários da Etapa 34 removidos. `npm run check`, `npm audit` e `git diff --check` aprovados; hashes do logo conferidos. Commit direto em `main`.
 - **16/08/2026:** Etapa 34 concluída (diagnóstico): `api/reviews.js` já lia as variáveis sem prefixo `VITE_` e com a guarda correta; o 503 é ambiental (variáveis ausentes no runtime do deployment no Vercel). Adicionados logs de diagnóstico server-side antes da guarda; ação pendente no Vercel Dashboard (nomes/escopo/redeploy). `npm run check`, `npm audit` e `git diff --check` aprovados; hashes do logo conferidos.
 - **16/08/2026:** Etapa 33 concluída — MapEmbed com endereço real derivado de `contact.js` (sem elementos abstratos), fundo `snack-pattern` nas avaliações (CSS puro, sem asset externo) e `formatAuthorName` no ReviewCard; testes atualizados; `npm run check`, `npm audit` e `git diff --check` aprovados e hashes do logo conferidos. Commit direto em `main`.
 - **16/08/2026:** Etapa 32 concluída — endereço oficial (R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160) aplicado em `contact.js` e no link de rota do Maps; 3 avaliações reais adicionadas como fallback estático do `ReviewsSection` quando a API falha; testes unitário e E2E atualizados; `npm run check`, `npm audit` e `git diff --check` aprovados. Commit direto em `main`.
@@ -1646,3 +1647,15 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
 - **Correção aplicada:** logs de diagnóstico server-side (presença booleana, sem valores) adicionados **antes** da guarda, para registrar também no caminho do 503: `globalThis.console.log('[reviews] GOOGLE_PLACE_ID presente:', !!process.env.GOOGLE_PLACE_ID)` e equivalente para `GOOGLE_MAPS_API_KEY`. Ação necessária no Vercel Dashboard (fora deste ambiente): conferir os nomes exatos das variáveis (sem `VITE_`), incluir o escopo **Preview** (e Production) e **redeployar**; em seguida ler os logs para confirmar a presença. Logs podem ser removidos após a causa ser resolvida.
 - **Validação:** npm run check, npm run lint, npm run test, npm audit e git diff --check aprovados; hashes do logo conferidos.
 - **Arquivos modificados:** `api/reviews.js`, `BEST_PLAN.MD` (`.env.example` já estava correto — sem alteração).
+
+---
+
+## Etapa 35 — Migração para Places API (New)
+
+- **Estado:** CONCLUÍDO
+- **Data:** 16/08/2026
+- **Executado por:** DeepSeek (psique v4) via Freebuff MCP, direto em main.
+- **Problema:** endpoint legado (`place/details/json`) retornava `REQUEST_DENIED`; somente a Places API (New) está habilitada no projeto Google Cloud.
+- **Correção:** `api/reviews.js` migrado para `POST https://places.googleapis.com/v1/places/{placeId}` com `X-Goog-Api-Key` e `X-Goog-FieldMask` (`reviews,displayName,rating,userRatingCount,googleMapsUri`) e body `{ languageCode: 'pt-BR' }`; mapeamento da resposta atualizado (`displayName.text`, `userRatingCount`, `googleMapsUri`, `authorAttribution.displayName/uri/photoUri`, `text.text`, `relativePublishTimeDescription`, `publishTime`); erro tratado via campo `error` no body (HTTP 200 com erro) e checagem `data.status === 'OK'` removida; logs de diagnóstico temporários da Etapa 34 removidos. Nota: `placeId` entra na URL no runtime (a constante de URL é a base; o template com `{placeId}` é montado dentro do handler, onde a variável existe).
+- **Validação:** npm run check, npm run lint, npm run test, npm audit e git diff --check aprovados; hashes do logo conferidos.
+- **Arquivos modificados:** `api/reviews.js`, `BEST_PLAN.MD`.
