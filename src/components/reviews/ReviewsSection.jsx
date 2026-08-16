@@ -82,7 +82,7 @@ function ReviewsSection() {
 
   if (state.status === 'loading') {
     return (
-      <section id="reviews" className="scroll-mt-24 bg-[#faf7f2]/[0.70] px-5 py-20 md:px-margin-desktop md:py-28" aria-busy="true">
+      <section id="reviews" className="scroll-mt-24 bg-[#faf7f2]/[0.45] px-5 py-20 md:px-margin-desktop md:py-28" aria-busy="true">
         <p className="mx-auto max-w-[1280px] text-sm text-on-surface/60">Carregando avaliações do Google…</p>
       </section>
     )
@@ -90,7 +90,7 @@ function ReviewsSection() {
 
   if (state.status !== 'ready') {
     return (
-      <section id="reviews" className="scroll-mt-24 bg-[#faf7f2]/[0.70] px-5 py-20 md:px-margin-desktop md:py-28">
+      <section id="reviews" className="scroll-mt-24 bg-[#faf7f2]/[0.45] px-5 py-20 md:px-margin-desktop md:py-28">
         <div className="mx-auto max-w-[1280px] border-y border-[#e8e0d4] py-8">
           <p className="text-sm text-on-surface/65">Avaliações do Google temporariamente indisponíveis.</p>
         </div>
@@ -99,7 +99,7 @@ function ReviewsSection() {
   }
 
   return (
-    <section id="reviews" className="scroll-mt-24 bg-[#faf7f2]/[0.70] py-20 md:py-28">
+    <section id="reviews" className="scroll-mt-24 bg-[#faf7f2]/[0.45] py-20 md:py-28">
       <div className="mx-auto max-w-[1280px] px-5 md:px-margin-desktop">
         <SectionHeading eyebrow="Avaliações no Google" title={<>Quem visita <span className="text-primary">conta a experiência.</span></>} description={state.place?.totalRatings ? `${state.place.totalRatings} avaliações publicadas no Google.` : 'Avaliações reais publicadas no Google.'} />
       </div>
