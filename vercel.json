@@ -4,6 +4,9 @@
     { "source": "/cardapio", "destination": "/#cardapio", "permanent": true },
     { "source": "/localizacao", "destination": "/#localizacao", "permanent": true }
   ],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",
