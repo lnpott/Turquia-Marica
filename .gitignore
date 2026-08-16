@@ -17,6 +17,9 @@ npm-debug.log*
 .env.*
 !.env.example
 
+# MCP local config (contém tokens/credenciais)
+mcp_servers.json
+
 # Editor / OS
 .vscode/*
 !.vscode/extensions.json
