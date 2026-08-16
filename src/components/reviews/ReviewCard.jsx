@@ -2,6 +2,16 @@ import { ExternalLink, Instagram, MapPin, Star } from 'lucide-react'
 
 const SOURCE_LABELS = { google: 'Google', instagram: 'Instagram' }
 
+// Exibe apenas o primeiro nome e a inicial do último sobrenome (ex.: "Ana G.").
+function formatAuthorName(fullName) {
+  if (!fullName) return ''
+  const parts = fullName.trim().split(/\s+/)
+  if (parts.length === 1) return parts[0]
+  const first = parts[0]
+  const lastInitial = parts[parts.length - 1][0].toUpperCase()
+  return `${first} ${lastInitial}.`
+}
+
 function ReviewCard({ review }) {
   const SourceIcon = review.source === 'instagram' ? Instagram : MapPin
   return (
@@ -24,7 +34,7 @@ function ReviewCard({ review }) {
         <blockquote className="mt-6 text-xl font-medium leading-snug tracking-[-0.02em] text-on-surface">“{review.text}”</blockquote>
       </div>
       <footer className="mt-8 border-t border-[#e8e0d4] pt-5">
-        <p className="font-bold text-on-surface">{review.authorName}</p>
+        <p className="font-bold text-on-surface">{formatAuthorName(review.authorName)}</p>
         <p className="mt-1 text-xs text-on-surface/55">Avaliação no Google{review.dateLabel ? ` · ${review.dateLabel}` : ''}</p>
       </footer>
     </article>

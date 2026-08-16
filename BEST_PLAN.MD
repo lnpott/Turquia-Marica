@@ -1121,6 +1121,7 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 
 ## Changelog
 
+- **16/08/2026:** Etapa 33 concluída — MapEmbed com endereço real derivado de `contact.js` (sem elementos abstratos), fundo `snack-pattern` nas avaliações (CSS puro, sem asset externo) e `formatAuthorName` no ReviewCard; testes atualizados; `npm run check`, `npm audit` e `git diff --check` aprovados e hashes do logo conferidos. Commit direto em `main`.
 - **16/08/2026:** Etapa 32 concluída — endereço oficial (R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160) aplicado em `contact.js` e no link de rota do Maps; 3 avaliações reais adicionadas como fallback estático do `ReviewsSection` quando a API falha; testes unitário e E2E atualizados; `npm run check`, `npm audit` e `git diff --check` aprovados. Commit direto em `main`.
 - **16/08/2026:** Etapa 31 executada e concluída com autorização do responsável: Grupo A e B removidos (`Badge.jsx`, `format.js`, `reviews.js`, `assets/demo/`, `map.png`, dirs vazios, `image.png/`, `sabor_e_tradi_o/`); Grupo C arquivado em `documentacao/historico/migracao-stitch/`; correção do gate `audit:demo-leak` para Windows (`fileURLToPath`); `npm run check` e `git diff --check` aprovados.
 - **15/08/2026:** Etapa 29 implementada — reveal overlay no `ProductCard`, 9 fotos conectadas à demo e nota de rodapé adicionada. Veredito: **APROVADO**; build público sem vazamento e Cardápio real preservado.
@@ -1613,3 +1614,22 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
 - O chip do Hero (“Parque Nanci · Maricá”) e o texto do `AboutSection` são copy de marca/região, não o campo de endereço — mantidos intocados.
 - `ReviewCard` exibe apenas a nota global (`rating`); os campos `badges`, `ratings.comida/servico/ambiente`, `orderType`, `preco` e `pratos` foram preservados nos dados de fallback e `dateLabel` derivado de `date` (formato `dd/mm/aaaa`), sem alteração do layout do card.
 - `isPlaceholder: false` — avaliações reais fornecidas pelo responsável, sem conteúdo fictício.
+
+---
+
+## Etapa 33 — Mapa com endereço real, fundo de avaliações e nome abreviado
+
+- **Estado:** CONCLUÍDO
+- **Data:** 16/08/2026
+- **Executado por:** DeepSeek (psique v4) via Freebuff MCP, direto em main.
+- **Tarefa 1:** MapEmbed passou a exibir endereço real (R. Canarinhos, 663 — Parque Nanci · Maricá - RJ, 24914-160) em vez de elementos decorativos abstratos; estrutura de clique, hover e acessibilidade preservados.
+- **Tarefa 2:** seção de avaliações recebeu padrão de fundo sutil com motivos de lanche via CSS puro (classe `snack-pattern` em `index.css`); fundo plano substituído sem afetar legibilidade dos cards.
+- **Tarefa 3:** ReviewCard passa a exibir primeiro nome + inicial do último sobrenome (ex: "Ana G."), via `formatAuthorName` local; nome completo removido do display.
+- **Validação:** npm run check, npm run build, npm run lint, npm run test, npm audit e git diff --check aprovados; hashes do logo conferidos.
+- **Arquivos modificados:** `src/components/location/MapEmbed.jsx`, `src/components/reviews/ReviewsSection.jsx`, `src/components/reviews/ReviewCard.jsx`, `src/styles/index.css`, `tests/business-info.test.jsx`, `BEST_PLAN.MD`.
+
+### Observações de execução
+
+- O endereço exibido no MapEmbed é derivado de `BUSINESS_INFO.location.value` (quebrado em rua / bairro·região / CEP), sem hardcode separado.
+- A asserção unitária do antigo label “Prévia de localização” foi substituída pelas linhas reais do endereço; as asserções de autores passaram a esperar o formato abreviado ("Ana G.", "Andre L.", "Fernanda L."; API: "Cliente R.").
+- `snack-pattern` confirmado no CSS compilado (`dist/`) e sem referência a asset externo no CSS.
