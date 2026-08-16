@@ -1278,3 +1278,52 @@ Preço fictício uniforme: `R$ 29,90` — realista para teste de layout; exibido
 ### Rollback
 
 Reverter somente os commits desta etapa. Não afeta o Cardápio público, o Hero, nenhuma rota real nem o histórico da Etapa 28.
+
+---
+
+## Publicação dos nove produtos no cardápio — 16/08/2026
+
+### Decisão vigente
+
+- **Estado:** CONCLUÍDO — implementação integrada em `main`; registro documental em revisão.
+- **Decisão do responsável:** os nove produtos anteriormente restritos à superfície de QA devem aparecer no cardápio público.
+- **Efeito sobre o histórico:** esta decisão substitui, para estes nove itens, as regras anteriores que mantinham `src/data/menu.js` com `products = []` e limitavam as fotografias a `menu.demo.js`.
+- **Rota de QA:** `/visual-qa-demo` e seu isolamento por `VITE_VISUAL_QA_DEMO=true` permanecem existentes; a publicação no cardápio principal não depende dessa flag.
+
+### Produtos publicados
+
+| Produto | Categoria | Imagem | Preço registrado |
+|---|---|---|---|
+| Baca Burger | Lanches | `Baca.jpg` | R$ 29,90 |
+| Passa Burger | Lanches | `PASSA.jpg` | R$ 29,90 |
+| Pizza Teste | Lanches | `PIZZA.jpg` | R$ 29,90 |
+| X-Turquia | Lanches | `X.jpg` | R$ 29,90 |
+| Tábua Mista | Combos | `tabua.jpg` | R$ 29,90 |
+| Tábua Cama | Combos | `TABUCAMA.jpg` | R$ 29,90 |
+| Porção de Batata | Combos | `BATATA.jpg` | R$ 29,90 |
+| Rings de Cebola | Combos | `cebola.jpg` | R$ 29,90 |
+| Pi Doce | Sobremesas | `PIDOCE.jpg` | R$ 29,90 |
+
+### Implementação registrada
+
+- `src/data/menu.js` importa as nove fotografias e exporta nove objetos em `products` para consumo padrão de `MenuSection`.
+- `MenuSection` continua usando filtros derivados das categorias presentes e agora apresenta texto compatível com um catálogo preenchido.
+- O teste de dados comerciais passou a exigir nove produtos, a barra de categorias e nove elementos `article` renderizados.
+- `scripts/audit-demo-leak.mjs` usa a sentinela atual `visual-qa-demo`, substituindo o identificador legado `__visual-qa`.
+
+### Validação
+
+- [x] `npm run lint`
+- [x] `npm run test` — 6/6 testes aprovados
+- [x] `npm run build` — build público aprovado pelo `audit:demo-leak`
+- [x] `npm run check`
+- [x] `git diff --check`
+- [x] Inspeção em navegador — nove cards encontrados no `#cardapio`
+- [x] Captura local gerada em `/tmp/cardapio-publico-9-produtos.png`
+
+### Git e revisão
+
+- Correção da sentinela: commit `d8a450b` (`fix(audit): update route sentinel from __visual-qa to visual-qa-demo`), integrado pelo PR #15.
+- Publicação dos produtos: commit `47ac0d9` (`feat(menu): publish nine products`).
+- Publicação integrada pelo PR #16, `feat(menu): publish nine products in the public menu`.
+- Registro operacional em revisão no PR #17, `docs(plan): record public product rollout`, aberto contra `main`.
