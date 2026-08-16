@@ -17,7 +17,7 @@ function MenuSection({ items = products }) {
         <SectionHeading
           eyebrow="Cardápio"
           title={<>O produto é o <span className="text-primary">protagonista.</span></>}
-          description="Produtos, ingredientes e preços serão publicados somente após aprovação oficial. A estrutura já está pronta para recebê-los."
+          description="Conheça os produtos do nosso cardápio e encontre o seu favorito."
         />
 
         {items.length === 0 ? (
