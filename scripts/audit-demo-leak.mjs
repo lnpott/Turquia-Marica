@@ -8,7 +8,7 @@ const isProduction = process.env.VERCEL_ENV === 'production'
 const leakIsExpected = demoFlagActive && !isProduction
 
 const root = new URL('../dist/', import.meta.url)
-const sentinels = ['__visual-qa', 'menu.demo', 'demo-lanche-curto', 'DADOS FICTÍCIOS — QA VISUAL', 'isMock', 'shortDescription', 'longDescription', 'imageUrl']
+const sentinels = ['visual-qa-demo', 'menu.demo', 'demo-lanche-curto', 'DADOS FICTÍCIOS — QA VISUAL', 'isMock', 'shortDescription', 'longDescription', 'imageUrl']
 const textExtensions = new Set(['.html', '.js', '.css', '.json', '.xml', '.txt', '.map'])
 const leaks = []
 
