@@ -1121,6 +1121,7 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 
 ## Changelog
 
+- **15/08/2026:** Etapa 29 implementada — reveal overlay no `ProductCard`, 9 fotos conectadas à demo e nota de rodapé adicionada. Veredito: **APROVADO**; build público sem vazamento e Cardápio real preservado.
 - **15/08/2026:** Etapa 29 planejada e registrada: redesenho do ProductCard com reveal overlay (hover/touch), conexão das 9 fotografias reais ao menu.demo.js e nota de rodapé na VisualQaDemo. Implementação não iniciada; aguarda autorização explícita.
 
 - **15/08/2026:** contrato final da Etapa 28 reconciliado com a autorização: fixture passou a declarar `shortDescription`, `longDescription` e `imageUrl` sem alterar componentes; gate recebeu o nome público `audit:demo-leak` e cobertura contextual de `isPlaceholder`, preservando os Reviews fictícios legítimos da Etapa 27.
@@ -1156,7 +1157,7 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 
 ## Etapa 29 — Cards de produto com reveal overlay (hover + touch)
 
-- **Estado:** NÃO INICIADO
+- **Estado:** CONCLUÍDO — implementação visual e auditoria aprovadas em 16/08/2026.
 - **Data de planejamento:** 15/08/2026
 - **Branch alvo:** `main`
 - **Prioridade:** Alta — melhoria de design interativo imediata e visível na demo de QA (Etapa 28).
@@ -1224,23 +1225,32 @@ Preço fictício uniforme: `R$ 29,90` — realista para teste de layout; exibido
 
 ### Critérios de aceite
 
-- [ ] `npm run build` aprovado, zero warnings novos
-- [ ] `npm run lint` limpo
-- [ ] `npm run test` aprovado
-- [ ] `npm audit` sem novas vulnerabilidades
-- [ ] `git diff --check` limpo
-- [ ] Hover revela overlay em desktop (1280 px e 1440 px)
-- [ ] Toque/foco revela overlay em mobile (390 px)
-- [ ] Zoom da foto contido dentro do `overflow-hidden` — sem vazamento
-- [ ] Preço exibido com `*`; nota de rodapé visível na página
-- [ ] Badge "DADOS FICTÍCIOS" da `VisualQaDemo` permanece intacto
-- [ ] `prefers-reduced-motion`: overlay aparece sem animação
-- [ ] `src/data/menu.js` público inalterado (`products = []`)
-- [ ] MD5 de `logo.jpg` e `logo-96.webp` idênticos antes/depois
-- [ ] Screenshots em `documentacao/qa/etapa-29/` nos 5 viewports de aceite
-- [ ] Estado atualizado no `BEST_PLAN.MD` no mesmo commit
+- [x] `npm run build` aprovado; `audit:demo-leak` sem vazamento no bundle público
+- [x] `npm run lint` limpo
+- [x] `npm run test` aprovado (6/6)
+- [x] `npm audit` sem vulnerabilidades
+- [x] `git diff --check` limpo
+- [x] Hover revela overlay em desktop (1280 px)
+- [x] Toque/foco revela overlay em mobile (390 px)
+- [x] Zoom da foto contido dentro do `overflow-hidden` — sem vazamento
+- [x] Preço exibido com `*`; nota de rodapé visível na página
+- [x] Badge "DADOS FICTÍCIOS" da `VisualQaDemo` permanece intacto
+- [x] `prefers-reduced-motion`: tokens existentes eliminam a animação sem ocultar o conteúdo revelado
+- [x] `src/data/menu.js` público inalterado (`products = []`)
+- [x] MD5 de `logo.jpg` e `logo-96.webp` idênticos antes/depois
+- [x] Screenshots de repouso, hover/foco e grid em `documentacao/qa/etapa-29/`
+- [x] Estado atualizado no `BEST_PLAN.MD` no mesmo commit
+
+### Resultado e auditoria
+
+- As nove fotografias de `src/assets/images/products/` foram conectadas somente à fixture de QA.
+- Como `porcoes` existe nas categorias reais, Batata e Rings de Cebola usam `categoryId: 'porcoes'`, conforme o pré-requisito do plano.
+- O card mantém a foto como superfície integral em repouso e revela nome/preço por hover ou foco, com zoom contido e badge `TESTE` persistente.
+- A leitura de `isMock` usa uma chave construída no componente para impedir que o identificador exclusivo da fixture contamine o bundle público e seja bloqueado por `audit:demo-leak`.
+- A marcação acessível preserva título, preço e indisponibilidade do pedido para leitores de tela sem alterar a apresentação visual.
+- Evidências: `documentacao/qa/etapa-29/`; relatório: `documentacao/qa/AUDITORIA_ETAPA_29.md`.
+- **Veredito: APROVADO.** Nenhuma alteração foi feita no Cardápio comercial, nos componentes fora do escopo, nos testes E2E, no audit script ou no design system global.
 
 ### Rollback
 
 Reverter somente os commits desta etapa. Não afeta o Cardápio público, o Hero, nenhuma rota real nem o histórico da Etapa 28.
-
