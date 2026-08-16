@@ -55,25 +55,22 @@ html {
   background-size: 7px 7px;
 }
 
-/* Fundo global: imagem única fornecida pelo usuário (logo da marca + comidas),
-   aplicada como cover, sem repetição (não é tile perfeito). Cascade fallback:
-   navegadores que suportam webp usam a segunda declaração de background-image;
-   os demais ficam com o PNG. fixed no desktop, scroll no mobile (abaixo de
-   768px) para não travar/piscar ao rolar. */
-.brand-pattern {
+/* Etapa 37: padrão de fundo ancorado na viewport via body::before.
+   cover calculado contra a viewport (não contra a altura do wrapper).
+   PNG declarado primeiro como fallback; WebP sobrescreve em navegadores suportados. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
   background-color: #faf7f2;
   background-image: url('/images/patterns/food-pattern-bg.png');
   background-image: url('/images/patterns/food-pattern-bg.webp');
   background-size: cover;
-  background-position: center top;
   background-repeat: no-repeat;
-  background-attachment: fixed;
-}
-
-@media (max-width: 768px) {
-  .brand-pattern {
-    background-attachment: scroll;
-  }
+  background-position: center;
+  opacity: 0.18;
+  pointer-events: none;
 }
 
 html {

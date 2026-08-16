@@ -25,7 +25,7 @@ function MainLayout() {
   }, [location.pathname, location.hash])
 
   return (
-    <div className="brand-pattern flex min-h-screen flex-col text-on-background">
+    <div className="flex min-h-screen flex-col text-on-background">
       <a href="#conteudo-principal" className="skip-link">Pular para o conteúdo</a>
       <Header />
       <main id="conteudo-principal" className="mobile-bottom-safe flex-1 md:pb-0" tabIndex="-1">
