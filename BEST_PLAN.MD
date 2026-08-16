@@ -1266,6 +1266,14 @@ Preço fictício uniforme: `R$ 29,90` — realista para teste de layout; exibido
 - **Restrição:** a estrutura visual aprovada do card permanece idêntica; somente a origem assíncrona de `src` pode mudar.
 - **Fechamento:** a Etapa 29 permanece `EM EXECUÇÃO` até validação local completa e confirmação visual do Preview com `VITE_VISUAL_QA_DEMO=true`.
 
+### Adendo final — gate contextual do Preview visual
+
+- **Estado:** EM EXECUÇÃO.
+- **Causa raiz final:** `audit-demo-leak.mjs` bloqueia qualquer artefato demonstrativo em `dist/`, inclusive quando `VITE_VISUAL_QA_DEMO=true` habilita intencionalmente a demo em um ambiente Preview.
+- **Correção definida:** permitir artefatos somente quando a flag estiver ativa e `VERCEL_ENV` não for `production`; todos os demais contextos mantêm falha bloqueante.
+- **Critério permanente do gate:** Preview com flag deve passar; produção com flag deve falhar; build padrão sem flag deve passar sem artefatos demonstrativos.
+- **Fechamento:** a Etapa 29 permanece `EM EXECUÇÃO` até confirmação visual real de `/visual-qa-demo` no deploy Preview.
+
 ### Rollback
 
 Reverter somente os commits desta etapa. Não afeta o Cardápio público, o Hero, nenhuma rota real nem o histórico da Etapa 28.
