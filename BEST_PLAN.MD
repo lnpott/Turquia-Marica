@@ -1121,6 +1121,7 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 
 ## Changelog
 
+- **16/08/2026:** Etapa 31 executada e concluída com autorização do responsável: Grupo A e B removidos (`Badge.jsx`, `format.js`, `reviews.js`, `assets/demo/`, `map.png`, dirs vazios, `image.png/`, `sabor_e_tradi_o/`); Grupo C arquivado em `documentacao/historico/migracao-stitch/`; correção do gate `audit:demo-leak` para Windows (`fileURLToPath`); `npm run check` e `git diff --check` aprovados.
 - **15/08/2026:** Etapa 29 implementada — reveal overlay no `ProductCard`, 9 fotos conectadas à demo e nota de rodapé adicionada. Veredito: **APROVADO**; build público sem vazamento e Cardápio real preservado.
 - **15/08/2026:** Etapa 29 planejada e registrada: redesenho do ProductCard com reveal overlay (hover/touch), conexão das 9 fotografias reais ao menu.demo.js e nota de rodapé na VisualQaDemo. Implementação não iniciada; aguarda autorização explícita.
 
@@ -1530,3 +1531,65 @@ Arquitetura:
 - `GET /api/reviews` respondeu HTTP 503 com `{"error":"REVIEWS_NOT_CONFIGURED"}`. Portanto, nesse deployment, `GOOGLE_PLACE_ID` e/ou `GOOGLE_MAPS_API_KEY` não chegaram ao runtime da função; a chamada não alcançou a Places API e ainda não há erro do Google (`REQUEST_DENIED`, quota ou restrição) para diagnosticar.
 - O fallback funcionou como projetado: resposta JSON controlada, cache configurado e Home preservada sem avaliações fictícias.
 - Manter a Etapa 30 em `EM AUDITORIA` até um novo deployment receber as duas variáveis server-side e permitir a primeira chamada real à Places API; a ausência dos assets dos Itens 1/3/5 permanece uma pendência externa explicitamente aceita e não invalida os itens funcionais entregues.
+
+---
+
+## Etapa 31 — Higienização do repositório (inventário e execução)
+
+- **Estado:** CONCLUÍDA — autorizada pelo responsável em 16/08/2026; exclusões e arquivamento executados e validados no mesmo dia.
+- **Data da análise:** 16/08/2026.
+- **Método:** auditoria de referências (`rg`/grep) em `src/`, `tests/`, `api/`, `public/`, raiz e `documentacao/`; comparação de duplicatas (`diff`); leitura cruzada com `BEST_PLAN.MD`, `README.md` e o histórico arquitetural.
+- **Regra:** nada é apagado sem autorização explícita do responsável. Após a autorização, a exclusão vira lote próprio em branch, com `git rm`, e é validada com `npm run check`, `npm run build` e `git diff --check`.
+
+### Grupo A — Código e assets órfãos (remoção segura; nenhum consumidor encontrado)
+
+| Item | Evidência |
+|---|---|
+| `src/components/ui/Badge.jsx` | Nenhum import em `src/`, `tests/` ou `api/`; usa tokens visuais antigos (`bg-secondary-container`) que não existem mais no design atual. |
+| `src/utils/format.js` (`formatBRL`) | Nenhum import no código atual; referenciado apenas em `documentacao/ROADMAP_MIGRACAO.md` (histórico). |
+| `src/data/reviews.js` | Fixture fictícia da Etapa 27 substituída pela API `/api/reviews` (Etapa 30, Item 4); nenhum import remanescente. |
+| `src/assets/demo/` (5 arquivos) | Assets genéricos da Etapa 28 substituídos pelas 9 fotos reais via `import.meta.glob` em `menu.demo.js` (Etapa 29); nenhum import de `assets/demo`. |
+| `src/assets/images/location/map.png` | Nunca importado; `MapEmbed.jsx` usa ícones `lucide` + link do Google Maps. |
+| Diretórios vazios: `src/components/cart/`, `src/components/checkout/`, `src/components/confirmation/`, `src/contexts/`, `src/assets/images/home/` | Sem arquivos; não rastreados pelo Git (resíduo do working tree). |
+
+### Grupo B — Artefatos acidentais ou duplicados
+
+| Item | Evidência |
+|---|---|
+| `image.png/` (contém `screen.png`) | Diretório com nome de arquivo de imagem — artefato acidental de exportação; nada referencia; `documentacao/design/screen.png` é o canônico. |
+| `sabor_e_tradi_o/` (`DESIGN.md`) | Duplicata byte-idêntica de `documentacao/design/DESIGN.md` (`diff` sem diferenças); nome de diretório truncado; referenciado só em histórico. |
+
+### Grupo C — Toolchain legado de migração (Stitch → HTML exportado → GitHub/Vercel)
+
+Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` ou no `README.md` os utiliza:
+
+| Item | Natureza |
+|---|---|
+| `guia_de_exporta_o_simples_github_vercel.md` | Guia de exportação do Stitch. |
+| `mapeamento_de_nomes_para_exporta_o.md` | Mapeamento de nomes das telas exportadas. |
+| `mapeamento_de_rotas_de_produ_o.json` | Mapeamento de rotas/placeholders de produção. |
+| `organizar_projeto.bat` / `organizar_projeto_v3.bat` | Scripts batch que reorganizavam os exports. |
+| `readme.md_guia_de_deploy.md` | Guia de deploy que os `.bat` renomeavam para `README.md`. |
+| `documentacao/instrucoes_organizacao.md` | Instrução que manda copiar `organizar_projeto.bat`. |
+
+> **Opção de preservação:** se o responsável preferir manter a memória da migração, mover o Grupo C (e, opcionalmente, `documentacao/ROADMAP_MIGRACAO.md`) para `documentacao/historico/` em vez de deletar.
+
+### Grupo D — Preservar (evidência/histórico documentado; não recomendo remover)
+
+| Item | Motivo |
+|---|---|
+| `documentacao/qa/` (auditorias MD + PNGs) | Evidências permanentes citadas em `BEST_PLAN.MD` e nas auditorias; o plano manda preservar o histórico. |
+| `documentacao/historico/` | Declarado no `README.md` como “fora do runtime”; referência deliberada (e ignorado pelo ESLint). |
+| `Roadmap_Mestre_CLAUDE.md` | `BEST_PLAN.MD` o define como “histórico arquitetural”. |
+| `documentacao/design/` | Design system canônico (a duplicata `sabor_e_tradi_o/` sai no Grupo B). |
+| Etapa 28/29 ativa: `src/pages/demo/`, `src/data/menu.demo.js`, `tests/e2e-demo/`, `playwright.demo.config.js`, `scripts/audit-demo-leak.mjs`, `src/assets/images/products/` | Rota/QA/demo em execução (Etapa 29 `EM EXECUÇÃO`). |
+| `README.md`, `.env.example`, `.github/workflows/quality.yml`, `vercel.json`, `vite.config.js`, `vitest.config.js`, `playwright.config.js`, `postcss.config.js`, `tailwind.config.cjs`, `eslint.config.js`, `index.html`, `.nvmrc`, `.gitignore` | Ativos na arquitetura atual. |
+
+### Resultado da execução — 16/08/2026
+
+- **Grupo A (excluído):** `src/components/ui/Badge.jsx`, `src/utils/format.js`, `src/data/reviews.js`, `src/assets/demo/` (5 arquivos), `src/assets/images/location/map.png` e diretórios vazios `src/components/cart/`, `src/components/checkout/`, `src/components/confirmation/`, `src/contexts/`, `src/assets/images/home/`.
+- **Grupo B (excluído):** `image.png/` e `sabor_e_tradi_o/` (duplicata de `documentacao/design/DESIGN.md`).
+- **Grupo C (arquivado):** 7 arquivos movidos para `documentacao/historico/migracao-stitch/` (guia de exportação, mapeamentos, `.bat`, guia de deploy e instruções de organização), preservando a memória da migração fora do runtime.
+- **Grupo D (preservado):** inalterado.
+- **Correção incidental:** `scripts/audit-demo-leak.mjs` usava `URL.pathname`, que gera caminho com drive duplicado (`C:\C:\...`) no Windows e quebrava `npm run check` em máquinas locais; trocado por `fileURLToPath`, com o gate validado.
+- **Validação:** `npm run check` aprovado (lint, 6 testes unitários, build Vite e `audit:demo-leak` sem vazamento) e `git diff --check` limpo. `README.md` não precisou de ajuste (referências intactas).
