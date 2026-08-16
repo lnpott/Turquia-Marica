@@ -19,6 +19,12 @@ export default async function handler(request, response) {
   const placeId = process.env.GOOGLE_PLACE_ID
   const apiKey = process.env.GOOGLE_MAPS_API_KEY
 
+  // Diagnóstico temporário (server-side only): confirma se as variáveis chegam
+  // ao runtime da função sem expor valores. Fica ANTES da guarda para também
+  // registrar no caminho do 503. Remover após a causa ser resolvida.
+  globalThis.console.log('[reviews] GOOGLE_PLACE_ID presente:', !!process.env.GOOGLE_PLACE_ID)
+  globalThis.console.log('[reviews] GOOGLE_MAPS_API_KEY presente:', !!process.env.GOOGLE_MAPS_API_KEY)
+
   if (!placeId || !apiKey) {
     return sendJson(response, 503, { error: 'REVIEWS_NOT_CONFIGURED' })
   }

@@ -1121,6 +1121,7 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 
 ## Changelog
 
+- **16/08/2026:** Etapa 34 concluída (diagnóstico): `api/reviews.js` já lia as variáveis sem prefixo `VITE_` e com a guarda correta; o 503 é ambiental (variáveis ausentes no runtime do deployment no Vercel). Adicionados logs de diagnóstico server-side antes da guarda; ação pendente no Vercel Dashboard (nomes/escopo/redeploy). `npm run check`, `npm audit` e `git diff --check` aprovados; hashes do logo conferidos.
 - **16/08/2026:** Etapa 33 concluída — MapEmbed com endereço real derivado de `contact.js` (sem elementos abstratos), fundo `snack-pattern` nas avaliações (CSS puro, sem asset externo) e `formatAuthorName` no ReviewCard; testes atualizados; `npm run check`, `npm audit` e `git diff --check` aprovados e hashes do logo conferidos. Commit direto em `main`.
 - **16/08/2026:** Etapa 32 concluída — endereço oficial (R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160) aplicado em `contact.js` e no link de rota do Maps; 3 avaliações reais adicionadas como fallback estático do `ReviewsSection` quando a API falha; testes unitário e E2E atualizados; `npm run check`, `npm audit` e `git diff --check` aprovados. Commit direto em `main`.
 - **16/08/2026:** Etapa 31 executada e concluída com autorização do responsável: Grupo A e B removidos (`Badge.jsx`, `format.js`, `reviews.js`, `assets/demo/`, `map.png`, dirs vazios, `image.png/`, `sabor_e_tradi_o/`); Grupo C arquivado em `documentacao/historico/migracao-stitch/`; correção do gate `audit:demo-leak` para Windows (`fileURLToPath`); `npm run check` e `git diff --check` aprovados.
@@ -1633,3 +1634,15 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
 - O endereço exibido no MapEmbed é derivado de `BUSINESS_INFO.location.value` (quebrado em rua / bairro·região / CEP), sem hardcode separado.
 - A asserção unitária do antigo label “Prévia de localização” foi substituída pelas linhas reais do endereço; as asserções de autores passaram a esperar o formato abreviado ("Ana G.", "Andre L.", "Fernanda L."; API: "Cliente R.").
 - `snack-pattern` confirmado no CSS compilado (`dist/`) e sem referência a asset externo no CSS.
+
+---
+
+## Etapa 34 — Correção do runtime de /api/reviews
+
+- **Estado:** CONCLUÍDO (diagnóstico e instrumentação; causa ambiental pendente de ação no Vercel Dashboard)
+- **Data:** 16/08/2026
+- **Executado por:** DeepSeek (psique v4) via Freebuff MCP, direto em main.
+- **Problema identificado:** o código de `api/reviews.js` **já estava correto** — lê `process.env.GOOGLE_PLACE_ID` e `process.env.GOOGLE_MAPS_API_KEY` sem prefixo `VITE_` (Cenário A descartado); a guarda já é exatamente `if (!placeId || !apiKey)` (Cenário B descartado); `.env.example` já documenta sem prefixo. O 503 `REVIEWS_NOT_CONFIGURED` indica que as variáveis **não estão presentes no runtime do deployment** — causa ambiental no Vercel, não de código. Evidências: o JSON 503/502 vem da própria função (o rewrite catch-all de `vercel.json` não intercepta `/api/reviews`); num preview anterior a função chegou ao Google (`REQUEST_DENIED`), ou seja, as variáveis estavam presentes naquele deployment e ausentes em outros — padrão típico de escopo (Preview vs Production) ou variável adicionada após o deploy.
+- **Correção aplicada:** logs de diagnóstico server-side (presença booleana, sem valores) adicionados **antes** da guarda, para registrar também no caminho do 503: `globalThis.console.log('[reviews] GOOGLE_PLACE_ID presente:', !!process.env.GOOGLE_PLACE_ID)` e equivalente para `GOOGLE_MAPS_API_KEY`. Ação necessária no Vercel Dashboard (fora deste ambiente): conferir os nomes exatos das variáveis (sem `VITE_`), incluir o escopo **Preview** (e Production) e **redeployar**; em seguida ler os logs para confirmar a presença. Logs podem ser removidos após a causa ser resolvida.
+- **Validação:** npm run check, npm run lint, npm run test, npm audit e git diff --check aprovados; hashes do logo conferidos.
+- **Arquivos modificados:** `api/reviews.js`, `BEST_PLAN.MD` (`.env.example` já estava correto — sem alteração).
