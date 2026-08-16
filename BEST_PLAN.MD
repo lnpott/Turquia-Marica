@@ -1286,6 +1286,9 @@ Reverter somente os commits desta etapa. Não afeta o Cardápio público, o Hero
 ### Decisão vigente
 
 - **Estado:** CONCLUÍDO — implementação e registro documental integrados em `main`.
+
+- **Estado:** CONCLUÍDO — implementação integrada em `main`; registro documental em revisão.
+
 - **Decisão do responsável:** os nove produtos anteriormente restritos à superfície de QA devem aparecer no cardápio público.
 - **Efeito sobre o histórico:** esta decisão substitui, para estes nove itens, as regras anteriores que mantinham `src/data/menu.js` com `products = []` e limitavam as fotografias a `menu.demo.js`.
 - **Rota de QA:** `/visual-qa-demo` e seu isolamento por `VITE_VISUAL_QA_DEMO=true` permanecem existentes; a publicação no cardápio principal não depende dessa flag.
