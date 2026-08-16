@@ -3,6 +3,10 @@ import { extname, join, relative } from 'node:path'
 import process from 'node:process'
 import { URL } from 'node:url'
 
+const demoFlagActive = process.env.VITE_VISUAL_QA_DEMO === 'true'
+const isProduction = process.env.VERCEL_ENV === 'production'
+const leakIsExpected = demoFlagActive && !isProduction
+
 const root = new URL('../dist/', import.meta.url)
 const sentinels = ['__visual-qa', 'menu.demo', 'demo-lanche-curto', 'DADOS FICTÍCIOS — QA VISUAL', 'isMock', 'shortDescription', 'longDescription', 'imageUrl']
 const textExtensions = new Set(['.html', '.js', '.css', '.json', '.xml', '.txt', '.map'])
@@ -27,6 +31,10 @@ async function scan(directory) {
 
 await scan(root.pathname)
 if (leaks.length) {
+  if (leakIsExpected) {
+    process.stdout.write(`Demo visual incluída intencionalmente neste ambiente com a flag ativa:\n${leaks.join('\n')}\n`)
+    process.exit(0)
+  }
   process.stderr.write(`Build público contém artefatos do modo visual de QA:\n${leaks.join('\n')}\n`)
   process.exit(1)
 }
