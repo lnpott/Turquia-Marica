@@ -1601,9 +1601,9 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
 
 - **Estado:** CONCLUÍDO
 - **Data:** 16/08/2026
-- **Executado por:** DeepSeek (psique v4) via Freebuff MCP, direto em main.
-- **Tarefa 1:** endereço atualizado para R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160; iframe do mapa e link de rota atualizados.
-- **Tarefa 2:** 3 avaliações reais inseridas como fallback estático (Ana Monica Gonçalves, Andre Bezerra de Lima, Fernanda Leão de Lima); notas distribuídas de forma realista.
+- **Executado por:** DeepSeek (psique v4) via Freebuff MCP, direto em `main`.
+- **Tarefa 1:** endereço atualizado para `R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160`; iframe do mapa e link de rota atualizados para o endereço oficial.
+- **Tarefa 2:** 3 avaliações reais inseridas como fallback estático em `ReviewsSection` (Ana Monica Gonçalves, Andre Bezerra de Lima, Fernanda Leão de Lima); notas distribuídas de forma realista (não todas no máximo).
 - **Validação:** npm run check, npm run build, npm run lint, npm run test, npm audit e git diff --check aprovados.
 - **Arquivos modificados:** `src/data/contact.js` (endereço oficial, status do local e URL do Maps), `src/components/reviews/ReviewsSection.jsx` (fallback estático `REVIEWS_FALLBACK` quando `/api/reviews` falha ou retorna erro), `tests/business-info.test.jsx` (teste de fallback atualizado para o novo contrato), `tests/e2e/site.spec.js` (asserções de endereço e URL do Maps atualizadas), `BEST_PLAN.MD`.
 
