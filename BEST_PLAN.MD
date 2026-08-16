@@ -1272,6 +1272,7 @@ Preço fictício uniforme: `R$ 29,90` — realista para teste de layout; exibido
 - **Causa raiz final:** `audit-demo-leak.mjs` bloqueia qualquer artefato demonstrativo em `dist/`, inclusive quando `VITE_VISUAL_QA_DEMO=true` habilita intencionalmente a demo em um ambiente Preview.
 - **Correção definida:** permitir artefatos somente quando a flag estiver ativa e `VERCEL_ENV` não for `production`; todos os demais contextos mantêm falha bloqueante.
 - **Critério permanente do gate:** Preview com flag deve passar; produção com flag deve falhar; build padrão sem flag deve passar sem artefatos demonstrativos.
+- **Resultado do Preview:** o gate contextual permitiu o deploy `8QCt3sWy5BWZLg2PrfyfNPNgcgha`, porém `/visual-qa-demo` ainda respondeu HTTP 404; o bloqueio remanescente está no fallback de roteamento do Vercel, não mais no audit script.
 - **Fechamento:** a Etapa 29 permanece `EM EXECUÇÃO` até confirmação visual real de `/visual-qa-demo` no deploy Preview.
 
 ### Rollback
