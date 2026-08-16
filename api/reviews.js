@@ -32,12 +32,28 @@ export default async function handler(request, response) {
 
   try {
     const googleResponse = await globalThis.fetch(url, { signal: globalThis.AbortSignal.timeout(8000) })
+    const data = await googleResponse.json()
+
     if (!googleResponse.ok) {
+      globalThis.console.error('[api/reviews] Places API HTTP error:', {
+        status: data.status ?? googleResponse.status,
+        error_message: data.error_message,
+      })
       return sendJson(response, 502, { error: 'GOOGLE_PLACES_HTTP_ERROR', status: googleResponse.status })
     }
 
-    const data = await googleResponse.json()
     if (data.status !== 'OK') {
+      if (data.status === 'REQUEST_DENIED') {
+        globalThis.console.error('[api/reviews] Places API REQUEST_DENIED:', {
+          status: data.status,
+          error_message: data.error_message,
+        })
+      } else {
+        globalThis.console.error('[api/reviews] Places API error:', {
+          status: data.status,
+          error_message: data.error_message,
+        })
+      }
       return sendJson(response, 502, {
         error: 'GOOGLE_PLACES_ERROR',
         status: data.status ?? 'UNKNOWN_ERROR',

@@ -1432,6 +1432,17 @@ Arquitetura:
 - A chave nunca foi validada em ambiente real até este momento — a primeira validação real acontece no primeiro deploy. Por isso o fallback abaixo não é opcional.
 - Fallback obrigatório: se a API retornar erro (`REQUEST_DENIED`, chave inválida, quota, Place ID incorreto etc.), a seção deve degradar graciosamente — ocultar a seção ou mostrar estado vazio honesto, nunca voltar a exibir avaliação fictícia como se fosse real.
 
+#### Adendo de diagnóstico — `REQUEST_DENIED`
+
+- **Estado do Item 4:** BLOQUEADO pela resposta da Google Places API.
+- O Preview mais recente passou a receber as variáveis server-side e `GET /api/reviews` alcançou o Google, mas respondeu HTTP 502 ao cliente com `{"error":"GOOGLE_PLACES_ERROR","status":"REQUEST_DENIED"}`.
+- As métricas do Google Cloud registraram a chamada, confirmando que o bloqueio anterior de variável ausente foi superado.
+- A resposta do Google contém um campo privado `error_message` com a causa específica, mas a função ainda não o registrava.
+- Instrumentação autorizada: registrar `status` e `error_message` somente via `console.error` no runtime server-side, mantendo a resposta HTTP pública atual sem `error_message`, chave ou detalhes internos do projeto GCP.
+- O Item 4 permanece bloqueado até que o log real identifique a configuração a ser corrigida no Google Cloud Console.
+- Instrumentação implantada no Preview `5932898480` (`https://turquia-marica-2ghgfuyps-lnpotts-projects.vercel.app`), que respondeu HTTP 502 com o corpo público inalterado `{"error":"GOOGLE_PLACES_ERROR","status":"REQUEST_DENIED"}`.
+- A leitura dos logs privados não pôde ser concluída neste ambiente: `vercel logs` solicitou autenticação e nenhuma credencial `VERCEL_TOKEN` está disponível. O `error_message` real permanece pendente de consulta no Vercel Dashboard; nenhum valor foi inferido ou copiado para resposta pública.
+
 ### Item 5 — Seção "Sobre a casa"
 
 - Fotos do local em transição (crossfade via CSS puro, `transition-opacity`, sem biblioteca nova).
