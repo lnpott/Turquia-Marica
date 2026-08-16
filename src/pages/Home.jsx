@@ -16,7 +16,7 @@ function Home() {
   return (
     <div id="topo">
       <HeroSection />
-      <Reveal as="section" aria-label="Informações rápidas" className="bg-[#faf7f2]/[0.40] px-5 py-10 md:px-margin-desktop">
+      <Reveal as="section" aria-label="Informações rápidas" className="bg-[#faf7f2]/[0.35] px-5 py-10 md:px-margin-desktop">
         <ul className="mx-auto grid max-w-[1280px] gap-8 border-y border-[#e8e0d4] py-8 md:grid-cols-3 md:gap-0">
           {FACTS.map(({ Icon, title, value }) => (
             <li key={title} className="flex items-start gap-4 md:border-l md:border-[#e8e0d4] md:px-7 md:first:border-l-0 md:first:pl-0">
