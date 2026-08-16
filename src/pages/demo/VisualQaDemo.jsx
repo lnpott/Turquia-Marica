@@ -26,6 +26,9 @@ function VisualQaDemo() {
       <aside className="sticky top-[72px] z-30 border-y border-amber-950/20 bg-amber-300 px-5 py-3 text-center text-xs font-extrabold uppercase tracking-[0.16em] text-amber-950" role="status">
         Dados fictícios — QA visual isolado — nenhum item ou preço é real
       </aside>
+      <p className="bg-[#faf7f2] px-5 pb-0 pt-6 text-center text-xs text-on-surface/50">
+        * Preço fictício para teste de layout. Não representa valor oficial.
+      </p>
       <section className="mx-auto max-w-[1280px] px-5 pb-4 pt-10 md:px-margin-desktop">
         <p className="max-w-3xl text-sm leading-relaxed text-on-surface/70">
           Superfície temporária habilitada somente por <code className="font-bold">VITE_VISUAL_QA_DEMO=true</code>. Use filtros, hover, teclado e rolagem para validar o comportamento no contexto completo da aplicação.
