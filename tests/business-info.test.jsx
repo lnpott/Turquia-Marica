@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import HeroSection from '../src/components/home/HeroSection'
@@ -95,11 +95,15 @@ describe('dados comerciais e demonstrativos', () => {
     vi.unstubAllGlobals()
   })
 
-  it('degrada avaliações indisponíveis sem conteúdo fictício', async () => {
+  it('usa o fallback estático de avaliações reais quando a API falha', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }))
     render(<ReviewsSection />)
-    await waitFor(() => expect(screen.getByText(/avaliações do google temporariamente indisponíveis/i)).toBeInTheDocument())
-    expect(screen.queryByText(/cliente demonstrativo/i)).not.toBeInTheDocument()
+    const list = await screen.findByRole('list', { name: 'Avaliações reais no Google' })
+    expect(within(list).getAllByRole('article')).toHaveLength(3)
+    expect(within(list).getByText('Ana Monica Gonçalves')).toBeInTheDocument()
+    expect(within(list).getByText('Andre Bezerra de Lima')).toBeInTheDocument()
+    expect(within(list).getByText('Fernanda Leão de Lima')).toBeInTheDocument()
+    expect(within(list).queryByText(/cliente demonstrativo/i)).not.toBeInTheDocument()
     vi.unstubAllGlobals()
   })
 })

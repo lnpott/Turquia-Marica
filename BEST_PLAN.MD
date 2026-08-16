@@ -1121,6 +1121,7 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 
 ## Changelog
 
+- **16/08/2026:** Etapa 32 concluída — endereço oficial (R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160) aplicado em `contact.js` e no link de rota do Maps; 3 avaliações reais adicionadas como fallback estático do `ReviewsSection` quando a API falha; testes unitário e E2E atualizados; `npm run check`, `npm audit` e `git diff --check` aprovados. Commit direto em `main`.
 - **16/08/2026:** Etapa 31 executada e concluída com autorização do responsável: Grupo A e B removidos (`Badge.jsx`, `format.js`, `reviews.js`, `assets/demo/`, `map.png`, dirs vazios, `image.png/`, `sabor_e_tradi_o/`); Grupo C arquivado em `documentacao/historico/migracao-stitch/`; correção do gate `audit:demo-leak` para Windows (`fileURLToPath`); `npm run check` e `git diff --check` aprovados.
 - **15/08/2026:** Etapa 29 implementada — reveal overlay no `ProductCard`, 9 fotos conectadas à demo e nota de rodapé adicionada. Veredito: **APROVADO**; build público sem vazamento e Cardápio real preservado.
 - **15/08/2026:** Etapa 29 planejada e registrada: redesenho do ProductCard com reveal overlay (hover/touch), conexão das 9 fotografias reais ao menu.demo.js e nota de rodapé na VisualQaDemo. Implementação não iniciada; aguarda autorização explícita.
@@ -1593,3 +1594,22 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
 - **Grupo D (preservado):** inalterado.
 - **Correção incidental:** `scripts/audit-demo-leak.mjs` usava `URL.pathname`, que gera caminho com drive duplicado (`C:\C:\...`) no Windows e quebrava `npm run check` em máquinas locais; trocado por `fileURLToPath`, com o gate validado.
 - **Validação:** `npm run check` aprovado (lint, 6 testes unitários, build Vite e `audit:demo-leak` sem vazamento) e `git diff --check` limpo. `README.md` não precisou de ajuste (referências intactas).
+
+---
+
+## Etapa 32 — Endereço oficial, mapa e avaliações reais
+
+- **Estado:** CONCLUÍDO
+- **Data:** 16/08/2026
+- **Executado por:** DeepSeek (psique v4) via Freebuff MCP, direto em main.
+- **Tarefa 1:** endereço atualizado para R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160; iframe do mapa e link de rota atualizados.
+- **Tarefa 2:** 3 avaliações reais inseridas como fallback estático (Ana Monica Gonçalves, Andre Bezerra de Lima, Fernanda Leão de Lima); notas distribuídas de forma realista.
+- **Validação:** npm run check, npm run build, npm run lint, npm run test, npm audit e git diff --check aprovados.
+- **Arquivos modificados:** `src/data/contact.js` (endereço oficial, status do local e URL do Maps), `src/components/reviews/ReviewsSection.jsx` (fallback estático `REVIEWS_FALLBACK` quando `/api/reviews` falha ou retorna erro), `tests/business-info.test.jsx` (teste de fallback atualizado para o novo contrato), `tests/e2e/site.spec.js` (asserções de endereço e URL do Maps atualizadas), `BEST_PLAN.MD`.
+
+### Observações de execução
+
+- `MapEmbed.jsx` não possui iframe — é um card estilizado com link de rota; o `href` vem de `BUSINESS_INFO.channels.maps.url` (atualizado em `contact.js`). A URL de embed (`https://maps.google.com/maps?q=...&output=embed`) fica registrada para uso futuro, sem alteração visual do componente.
+- O chip do Hero (“Parque Nanci · Maricá”) e o texto do `AboutSection` são copy de marca/região, não o campo de endereço — mantidos intocados.
+- `ReviewCard` exibe apenas a nota global (`rating`); os campos `badges`, `ratings.comida/servico/ambiente`, `orderType`, `preco` e `pratos` foram preservados nos dados de fallback e `dateLabel` derivado de `date` (formato `dd/mm/aaaa`), sem alteração do layout do card.
+- `isPlaceholder: false` — avaliações reais fornecidas pelo responsável, sem conteúdo fictício.
