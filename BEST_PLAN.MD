@@ -1285,6 +1285,7 @@ Reverter somente os commits desta etapa. Não afeta o Cardápio público, o Hero
 
 ### Decisão vigente
 
+- **Estado:** CONCLUÍDO — implementação e registro documental integrados em `main`.
 
 - **Estado:** CONCLUÍDO — implementação integrada em `main`; registro documental em revisão.
 
@@ -1389,3 +1390,132 @@ A Etapa 29 só poderá mudar de `EM EXECUÇÃO` para `CONCLUÍDO` após uma audi
 4. Classes e comportamento de reveal disponíveis no artefato implantado.
 5. Produção continuando a responder HTTP 404 para a mesma rota.
 6. Aprovação integral dos Passos 3, 4 e 5 da matriz de fechamento.
+
+---
+
+## Etapa 30 — Ajustes de Home: Hero, Localização, Avaliações reais e Sobre
+
+- **Estado:** EM AUDITORIA — itens 2–5 implementados localmente; validação real da Places API aguarda o deployment Preview.
+- **Origem:** lista de ajustes solicitada pelo responsável após a Etapa 29 (rota de demo) e a publicação pública dos produtos (PR #16/#17).
+- **Prioridade:** definida pelo responsável na ordem de execução abaixo.
+
+### Objetivo
+
+Cinco ajustes na Home: (1) foto de fundo do Hero — **PENDENTE**, sem asset ainda; (2) botão "Como chegar" rolando até a seção Localização; (3) redesenho da seção Localização (mapa menor à direita, fotos de referência no lugar do mapa atual); (4) avaliações reais do Google Maps via Google Places API; (5) seção "Sobre a casa" com fotos em transição + WhatsApp.
+
+### Item 1 — Foto de fundo do Hero (PENDENTE — bloqueado)
+
+Sem asset fornecido pelo responsável ainda. Não implementar até a foto chegar. Quando chegar: substituir o asset atual de `HeroSection.jsx`, gerando `.webp` + fallback `.jpg` no mesmo padrão das imagens já existentes no projeto.
+
+### Item 2 — Botão "Como chegar" → scroll para Localização
+
+O botão passa a apontar para a âncora `#localizacao` já usada pelo redirect da Etapa 27, com `scrollIntoView({ behavior: 'smooth' })` ou `<a href="#localizacao">`, reaproveitando o mecanismo de scroll que o menu principal já usa.
+
+### Item 3 — Redesenho da seção Localização
+
+- Mapa (`MapEmbed.jsx`) reduzido, realocado à direita, abaixo do bloco de informações (endereço, horário).
+- Botão "abrir rota" reduzido, com hover aplicado ao próprio mapa (mesma linguagem visual do reveal do `ProductCard`).
+- No espaço onde o mapa está hoje, entram fotos de referência do local — pendentes de asset. Até chegarem, usar placeholder isolado (`isPlaceholder: true`), mesmo mecanismo das Etapas 28/29.
+
+### Item 4 — Avaliações reais via Google Places API
+
+Decisão confirmada: Opção A — Google Places API.
+
+- Place ID confirmado: `ChIJG3l-H3bzmQAR1O8vhrXYXPU`.
+- `GOOGLE_PLACE_ID` e `GOOGLE_MAPS_API_KEY` já configuradas pelo responsável diretamente no Vercel Dashboard (Environment Variables, não commitadas no repositório).
+
+Arquitetura:
+
+- Nova função serverless: `api/reviews.js` (Vercel Function). Lê `GOOGLE_PLACE_ID` e `GOOGLE_MAPS_API_KEY` do ambiente server-side, chama a Places API (Place Details, campo reviews), devolve os dados já prontos ao frontend.
+- `ReviewsSection.jsx` busca `/api/reviews` via `fetch` no client, substituindo os dados fictícios de demonstração da Etapa 27.
+- Cache leve na resposta da função (`Cache-Control`, alguns minutos/horas) para não estourar cota da API.
+- A chave nunca foi validada em ambiente real até este momento — a primeira validação real acontece no primeiro deploy. Por isso o fallback abaixo não é opcional.
+- Fallback obrigatório: se a API retornar erro (`REQUEST_DENIED`, chave inválida, quota, Place ID incorreto etc.), a seção deve degradar graciosamente — ocultar a seção ou mostrar estado vazio honesto, nunca voltar a exibir avaliação fictícia como se fosse real.
+
+### Item 5 — Seção "Sobre a casa"
+
+- Fotos do local em transição (crossfade via CSS puro, `transition-opacity`, sem biblioteca nova).
+- Bloco de texto informativo sobre a casa.
+- Link de WhatsApp: `https://wa.me/5521964699374`, como CTA visível, mesmo padrão visual dos outros CTAs do site.
+- Fotos pendentes de asset — mesmo tratamento do Item 3 até chegarem.
+
+### Arquivos prováveis afetados
+
+| Arquivo | Ação |
+|---|---|
+| `src/components/home/HeroSection.jsx` | Botão "Como chegar" (scroll); foto de fundo BLOQUEADA até asset |
+| `src/components/location/MapEmbed.jsx` (ou equivalente) | Redesenho: tamanho, posição, hover |
+| `src/components/location/ContactCard.jsx` (ou equivalente) | Reorganização do layout ao lado do mapa |
+| `src/components/*/ReviewsSection.jsx` | Passa a consumir `/api/reviews` |
+| `api/reviews.js` | Novo — função serverless, Google Places API |
+| `src/components/home/AboutSection.jsx` (criar se não existir) | Fotos em transição + texto + CTA WhatsApp |
+| `.env.example` | Documentar `GOOGLE_PLACE_ID` e `GOOGLE_MAPS_API_KEY` (server-side only, valores reais só no Dashboard) |
+| `BEST_PLAN.MD` | Registrar esta etapa antes de qualquer código |
+
+### Riscos
+
+- Chave de API exposta por engano (prefixo `VITE_` por hábito) — mitigado por checklist explícito + auditoria de que a chave nunca aparece em `dist/` público (mesmo princípio do `audit:demo-leak`).
+- Chave ainda não validada em ambiente real — o primeiro deploy pode revelar `REQUEST_DENIED` (API não habilitada) ou erro de restrição — mitigado pelo fallback gracioso obrigatório.
+- Cota/custo da Places API — mitigado por cache na função serverless.
+- Itens 1, e parte dos itens 3/5, ficam bloqueados por falta de asset — não travar os demais itens por causa disso.
+
+### Critérios de aceite
+
+- [x] Botão "Como chegar" rola suavemente até Localização
+- [x] Mapa reduzido, posicionado à direita, abaixo das informações
+- [x] Hover no mapa funcionando; botão de rota reduzido
+- [x] `api/reviews.js` responde 200 com dados reais OU degrada graciosamente sem quebrar a página
+- [x] Nenhuma chave/segredo aparece em `dist/` (auditoria manual)
+- [x] Seção Sobre com transição de fotos + texto + link WhatsApp funcional
+- [x] Item 1 (Hero) e assets pendentes claramente marcados como bloqueados, não implementados às cegas com placeholder definitivo
+- [x] `npm run build`, `npm run lint`, `npm run test`, `npm audit`, `git diff --check` aprovados
+
+### Sequenciamento
+
+1. Registrar etapa no `BEST_PLAN.MD` como EM EXECUÇÃO.
+2. Item 2 (scroll do botão).
+3. Item 3 (redesenho Localização) — layout, hover, placeholders de foto.
+4. Item 4 (avaliações reais) — `api/reviews.js` completo, já que as variáveis de ambiente já estão configuradas; testar em deploy real.
+5. Item 5 (Sobre) — texto e CTA; fotos como placeholder.
+6. Item 1 (Hero) — aguarda asset, fora desta rodada.
+7. Validação completa + registrar estado final no `BEST_PLAN.MD`.
+
+### Resultado da implementação — 16/08/2026
+
+- **Item 1 — Hero/foto:** BLOQUEADO conforme planejado; nenhum asset, import ou tratamento da fotografia de fundo foi alterado.
+- **Item 2 — scroll:** implementado com `href="#localizacao"` e `scrollIntoView({ behavior: 'smooth', block: 'start' })`; teste unitário e inspeção no navegador confirmaram a chegada à seção.
+- **Item 3 — Localização:** layout reorganizado com placeholder explícito para as fotos ainda não fornecidas e prévia de localização compacta à direita, abaixo dos dados; toda a superfície do mapa abre a rota e possui hover/foco, com CTA reduzido.
+- **Item 4 — avaliações:** função serverless `api/reviews.js` implementada com leitura exclusiva de `process.env.GOOGLE_PLACE_ID` e `process.env.GOOGLE_MAPS_API_KEY`, timeout, normalização, cache e respostas de erro sem segredo. O frontend não consome mais a fixture fictícia e degrada para estado honesto quando a API falha.
+- **Item 5 — Sobre:** `AboutSection` implementada com dois placeholders explicitamente identificados, crossfade por `transition-opacity` e CTA para `https://wa.me/5521964699374`.
+
+### Validação local da implementação
+
+- [x] Botão "Como chegar" rola suavemente até Localização
+- [x] Mapa reduzido, posicionado à direita, abaixo das informações
+- [x] Hover/foco no mapa; CTA de rota reduzido
+- [x] Função retorna fallback controlado quando as variáveis server-side não existem (`503 REVIEWS_NOT_CONFIGURED`)
+- [x] Frontend renderiza avaliações normalizadas e fallback honesto, cobertos por testes
+- [x] Nenhum nome de segredo ou Place ID aparece em `dist/`
+- [x] Seção Sobre com crossfade, texto, WhatsApp e placeholders honestos
+- [x] Item 1 e fotografias pendentes permanecem bloqueados, sem asset improvisado
+- [x] `npm run build`
+- [x] `npm run lint`
+- [x] `npm run test` — 8/8
+- [x] `npm audit` — 0 vulnerabilidades
+- [x] `git diff --check`
+- [x] Logo preservado: `b8bfb19a81b5e0b7d11863f2ed8c5c7a` e `77fa9b3692375171ea1c2b66438da98a`
+
+### Evidências visuais locais
+
+- `/tmp/etapa-30-sobre.png`
+- `/tmp/etapa-30-localizacao.png`
+- `/tmp/etapa-30-reviews.png`
+- Inspeção automatizada confirmou scroll para `#localizacao` e dois cards de reviews com resposta controlada da API.
+
+### Pendência de fechamento
+
+- Preview validado: deployment `5932742192`, commit `03e60d9dca64b5e39815db05dcdbb5de8860ea65`, estado `success`, URL `https://turquia-marica-2lfwyt68j-lnpotts-projects.vercel.app`.
+- A Home respondeu HTTP 200 no Preview.
+- `GET /api/reviews` respondeu HTTP 503 com `{"error":"REVIEWS_NOT_CONFIGURED"}`. Portanto, nesse deployment, `GOOGLE_PLACE_ID` e/ou `GOOGLE_MAPS_API_KEY` não chegaram ao runtime da função; a chamada não alcançou a Places API e ainda não há erro do Google (`REQUEST_DENIED`, quota ou restrição) para diagnosticar.
+- O fallback funcionou como projetado: resposta JSON controlada, cache configurado e Home preservada sem avaliações fictícias.
+- Manter a Etapa 30 em `EM AUDITORIA` até um novo deployment receber as duas variáveis server-side e permitir a primeira chamada real à Places API; a ausência dos assets dos Itens 1/3/5 permanece uma pendência externa explicitamente aceita e não invalida os itens funcionais entregues.

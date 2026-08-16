@@ -1,4 +1,4 @@
-import { Instagram, MapPin, Star } from 'lucide-react'
+import { ExternalLink, Instagram, MapPin, Star } from 'lucide-react'
 
 const SOURCE_LABELS = { google: 'Google', instagram: 'Instagram' }
 
@@ -9,7 +9,12 @@ function ReviewCard({ review }) {
       <div>
         <div className="flex items-center justify-between gap-4">
           <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-primary"><SourceIcon className="h-4 w-4" aria-hidden="true" />{SOURCE_LABELS[review.source]}</span>
-          <span className="rounded-sm bg-[#f0e7db] px-2 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-on-surface/70">Demonstração</span>
+          {review.sourceUrl ? (
+            <a href={review.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-[0.12em] text-on-surface/60 transition-colors hover:text-primary">
+              Ver origem
+              <ExternalLink className="h-3 w-3" aria-hidden="true" />
+            </a>
+          ) : null}
         </div>
         {review.rating ? (
           <div className="mt-6 flex gap-1" role="img" aria-label={`${review.rating} de 5 estrelas`}>
@@ -20,7 +25,7 @@ function ReviewCard({ review }) {
       </div>
       <footer className="mt-8 border-t border-[#e8e0d4] pt-5">
         <p className="font-bold text-on-surface">{review.authorName}</p>
-        <p className="mt-1 text-xs text-on-surface/55">Avaliação fictícia · {new Date(`${review.date}T12:00:00`).toLocaleDateString('pt-BR')}</p>
+        <p className="mt-1 text-xs text-on-surface/55">Avaliação no Google{review.dateLabel ? ` · ${review.dateLabel}` : ''}</p>
       </footer>
     </article>
   )

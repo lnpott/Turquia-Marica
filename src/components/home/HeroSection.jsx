@@ -6,6 +6,13 @@ import ChannelAction from '../ui/ChannelAction'
 import Button from '../ui/Button'
 
 function HeroSection() {
+  const scrollToLocation = (event) => {
+    const locationSection = document.querySelector('#localizacao')
+    if (!locationSection) return
+    event.preventDefault()
+    locationSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
     <section className="relative isolate min-h-[calc(100svh-64px)] overflow-hidden bg-on-surface text-white md:min-h-[720px]">
       <picture className="absolute inset-0 -z-20">
@@ -35,11 +42,16 @@ function HeroSection() {
               Ver cardápio
               <ArrowRight className="h-5 w-5" aria-hidden="true" />
             </Button>
-            <ChannelAction
-              channel={BUSINESS_INFO.channels.maps}
-              icon={MapPin}
+            <Button
+              href="#localizacao"
+              onClick={scrollToLocation}
+              variant="editorialSecondary"
+              size="lg"
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-sm bg-white/10 px-7 py-3 font-label-bold uppercase tracking-[0.08em] text-white ring-1 ring-inset ring-white/35 backdrop-blur-sm transition-all duration-tactile ease-tactile hover:-translate-y-0.5 hover:bg-white hover:text-on-surface active:translate-y-0 active:scale-[0.98]"
-            />
+            >
+              <MapPin className="h-5 w-5" aria-hidden="true" />
+              Como chegar
+            </Button>
           </div>
 
           <ChannelAction
