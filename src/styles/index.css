@@ -75,7 +75,7 @@ body::before {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  opacity: 0.9;
+  opacity: 1;
   pointer-events: none;
 }
 

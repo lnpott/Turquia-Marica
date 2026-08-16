@@ -20,7 +20,7 @@ function AboutSection() {
   }, [])
 
   return (
-    <Reveal as="section" id="sobre" className="scroll-mt-24 bg-[#faf7f2]/[0.45] px-5 py-20 md:px-margin-desktop md:py-32">
+    <Reveal as="section" id="sobre" className="scroll-mt-24 bg-[#faf7f2]/[0.40] px-5 py-20 md:px-margin-desktop md:py-32">
       <div className="mx-auto grid max-w-[1280px] gap-12 md:grid-cols-[0.9fr_1.1fr] md:items-center md:gap-16">
         <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-[#ded4c6]" aria-label="Espaço reservado para fotos da casa">
           {PHOTO_PLACEHOLDERS.map((photo, index) => (

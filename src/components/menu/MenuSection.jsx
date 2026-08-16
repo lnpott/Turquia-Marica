@@ -12,7 +12,7 @@ function MenuSection({ items = products }) {
   const filteredProducts = activeCategory === 'todos' ? items : items.filter((product) => product.categoryId === activeCategory)
 
   return (
-    <section id="cardapio" className="scroll-mt-24 bg-[#faf7f2]/[0.45] px-5 py-20 md:px-margin-desktop md:py-28">
+    <section id="cardapio" className="scroll-mt-24 bg-[#faf7f2]/[0.40] px-5 py-20 md:px-margin-desktop md:py-28">
       <div className="mx-auto max-w-[1280px]">
         <SectionHeading
           eyebrow="Cardápio"
