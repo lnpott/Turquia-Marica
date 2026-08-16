@@ -1121,6 +1121,7 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 
 ## Changelog
 
+- **16/08/2026:** Etapa 36 concluída — fundo global `brand-pattern` aplicado no wrapper do `MainLayout` com a imagem única fornecida pelo usuário (`food-pattern-bg.webp` + fallback `.png`, cover/no-repeat, fixed no desktop e scroll no mobile); `snack-pattern` (Etapa 33) removido de `ReviewsSection.jsx` e `index.css`; estilo verificado via Playwright; `npm run check`, `npm audit` e `git diff --check` aprovados; hashes do logo conferidos. Commit direto em `main`.
 - **16/08/2026:** Etapa 35 concluída — `api/reviews.js` migrado para a Places API (New) (`POST /v1/places/{placeId}` com `X-Goog-Api-Key`/`X-Goog-FieldMask`), mapeamento de campos atualizado, erro tratado via campo `error` do body e logs temporários da Etapa 34 removidos. `npm run check`, `npm audit` e `git diff --check` aprovados; hashes do logo conferidos. Commit direto em `main`.
 - **16/08/2026:** Etapa 34 concluída (diagnóstico): `api/reviews.js` já lia as variáveis sem prefixo `VITE_` e com a guarda correta; o 503 é ambiental (variáveis ausentes no runtime do deployment no Vercel). Adicionados logs de diagnóstico server-side antes da guarda; ação pendente no Vercel Dashboard (nomes/escopo/redeploy). `npm run check`, `npm audit` e `git diff --check` aprovados; hashes do logo conferidos.
 - **16/08/2026:** Etapa 33 concluída — MapEmbed com endereço real derivado de `contact.js` (sem elementos abstratos), fundo `snack-pattern` nas avaliações (CSS puro, sem asset externo) e `formatAuthorName` no ReviewCard; testes atualizados; `npm run check`, `npm audit` e `git diff --check` aprovados e hashes do logo conferidos. Commit direto em `main`.
@@ -1659,3 +1660,15 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
 - **Correção:** `api/reviews.js` migrado para `POST https://places.googleapis.com/v1/places/{placeId}` com `X-Goog-Api-Key` e `X-Goog-FieldMask` (`reviews,displayName,rating,userRatingCount,googleMapsUri`) e body `{ languageCode: 'pt-BR' }`; mapeamento da resposta atualizado (`displayName.text`, `userRatingCount`, `googleMapsUri`, `authorAttribution.displayName/uri/photoUri`, `text.text`, `relativePublishTimeDescription`, `publishTime`); erro tratado via campo `error` no body (HTTP 200 com erro) e checagem `data.status === 'OK'` removida; logs de diagnóstico temporários da Etapa 34 removidos. Nota: `placeId` entra na URL no runtime (a constante de URL é a base; o template com `{placeId}` é montado dentro do handler, onde a variável existe).
 - **Validação:** npm run check, npm run lint, npm run test, npm audit e git diff --check aprovados; hashes do logo conferidos.
 - **Arquivos modificados:** `api/reviews.js`, `BEST_PLAN.MD`.
+
+---
+
+## Etapa 36 — Imagem de fundo global (logo + comidas, fornecida pelo usuário)
+
+- **Estado:** CONCLUÍDO
+- **Data:** 16/08/2026
+- **Executado por:** DeepSeek (psique v4) via Freebuff MCP, direto em main.
+- **O que mudou:** adicionada a imagem única `public/images/patterns/food-pattern-bg.webp` (+ fallback `.png`), fornecida pelo usuário, com composição de logo da marca (crescente + mesquita) misturado a hambúrguer, batata, pizza, chope e refrigerante. Aplicada via classe `.brand-pattern` em `index.css` como fundo `cover`/`no-repeat` no wrapper global do `MainLayout` (`fixed` no desktop, `scroll` no mobile via media query `max-width: 768px` — a imagem não é tile perfeito e não usa `background-repeat`). Removida a classe `.snack-pattern` (Etapa 33), agora redundante, de `ReviewsSection.jsx` e de `index.css`; a seção mantém `bg-[#faf7f2]` sólido por critério de design (consistência com MenuSection/AboutSection, que seguem sólidas, e legibilidade sobre a imagem fixa).
+- **Decisão técnica:** cascade fallback (PNG → WEBP em duas declarações de `background-image`) em vez de `image-set()` — o `package.json` não tem `browserslist`, então o alvo do Vite é o default; o cascade funciona em qualquer navegador (webp sobrescreve nos modernos; antigos ficam com o PNG).
+- **Validação:** npm run check, npm run build, npm run lint, npm run test, npm audit e git diff --check aprovados; hashes do logo original conferidos (`b8bfb19a…` / `77fa9b36…`); os dois arquivos de imagem confirmados em `dist/images/patterns/`; `snack-pattern` ausente do CSS compilado; verificação via Playwright: wrapper com `brand-pattern` (webp, cover, no-repeat, fixed no desktop e scroll a 375px) e `snack-pattern` ausente do DOM.
+- **Arquivos modificados:** `src/styles/index.css`, `src/layouts/MainLayout.jsx`, `src/components/reviews/ReviewsSection.jsx`, `public/images/patterns/food-pattern-bg.webp` (novo), `public/images/patterns/food-pattern-bg.png` (novo), `BEST_PLAN.MD`.
