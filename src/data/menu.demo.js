@@ -1,25 +1,26 @@
 // DADOS FICTÍCIOS — uso exclusivo em QA visual isolado (Etapa 28/29).
 // Nunca importar no fluxo público nem tratar como dados comerciais reais.
-import imgBaca from '../assets/images/products/Baca.jpg'
-import imgBatata from '../assets/images/products/BATATA.jpg'
-import imgCebola from '../assets/images/products/cebola.jpg'
-import imgPassa from '../assets/images/products/PASSA.jpg'
-import imgPidoce from '../assets/images/products/PIDOCE.jpg'
-import imgPizza from '../assets/images/products/PIZZA.jpg'
-import imgTabua from '../assets/images/products/tabua.jpg'
-import imgTabucama from '../assets/images/products/TABUCAMA.jpg'
-import imgX from '../assets/images/products/X.jpg'
 
-const mockProduct = (id, categoryId, name, price, img) => ({
+const productImages = import.meta.glob(
+  '../assets/images/products/*.jpg',
+  { eager: false },
+)
+
+const resolveImage = (filename) =>
+  productImages[`../assets/images/products/${filename}`]?.()
+    .then((module) => module.default)
+
+const mockProduct = (id, categoryId, name, price, filename) => ({
   id: `demo-${id}`,
   categoryId,
   name,
   shortDescription: 'Produto fictício para validação visual.',
-  longDescription: 'Produto fictício para validação visual. Nenhum dado é real.',
+  longDescription:
+    'Produto fictício para validação visual. Nenhum dado é real.',
   description: 'Produto fictício para validação visual.',
   price,
-  imageUrl: img,
-  image: img,
+  imageFilename: filename,
+  resolveImage: () => resolveImage(filename),
   imageAlt: `Foto fictícia de ${name} para QA visual`,
   imageStatus: 'illustrative',
   isPlaceholder: true,
@@ -27,13 +28,13 @@ const mockProduct = (id, categoryId, name, price, img) => ({
 })
 
 export const demoProducts = [
-  mockProduct('baca', 'lanches', 'Baca Burger', 'R$ 29,90', imgBaca),
-  mockProduct('passa', 'lanches', 'Passa Burger', 'R$ 29,90', imgPassa),
-  mockProduct('pizza', 'lanches', 'Pizza Teste', 'R$ 29,90', imgPizza),
-  mockProduct('x', 'lanches', 'X-Turquia', 'R$ 29,90', imgX),
-  mockProduct('tabua', 'combos', 'Tábua Mista', 'R$ 29,90', imgTabua),
-  mockProduct('tabucama', 'combos', 'Tábua Cama', 'R$ 29,90', imgTabucama),
-  mockProduct('batata', 'porcoes', 'Porção de Batata', 'R$ 29,90', imgBatata),
-  mockProduct('cebola', 'porcoes', 'Rings de Cebola', 'R$ 29,90', imgCebola),
-  mockProduct('pidoce', 'sobremesas', 'Pi Doce', 'R$ 29,90', imgPidoce),
+  mockProduct('baca', 'lanches', 'Baca Burger', 'R$ 29,90', 'Baca.jpg'),
+  mockProduct('passa', 'lanches', 'Passa Burger', 'R$ 29,90', 'PASSA.jpg'),
+  mockProduct('pizza', 'lanches', 'Pizza Teste', 'R$ 29,90', 'PIZZA.jpg'),
+  mockProduct('x', 'lanches', 'X-Turquia', 'R$ 29,90', 'X.jpg'),
+  mockProduct('tabua', 'combos', 'Tábua Mista', 'R$ 29,90', 'tabua.jpg'),
+  mockProduct('tabucama', 'combos', 'Tábua Cama', 'R$ 29,90', 'TABUCAMA.jpg'),
+  mockProduct('batata', 'combos', 'Porção de Batata', 'R$ 29,90', 'BATATA.jpg'),
+  mockProduct('cebola', 'combos', 'Rings de Cebola', 'R$ 29,90', 'cebola.jpg'),
+  mockProduct('pidoce', 'sobremesas', 'Pi Doce', 'R$ 29,90', 'PIDOCE.jpg'),
 ]

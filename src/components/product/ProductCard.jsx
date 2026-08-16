@@ -1,4 +1,21 @@
+import { useEffect, useState } from 'react'
+
 function ProductCard({ product }) {
+  const [imgSrc, setImgSrc] = useState(null)
+
+  useEffect(() => {
+    let active = true
+    const imageSource = product.resolveImage
+      ? product.resolveImage()
+      : Promise.resolve(product.image ?? null)
+
+    Promise.resolve(imageSource).then((source) => {
+      if (active) setImgSrc(source ?? null)
+    })
+
+    return () => { active = false }
+  }, [product])
+
   return (
     <article
       tabIndex={0}
@@ -6,7 +23,7 @@ function ProductCard({ product }) {
     >
       {/* Foto — zoom no hover/foco */}
       <img
-        src={product.image}
+        src={imgSrc ?? undefined}
         alt={product.imageAlt ?? product.name}
         width="512"
         height="384"

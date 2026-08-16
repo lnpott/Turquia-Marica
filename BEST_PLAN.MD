@@ -1258,6 +1258,14 @@ Preço fictício uniforme: `R$ 29,90` — realista para teste de layout; exibido
 - **Correção definida:** renomear exclusivamente o caminho para `/visual-qa-demo`, preservando flag, componente, fixture, isolamento e comportamento visual.
 - **Fechamento:** somente após build, lint, testes, `git diff --check` e confirmação da rota implantada com banner e nove cards.
 
+### Adendo — carregamento sob demanda das fotografias da demo
+
+- **Estado:** EM EXECUÇÃO.
+- **Causa raiz registrada:** os nove imports estáticos de `menu.demo.js` são resolvidos pelo Vite durante o bundle antes do uso da fixture, podendo incorporar fotografias e o chunk demonstrativo ao artefato auditado.
+- **Correção definida:** substituir os imports estáticos por `import.meta.glob(..., { eager: false })`, expor `resolveImage()` na fixture e resolver a imagem dentro do `ProductCard` com fallback para `product.image`.
+- **Restrição:** a estrutura visual aprovada do card permanece idêntica; somente a origem assíncrona de `src` pode mudar.
+- **Fechamento:** a Etapa 29 permanece `EM EXECUÇÃO` até validação local completa e confirmação visual do Preview com `VITE_VISUAL_QA_DEMO=true`.
+
 ### Rollback
 
 Reverter somente os commits desta etapa. Não afeta o Cardápio público, o Hero, nenhuma rota real nem o histórico da Etapa 28.
