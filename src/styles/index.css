@@ -37,12 +37,16 @@
 }
 
 body {
-  @apply bg-background text-on-background antialiased;
+  @apply text-on-background antialiased;
+  /* Transparente para o padrão do body::before aparecer sobre a base do html */
+  background-color: transparent;
   font-family: 'DM Sans', sans-serif;
   overflow-x: hidden;
 }
 
 html {
+  /* Base creme do padrão de fundo (canvas opaco; o padrão vive no body::before) */
+  background-color: #faf7f2;
   overflow-x: clip;
 }
 
@@ -55,21 +59,23 @@ html {
   background-size: 7px 7px;
 }
 
-/* Etapa 37: padrão de fundo ancorado na viewport via body::before.
+/* Etapa 37 (corrigida): padrão de fundo ancorado na viewport via body::before.
+   A base creme é o background-color do html (canvas opaco); o pseudo carrega
+   SOMENTE a imagem — opacity no box que também tinha background-color lavava o
+   padrão a ~0 (efetivo <1 unidade de luminância através das seções).
    cover calculado contra a viewport (não contra a altura do wrapper).
-   PNG declarado primeiro como fallback; WebP sobrescreve em navegadores suportados. */
+   PNG declarado primeiro como fallback; WebP sobrescreve nos modernos. */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: -1;
-  background-color: #faf7f2;
   background-image: url('/images/patterns/food-pattern-bg.png');
   background-image: url('/images/patterns/food-pattern-bg.webp');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  opacity: 0.18;
+  opacity: 0.7;
   pointer-events: none;
 }
 
