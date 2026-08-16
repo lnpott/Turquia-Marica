@@ -21,10 +21,11 @@
 
 - A flag é desligada por padrão em `.env.example`.
 - A rota, página e fixture são eliminadas pelo build padrão.
-- `npm run build` chama um gate que busca rota e sentinelas em todos os arquivos textuais de `dist/`.
+- `npm run build` chama `audit:demo-leak`, que busca rota, sentinelas e campos demonstrativos em todos os arquivos textuais de `dist/`.
 - Se a flag for ativada por engano durante `npm run build`, o gate encontra o conteúdo e reprova o deploy.
 - `src/data/menu.js`, `public/sitemap.xml`, Open Graph e componentes visuais públicos não foram alterados.
 - A rota demonstrativa não possui qualquer link no Header, Footer ou BottomNavBar.
+- Como `isPlaceholder` também identifica os Reviews fictícios públicos da Etapa 27, o gate o classifica como vazamento da Etapa 28 somente quando aparece no mesmo artefato que uma sentinela demo; `isMock` continua sendo bloqueado globalmente.
 
 ## Evidências
 
