@@ -1121,6 +1121,8 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 
 ## Changelog
 
+- **15/08/2026:** Etapa 29 planejada e registrada: redesenho do ProductCard com reveal overlay (hover/touch), conexão das 9 fotografias reais ao menu.demo.js e nota de rodapé na VisualQaDemo. Implementação não iniciada; aguarda autorização explícita.
+
 - **15/08/2026:** contrato final da Etapa 28 reconciliado com a autorização: fixture passou a declarar `shortDescription`, `longDescription` e `imageUrl` sem alterar componentes; gate recebeu o nome público `audit:demo-leak` e cobertura contextual de `isPlaceholder`, preservando os Reviews fictícios legítimos da Etapa 27.
 - **15/08/2026:** Etapa 28 implementada e auditada: rota local por flag com 16 produtos fictícios, assets isolados, aviso/noindex, gate bloqueante de `dist/`, suíte Playwright em cinco viewports e evidências permanentes. Cardápio real, componentes visuais e sitemap permaneceram inalterados; veredito **APROVADO**.
 - **15/08/2026:** decisão técnica da Etapa 28 confirmada: rota isolada por flag será o ambiente de refinamento visual ao vivo; Playwright será usado ao final para evidência/regressão nos cinco viewports. Implementação continua não iniciada até autorização explícita; falha do gate de `dist/` reabre a decisão em favor do harness exclusivo.
@@ -1151,3 +1153,94 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 - **14/08/2026:** registrado o plano de motion e interatividade (Lotes 18 a 25), a partir de auditoria do código real da `BEST_ONE` e de mandato ampliado do responsável priorizando impacto visual, com o logo como única restrição adicional.
 - **14/08/2026:** Lotes 18, 19, 20 e 23 concluídos e auditados como **APROVADOS**: tokens compartilhados, CTAs táteis, zoom contido e navegação ativa foram entregues sem biblioteca nova; Lotes 21, 22, 24 e 25 não foram iniciados.
 - **14/08/2026:** responsável avaliou o resultado visual acumulado (Lotes 1–23) como insuficiente mesmo após aprovação técnica, e autorizou refatoração radical da arquitetura visual — Lote 26, registrado com diagnóstico de código real: linguagem visual repetitiva de borda 2px + sombra deslocada + badge amarelo aplicada mecanicamente a todo elemento, amarelo usado como superfície dominante, vermelho como fundo de blocos inteiros, grade de cards idênticos como estrutura central de Home e Cardápio, e acervo fotográfico com relação inconsistente à categorização declarada (incluindo imagens com pessoas identificáveis). Lote 26 iniciado como **EM EXECUÇÃO**, com nova direção editorial-quente registrada antes da implementação.
+
+## Etapa 29 — Cards de produto com reveal overlay (hover + touch)
+
+- **Estado:** NÃO INICIADO
+- **Data de planejamento:** 15/08/2026
+- **Branch alvo:** `main`
+- **Prioridade:** Alta — melhoria de design interativo imediata e visível na demo de QA (Etapa 28).
+
+### Origem
+
+A Etapa 28 entregou a rota `/__visual-qa` com 16 produtos fictícios usando assets genéricos. O responsável forneceu 9 fotografias reais em `src/assets/images/products/` (commitadas em `04dfce1`) e solicitou:
+
+1. Conectar essas fotos à demo de QA substituindo os assets genéricos.
+2. Redesenhar o `ProductCard` com interação de hover/touch: em repouso exibe apenas a foto; ao interagir, a foto faz zoom e uma camada sobe da base com nome e preço.
+
+### Objetivo
+
+Substituir o `ProductCard` estático por um card com **reveal overlay** — padrão de UI que mantém a fotografia como protagonista absoluto no repouso e revela informações de forma elegante ao hover (mouse) ou foco/toque (celular) — sem adicionar bibliotecas externas.
+
+### Comportamento esperado
+
+```
+REPOUSO:
+┌─────────────────────────┐
+│                         │
+│      [foto 4:3]         │  ← só a foto, badge TESTE no canto
+│                         │
+└─────────────────────────┘
+
+HOVER / TOQUE:
+┌─────────────────────────┐
+│  foto com zoom ~115%    │  ← foto cresce, contida no overflow-hidden
+│  ░░░░░░░░░░░░░░░░░░░░░  │
+│  ░ Nome do Produto   ░  │  ← overlay sobe da base (translateY 0)
+│  ░ R$ 29,90 *        ░  │  ← preço com asterisco
+└─────────────────────────┘
+```
+
+**Touch mobile:** `tabIndex={0}` no article + `group-focus-within` disparam o reveal no primeiro toque, sem JavaScript de evento adicional.
+
+**`prefers-reduced-motion`:** o bloco já existente em `index.css` zera as transitions; o overlay ainda aparece, apenas sem animação.
+
+### Arquivos alterados
+
+| Arquivo | Ação |
+|---|---|
+| `src/data/menu.demo.js` | Substituir 16 produtos genéricos pelos 9 com fotos reais |
+| `src/components/product/ProductCard.jsx` | Redesenhar com reveal overlay |
+| `src/pages/demo/VisualQaDemo.jsx` | Adicionar nota de rodapé `*` |
+| `BEST_PLAN.MD` | Registrar etapa antes de qualquer código |
+
+**Fora de escopo absoluto:** `MenuSection`, `CategoryFilterBar`, `Reveal`, `src/data/menu.js` (público, permanece `products = []`), `HeroSection`, `Header`, `Footer`, `BottomNavBar`, `Location`, `MapEmbed`, `ContactCard`, `tailwind.config.cjs`, arquivos de CI e testes E2E existentes.
+
+### Mapeamento imagens reais → produtos demo
+
+| Arquivo original | Nome fictício | Categoria |
+|---|---|---|
+| `Baca.jpg` | Baca Burger | lanches |
+| `BATATA.jpg` | Porção de Batata | porcoes → combos se porcoes não existir em `categories` |
+| `cebola.jpg` | Rings de Cebola | porcoes → combos se porcoes não existir em `categories` |
+| `PASSA.jpg` | Passa Burger | lanches |
+| `PIDOCE.jpg` | Pi Doce | sobremesas |
+| `PIZZA.jpg` | Pizza Teste | lanches |
+| `tabua.jpg` | Tábua Mista | combos |
+| `TABUCAMA.jpg` | Tábua Cama | combos |
+| `X.jpg` | X-Turquia | lanches |
+
+Preço fictício uniforme: `R$ 29,90` — realista para teste de layout; exibido com `*` e nota de rodapé.
+
+### Critérios de aceite
+
+- [ ] `npm run build` aprovado, zero warnings novos
+- [ ] `npm run lint` limpo
+- [ ] `npm run test` aprovado
+- [ ] `npm audit` sem novas vulnerabilidades
+- [ ] `git diff --check` limpo
+- [ ] Hover revela overlay em desktop (1280 px e 1440 px)
+- [ ] Toque/foco revela overlay em mobile (390 px)
+- [ ] Zoom da foto contido dentro do `overflow-hidden` — sem vazamento
+- [ ] Preço exibido com `*`; nota de rodapé visível na página
+- [ ] Badge "DADOS FICTÍCIOS" da `VisualQaDemo` permanece intacto
+- [ ] `prefers-reduced-motion`: overlay aparece sem animação
+- [ ] `src/data/menu.js` público inalterado (`products = []`)
+- [ ] MD5 de `logo.jpg` e `logo-96.webp` idênticos antes/depois
+- [ ] Screenshots em `documentacao/qa/etapa-29/` nos 5 viewports de aceite
+- [ ] Estado atualizado no `BEST_PLAN.MD` no mesmo commit
+
+### Rollback
+
+Reverter somente os commits desta etapa. Não afeta o Cardápio público, o Hero, nenhuma rota real nem o histórico da Etapa 28.
+
