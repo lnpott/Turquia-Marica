@@ -30,7 +30,7 @@ function App() {
             <Route path="/cardapio" element={<Navigate replace to="/#cardapio" />} />
             <Route path="/localizacao" element={<Navigate replace to="/#localizacao" />} />
             {visualQaDemoEnabled ? (
-              <Route path="/__visual-qa" element={<Suspense fallback={null}><VisualQaDemo /></Suspense>} />
+              <Route path="/visual-qa-demo" element={<Suspense fallback={null}><VisualQaDemo /></Suspense>} />
             ) : null}
             <Route path="*" element={<PagePlaceholder />} />
           </Route>

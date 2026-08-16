@@ -1157,7 +1157,7 @@ Cada dependência deve ser desbloqueada e implementada de forma independente; a 
 
 ## Etapa 29 — Cards de produto com reveal overlay (hover + touch)
 
-- **Estado:** CONCLUÍDO — implementação visual e auditoria aprovadas em 16/08/2026.
+- **Estado:** EM EXECUÇÃO — correção de disponibilidade da rota de QA no Vercel iniciada em 16/08/2026.
 - **Data de planejamento:** 15/08/2026
 - **Branch alvo:** `main`
 - **Prioridade:** Alta — melhoria de design interativo imediata e visível na demo de QA (Etapa 28).
@@ -1250,6 +1250,13 @@ Preço fictício uniforme: `R$ 29,90` — realista para teste de layout; exibido
 - A marcação acessível preserva título, preço e indisponibilidade do pedido para leitores de tela sem alterar a apresentação visual.
 - Evidências: `documentacao/qa/etapa-29/`; relatório: `documentacao/qa/AUDITORIA_ETAPA_29.md`.
 - **Veredito: APROVADO.** Nenhuma alteração foi feita no Cardápio comercial, nos componentes fora do escopo, nos testes E2E, no audit script ou no design system global.
+
+### Adendo — correção da rota de QA no Vercel
+
+- **Estado:** EM EXECUÇÃO.
+- **Problema confirmado:** `/__visual-qa` retorna 404 no Vercel porque o prefixo `__` pertence ao namespace reservado da plataforma e é interceptado antes do React Router e do rewrite SPA.
+- **Correção definida:** renomear exclusivamente o caminho para `/visual-qa-demo`, preservando flag, componente, fixture, isolamento e comportamento visual.
+- **Fechamento:** somente após build, lint, testes, `git diff --check` e confirmação da rota implantada com banner e nove cards.
 
 ### Rollback
 
