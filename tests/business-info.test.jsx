@@ -31,13 +31,12 @@ describe('dados comerciais e demonstrativos', () => {
     expect(screen.getByText('iFood em construção')).not.toHaveAttribute('href')
   })
 
-  it('mantém o cardápio público vazio e honesto', () => {
-    expect(products).toEqual([])
+  it('exibe os nove produtos no cardápio público', () => {
+    expect(products).toHaveLength(9)
     render(<MenuSection />)
     expect(screen.getByRole('heading', { level: 2, name: /produto é o protagonista/i })).toBeInTheDocument()
-    expect(screen.getByRole('status')).toHaveTextContent(/produtos em confirmação/i)
-    expect(screen.queryByRole('group', { name: 'Filtrar por categoria' })).not.toBeInTheDocument()
-    expect(screen.queryByText(/R\$/)).not.toBeInTheDocument()
+    expect(screen.getByRole('group', { name: 'Filtrar por categoria' })).toBeInTheDocument()
+    expect(screen.getAllByRole('article')).toHaveLength(9)
   })
 
   it('valida o layout preenchido apenas com fixture injetada', () => {
