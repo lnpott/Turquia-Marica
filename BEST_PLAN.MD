@@ -1285,7 +1285,9 @@ Reverter somente os commits desta etapa. Não afeta o Cardápio público, o Hero
 
 ### Decisão vigente
 
+
 - **Estado:** CONCLUÍDO — implementação integrada em `main`; registro documental em revisão.
+
 - **Decisão do responsável:** os nove produtos anteriormente restritos à superfície de QA devem aparecer no cardápio público.
 - **Efeito sobre o histórico:** esta decisão substitui, para estes nove itens, as regras anteriores que mantinham `src/data/menu.js` com `products = []` e limitavam as fotografias a `menu.demo.js`.
 - **Rota de QA:** `/visual-qa-demo` e seu isolamento por `VITE_VISUAL_QA_DEMO=true` permanecem existentes; a publicação no cardápio principal não depende dessa flag.
@@ -1326,4 +1328,64 @@ Reverter somente os commits desta etapa. Não afeta o Cardápio público, o Hero
 - Correção da sentinela: commit `d8a450b` (`fix(audit): update route sentinel from __visual-qa to visual-qa-demo`), integrado pelo PR #15.
 - Publicação dos produtos: commit `47ac0d9` (`feat(menu): publish nine products`).
 - Publicação integrada pelo PR #16, `feat(menu): publish nine products in the public menu`.
-- Registro operacional em revisão no PR #17, `docs(plan): record public product rollout`, aberto contra `main`.
+- Registro operacional integrado pelo PR #17, `docs(plan): record public product rollout`.
+
+---
+
+## Auditoria final das Etapas 28 e 29 — 16/08/2026
+
+### Estado consolidado
+
+- **Etapa 28:** implementação preservada no histórico do Git; rota visual isolada por flag e renomeada para `/visual-qa-demo`.
+- **Etapa 29:** **EM EXECUÇÃO**. O fechamento continua bloqueado porque a rota visual retorna HTTP 404 no deployment Preview validado.
+- **Regra de parada aplicada:** como o Passo 2 da auditoria falhou, a matriz local dos Passos 3 a 5 não foi repetida nesta rodada e o estado não foi promovido para `CONCLUÍDO`.
+- **Alterações funcionais durante a auditoria:** nenhuma. A rodada apenas consultou Git, GitHub Deployments e as URLs implantadas.
+
+### Passo 1 — produção
+
+- HEAD validado de `origin/main`: `ff61b90d44cd812abe00dc29af427e3abc62dcde` (`Merge pull request #17 from lnpott/docs/public-products-plan`), posterior ao PR #14.
+- Deployment GitHub/Vercel: ID `5929365778`, estado `success` (`Deployment has completed`), target `Production`, commit `ff61b90d44cd812abe00dc29af427e3abc62dcde`.
+- URL imutável validada: `https://turquia-marica-hdfpviaze-lnpotts-projects.vercel.app`.
+- Alias de produção: `https://turquia-marica.vercel.app`.
+- `GET /`: HTTP 200.
+- `GET /cardapio`: redirect para `/#cardapio`, com resposta final HTTP 200.
+- `GET /visual-qa-demo`: HTTP 404 com `x-vercel-error: NOT_FOUND`; isolamento de produção confirmado.
+- **Resultado do Passo 1:** APROVADO.
+
+### Passo 2 — Preview
+
+- Deployment mais recente validado: ID `5929344688`, estado `success` (`Deployment has completed`), target `Preview`, commit `d3716246ec1f710eb74fb720abfd1902e2fb063b`.
+- URL validada: `https://turquia-marica-3j4uy4vh7-lnpotts-projects.vercel.app`.
+- `GET /visual-qa-demo`: HTTP 404, `content-type: text/plain`, `x-vercel-error: NOT_FOUND`, corpo de 79 bytes.
+- Banner `DADOS FICTÍCIOS — QA VISUAL`: não confirmado porque a rota não serviu a aplicação.
+- Nove cards e imagens: não confirmados pelo mesmo bloqueio.
+- Reveal overlay e classes `group-hover`/`group-focus-within`: não confirmados no deployment pelo mesmo bloqueio.
+- **Resultado do Passo 2:** FALHOU.
+
+### Passos 3 a 6
+
+- **Passo 3 — matriz técnica local:** não executado nesta rodada após a falha bloqueante do Preview.
+- **Passo 4 — integridade dos arquivos protegidos:** não executado nesta rodada após a falha bloqueante do Preview.
+- **Passo 5 — hashes do logo:** não executado nesta rodada após a falha bloqueante do Preview; os hashes históricos aprovados continuam registrados como `b8bfb19a81b5e0b7d11863f2ed8c5c7a` e `77fa9b3692375171ea1c2b66438da98a`.
+- **Passo 6 — fechamento:** não realizado. A Etapa 29 não pode ser marcada como concluída enquanto `/visual-qa-demo` não responder HTTP 200 no Preview com a flag ativa.
+
+### Evidências e comandos da auditoria
+
+- `git fetch origin main --prune`
+- `git reset --hard origin/main`
+- `git log --oneline -5 origin/main`
+- GitHub Deployments API para listar deployments e consultar os status dos IDs `5929365778` e `5929344688`.
+- `curl` com redirects habilitados para `/`, `/cardapio` e `/visual-qa-demo` no alias de produção.
+- `curl` para `/visual-qa-demo` na URL imutável do Preview.
+- Duas execuções consecutivas confirmaram o mesmo resultado: produção correta e Preview ainda em HTTP 404.
+
+### Critério pendente para encerramento
+
+A Etapa 29 só poderá mudar de `EM EXECUÇÃO` para `CONCLUÍDO` após uma auditoria registrar, simultaneamente:
+
+1. Preview com `VITE_VISUAL_QA_DEMO=true` servindo `/visual-qa-demo` com HTTP 200.
+2. Banner `DADOS FICTÍCIOS — QA VISUAL` presente.
+3. Nove cards e suas imagens renderizados.
+4. Classes e comportamento de reveal disponíveis no artefato implantado.
+5. Produção continuando a responder HTTP 404 para a mesma rota.
+6. Aprovação integral dos Passos 3, 4 e 5 da matriz de fechamento.
