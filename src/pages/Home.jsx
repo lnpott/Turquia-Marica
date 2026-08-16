@@ -1,4 +1,5 @@
 import { Instagram, ShieldCheck, ShoppingBag } from 'lucide-react'
+import AboutSection from '../components/home/AboutSection'
 import HeroSection from '../components/home/HeroSection'
 import LocationSection from '../components/home/LocationSection'
 import MenuSection from '../components/menu/MenuSection'
@@ -31,17 +32,7 @@ function Home() {
         </ul>
       </Reveal>
       <MenuSection />
-      <Reveal as="section" id="sobre" className="scroll-mt-24 bg-[#faf7f2] px-5 py-20 md:px-margin-desktop md:py-32">
-        <div className="mx-auto grid max-w-[1280px] gap-10 md:grid-cols-[0.45fr_1.55fr] md:items-start">
-          <span className="section-eyebrow">Sobre a casa</span>
-          <div>
-            <h2 className="display-balance max-w-[14ch] text-[clamp(2.7rem,6vw,5.5rem)] font-extrabold leading-[0.94] tracking-[-0.055em] text-on-surface">Bairro no coração.<span className="text-primary"> Fartura na mesa.</span></h2>
-            <p className="mt-8 max-w-2xl text-lg leading-relaxed text-on-surface/65 md:text-xl">
-              Uma presença local construída com honestidade: primeiro a experiência certa, depois cada informação confirmada.
-            </p>
-          </div>
-        </div>
-      </Reveal>
+      <AboutSection />
       <LocationSection />
       <ReviewsSection />
     </div>

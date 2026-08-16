@@ -1,12 +1,13 @@
-import { render, screen, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import { MemoryRouter } from 'react-router-dom'
+import HeroSection from '../src/components/home/HeroSection'
 import LocationSection from '../src/components/home/LocationSection'
 import MenuSection from '../src/components/menu/MenuSection'
 import ReviewsSection from '../src/components/reviews/ReviewsSection'
 import ChannelAction from '../src/components/ui/ChannelAction'
 import { BUSINESS_INFO, BUSINESS_STATUS } from '../src/data/contact'
 import { products } from '../src/data/menu'
-import { reviews } from '../src/data/reviews'
 
 const demoProduct = {
   id: 'fixture-product',
@@ -53,15 +54,52 @@ describe('dados comerciais e demonstrativos', () => {
     expect(mapLink).toHaveAttribute('href', BUSINESS_INFO.channels.maps.url)
     expect(screen.getAllByText(BUSINESS_INFO.location.value)).toHaveLength(1)
     expect(screen.getAllByText(BUSINESS_INFO.hours.note)).toHaveLength(1)
-    expect(screen.getByText('Ilustração · não é um mapa')).toBeInTheDocument()
+    expect(screen.getByText('Prévia de localização')).toBeInTheDocument()
+    expect(screen.getByText(/fotos de referência do local em breve/i)).toBeInTheDocument()
   })
 
-  it('expõe reviews somente como placeholders visíveis', () => {
-    expect(reviews.every((review) => review.isPlaceholder && review.sourceUrl === null)).toBe(true)
+  it('faz o botão Como chegar rolar até a localização', () => {
+    const location = document.createElement('section')
+    location.id = 'localizacao'
+    location.scrollIntoView = vi.fn()
+    document.body.appendChild(location)
+    render(<MemoryRouter><HeroSection /></MemoryRouter>)
+
+    fireEvent.click(screen.getByRole('link', { name: /como chegar/i }))
+    expect(location.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' })
+    location.remove()
+  })
+
+  it('renderiza avaliações reais retornadas pela API', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        place: { totalRatings: 42 },
+        reviews: [{
+          id: 'google-1',
+          source: 'google',
+          authorName: 'Cliente real',
+          rating: 5,
+          text: 'Ótima experiência.',
+          dateLabel: 'há uma semana',
+          sourceUrl: 'https://maps.google.com/',
+        }],
+      }),
+    }))
+
     render(<ReviewsSection />)
-    const list = screen.getByRole('list', { name: 'Avaliações fictícias de demonstração' })
-    expect(within(list).getAllByText('Demonstração')).toHaveLength(reviews.length)
-    expect(screen.getByText(/todas as avaliações abaixo são fictícias/i)).toBeInTheDocument()
-    expect(within(list).queryByRole('link')).not.toBeInTheDocument()
+    const list = await screen.findByRole('list', { name: 'Avaliações reais no Google' })
+    expect(within(list).getByText('Cliente real')).toBeInTheDocument()
+    expect(within(list).getByText(/ótima experiência/i)).toBeInTheDocument()
+    expect(within(list).queryByText('Demonstração')).not.toBeInTheDocument()
+    vi.unstubAllGlobals()
+  })
+
+  it('degrada avaliações indisponíveis sem conteúdo fictício', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }))
+    render(<ReviewsSection />)
+    await waitFor(() => expect(screen.getByText(/avaliações do google temporariamente indisponíveis/i)).toBeInTheDocument())
+    expect(screen.queryByText(/cliente demonstrativo/i)).not.toBeInTheDocument()
+    vi.unstubAllGlobals()
   })
 })
