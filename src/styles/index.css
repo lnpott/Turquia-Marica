@@ -59,6 +59,15 @@ html {
   background-size: 7px 7px;
 }
 
+/* Protótipo Etapa 43: mapa OSM real estilizado — grayscale forte neutraliza
+   os POIs coloridos (mantém só Parque público + estrada perceptíveis),
+   contraste alto delineia as ruas, leve sepia aquece para a paleta da marca.
+   A cor de destaque vem do pin vermelho (#ae0011) sobreposto no ponto exato.
+   Apenas tratamento visual — não afeta o pan/zoom do iframe. */
+.map-stylized {
+  filter: grayscale(0.92) sepia(0.1) brightness(0.98) contrast(1.5) saturate(1.1);
+}
+
 /* Etapa 37 (corrigida): padrão de fundo ancorado na viewport via body::before.
    A base creme é o background-color do html (canvas opaco); o pseudo carrega
    SOMENTE a imagem — opacity no box que também tinha background-color lavava o

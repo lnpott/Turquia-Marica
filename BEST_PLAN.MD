@@ -1822,3 +1822,22 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
 - **Motivo:** o responsável avaliou o resultado visual como insatisfatório ("Não ficou bom") após o deploy.
 - **O que foi revertido:** o commit `66ddca8` (filtro duotone `.map-duotone` aplicado ao iframe do OpenStreetMap + moldura `ring-on-surface/15`/`hover:shadow-md`) foi desfeito via `git revert 7d6370c`. O `MapEmbed.jsx`, `index.css` e `BEST_PLAN.MD` voltaram ao estado da Etapa 41 (mapa real OSM sem filtro, moldura original `ring-[#d9cdbd]` + sombra de hover existente).
 - **Próximo passo:** aguardar nova direção do responsável para o tratamento visual do mapa (ou manter o OSM padrão como está).
+
+## Etapa 43 — Mapa OSM estilizado com pin da marca (grayscale + logo no pin)
+
+- **Estado:** ✅ CONCLUÍDO
+- **Data:** 17/08/2026
+- **Executado por:** DeepSeek (psique v4) via Freebuff MCP, direto em main (após aprovação do protótipo pelo responsável).
+- **Problema resolvido:** a Etapa 42 (duotone) foi revertida porque o resultado não agradou; o responsável pediu uma nova direção: base grayscale com finos detalhes em vermelho do site e pin com a "cabeça" contendo o logo oficial (crescente + mesquita), no tamanho do pin original, bem refinado.
+- **Implementação realizada:**
+  - `src/styles/index.css`: nova classe `.map-stylized` — `filter: grayscale(0.92) sepia(0.1) brightness(0.98) contrast(1.5) saturate(1.1)` — grayscale forte neutraliza POIs coloridos (só Parque público e estrada perceptíveis), contraste 1.5 delineia as ruas, sepia leve aquece para a paleta da marca.
+  - `src/components/location/MapEmbed.jsx`: iframe OSM envolvido no wrapper `.map-stylized` (overflow-hidden, rounded); pin SVG customizado (36×44, proporção exata) sobreposto no ponto exato (centro do bbox = coordenadas reais da Etapa 41): gota em `#ae0011` com contorno creme e anel fino `#251913`, cabeça circular com o logo oficial (`logo-96.webp` importado via Vite, recorte circular 21px, `preserveAspectRatio="xMidYMid slice"`); badge "Turquia Lanches" em `bg-on-surface` com texto branco acima do pin; tudo com `pointer-events: none` — pan/zoom do iframe preservado.
+  - Card de endereço, bússola e CTA "Abrir rota" intocados.
+- **Medição (Playwright, local):**
+  - POIs coloridos (sat>0.25): 0,9% (desktop) / 1,5% (mobile) — vs ~9% no OSM padrão → lugares não relevantes neutralizados.
+  - Delineação de ruas: contraste 1.5 calibrado em 3 iterações (v1 1.25 → 22,4; v3 brightness 0.98 + contrast 1.5 → melhor delineação).
+  - Legibilidade: rótulos do mapa preservados (contraste alto mantido).
+  - Pin validado no DOM: 36×44px (ratio 0.82 = viewBox), logo referenciado (`/assets/logo-96-*.webp` hashed), cabeça r=11, badge presente; desktop e mobile 375px.
+  - Pan/zoom do iframe confirmado funcional (camadas decorativas com pointer-events: none).
+- **Validação:** `npm run check` (lint + 8 testes + build), `npm audit --audit-level=high` (0 vulnerabilidades), `git diff --check` e MD5 do logo (`b8bfb19a…` / `77fa9b36…` — arquivo original intocado; o import via Vite gera hash no bundle sem alterar a fonte) aprovados.
+- **Arquivos modificados:** `src/components/location/MapEmbed.jsx`, `src/styles/index.css`, `BEST_PLAN.MD`

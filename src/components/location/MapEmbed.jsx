@@ -1,5 +1,6 @@
 import { Compass, ExternalLink, MapPin, Navigation } from 'lucide-react'
 import { BUSINESS_INFO } from '../../data/contact'
+import logo from '../../assets/images/brand/logo-96.webp'
 
 /* Mapa real via OpenStreetMap — coordenadas validadas pelo responsável.
    Bbox: ±0.005° ao redor do ponto central (raio visível ~500 m). */
@@ -17,14 +18,49 @@ function MapEmbed() {
 
   return (
     <div className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden rounded-sm bg-[#e9e0d2] p-4 sm:p-5 ring-1 ring-inset ring-[#d9cdbd] transition-all duration-smooth ease-smooth hover:-translate-y-1 hover:shadow-[0_18px_35px_-24px_rgba(33,22,13,0.7)]">
-      {/* Mapa real OpenStreetMap (interativo: pan/zoom) */}
-      <iframe
-        src={OSM_EMBED_URL}
-        title="Mapa de localização — Turquia Lanches"
-        loading="lazy"
-        style={{ border: 0 }}
-        className="absolute inset-0 h-full w-full rounded-sm"
-      />
+      {/* Mapa real OpenStreetMap (interativo: pan/zoom) — estilizado: grayscale
+          neutraliza POIs coloridos e contraste alto delineia as ruas */}
+      <div className="map-stylized absolute inset-0 overflow-hidden rounded-sm">
+        <iframe
+          src={OSM_EMBED_URL}
+          title="Mapa de localização — Turquia Lanches"
+          loading="lazy"
+          style={{ border: 0 }}
+          className="h-full w-full"
+        />
+      </div>
+
+      {/* Pin da marca + nome — sobrepostos no ponto exato (centro do bbox = coordenadas reais).
+          Cabeça do pin contém o logo oficial (crescente + mesquita), ponta em primary (#ae0011). */}
+      <div
+        className="pointer-events-none absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-full flex-col items-center"
+        aria-hidden="true"
+      >
+        <span className="mb-1 whitespace-nowrap rounded-sm bg-on-surface px-2 py-1 text-[9px] font-bold uppercase tracking-[0.14em] text-white shadow-sm">
+          Turquia Lanches
+        </span>
+        <svg
+          viewBox="0 0 36 44"
+          className="w-9 drop-shadow-[0_3px_3px_rgba(37,25,19,0.45)]"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* Gota do pin em primary (#ae0011) */}
+          <path
+            d="M18 1 C10 1 3.5 7.5 3.5 15.5 C3.5 25 18 43 18 43 C18 43 32.5 25 32.5 15.5 C32.5 7.5 26 1 18 1 Z"
+            fill="#ae0011"
+            stroke="#fffdfa"
+            strokeWidth="1.5"
+          />
+          {/* Cabeça circular com o logo oficial recortado */}
+          <clipPath id="pin-logo-clip">
+            <circle cx="18" cy="15.5" r="10.5" />
+          </clipPath>
+          <circle cx="18" cy="15.5" r="11" fill="#fffdfa" />
+          <image href={logo} x="7.5" y="5" width="21" height="21" clipPath="url(#pin-logo-clip)" preserveAspectRatio="xMidYMid slice" />
+          <circle cx="18" cy="15.5" r="11" stroke="#251913" strokeWidth="0.8" />
+        </svg>
+      </div>
 
       {/* Camadas flutuantes sobre o mapa — pointer-events:none para não bloquear pan/zoom */}
       <div className="relative z-10 flex items-start justify-between gap-3 pointer-events-none">
