@@ -1772,9 +1772,9 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
 - **Problema resolvido:** O componente `MapEmbed` funcionava anteriormente apenas como um card textual simples com botão para o Google Maps, sem transmitir reconhecimento cartográfico ou informação espacial imediata.
 - **Implementação realizada:**
   - `src/components/location/MapEmbed.jsx`: Reformulado com ilustração cartográfica SVG estilizada de alta fidelidade e zero dependências externas.
-  - Desenho vetorial de malha viária integrada à paleta do site: vias principais em `#fffdfa` com casings `#cfc1ae`, vias secundárias em `#f8f4ec` com casings `#d6c8b7`, linhas centrais tracejadas, quadras urbanas `#dfd2bf` e identificação sutil das vias ("R. CANARINHOS", "AV. PRINCIPAL", "ACESSO PARQUE").
-  - Identificação geográfica contextualizada: mancha sutil da área verde do Parque Nanci (`#dbe4d2`) e orla da Lagoa de Maricá (`#d3dede`).
-  - Marcador de localização (Pin) com gota cartográfica em vermelho primário (`#ae0011`), anel de pulso ambiente, sombra de solo e callout badge ("TURQUIA LANCHES") em `#251913` com ponto de acento em amarelo `#fdc008`.
+  - **Calibração de escala para raio de 400 a 500 metros:** ampliada a cobertura do enquadramento para apresentar ~25 quadras urbanas do loteamento residencial do Parque Nanci, vias estruturantes (Av. Parque Nanci, R. Canarinhos, R. Beija-Flores, R. Gaivotas, Acesso Orla), a extensão da área verde e lago de lazer do Parque Nanci e o arco completo da Orla da Lagoa de Maricá.
+  - Incluída régua métrica sutil de escala cartográfica (`200 m (Raio ~500m)`).
+  - Marcador de localização (Pin) com gota cartográfica em vermelho primário (`#ae0011`), anel de pulso ambiente, sombra de solo e callout badge ("TURQUIA LANCHES") em `#251913` com ponto de acento em amarelo `#fdc008`, fixado no lote 663 da R. Canarinhos.
   - Indicador de orientação / bússola (ícone `Compass`) no canto superior direito em badge translúcido com backdrop-blur.
   - Card flutuante de endereço com parsing seguro e à prova de falhas de `BUSINESS_INFO.location.value` ("R. Canarinhos, 663", "Parque Nanci · Maricá - RJ", "24914-160").
   - CTA tátil "Abrir rota" com ícone de navegação e link externo preservando o destino oficial do Google Maps (`BUSINESS_INFO.channels.maps.url`).
