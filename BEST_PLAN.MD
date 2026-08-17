@@ -1814,3 +1814,11 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
 - **Arquivos modificados:**
   - `src/components/location/MapEmbed.jsx`
   - `BEST_PLAN.MD`
+
+## Etapa 42 — REVERTIDA (17/08/2026) — Estilização visual do mapa real (duotone editorial)
+
+- **Estado:** ⛔ REVERTIDA pelo responsável
+- **Data da reversão:** 17/08/2026
+- **Motivo:** o responsável avaliou o resultado visual como insatisfatório ("Não ficou bom") após o deploy.
+- **O que foi revertido:** o commit `66ddca8` (filtro duotone `.map-duotone` aplicado ao iframe do OpenStreetMap + moldura `ring-on-surface/15`/`hover:shadow-md`) foi desfeito via `git revert 7d6370c`. O `MapEmbed.jsx`, `index.css` e `BEST_PLAN.MD` voltaram ao estado da Etapa 41 (mapa real OSM sem filtro, moldura original `ring-[#d9cdbd]` + sombra de hover existente).
+- **Próximo passo:** aguardar nova direção do responsável para o tratamento visual do mapa (ou manter o OSM padrão como está).
