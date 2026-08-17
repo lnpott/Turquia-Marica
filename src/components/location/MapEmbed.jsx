@@ -19,47 +19,46 @@ function MapGraphic() {
           </filter>
         </defs>
 
-        {/* Base Cartográfica (Terreno do Bairro) */}
-        <rect width="600" height="320" fill="#eae0d0" />
+        {/* Base Cartográfica (Terreno Regional ~1 km) */}
+        <rect width="600" height="320" fill="#e8ded0" />
 
-        {/* Orla e Lagoa de Maricá (Raio sul ~500m) */}
+        {/* Lagoa de Maricá (Ampla enseada no raio sul/sudeste de 1 km) */}
         <path
-          d="M -10 260 Q 140 245, 300 258 T 610 235 L 610 330 L -10 330 Z"
-          fill="#d0dddc"
-          opacity="0.85"
+          d="M -10 240 Q 120 220, 270 240 T 610 210 L 610 330 L -10 330 Z"
+          fill="#cddcdc"
+          opacity="0.9"
         />
         <path
-          d="M -10 260 Q 140 245, 300 258 T 610 235"
-          stroke="#dfd4c4"
-          strokeWidth="6"
+          d="M -10 240 Q 120 220, 270 240 T 610 210"
+          stroke="#ded3c2"
+          strokeWidth="5"
           fill="none"
         />
         <text
-          x="320"
-          y="298"
-          fill="#5f7777"
-          fontSize="7.5"
+          x="350"
+          y="285"
+          fill="#587272"
+          fontSize="7"
           fontFamily="'DM Sans', sans-serif"
           fontWeight="700"
-          letterSpacing="0.12em"
+          letterSpacing="0.14em"
           textAnchor="middle"
         >
-          ORLA &amp; LAGOA DE MARICÁ
+          LAGOA DE MARICÁ · ORLA PARQUE NANCI
         </text>
 
-        {/* Área Verde do Parque Nanci (Parque & Lazer no raio leste ~400m) */}
+        {/* Área Verde do Parque Nanci (Complexo de Lazer ~1 km) */}
         <path
-          d="M 435 15 C 485 5, 545 10, 595 25 L 595 155 C 540 165, 480 155, 435 135 Z"
-          fill="#d5e3cd"
+          d="M 450 65 C 500 55, 555 60, 595 75 L 595 185 C 545 195, 490 185, 450 165 Z"
+          fill="#d1dfc8"
           opacity="0.9"
         />
-        {/* Lago interno / Pista do Parque */}
-        <ellipse cx="515" cy="80" rx="30" ry="18" fill="#c3d5d5" opacity="0.75" />
+        <ellipse cx="525" cy="125" rx="26" ry="14" fill="#bed3d3" opacity="0.75" />
         <text
-          x="515"
-          y="50"
-          fill="#6d8062"
-          fontSize="8"
+          x="525"
+          y="95"
+          fill="#64785a"
+          fontSize="7"
           fontFamily="'DM Sans', sans-serif"
           fontWeight="700"
           letterSpacing="0.08em"
@@ -68,87 +67,143 @@ function MapGraphic() {
           PARQUE NANCI (LAZER)
         </text>
 
-        {/* Grade de Quadras Urbanas (Raio amplo de 500m - ~25 quadras) */}
+        {/* Rodovia RJ-106 / Amaral Peixoto (Ao norte no raio de 1 km) */}
+        <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+          {/* Casing Rodovia */}
+          <path d="M -10 22 Q 280 26, 610 18" stroke="#c2b29d" strokeWidth="16" />
+          {/* Leito Rodovia Duplicada */}
+          <path d="M -10 22 Q 280 26, 610 18" stroke="#fffdfa" strokeWidth="12" />
+          {/* Canteiro Central */}
+          <path d="M -10 22 Q 280 26, 610 18" stroke="#7a8c6e" strokeWidth="1.5" />
+        </g>
+        <text
+          x="190"
+          y="14"
+          fill="#786655"
+          fontSize="6.5"
+          fontFamily="'DM Sans', sans-serif"
+          fontWeight="700"
+          letterSpacing="0.08em"
+        >
+          RODOVIA AMARAL PEIXOTO (RJ-106)
+        </text>
+
+        {/* Grade Densa de Quadras Urbanas (~45 quadras no raio de 1 km) */}
         <g fill="#ded1be" opacity="0.75">
-          {/* Fileira 1 (Norte) */}
-          <rect x="15" y="15" width="55" height="40" rx="3" />
-          <rect x="85" y="15" width="60" height="40" rx="3" />
-          <rect x="165" y="15" width="65" height="40" rx="3" />
-          <rect x="250" y="15" width="70" height="40" rx="3" />
-          <rect x="340" y="15" width="75" height="40" rx="3" />
+          {/* Fileira 1 (Norte - próximo à RJ-106) */}
+          <rect x="15" y="36" width="38" height="24" rx="2" />
+          <rect x="60" y="36" width="42" height="24" rx="2" />
+          <rect x="110" y="36" width="45" height="24" rx="2" />
+          <rect x="165" y="36" width="48" height="24" rx="2" />
+          <rect x="220" y="36" width="50" height="24" rx="2" />
+          <rect x="280" y="36" width="52" height="24" rx="2" />
+          <rect x="342" y="36" width="54" height="24" rx="2" />
+          <rect x="406" y="36" width="54" height="24" rx="2" />
 
           {/* Fileira 2 */}
-          <rect x="15" y="68" width="55" height="45" rx="3" />
-          <rect x="85" y="68" width="60" height="45" rx="3" />
-          <rect x="165" y="68" width="65" height="45" rx="3" />
-          <rect x="250" y="68" width="70" height="45" rx="3" />
-          <rect x="340" y="68" width="75" height="45" rx="3" />
+          <rect x="15" y="66" width="38" height="26" rx="2" />
+          <rect x="60" y="66" width="42" height="26" rx="2" />
+          <rect x="110" y="66" width="45" height="26" rx="2" />
+          <rect x="165" y="66" width="48" height="26" rx="2" />
+          <rect x="220" y="66" width="50" height="26" rx="2" />
+          <rect x="280" y="66" width="52" height="26" rx="2" />
+          <rect x="342" y="66" width="54" height="26" rx="2" />
+          <rect x="406" y="66" width="36" height="26" rx="2" />
 
-          {/* Fileira 3 (Entorno da R. Canarinhos) */}
-          <rect x="15" y="126" width="55" height="45" rx="3" />
-          <rect x="85" y="126" width="60" height="45" rx="3" />
-          <rect x="165" y="126" width="65" height="45" rx="3" />
-          <rect x="250" y="126" width="70" height="45" rx="3" />
-          <rect x="340" y="126" width="75" height="45" rx="3" />
-          <rect x="435" y="145" width="70" height="35" rx="3" />
-          <rect x="520" y="145" width="65" height="35" rx="3" />
+          {/* Fileira 3 (Miolo / R. Canarinhos) */}
+          <rect x="15" y="98" width="38" height="28" rx="2" />
+          <rect x="60" y="98" width="42" height="28" rx="2" />
+          <rect x="110" y="98" width="45" height="28" rx="2" />
+          <rect x="165" y="98" width="48" height="28" rx="2" />
+          <rect x="220" y="98" width="50" height="28" rx="2" />
+          <rect x="280" y="98" width="52" height="28" rx="2" />
+          <rect x="342" y="98" width="54" height="28" rx="2" />
+          <rect x="406" y="98" width="36" height="28" rx="2" />
 
           {/* Fileira 4 */}
-          <rect x="15" y="184" width="55" height="42" rx="3" />
-          <rect x="85" y="184" width="60" height="42" rx="3" />
-          <rect x="165" y="184" width="65" height="42" rx="3" />
-          <rect x="250" y="184" width="70" height="42" rx="3" />
-          <rect x="340" y="184" width="75" height="42" rx="3" />
-          <rect x="435" y="192" width="70" height="34" rx="3" />
-          <rect x="520" y="192" width="65" height="34" rx="3" />
+          <rect x="15" y="132" width="38" height="28" rx="2" />
+          <rect x="60" y="132" width="42" height="28" rx="2" />
+          <rect x="110" y="132" width="45" height="28" rx="2" />
+          <rect x="165" y="132" width="48" height="28" rx="2" />
+          <rect x="220" y="132" width="50" height="28" rx="2" />
+          <rect x="280" y="132" width="52" height="28" rx="2" />
+          <rect x="342" y="132" width="54" height="28" rx="2" />
+          <rect x="406" y="132" width="36" height="28" rx="2" />
+
+          {/* Fileira 5 (Sul / Próximo à Orla) */}
+          <rect x="15" y="166" width="38" height="28" rx="2" />
+          <rect x="60" y="166" width="42" height="28" rx="2" />
+          <rect x="110" y="166" width="45" height="28" rx="2" />
+          <rect x="165" y="166" width="48" height="28" rx="2" />
+          <rect x="220" y="166" width="50" height="28" rx="2" />
+          <rect x="280" y="166" width="52" height="28" rx="2" />
+          <rect x="342" y="166" width="54" height="28" rx="2" />
+          <rect x="406" y="166" width="36" height="28" rx="2" />
+          <rect x="450" y="172" width="60" height="22" rx="2" />
+
+          {/* Fileira 6 (Beira-laguna) */}
+          <rect x="15" y="200" width="38" height="24" rx="2" />
+          <rect x="60" y="200" width="42" height="24" rx="2" />
+          <rect x="110" y="200" width="45" height="24" rx="2" />
+          <rect x="165" y="200" width="48" height="24" rx="2" />
+          <rect x="220" y="200" width="50" height="24" rx="2" />
+          <rect x="280" y="200" width="52" height="24" rx="2" />
         </g>
 
-        {/* Casings das Ruas (Contornos da malha viária 500m) */}
+        {/* Casings das Ruas (Contornos da malha viária 1 km) */}
         <g fill="none" stroke="#cfc1ae" strokeLinecap="round" strokeLinejoin="round">
-          {/* Avenidas Principais Estruturantes */}
-          <path d="M 240 -10 L 240 330" strokeWidth="16" />
-          <path d="M -10 120 L 610 120" strokeWidth="15" />
-          <path d="M 425 -10 L 425 245" strokeWidth="13" />
+          {/* Avenidas Principais de Acesso */}
+          <path d="M 216 15 L 216 330" strokeWidth="12" />
+          <path d="M 338 15 L 338 330" strokeWidth="11" />
+          <path d="M -10 130 L 610 130" strokeWidth="11" />
+          <path d="M 445 15 L 445 220" strokeWidth="10" />
 
-          {/* Ruas Secundárias da Grade */}
-          <path d="M -10 62 L 610 62" strokeWidth="9" stroke="#d7c9b8" />
-          <path d="M -10 178 L 610 178" strokeWidth="9" stroke="#d7c9b8" />
-          <path d="M -10 234 L 610 234" strokeWidth="9" stroke="#d7c9b8" />
+          {/* Ruas Secundárias Finas da Grade 1 km */}
+          <path d="M -10 63 L 610 63" strokeWidth="6" stroke="#d7c9b8" />
+          <path d="M -10 95 L 610 95" strokeWidth="6" stroke="#d7c9b8" />
+          <path d="M -10 163 L 610 163" strokeWidth="6" stroke="#d7c9b8" />
+          <path d="M -10 197 L 610 197" strokeWidth="6" stroke="#d7c9b8" />
 
-          <path d="M 77 -10 L 77 330" strokeWidth="9" stroke="#d7c9b8" />
-          <path d="M 155 -10 L 155 330" strokeWidth="9" stroke="#d7c9b8" />
-          <path d="M 330 -10 L 330 330" strokeWidth="9" stroke="#d7c9b8" />
-          <path d="M 510 140 L 510 240" strokeWidth="9" stroke="#d7c9b8" />
+          <path d="M 56 15 L 56 330" strokeWidth="6" stroke="#d7c9b8" />
+          <path d="M 106 15 L 106 330" strokeWidth="6" stroke="#d7c9b8" />
+          <path d="M 161 15 L 161 330" strokeWidth="6" stroke="#d7c9b8" />
+          <path d="M 276 15 L 276 330" strokeWidth="6" stroke="#d7c9b8" />
+          <path d="M 402 15 L 402 220" strokeWidth="6" stroke="#d7c9b8" />
+          <path d="M 515 65 L 515 210" strokeWidth="6" stroke="#d7c9b8" />
         </g>
 
         {/* Fills das Ruas (Leitos em branco e off-white) */}
         <g fill="none" strokeLinecap="round" strokeLinejoin="round">
           {/* Avenidas Principais */}
-          <path d="M 240 -10 L 240 330" strokeWidth="12" stroke="#fffdfa" />
-          <path d="M -10 120 L 610 120" strokeWidth="11" stroke="#fffdfa" />
-          <path d="M 425 -10 L 425 245" strokeWidth="9" stroke="#fffdfa" />
+          <path d="M 216 15 L 216 330" strokeWidth="9" stroke="#fffdfa" />
+          <path d="M 338 15 L 338 330" strokeWidth="8" stroke="#fffdfa" />
+          <path d="M -10 130 L 610 130" strokeWidth="8" stroke="#fffdfa" />
+          <path d="M 445 15 L 445 220" strokeWidth="7" stroke="#fffdfa" />
 
           {/* Ruas Secundárias */}
-          <path d="M -10 62 L 610 62" strokeWidth="6" stroke="#f8f4ec" />
-          <path d="M -10 178 L 610 178" strokeWidth="6" stroke="#f8f4ec" />
-          <path d="M -10 234 L 610 234" strokeWidth="6" stroke="#f8f4ec" />
+          <path d="M -10 63 L 610 63" strokeWidth="4" stroke="#f8f4ec" />
+          <path d="M -10 95 L 610 95" strokeWidth="4" stroke="#f8f4ec" />
+          <path d="M -10 163 L 610 163" strokeWidth="4" stroke="#f8f4ec" />
+          <path d="M -10 197 L 610 197" strokeWidth="4" stroke="#f8f4ec" />
 
-          <path d="M 77 -10 L 77 330" strokeWidth="6" stroke="#f8f4ec" />
-          <path d="M 155 -10 L 155 330" strokeWidth="6" stroke="#f8f4ec" />
-          <path d="M 330 -10 L 330 330" strokeWidth="6" stroke="#f8f4ec" />
-          <path d="M 510 140 L 510 240" strokeWidth="6" stroke="#f8f4ec" />
+          <path d="M 56 15 L 56 330" strokeWidth="4" stroke="#f8f4ec" />
+          <path d="M 106 15 L 106 330" strokeWidth="4" stroke="#f8f4ec" />
+          <path d="M 161 15 L 161 330" strokeWidth="4" stroke="#f8f4ec" />
+          <path d="M 276 15 L 276 330" strokeWidth="4" stroke="#f8f4ec" />
+          <path d="M 402 15 L 402 220" strokeWidth="4" stroke="#f8f4ec" />
+          <path d="M 515 65 L 515 210" strokeWidth="4" stroke="#f8f4ec" />
         </g>
 
-        {/* Linha Central Tracejada da Avenida Principal */}
-        <path d="M 240 5 L 240 315" fill="none" stroke="#dcd0be" strokeWidth="1" strokeDasharray="5 4" />
-        <path d="M 5 120 L 600 120" fill="none" stroke="#dcd0be" strokeWidth="1" strokeDasharray="5 4" />
+        {/* Linhas Centrais Tracejadas das Avenidas */}
+        <path d="M 216 25 L 216 315" fill="none" stroke="#dcd0be" strokeWidth="0.9" strokeDasharray="4 3" />
+        <path d="M 5 130 L 600 130" fill="none" stroke="#dcd0be" strokeWidth="0.9" strokeDasharray="4 3" />
 
-        {/* Rotulagem Cartográfica do Bairro (~500m) */}
+        {/* Rotulagem Cartográfica Regional (~1 km) */}
         <text
-          x="378"
-          y="116"
-          fill="#827060"
-          fontSize="7.5"
+          x="368"
+          y="126"
+          fill="#7e6c5c"
+          fontSize="6.5"
           fontFamily="'DM Sans', sans-serif"
           fontWeight="700"
           letterSpacing="0.08em"
@@ -157,10 +212,10 @@ function MapGraphic() {
           R. CANARINHOS
         </text>
         <text
-          x="115"
-          y="116"
-          fill="#827060"
-          fontSize="7.5"
+          x="132"
+          y="126"
+          fill="#7e6c5c"
+          fontSize="6.5"
           fontFamily="'DM Sans', sans-serif"
           fontWeight="700"
           letterSpacing="0.08em"
@@ -169,103 +224,92 @@ function MapGraphic() {
           R. CANARINHOS
         </text>
         <text
-          x="235"
-          y="40"
-          fill="#8f7d6e"
-          fontSize="7"
+          x="211"
+          y="50"
+          fill="#887667"
+          fontSize="6"
           fontFamily="'DM Sans', sans-serif"
           fontWeight="600"
           letterSpacing="0.06em"
-          transform="rotate(-90, 235, 40)"
+          transform="rotate(-90, 211, 50)"
           textAnchor="middle"
         >
           AV. PARQUE NANCI
         </text>
         <text
-          x="115"
-          y="174"
-          fill="#9a8979"
-          fontSize="6.5"
+          x="333"
+          y="50"
+          fill="#887667"
+          fontSize="6"
           fontFamily="'DM Sans', sans-serif"
           fontWeight="600"
-          letterSpacing="0.05em"
+          letterSpacing="0.06em"
+          transform="rotate(-90, 333, 50)"
           textAnchor="middle"
         >
-          R. BEIJA-FLORES
+          AV. DO CONTORNO
         </text>
         <text
-          x="115"
-          y="58"
-          fill="#9a8979"
-          fontSize="6.5"
+          x="440"
+          y="180"
+          fill="#887667"
+          fontSize="5.5"
           fontFamily="'DM Sans', sans-serif"
           fontWeight="600"
           letterSpacing="0.05em"
-          textAnchor="middle"
-        >
-          R. GAIVOTAS
-        </text>
-        <text
-          x="420"
-          y="200"
-          fill="#8f7d6e"
-          fontSize="6.5"
-          fontFamily="'DM Sans', sans-serif"
-          fontWeight="600"
-          letterSpacing="0.05em"
-          transform="rotate(-90, 420, 200)"
+          transform="rotate(-90, 440, 180)"
           textAnchor="middle"
         >
           ACESSO ORLA
         </text>
 
-        {/* Indicador de Escala Métrica do Mapa (200m / Raio ~500m) */}
-        <g transform="translate(20, 302)" opacity="0.8">
-          <line x1="0" y1="0" x2="55" y2="0" stroke="#705e4e" strokeWidth="1.5" />
-          <line x1="0" y1="-3" x2="0" y2="3" stroke="#705e4e" strokeWidth="1.5" />
-          <line x1="55" y1="-3" x2="55" y2="3" stroke="#705e4e" strokeWidth="1.5" />
+        {/* Indicador de Escala Métrica do Mapa (500m / Raio ~1 km) */}
+        <g transform="translate(20, 302)" opacity="0.85">
+          <line x1="0" y1="0" x2="60" y2="0" stroke="#685646" strokeWidth="1.5" />
+          <line x1="0" y1="-3" x2="0" y2="3" stroke="#685646" strokeWidth="1.5" />
+          <line x1="60" y1="-3" x2="60" y2="3" stroke="#685646" strokeWidth="1.5" />
           <text
-            x="27.5"
+            x="30"
             y="-3.5"
-            fill="#705e4e"
-            fontSize="6.5"
+            fill="#685646"
+            fontSize="6"
             fontFamily="'DM Sans', sans-serif"
             fontWeight="700"
             letterSpacing="0.04em"
             textAnchor="middle"
           >
-            200 m (Raio ~500m)
+            500 m (Raio ~1 km)
           </text>
         </g>
 
-        {/* Marcador do Estabelecimento (Pin & Ripple localizado no 663 da R. Canarinhos) */}
-        <g transform="translate(285, 120)">
+        {/* Marcador do Estabelecimento (Pin & Ripple no 663 da R. Canarinhos) */}
+        <g transform="translate(295, 130)">
           {/* Sombra de chão */}
-          <ellipse cx="0" cy="3" rx="13" ry="4.5" fill="#251913" opacity="0.25" />
+          <ellipse cx="0" cy="3" rx="12" ry="4" fill="#251913" opacity="0.28" />
 
           {/* Anel de radar / pulso ambiente */}
-          <circle cx="0" cy="3" r="14" fill="none" stroke="#ae0011" strokeWidth="1.75" opacity="0.35" />
+          <circle cx="0" cy="3" r="13" fill="none" stroke="#ae0011" strokeWidth="1.5" opacity="0.35" />
 
           {/* Pin Cartográfico estilizado em Vermelho Primário */}
           <path
-            d="M 0 -26 C -10 -26 -16 -18 -16 -9 C -16 2 0 3 0 3 C 0 3 16 2 16 -9 C 16 -18 10 -26 0 -26 Z"
+            d="M 0 -24 C -9 -24 -15 -17 -15 -8 C -15 2 0 3 0 3 C 0 3 15 2 15 -8 C 15 -17 9 -24 0 -24 Z"
             fill="#ae0011"
             stroke="#ffffff"
-            strokeWidth="1.75"
+            strokeWidth="1.5"
             filter="url(#pinShadow)"
           />
-          <circle cx="0" cy="-11" r="4" fill="#ffffff" />
+          <circle cx="0" cy="-10" r="3.5" fill="#ffffff" />
 
           {/* Badge / Callout acima do Pin */}
-          <g transform="translate(0, -38)" filter="url(#badgeShadow)">
-            <rect x="-56" y="-10" width="112" height="20" rx="10" fill="#251913" stroke="#d9cdbd" strokeWidth="1" />
-            <polygon points="0,14 -4,10 4,10" fill="#251913" />
-            <circle cx="-44" cy="0" r="2.8" fill="#fdc008" />
+          <g transform="translate(0, -35)" filter="url(#badgeShadow)">
+            <rect x="-52" y="-9" width="104" height="18" rx="9" fill="#251913" stroke="#d9cdbd" strokeWidth="1" />
+            <polygon points="0,12 -3.5,9 3.5,9" fill="#251913" />
+            <circle cx="-41" cy="0" r="2.5" fill="#fdc008" />
             <text
-              x="-36"
-              y="3"
+              x="-34"
+              y="2.8"
               fill="#ffffff"
-              fontSize="8"
+              fontSize="7.5"
               fontFamily="'DM Sans', sans-serif"
               fontWeight="700"
               letterSpacing="0.06em"
@@ -338,4 +382,5 @@ function MapEmbed() {
     </a>
   )
 }
+
 export default MapEmbed
