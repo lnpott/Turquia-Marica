@@ -1721,3 +1721,43 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
 - **Ajuste aplicado:** `body::before` permanece em `opacity: 1` (máximo) e as seções creme caíram de `/[0.40]` para **`/[0.35]`** (mesmos 7 seletores: fatos rápidos, Cardápio, Sobre, Localização e Avaliações ×3).
 - **Medição pós-ajuste:** contraste nas seções creme subiu de 29,7 para **31,8** unidades de luminância em desktop 1280px (Δ+2,1 ≈ metade do aumento anterior de +5,7, alvo ~32,5) e permaneceu **52,0** em mobile 375px; padrão visível a olho nu em ambos; Hero (`rgb(37,25,19)`) e rodapé (`rgb(26,16,8)`) confirmados 100% opacos; texto preservado.
 - **Validação:** `npm run check`, `npm run lint`, `npm run test` (8/8), `npm audit` (0 vulnerabilidades) e `git diff --check` aprovados; hashes do logo conferidos (`b8bfb19a…` / `77fa9b36…`).
+
+---
+
+## Etapa 39 — Auditoria geral do projeto (relatório e pendências)
+
+- **Estado:** REGISTRADO — auditoria entregue em relatório; nenhuma implementação executada.
+- **Data:** 17/08/2026
+- **Origem:** solicitação do responsável após a Etapa 38 (2º refinamento do brand-pattern).
+
+> ⚠️ **Aviso aos agentes que executam neste repositório:**
+> 1. **Governança:** nenhuma implementação pode ser feita diretamente em `main` — criar branch a partir de `origin/main`, validar e abrir PR. As Etapas 32–35 foram executadas “direto em main” em violação a esta regra; uma edição em andamento em `src/hooks/useActiveSection.js` também foi feita em `main` e revertida a pedido do responsável.
+> 2. **Suíte E2E defasada:** `npm run test:e2e` está com 6 falhas pré-existentes (3 testes × desktop/mobile). `tests/e2e/site.spec.js` ainda espera o comportamento anterior às Etapas 32/33 (cardápio vazio, reviews fictícios, texto “Ilustração · não é um mapa”); `tests/e2e-demo/visual-qa.spec.js` e `playwright.demo.config.js` ainda usam a rota antiga `/__visual-qa` (renomeada para `/visual-qa-demo` na Etapa 29) e esperam 16 artigos (hoje 9). **Não marcar a suíte como verde nem validar E2E sem atualizar os specs ao contrato atual.**
+> 3. **Observer de seção ativa:** o refactor de `useActiveSection` para observer compartilhado (via `useSyncExternalStore`) foi implementado e validado (6/6 testes E2E de navegação) e **revertido a pedido do responsável** — fica como referência para a Fase 2 do plano abaixo.
+
+### Pontos de atenção (resumo)
+
+- 🔴 **Suíte E2E defasada** (6 falhas) — atualizar specs ao contrato atual; CI (`quality.yml`) só roda em `BEST_ONE`, deixando `main` com E2E vermelho sem aviso.
+- 🔴 **`useActiveSection` duplicado** em Header/BottomNavBar (2 IntersectionObservers com 21 thresholds + 2 scroll listeners) — a Etapa 27.1 previa “mesma fonte de estado; não duplicará lógica de observer”.
+- 🟠 **`MapEmbed` parsing frágil do endereço** — `address.indexOf(' - ')` sem guarda para `dash === -1` (se o endereço mudar, `slice(0, -1)` corrompe o texto).
+- 🟠 **`ReviewsSection`** — layout shift no estado de loading; campos mortos no fallback (`badge`, `ratings`, `orderType`, `preco`, `pratos`).
+- 🟠 **Docs defasados** — `documentacao/ASSETS.md` referencia `location/map.png` (removido na Etapa 31) e `hero-gallery` como “Categoria Bebidas” (asset órfão); `README.md` afirma “HTML próprio por rota”, mas é SPA único com rewrites/redirects.
+- 🟠 **`.freebuff/` fora do `.gitignore`** — aparece como untracked.
+- 🟡 **Bundle único ~71 kB gzip** (dominado por React + React Router) — code-split das seções e `content-visibility` não recomendados sem medição (risco no scroll de deep-links).
+
+### Validações da auditoria (17/08/2026)
+
+- [x] `npm run lint` — aprovado
+- [x] `npm run test` — 8/8
+- [x] `npm run build` — JS 219,7 kB (gzip 71,4 kB); `audit:demo-leak` sem vazamento
+- [x] `npm run test:e2e` — 26 passam / 6 falham (defasagem pré-existente)
+- [x] `npm audit` — 0 vulnerabilidades
+- [x] `git pull` — up to date; árvore limpa (edição em andamento revertida)
+
+### Plano de execução sugerido (próximos lotes)
+
+1. **Fase 1 — Testes:** atualizar `tests/e2e/site.spec.js` e `tests/e2e-demo/` ao contrato atual (9 produtos, reviews reais/fallback, texto do MapEmbed, rota `/visual-qa-demo`); deixar `npm run test:e2e` 100% verde; decidir rodar E2E em CI também em `main`.
+2. **Fase 2 — Performance:** compartilhar o observer de seção ativa — `useActiveSection` via `useSyncExternalStore` (uma instância de observer + um scroll listener; apenas inscritos re-renderizam).
+3. **Fase 3 — Robustez:** guarda para `dash === -1` no `MapEmbed`; shell de loading estável + trim de campos no `ReviewsSection`.
+4. **Fase 4 — Higiene:** remover `hero-gallery.{jpg,webp}` órfão; atualizar `ASSETS.md` e `README.md`; adicionar `.freebuff/` ao `.gitignore`.
+5. **Fase 5 — Validação final:** `npm run check`, `npm run build`, `npm run test:e2e`, `npm audit`, `git diff --check`, MD5 do logo; atualizar `BEST_PLAN.MD` e abrir PR para `main`.
