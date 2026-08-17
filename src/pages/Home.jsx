@@ -7,8 +7,8 @@ import ReviewsSection from '../components/reviews/ReviewsSection'
 import Reveal from '../components/ui/Reveal'
 
 const FACTS = [
-  { Icon: ShoppingBag, title: 'Cardápio', value: 'Informações oficiais em confirmação' },
-  { Icon: Instagram, title: 'Canal disponível', value: 'Instagram oficial informado' },
+  { Icon: ShoppingBag, title: 'Pedidos', value: 'Disponíveis pelo iFood' },
+  { Icon: Instagram, title: 'Instagram', value: '@turquialanches' },
   { Icon: ShieldCheck, title: 'Compromisso', value: 'Só publicamos dados confirmados' },
 ]
 

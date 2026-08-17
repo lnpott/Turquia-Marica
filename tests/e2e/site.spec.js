@@ -92,14 +92,19 @@ test('cardápio público mantém estado vazio único e sem comércio fictício',
   await expect(section.locator('a[href*="ifood"]')).toHaveCount(0)
 })
 
-test('Localização aparece uma vez, com um único CTA de rota e dados honestos', async ({ page }) => {
+test('Localização aparece uma vez, com mapa vetorial, CTA único e dados oficiais', async ({ page }) => {
   await page.goto('/#localizacao')
   const section = page.locator('#localizacao')
   await expect(section).toHaveCount(1)
   await expect(section.locator('a[href="https://www.google.com/maps/search/?api=1&query=R.+Canarinhos%2C+663+-+Parque+Nanci%2C+Maric%C3%A1+-+RJ%2C+24914-160"]')).toHaveCount(1)
   await expect(section.getByText('R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160')).toHaveCount(1)
-  await expect(section.getByText('Não disponível / em construção')).toHaveCount(1)
-  await expect(section.locator('iframe[title="Mapa de localização — Turquia Lanches"]')).toBeVisible()
+  await expect(section.getByText('Terça a domingo · 17h às 00h')).toHaveCount(1)
+  await expect(section.getByText('Segunda · Fechado')).toHaveCount(1)
+  await expect(section.getByText('Nosso endereço')).toHaveCount(1)
+  await expect(section.getByText('Siga-nos no Instagram')).toHaveCount(1)
+  await expect(section.getByText('Não disponível / em construção')).toHaveCount(0)
+  await expect(section.locator('iframe')).toHaveCount(0)
+  await expect(section.getByRole('img', { name: /mapa da região do parque nanci/i })).toBeVisible()
   await expect(section.getByText(/CEP|estacionamento|acessibilidade|rota exata/i)).toHaveCount(0)
 })
 

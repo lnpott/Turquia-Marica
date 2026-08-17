@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Image, MessageCircle } from 'lucide-react'
-import Button from '../ui/Button'
+import { Image } from 'lucide-react'
 import Reveal from '../ui/Reveal'
 
-const WHATSAPP_URL = 'https://wa.me/5521964699374'
 const PHOTO_PLACEHOLDERS = [
   { id: 'fachada', label: 'Foto da fachada aguardando envio', isPlaceholder: true },
   { id: 'ambiente', label: 'Foto do ambiente aguardando envio', isPlaceholder: true },
@@ -47,10 +45,6 @@ function AboutSection() {
           <p className="mt-8 max-w-2xl text-lg leading-relaxed text-on-surface/65 md:text-xl">
             O Turquia Lanches é uma casa de bairro em Parque Nanci, Maricá, feita para reunir gente em volta de comida farta e atendimento próximo.
           </p>
-          <Button href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" variant="whatsapp" size="lg" className="mt-8 w-full sm:w-fit">
-            <MessageCircle className="h-5 w-5" aria-hidden="true" />
-            Falar pelo WhatsApp
-          </Button>
         </div>
       </div>
     </Reveal>

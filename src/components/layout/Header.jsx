@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { Menu, ShoppingBag, X } from 'lucide-react'
+import { Instagram, Menu, X } from 'lucide-react'
 import logo from '../../assets/images/brand/logo-96.webp'
 import { BUSINESS_INFO } from '../../data/contact'
 import ChannelAction from '../ui/ChannelAction'
+import IconIfood from '../ui/IconIfood'
 import useActiveSection from '../../hooks/useActiveSection'
 
 const NAV_LINKS = [
@@ -69,12 +70,18 @@ function Header() {
 
         <div className="flex items-center gap-2">
           <ChannelAction
+            channel={BUSINESS_INFO.channels.instagram}
+            icon={Instagram}
+            aria-label="Instagram da Turquia Lanches — @turquialanches"
+            className="hidden h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:inline-flex"
+          />
+          <ChannelAction
             channel={BUSINESS_INFO.channels.ifood}
-            icon={ShoppingBag}
+            icon={IconIfood}
             className="cta-fill-primary hidden min-h-11 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-bold text-on-primary transition-all duration-tactile ease-tactile hover:shadow-lg active:scale-95 md:inline-flex"
             unavailableClassName="hidden min-h-11 cursor-not-allowed items-center gap-2 px-3 text-xs font-bold uppercase tracking-wide text-on-surface-variant/70 md:inline-flex"
           >
-            Pedidos em breve
+            Pedir no iFood
           </ChannelAction>
           <button
             ref={toggleRef}
@@ -102,6 +109,24 @@ function Header() {
               {link.label}
             </a>
           ))}
+
+          <div className="mt-auto flex flex-col gap-3 border-t border-white/10 pt-6">
+            <ChannelAction
+              channel={BUSINESS_INFO.channels.ifood}
+              icon={IconIfood}
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-bold text-on-primary active:scale-95"
+            >
+              Pedir no iFood
+            </ChannelAction>
+            <ChannelAction
+              channel={BUSINESS_INFO.channels.instagram}
+              icon={Instagram}
+              aria-label="Instagram da Turquia Lanches — @turquialanches"
+              className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-white/85 hover:text-white"
+            >
+              {BUSINESS_INFO.channels.instagram.handle}
+            </ChannelAction>
+          </div>
         </nav>
       ) : null}
     </header>

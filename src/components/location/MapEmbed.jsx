@@ -1,105 +1,147 @@
-import { Compass, ExternalLink, MapPin, Navigation } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { ExternalLink, Navigation } from 'lucide-react'
 import { BUSINESS_INFO } from '../../data/contact'
-import logo from '../../assets/images/brand/logo-96.webp'
+import pinMap from '../../assets/images/location/pin-map.webp'
 
-/* Mapa real via OpenStreetMap — coordenadas validadas pelo responsável.
-   Bbox: ±0.005° ao redor do ponto central (raio visível ~500 m). */
-const OSM_EMBED_URL =
-  'https://www.openstreetmap.org/export/embed.html?bbox=-42.8529579,-22.9265763,-42.8429579,-22.9165763&layer=mapnik&marker=-22.9215763,-42.8479579'
+/* Mapa vetorial real baseado em OpenStreetMap (MapLibre GL + OpenFreeMap).
+   Não interativo por decisão de produto: a localização é informação fixa;
+   o visitante abre a rota no Google Maps pelo CTA abaixo.
+   Coordenadas validadas pelo responsável — não alterar. */
+const MAP_CENTER = [-42.8479579, -22.9215763] // [longitude, latitude]
+// Zoom calibrado para mostrar o bairro com contexto (estradas e área verde)
+// mantendo o estabelecimento como foco. Ajustável sem alterar coordenadas.
+const MAP_ZOOM = 14.2
+// Style local (liberty/OpenFreeMap): baixado do provedor e com o source
+// via TileJSON (https://tiles.openfreemap.org/planet — maxzoom 14).
+const MAP_STYLE = () => import('../../assets/map/liberty.json')
 
 function MapEmbed() {
-  const address = BUSINESS_INFO.location.value
-  const dash = address.indexOf(' - ')
-  const street = dash !== -1 ? address.slice(0, dash) : address
-  const remainder = dash !== -1 ? address.slice(dash + 3) : ''
-  const [neighborhood, region, cep] = remainder
-    ? remainder.split(', ')
-    : ['Parque Nanci', 'Maricá - RJ', '24914-160']
+  const mapContainerRef = useRef(null)
+  const [mapState, setMapState] = useState('loading') // loading | ready | error
+
+  useEffect(() => {
+    let map = null
+    let cancelled = false
+
+    ;(async () => {
+      try {
+        // maplibre-gl exporta classes como named exports (sem default)
+        const maplibre = await import('maplibre-gl')
+        // O worker do MapLibre usa new URL(nome dinâmico) que o bundler não
+        // emite automaticamente; importamos via ?worker&url para o Vite
+        // gerar o asset e apontamos o MapLibre para ele.
+        const workerUrl = (await import('maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url')).default
+        maplibre.setWorkerUrl(workerUrl)
+        const { default: mapStyle } = await MAP_STYLE()
+        await import('maplibre-gl/dist/maplibre-gl.css')
+        if (cancelled) return
+
+        map = new maplibre.Map({
+          container: mapContainerRef.current,
+          style: mapStyle,
+          center: MAP_CENTER,
+          zoom: MAP_ZOOM,
+          interactive: false,
+          // Atribuição renderizada como texto estático na barra do card (abaixo):
+          // o controle padrão criaria um <a> focável dentro do container
+          // role="img", violando nested-interactive no axe. A atribuição legal
+          // (© OpenStreetMap contributors · OpenFreeMap) permanece visível.
+          attributionControl: false,
+          maplibreLogo: false,
+          // preserveDrawingBuffer permite captura do canvas em screenshots/QA;
+          // custo de memória irrelevante num mapa fixo e não interativo.
+          canvasContextAttributes: { antialias: true, preserveDrawingBuffer: true },
+        })
+
+        // Único marcador Turquia Lanches — georreferenciado nas coordenadas reais.
+        const pinElement = document.createElement('div')
+        pinElement.className = 'map-pin-marker'
+        const pinImg = document.createElement('img')
+        pinImg.src = pinMap
+        pinImg.alt = ''
+        pinImg.width = 40
+        pinImg.height = 64
+        pinImg.decoding = 'async'
+        pinElement.appendChild(pinImg)
+        new maplibre.Marker({ element: pinElement, anchor: 'bottom' })
+          .setLngLat(MAP_CENTER)
+          .addTo(map)
+
+        map.on('load', () => {
+          if (!cancelled) setMapState('ready')
+        })
+        map.on('error', (event) => {
+          console.error('[MapEmbed] erro no mapa vetorial:', event?.error?.message ?? event)
+          if (!cancelled) setMapState('error')
+        })
+      } catch (error) {
+        console.error('[MapEmbed] falha ao carregar o mapa vetorial:', error)
+        if (!cancelled) setMapState('error')
+      }
+    })()
+
+    return () => {
+      cancelled = true
+      map?.remove()
+    }
+  }, [])
 
   return (
-    <div className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden rounded-sm bg-[#e9e0d2] p-4 sm:p-5 ring-1 ring-inset ring-[#d9cdbd] transition-all duration-smooth ease-smooth hover:-translate-y-1 hover:shadow-[0_18px_35px_-24px_rgba(33,22,13,0.7)]">
-      {/* Mapa real OpenStreetMap (interativo: pan/zoom) — estilizado: grayscale
-          neutraliza POIs coloridos e contraste alto delineia as ruas */}
-      <div className="map-stylized absolute inset-0 overflow-hidden rounded-sm">
-        <iframe
-          src={OSM_EMBED_URL}
-          title="Mapa de localização — Turquia Lanches"
-          loading="lazy"
-          style={{ border: 0 }}
-          className="h-full w-full"
+    <div className="group overflow-hidden rounded-sm ring-1 ring-inset ring-[#d9cdbd] shadow-sm transition-all duration-smooth ease-smooth hover:shadow-[0_18px_35px_-24px_rgba(33,22,13,0.7)]">
+      <div className="relative h-[300px] w-full sm:h-[380px]">
+        {/* Placeholder enquanto o mapa carrega / fallback visual coerente */}
+        {(mapState === 'loading' || mapState === 'error') && (
+          <div
+            className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#e9e0d2] px-6 text-center"
+            role={mapState === 'error' ? 'status' : undefined}
+          >
+            <img src={pinMap} alt="" width="40" height="64" className="h-16 w-10 object-contain opacity-90" />
+            {mapState === 'loading' ? (
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-on-surface/60">Carregando mapa…</p>
+            ) : (
+              <p className="max-w-[260px] text-sm font-medium text-on-surface/80">
+                Não foi possível carregar o mapa agora. Use o botão abaixo para abrir a rota no Google Maps.
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Canvas do mapa vetorial — apresentação visual; sem interação de mapa.
+            pointer-events: none garante que o scroll da página nunca fique preso ao mapa.
+            Atenção: não usar `absolute inset-0` aqui — o CSS do MapLibre aplica
+            `position: relative` no container (mesma especificidade, carregado depois)
+            e o `inset` deixa de valer, colapsando a altura. Usamos h-full direto. */}
+        <div
+          ref={mapContainerRef}
+          className="map-embed-canvas h-full w-full"
+          role="img"
+          aria-label="Mapa da região do Parque Nanci em Maricá, com a localização da Turquia Lanches"
         />
       </div>
 
-      {/* Pin da marca + nome — sobrepostos no ponto exato (centro do bbox = coordenadas reais).
-          Cabeça do pin contém o logo oficial (crescente + mesquita), ponta em primary (#ae0011). */}
-      <div
-        className="pointer-events-none absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-full flex-col items-center"
-        aria-hidden="true"
-      >
-        <span className="mb-1 whitespace-nowrap rounded-sm bg-on-surface px-2 py-1 text-[9px] font-bold uppercase tracking-[0.14em] text-white shadow-sm">
-          Turquia Lanches
-        </span>
-        <svg
-          viewBox="0 0 36 44"
-          className="w-9 drop-shadow-[0_3px_3px_rgba(37,25,19,0.45)]"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {/* Gota do pin em primary (#ae0011) */}
-          <path
-            d="M18 1 C10 1 3.5 7.5 3.5 15.5 C3.5 25 18 43 18 43 C18 43 32.5 25 32.5 15.5 C32.5 7.5 26 1 18 1 Z"
-            fill="#ae0011"
-            stroke="#fffdfa"
-            strokeWidth="1.5"
-          />
-          {/* Cabeça circular com o logo oficial recortado */}
-          <clipPath id="pin-logo-clip">
-            <circle cx="18" cy="15.5" r="10.5" />
-          </clipPath>
-          <circle cx="18" cy="15.5" r="11" fill="#fffdfa" />
-          <image href={logo} x="7.5" y="5" width="21" height="21" clipPath="url(#pin-logo-clip)" preserveAspectRatio="xMidYMid slice" />
-          <circle cx="18" cy="15.5" r="11" stroke="#251913" strokeWidth="0.8" />
-        </svg>
-      </div>
-
-      {/* Camadas flutuantes sobre o mapa — pointer-events:none para não bloquear pan/zoom */}
-      <div className="relative z-10 flex items-start justify-between gap-3 pointer-events-none">
-        {/* Card Flutuante de Endereço */}
-        <div className="relative z-10 flex flex-col gap-1 rounded-sm bg-[#faf7f2]/90 p-3 shadow-sm ring-1 ring-[#d9cdbd] backdrop-blur-sm transition-transform duration-smooth group-hover:bg-[#faf7f2]/95 max-w-[260px]">
-          <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-primary">
-            <MapPin className="h-3.5 w-3.5 shrink-0" strokeWidth={2.5} aria-hidden="true" />
-            <span>Localização</span>
-          </div>
-          <div>
-            <p className="text-xs sm:text-sm font-bold leading-snug text-on-surface">{street}</p>
-            <p className="text-[11px] sm:text-xs text-on-surface/75">{neighborhood} · {region}</p>
-            <p className="mt-0.5 text-[10px] text-on-surface/50 font-medium">{cep}</p>
-          </div>
+      {/* CTA externo — único caminho de navegação para a rota */}
+      <div className="border-t border-[#d9cdbd]/70 bg-[#faf7f2]/95">
+        <div className="flex items-center justify-between gap-3 px-4 py-3">
+          <p className="min-w-0 truncate text-xs font-bold uppercase tracking-[0.12em] text-on-surface/70">
+            Parque Nanci · Maricá
+          </p>
+          <a
+            href={BUSINESS_INFO.channels.maps.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Abrir rota no Google Maps"
+            className="inline-flex shrink-0 items-center gap-2 rounded-sm bg-primary px-4 py-2 text-[10px] font-bold uppercase tracking-[0.12em] text-on-primary shadow-sm transition-all duration-tactile ease-tactile hover:bg-primary-hover active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          >
+            <Navigation className="h-4 w-4" aria-hidden="true" />
+            <span>Abrir rota</span>
+            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
         </div>
-
-        {/* Bússola / Indicador N */}
-        <div
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#faf7f2]/85 shadow-sm ring-1 ring-[#d9cdbd] backdrop-blur-sm text-[10px] font-bold text-on-surface/70"
-          aria-hidden="true"
-          title="Orientação Norte"
-        >
-          <Compass className="h-4 w-4 text-primary" strokeWidth={2} />
-        </div>
-      </div>
-
-      {/* CTA "Abrir rota" — pointer-events:auto restaurado para interação */}
-      <div className="relative z-10 mt-auto flex justify-end pointer-events-auto">
-        <a
-          href={BUSINESS_INFO.channels.maps.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Abrir rota no Google Maps"
-          className="inline-flex items-center gap-2 rounded-sm bg-primary px-4 py-2 text-[10px] font-bold uppercase tracking-[0.12em] text-on-primary shadow-sm transition-all duration-tactile group-hover:translate-x-1 group-hover:bg-primary-hover group-focus:translate-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-        >
-          <Navigation className="h-4 w-4" aria-hidden="true" />
-          <span>Abrir rota</span>
-          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-        </a>
+        {/* Atribuição cartográfica legal — estática, sem link, para não criar
+            elemento focável dentro do mapa; discreta e legível. */}
+        <p className="px-4 pb-2 text-[10px] leading-relaxed text-on-surface/70">
+          © OpenStreetMap contributors · OpenFreeMap
+        </p>
       </div>
     </div>
   )
