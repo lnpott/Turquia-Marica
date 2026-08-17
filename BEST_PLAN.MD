@@ -1761,3 +1761,31 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
 3. **Fase 3 — Robustez:** guarda para `dash === -1` no `MapEmbed`; shell de loading estável + trim de campos no `ReviewsSection`.
 4. **Fase 4 — Higiene:** remover `hero-gallery.{jpg,webp}` órfão; atualizar `ASSETS.md` e `README.md`; adicionar `.freebuff/` ao `.gitignore`.
 5. **Fase 5 — Validação final:** `npm run check`, `npm run build`, `npm run test:e2e`, `npm audit`, `git diff --check`, MD5 do logo; atualizar `BEST_PLAN.MD` e abrir PR para `main`.
+
+---
+
+## Etapa 40 — Refatoração do componente MapEmbed (Representação Visual Cartográfica)
+
+- **Estado:** ✅ CONCLUÍDO
+- **Data:** 17/08/2026
+- **Executado por:** Antigravity (Frontend Architecture & UX/UI).
+- **Problema resolvido:** O componente `MapEmbed` funcionava anteriormente apenas como um card textual simples com botão para o Google Maps, sem transmitir reconhecimento cartográfico ou informação espacial imediata.
+- **Implementação realizada:**
+  - `src/components/location/MapEmbed.jsx`: Reformulado com ilustração cartográfica SVG estilizada de alta fidelidade e zero dependências externas.
+  - Desenho vetorial de malha viária integrada à paleta do site: vias principais em `#fffdfa` com casings `#cfc1ae`, vias secundárias em `#f8f4ec` com casings `#d6c8b7`, linhas centrais tracejadas, quadras urbanas `#dfd2bf` e identificação sutil das vias ("R. CANARINHOS", "AV. PRINCIPAL", "ACESSO PARQUE").
+  - Identificação geográfica contextualizada: mancha sutil da área verde do Parque Nanci (`#dbe4d2`) e orla da Lagoa de Maricá (`#d3dede`).
+  - Marcador de localização (Pin) com gota cartográfica em vermelho primário (`#ae0011`), anel de pulso ambiente, sombra de solo e callout badge ("TURQUIA LANCHES") em `#251913` com ponto de acento em amarelo `#fdc008`.
+  - Indicador de orientação / bússola (ícone `Compass`) no canto superior direito em badge translúcido com backdrop-blur.
+  - Card flutuante de endereço com parsing seguro e à prova de falhas de `BUSINESS_INFO.location.value` ("R. Canarinhos, 663", "Parque Nanci · Maricá - RJ", "24914-160").
+  - CTA tátil "Abrir rota" com ícone de navegação e link externo preservando o destino oficial do Google Maps (`BUSINESS_INFO.channels.maps.url`).
+  - Textura `.paper-texture` aplicada como camada de refinamento.
+- **Validação técnica executada:**
+  - `npm run lint`: aprovado (0 erros, 0 warnings).
+  - `npm run test`: 8/8 testes unitários aprovados em `tests/business-info.test.jsx`.
+  - `npm run build`: bundle Vite compilado com sucesso e `audit:demo-leak` aprovado sem vazamentos.
+  - `npm run check`: ciclo completo (lint + test + build) 100% verde.
+  - `git diff --check`: aprovado sem erros de formato ou espaços em branco.
+  - Acessibilidade e SEO preservados (aria-label no link principal, aria-hidden nos elementos visuais, foco visível).
+- **Arquivos modificados:**
+  - `src/components/location/MapEmbed.jsx`
+  - `BEST_PLAN.MD`
