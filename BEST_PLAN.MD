@@ -1789,3 +1789,28 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
 - **Arquivos modificados:**
   - `src/components/location/MapEmbed.jsx`
   - `BEST_PLAN.MD`
+
+## Etapa 41 — Substituição da ilustração cartográfica por mapa real (OpenStreetMap embed)
+
+- **Estado:** ✅ CONCLUÍDO
+- **Data:** 17/08/2026
+- **Executado por:** DeepSeek (psique v4) via Freebuff MCP, direto em main.
+- **Problema resolvido:** A ilustração SVG fictícia do bairro (~330 linhas de ruas, quadras e pin desenhados manualmente) não correspondia a coordenadas reais, transmitindo informação geográfica imprecisa.
+- **Dados reais documentados:**
+  - Latitude: -22.9215763 / Longitude: -42.8479579 (confirmado via OpenStreetMap)
+  - URL de embed: `https://www.openstreetmap.org/export/embed.html?bbox=-42.8529579,-22.9265763,-42.8429579,-22.9165763&layer=mapnik&marker=-22.9215763,-42.8479579`
+- **Implementação realizada:**
+  - `src/components/location/MapEmbed.jsx`: Reescrito por completo. Removida a função `MapGraphic()` (SVG ilustrativo fictício de ~330 linhas) e a textura `.paper-texture`. Inserido `<iframe>` real do OpenStreetMap com as coordenadas validadas, `title` acessível, `loading="lazy"` e `style={{ border: 0 }}`.
+  - Elemento raiz trocado de `<a>` para `<div>` (evita conflito de interação iframe-dentro-de-link). O CTA "Abrir rota" é agora um `<a>` isolado com `pointer-events: auto`, preservando `aria-label`, foco visível e `href` para `BUSINESS_INFO.channels.maps.url`.
+  - Card flutuante de endereço e bússola decorativa mantidos sobre o iframe com `pointer-events: none` para não bloquear pan/zoom.
+  - Parsing seguro do endereço preservado (guarda `dash !== -1` já existente).
+- **Validação técnica executada:**
+  - `npm run lint`: aprovado (0 erros, 0 warnings).
+  - `npm run test`: 8/8 testes unitários aprovados em `tests/business-info.test.jsx`.
+  - `npm run build`: bundle Vite compilado com sucesso e `audit:demo-leak` aprovado sem vazamentos.
+  - `npm audit --audit-level=high`: 0 vulnerabilidades.
+  - `git diff --check`: aprovado sem erros de formato.
+  - MD5 logo: `b8bfb19a…` / `77fa9b36…` — inalterados.
+- **Arquivos modificados:**
+  - `src/components/location/MapEmbed.jsx`
+  - `BEST_PLAN.MD`
