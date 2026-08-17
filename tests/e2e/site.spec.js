@@ -99,7 +99,7 @@ test('Localização aparece uma vez, com um único CTA de rota e dados honestos'
   await expect(section.locator('a[href="https://www.google.com/maps/search/?api=1&query=R.+Canarinhos%2C+663+-+Parque+Nanci%2C+Maric%C3%A1+-+RJ%2C+24914-160"]')).toHaveCount(1)
   await expect(section.getByText('R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160')).toHaveCount(1)
   await expect(section.getByText('Não disponível / em construção')).toHaveCount(1)
-  await expect(section.getByText('Ilustração · não é um mapa')).toBeVisible()
+  await expect(section.locator('iframe[title="Mapa de localização — Turquia Lanches"]')).toBeVisible()
   await expect(section.getByText(/CEP|estacionamento|acessibilidade|rota exata/i)).toHaveCount(0)
 })
 
