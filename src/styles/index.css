@@ -59,15 +59,6 @@ html {
   background-size: 7px 7px;
 }
 
-/* Etapa 42: duotone editorial do mapa real (OpenStreetMap).
-   Converte a paleta padrão do provedor (azul/verde/cinza) para tons
-   sépia/terracota alinhados com on-surface (#251913) e primary (#ae0011),
-   preservando a legibilidade de ruas e rótulos. Apenas tratamento visual —
-   não afeta o pan/zoom do iframe. */
-.map-duotone {
-  filter: grayscale(1) sepia(0.35) hue-rotate(-8deg) saturate(1.8) brightness(1.05) contrast(0.9);
-}
-
 /* Etapa 37 (corrigida): padrão de fundo ancorado na viewport via body::before.
    A base creme é o background-color do html (canvas opaco); o pseudo carrega
    SOMENTE a imagem — opacity no box que também tinha background-color lavava o

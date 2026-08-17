@@ -16,17 +16,15 @@ function MapEmbed() {
     : ['Parque Nanci', 'Maricá - RJ', '24914-160']
 
   return (
-    <div className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden rounded-sm bg-[#e9e0d2] p-4 sm:p-5 ring-1 ring-inset ring-on-surface/15 transition-all duration-smooth ease-smooth hover:-translate-y-1 hover:shadow-md">
-      {/* Mapa real OpenStreetMap (interativo: pan/zoom) — duotone editorial via CSS filter */}
-      <div className="map-duotone absolute inset-0 overflow-hidden rounded-sm">
-        <iframe
-          src={OSM_EMBED_URL}
-          title="Mapa de localização — Turquia Lanches"
-          loading="lazy"
-          style={{ border: 0 }}
-          className="h-full w-full"
-        />
-      </div>
+    <div className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden rounded-sm bg-[#e9e0d2] p-4 sm:p-5 ring-1 ring-inset ring-[#d9cdbd] transition-all duration-smooth ease-smooth hover:-translate-y-1 hover:shadow-[0_18px_35px_-24px_rgba(33,22,13,0.7)]">
+      {/* Mapa real OpenStreetMap (interativo: pan/zoom) */}
+      <iframe
+        src={OSM_EMBED_URL}
+        title="Mapa de localização — Turquia Lanches"
+        loading="lazy"
+        style={{ border: 0 }}
+        className="absolute inset-0 h-full w-full rounded-sm"
+      />
 
       {/* Camadas flutuantes sobre o mapa — pointer-events:none para não bloquear pan/zoom */}
       <div className="relative z-10 flex items-start justify-between gap-3 pointer-events-none">
