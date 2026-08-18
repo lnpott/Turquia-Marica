@@ -83,12 +83,16 @@ test('BottomNavBar navega por âncoras e acompanha a seção', async ({ page }) 
   await expect(navigation.getByRole('link', { name: 'Localização' })).toHaveAttribute('aria-current', 'location')
 })
 
-test('cardápio público mantém estado vazio único e sem comércio fictício', async ({ page }) => {
+test('cardápio público exibe os produtos publicados, com filtro e sem dados fictícios', async ({ page }) => {
   await page.goto('/#cardapio')
   const section = page.locator('#cardapio')
-  await expect(section.getByRole('status')).toHaveCount(1)
-  await expect(section.getByRole('group', { name: 'Filtrar por categoria' })).toHaveCount(0)
-  await expect(section.getByText(/R\$/)).toHaveCount(0)
+  // Estado atual (Etapa 29): nove produtos publicados com preço e filtro por categoria.
+  await expect(section.getByRole('group', { name: 'Filtrar por categoria' })).toHaveCount(1)
+  await expect(section.locator('article')).toHaveCount(9)
+  await expect(section.getByText('R$ 29,90').first()).toBeVisible()
+  // Nenhum dado demonstrativo nem pedido fictício.
+  await expect(section.getByText('R$ 00,00')).toHaveCount(0)
+  await expect(section.getByText(/em construção|em confirmação/i)).toHaveCount(0)
   await expect(section.locator('a[href*="ifood"]')).toHaveCount(0)
 })
 
@@ -108,12 +112,41 @@ test('Localização aparece uma vez, com mapa vetorial, CTA único e dados ofici
   await expect(section.getByText(/CEP|estacionamento|acessibilidade|rota exata/i)).toHaveCount(0)
 })
 
-test('Reviews são inequivocamente fictícios e não possuem links de fonte', async ({ page }) => {
+test('Reviews exibem dados reais da API quando disponíveis', async ({ page }) => {
+  await page.route('**/api/reviews', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        place: { totalRatings: 42, name: 'Turquia Lanches' },
+        reviews: [
+          { id: 'g1', source: 'google', authorName: 'Cliente Real', rating: 5, text: 'Ótima experiência!', dateLabel: 'há uma semana', sourceUrl: 'https://maps.google.com/' },
+        ],
+      }),
+    })
+  )
+  await page.goto('/#reviews')
+  const list = page.locator('#reviews').getByRole('list', { name: 'Avaliações reais no Google' })
+  await expect(list).toBeVisible()
+  await expect(list.getByRole('article')).toHaveCount(1)
+  await expect(list.getByText('Cliente R.')).toBeVisible()
+  await expect(list.getByText(/ótima experiência/i)).toBeVisible()
+})
+
+test('Reviews usam fallback real, sem marcas fictícias, quando a API falha', async ({ page }) => {
+  await page.route('**/api/reviews', (route) =>
+    route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: 'REVIEWS_NOT_CONFIGURED' }) })
+  )
   await page.goto('/#reviews')
   const section = page.locator('#reviews')
-  await expect(section.getByText(/todas as avaliações abaixo são fictícias/i)).toBeVisible()
-  const list = section.getByRole('list', { name: 'Avaliações fictícias de demonstração' })
-  await expect(list.getByText('Demonstração', { exact: true })).toHaveCount(3)
+  const list = section.getByRole('list', { name: 'Avaliações reais no Google' })
+  await expect(list).toBeVisible()
+  await expect(list.getByRole('article')).toHaveCount(3)
+  await expect(list.getByText('Ana G.')).toBeVisible()
+  await expect(list.getByText('Andre L.')).toBeVisible()
+  await expect(list.getByText('Fernanda L.')).toBeVisible()
+  // Nenhuma marca fictícia remanescente nem links de fonte indevidos.
+  await expect(section.getByText(/fictícias|demonstração/i)).toHaveCount(0)
   await expect(list.getByRole('link')).toHaveCount(0)
   await expect(page.locator('[itemprop="review"], [itemtype*="schema.org/Review"]')).toHaveCount(0)
 })

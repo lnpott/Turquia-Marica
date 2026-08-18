@@ -61,10 +61,11 @@ html {
 
 /* Etapa 44: mapa vetorial (MapLibre GL + OpenFreeMap) — apresentação visual
    fixa, sem interação de mapa. pointer-events: none no canvas impede que o
-   scroll da página fique preso ao mapa. A atribuição legal (© OpenStreetMap
-   contributors · OpenFreeMap) é renderizada como texto estático na barra do
-   card — o controle padrão do MapLibre ficaria focável dentro do container
-   role="img" (nested-interactive no axe). */
+   scroll da página fique preso ao mapa. A atribuição legal fica na barra do
+   card, FORA do container role="img" (o controle padrão do MapLibre criaria
+   um <a> focável dentro dele — nested-interactive no axe). O carregamento do
+   mapa é lazy (IntersectionObserver + import dinâmico): MapLibre, style,
+   worker e tiles só são baixados quando a seção se aproxima da viewport. */
 .map-embed-canvas {
   pointer-events: none;
 }
