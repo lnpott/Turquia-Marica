@@ -1900,3 +1900,28 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
 - **17/08/2026:** Etapas 44 e 45 concluídas na branch `feat/etapas-44-45-mapa-canais` (baseline `ec401c4`): mapa vetorial MapLibre + OpenFreeMap não interativo com pin georreferenciado (asset otimizado de `PIN_MAP.png`), horários oficiais, iFood oficial, Instagram e copy nova na Localização; Etapa 43 marcada como superada; Lote 14 reconciliado (14A/14C/14D concluídos, 14B/14F/14G bloqueados, 14E em auditoria); baseline e matriz de rotas corrigidos; governança (branch+PR) declarada vigente.
 - **17/08/2026 (reauditoria):** correções de acessibilidade na Etapa 44/45 — atribuição do mapa migrada para texto estático na barra do card (elimina `nested-interactive` do axe); link WhatsApp não oficial (`wa.me/5521964699374`) removido do `AboutSection.jsx` (elimina `color-contrast` e a violação de não-invenção); zero violações críticas/sérias no axe na página inteira; E2E "Home única" verde; suíte E2E com 4 falhas pré-existentes (cardápio/reviews).
 - **17/08/2026 (refinamento pós-auditoria do PR #23):** (1) `audit:demo-leak` corrigido (`root.pathname` → `root`) com 10 testes unitários — o erro derrubava o Preview da Vercel (`ERR_INVALID_ARG_TYPE`); (2) Node alinhado em `22.x` (local/CI/Vercel); (3) E2E 100% verde (34/34) — os 4 testes obsoletos de cardápio/reviews foram reescritos para o contrato atual; (4) `liberty.json` reestilizado com a paleta Turquia (RJ-106/trunk em destaque hierárquico, parques/água/labels em tons da marca); (5) atribuição legal linkada (OSM/OpenMapTiles/OpenFreeMap) fora do `role="img"`; (6) lazy loading real por viewport (IntersectionObserver 500px — 0 requisições de mapa na Home); (7) `preserveDrawingBuffer` condicionado a `?qa=1`; (8) classificação de erros (transitórios não derrubam o mapa). Detalhes nos blocos "Refinamento pós-auditoria do PR #23" das Etapas 44 e 45.
+
+## Etapa 46 — Correções visuais: iFood, WhatsApp, Instagram, Footer, Mapa
+- **Estado:** CONCLUÍDO
+- **Início:** 19/08/2026
+- **Conclusão:** 19/08/2026
+- **Executado por:** OpenCode Agent
+- **Problema resolvido:** Ícone iFood genérico substituído por asset real; WhatsApp oficial ativado; Instagram com shrink-0 e aria-label corretos; Footer alinhado com 4 canais; Mapa vetorial com ênfase RJ-106 (cor primária #ae0011, stroke +35%) e Parque Nanci (fill #b8d4a0, opacity 0.92, label #3d5c2a).
+- **Implementação:**
+  - T1: `src/components/ui/IconIfood.jsx` → usa `<img src="/images/ICON_IFOOD.png" alt="iFood" />`
+  - T2: `src/data/contact.js` → WhatsApp `status: AVAILABLE`, `url: https://wa.me/5521964699374`
+  - T3: `src/components/layout/Header.jsx` → adicionado WhatsApp ChannelAction no desktop com IconWhatsApp custom
+  - T4: `src/components/ui/ChannelAction.jsx` → adicionado `shrink-0` no ícone; `aria-label` já era aplicado no <a>
+  - T5: `src/components/layout/Footer.jsx` → WhatsApp agora renderiza automaticamente (condicional em contact.js)
+  - T6: `src/assets/map/liberty.json` → road_trunk_primary/bridge/tunnel: line-color #ae0011, line-width +35%; highway-name-major: text-color #ae0011, text-size +10%; park: fill-color #b8d4a0, fill-opacity 0.92; park_outline: line-color #3d5c2a
+- **Validação:** `npm run lint` ✓, `npm run test` (22/22) ✓, `npm run build + audit:demo-leak` ✓, `npm audit` (0) ✓, `git diff --check` ✓, MD5 do logo (b8bfb19a… / 77fa9b36…) inalterados ✓
+- **Arquivos modificados:**
+  - `src/components/ui/IconIfood.jsx`
+  - `src/components/ui/IconWhatsApp.jsx` (novo)
+  - `src/components/ui/ChannelAction.jsx`
+  - `src/components/layout/Header.jsx`
+  - `src/components/layout/Footer.jsx` (sem alteração direta — reage a contact.js)
+  - `src/data/contact.js`
+  - `src/assets/map/liberty.json`
+  - `tests/business-info.test.jsx` (atualizado para novo estado do WhatsApp)
+  - `BEST_PLAN.MD`

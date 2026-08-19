@@ -25,12 +25,15 @@ const demoProduct = {
 }
 
 describe('dados comerciais e demonstrativos', () => {
-  it('publica iFood oficial e mantém WhatsApp indisponível sem URL', () => {
+  it('publica iFood oficial e WhatsApp oficial com URL', () => {
     expect(BUSINESS_INFO.channels.ifood).toMatchObject({
       status: BUSINESS_STATUS.AVAILABLE,
       url: 'https://www.ifood.com.br/delivery/marica-rj/turquia-lanches-parque-nanci',
     })
-    expect(BUSINESS_INFO.channels.whatsapp).toMatchObject({ status: BUSINESS_STATUS.UNAVAILABLE, url: null })
+    expect(BUSINESS_INFO.channels.whatsapp).toMatchObject({
+      status: BUSINESS_STATUS.AVAILABLE,
+      url: 'https://wa.me/5521964699374',
+    })
   })
 
   it('publica horários oficiais (terça a domingo; segunda fechado)', () => {
@@ -41,9 +44,12 @@ describe('dados comerciais e demonstrativos', () => {
     })
   })
 
-  it('renderiza canal indisponível (WhatsApp) sem criar link', () => {
+  it('renderiza canal disponível (WhatsApp) criando link correto', () => {
     render(<ChannelAction channel={BUSINESS_INFO.channels.whatsapp}>WhatsApp</ChannelAction>)
-    expect(screen.getByText('WhatsApp')).not.toHaveAttribute('href')
+    const link = screen.getByRole('link', { name: 'WhatsApp' })
+    expect(link).toHaveAttribute('href', 'https://wa.me/5521964699374')
+    expect(link).toHaveAttribute('target', '_blank')
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer')
   })
 
   it('exibe os nove produtos no cardápio público', () => {
@@ -88,22 +94,23 @@ describe('dados comerciais e demonstrativos', () => {
     expect(document.querySelector('a[href*="openstreetmap.org/export/embed"]')).toBeNull()
   })
 
-  it('Header expõe iFood real e Instagram, sem "Pedidos em breve"', () => {
+  it('Header expõe iFood real, WhatsApp e Instagram, sem "Pedidos em breve"', () => {
     render(<MemoryRouter><Header /></MemoryRouter>)
-    const ifoodLink = screen.getByRole('link', { name: 'Pedir no iFood' })
+    const ifoodLink = screen.getByRole('link', { name: 'iFood Pedir no iFood' })
     expect(ifoodLink).toHaveAttribute('href', IFOOD_URL)
     expect(ifoodLink).toHaveAttribute('target', '_blank')
+    expect(screen.getByRole('link', { name: /whatsapp da turquia lanches/i })).toHaveAttribute('href', BUSINESS_INFO.channels.whatsapp.url)
     expect(screen.getByRole('link', { name: /instagram da turquia lanches/i })).toHaveAttribute('href', BUSINESS_INFO.channels.instagram.url)
     expect(screen.queryByText('Pedidos em breve')).not.toBeInTheDocument()
   })
 
-  it('Footer lista Maps, Instagram e iFood, sem "iFood em construção" e sem WhatsApp inventado', () => {
+  it('Footer lista Maps, Instagram, iFood e WhatsApp, sem "iFood em construção"', () => {
     render(<Footer />)
     expect(screen.getByRole('link', { name: /como chegar|abrir rota/i })).toHaveAttribute('href', BUSINESS_INFO.channels.maps.url)
     expect(screen.getByRole('link', { name: 'Instagram' })).toHaveAttribute('href', BUSINESS_INFO.channels.instagram.url)
-    expect(screen.getByRole('link', { name: 'Pedir no iFood' })).toHaveAttribute('href', IFOOD_URL)
+    expect(screen.getByRole('link', { name: 'iFood Pedir no iFood' })).toHaveAttribute('href', IFOOD_URL)
+    expect(screen.getByRole('link', { name: 'WhatsApp' })).toHaveAttribute('href', BUSINESS_INFO.channels.whatsapp.url)
     expect(screen.queryByText('iFood em construção')).not.toBeInTheDocument()
-    expect(screen.queryByText('WhatsApp')).not.toBeInTheDocument()
   })
 
   it('faz o botão Como chegar rolar até a localização', () => {

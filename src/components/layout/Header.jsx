@@ -4,6 +4,7 @@ import logo from '../../assets/images/brand/logo-96.webp'
 import { BUSINESS_INFO } from '../../data/contact'
 import ChannelAction from '../ui/ChannelAction'
 import IconIfood from '../ui/IconIfood'
+import IconWhatsApp from '../ui/IconWhatsApp'
 import useActiveSection from '../../hooks/useActiveSection'
 
 const NAV_LINKS = [
@@ -73,6 +74,12 @@ function Header() {
             channel={BUSINESS_INFO.channels.instagram}
             icon={Instagram}
             aria-label="Instagram da Turquia Lanches — @turquialanches"
+            className="hidden h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:inline-flex"
+          />
+          <ChannelAction
+            channel={BUSINESS_INFO.channels.whatsapp}
+            icon={IconWhatsApp}
+            aria-label="WhatsApp da Turquia Lanches"
             className="hidden h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:inline-flex"
           />
           <ChannelAction

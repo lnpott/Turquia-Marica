@@ -30,10 +30,10 @@ export const BUSINESS_INFO = Object.freeze({
       note: null,
     },
     whatsapp: {
-      status: BUSINESS_STATUS.UNAVAILABLE,
+      status: BUSINESS_STATUS.AVAILABLE,
       label: 'WhatsApp',
-      url: null,
-      note: 'WhatsApp não disponível / em construção',
+      url: 'https://wa.me/5521964699374',
+      note: null,
     },
     instagram: {
       status: BUSINESS_STATUS.AVAILABLE,
