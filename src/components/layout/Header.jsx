@@ -56,9 +56,9 @@ function Header() {
   return (
     <header className="sticky top-0 z-50 w-full bg-[#faf7f2]/95 shadow-[0_1px_0_#e8e0d4] backdrop-blur-md">
       <div className="mx-auto flex min-h-16 max-w-[1280px] items-center justify-between gap-3 px-4 md:h-[76px] md:px-margin-desktop">
-        <a href="#topo" aria-label="Turquia Lanches — início" className="flex items-center gap-3 rounded-lg focus-visible:outline-offset-4">
+        <a href="#topo" aria-label="Turquia Lanches — início" className="flex shrink-0 items-center gap-3 rounded-lg focus-visible:outline-offset-4">
           <img src={logo} alt="Turquia Lanches" width="48" height="48" className="h-11 w-11 rounded-full object-cover md:h-12 md:w-12" />
-          <span className="hidden font-headline-md text-base font-extrabold uppercase leading-none tracking-[-0.03em] text-on-surface sm:block">Turquia<br/><span className="text-primary">Lanches</span></span>
+          <span className="hidden font-headline-md text-base font-extrabold uppercase leading-none tracking-[-0.03em] text-on-surface lg:block">Turquia<br/><span className="text-primary">Lanches</span></span>
         </a>
 
         <nav className="hidden items-center gap-2 md:flex" aria-label="Navegação principal">
@@ -74,21 +74,24 @@ function Header() {
             channel={BUSINESS_INFO.channels.instagram}
             icon={Instagram}
             aria-label="Instagram da Turquia Lanches — @turquialanches"
+            iconOnly
             className="hidden h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:inline-flex"
           />
           <ChannelAction
             channel={BUSINESS_INFO.channels.whatsapp}
             icon={IconWhatsApp}
             aria-label="WhatsApp da Turquia Lanches"
+            iconOnly
             className="hidden h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:inline-flex"
           />
           <ChannelAction
             channel={BUSINESS_INFO.channels.ifood}
             icon={IconIfood}
-            className="cta-fill-primary hidden min-h-11 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-bold text-on-primary transition-all duration-tactile ease-tactile hover:shadow-lg active:scale-95 md:inline-flex"
+            aria-label="Pedir no iFood"
+            className="cta-fill-primary hidden h-11 w-11 items-center justify-center rounded-lg bg-primary text-sm font-bold text-on-primary transition-all duration-tactile ease-tactile hover:shadow-lg active:scale-95 md:inline-flex lg:w-auto lg:gap-2 lg:px-5"
             unavailableClassName="hidden min-h-11 cursor-not-allowed items-center gap-2 px-3 text-xs font-bold uppercase tracking-wide text-on-surface-variant/70 md:inline-flex"
           >
-            Pedir no iFood
+            <span className="hidden lg:inline">Pedir no iFood</span>
           </ChannelAction>
           <button
             ref={toggleRef}
@@ -132,6 +135,13 @@ function Header() {
               className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-white/85 hover:text-white"
             >
               {BUSINESS_INFO.channels.instagram.handle}
+            </ChannelAction>
+            <ChannelAction
+              channel={BUSINESS_INFO.channels.whatsapp}
+              icon={IconWhatsApp}
+              className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-white/85 hover:text-white"
+            >
+              WhatsApp
             </ChannelAction>
           </div>
         </nav>

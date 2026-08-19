@@ -1,8 +1,6 @@
-import { ArrowRight, MapPin, ShoppingBag } from 'lucide-react'
+import { ArrowRight, MapPin } from 'lucide-react'
 import imgHeroFries from '../../assets/images/hero/hero-fries.webp'
 import imgHeroFriesFallback from '../../assets/images/hero/hero-fries.jpg'
-import { BUSINESS_INFO } from '../../data/contact'
-import ChannelAction from '../ui/ChannelAction'
 import Button from '../ui/Button'
 
 function HeroSection() {
@@ -53,14 +51,6 @@ function HeroSection() {
               Como chegar
             </Button>
           </div>
-
-          <ChannelAction
-            channel={BUSINESS_INFO.channels.ifood}
-            icon={ShoppingBag}
-            unavailableClassName="mt-6 inline-flex items-center gap-2 text-xs font-medium tracking-wide text-white/45 line-through"
-          >
-            iFood não disponível / em construção
-          </ChannelAction>
         </div>
       </div>
       <p className="absolute bottom-5 right-5 text-[10px] uppercase tracking-[0.16em] text-white/45">Fotografia ilustrativa</p>

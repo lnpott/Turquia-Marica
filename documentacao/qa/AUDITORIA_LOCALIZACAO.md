@@ -148,3 +148,43 @@ Os comandos e resultados finais são registrados no Summary da entrega após a �
 - estacionamento e acessibilidade;
 - confirmação oficial do vínculo de `@turquialanches`;
 - revalidar CTA e dados quando houver fonte oficial acessível.
+
+---
+
+## Etapa 47 — Labels dedicadas do mapa (RJ-106 e parque) — 19/08/2026
+
+### Veredito
+
+**IMPLEMENTADO — AGUARDANDO AUDITORIA INDEPENDENTE** (padrão do repositório: não declarar lote concluído sem auditoria).
+
+### Fonte de verdade dos dados (tiles OpenFreeMap)
+
+A região foi inspecionada por `querySourceFeatures` nos tiles carregados (sem Overpass/Nominatim — bloqueados com 504/406/403):
+
+| Feature | Evidência nos tiles | Confiança |
+|---|---|---|
+| RJ-106 | presente em `transportation_name` (`class: trunk`, `name: "Rodovia Amaral Peixoto"`, `ref: "RJ-106"`) | Alta |
+| Parque | **não existe polígono `park` em nenhum tile da região**; existe POI `class: park`, `name: "Parque Céu Aberto Parque Nanci"`, ponto `-42.846444,-22.921886` | Alta |
+| Shield existente | exibe o `ref` ("RJ-106") via `highway-shield-non-us` | Alta |
+
+Decisão cartográfica: nenhuma geometria inventada. A label do parque aponta para o POI real; o nome "Parque Céu Aberto Parque Nanci" é o atributo do próprio tile.
+
+### Implementação
+
+- `liberty.json`: novas camadas `highway-name-rj106` (symbol, `symbol-placement: line`, filter `ref == RJ-106` + `class == trunk`, `text-color #ae0011` com halo) e `poi-park-nanci` (symbol, filter `name == 'Parque Céu Aberto Parque Nanci'`, `text-color #3d5c2a`, `text-ignore-placement: true`).
+- Posicionamento: **as duas camadas foram movidas para o FIM do array de layers**. Confirmado por teste dinâmico que, neste style, camadas `symbol` só renderizam na carga quando estão no fim da pilha (após `label_country_1`); em qualquer posição anterior `queryRenderedFeatures` retornava 0.
+- A shield existente exibe o ref "RJ-106"; a nova camada exibe o nome. Não há duplicação visual de texto idêntico — é a combinação convencional ref + nome.
+
+### Evidências
+
+- `queryRenderedFeatures` (produção `npm run build`): `highway-name-rj106` → 1 feature e `poi-park-nanci` → 1 feature em todos os viewports de aceite (375/390/768/1024/1280/1440).
+- Análise de pixels por screenshot (amostragem programática, resolução integral):
+  - Parque: **0 px** de texto esverdeado no `before/map-1280.png` → **364 px** no `after/map-1280.png`.
+  - Canvas isolado (somente fundo + labels): texto esverdeado na região projetada do POI (cores antialiased ≈ `110,132,94` a `116,137,100`) e 102 px vermelhos do rótulo RJ-106.
+  - Teste de controle com camada literal (`text-color: #ff0000`) confirmou que glifos pintam no canvas (1272 px), validando a metodologia de leitura por screenshot sobre `readPixels`.
+- Screenshots: `documentacao/qa/etapa-47/before/` e `documentacao/qa/etapa-47/after/` (375–1440).
+
+### Limitação declarada
+
+- O agente não inspeciona imagens visualmente; as evidências de "aparece no mapa" são programáticas (pixels + `queryRenderedFeatures`). A leitura via `readPixels` de buffer WebGL mostrou-se não confiável e foi substituída por análise do PNG capturado.
+- O parque é exibido como POI nomeado, **não** como polígono/área — sem geometria oficial disponível nos tiles, qualquer área desenhada seria inventada.
