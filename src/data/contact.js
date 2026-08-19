@@ -12,9 +12,10 @@ export const BUSINESS_INFO = Object.freeze({
     note: null,
   },
   hours: {
-    status: BUSINESS_STATUS.UNAVAILABLE,
-    value: null,
-    note: 'Não disponível / em construção',
+    status: BUSINESS_STATUS.AVAILABLE,
+    value: 'Terça a domingo · 17h às 00h',
+    closed: 'Segunda · Fechado',
+    note: null,
   },
   phone: {
     status: BUSINESS_STATUS.UNAVAILABLE,
@@ -23,10 +24,10 @@ export const BUSINESS_INFO = Object.freeze({
   },
   channels: {
     ifood: {
-      status: BUSINESS_STATUS.UNAVAILABLE,
+      status: BUSINESS_STATUS.AVAILABLE,
       label: 'Pedir no iFood',
-      url: null,
-      note: 'Loja no iFood não disponível / em construção',
+      url: 'https://www.ifood.com.br/delivery/marica-rj/turquia-lanches-parque-nanci',
+      note: null,
     },
     whatsapp: {
       status: BUSINESS_STATUS.UNAVAILABLE,

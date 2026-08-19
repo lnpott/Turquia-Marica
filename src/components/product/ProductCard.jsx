@@ -58,7 +58,7 @@ function ProductCard({ product }) {
       <div className="sr-only">
         <h3>{product.name}</h3>
         <span>{product.price}</span>
-        <span>Pedido em breve</span>
+        <span>Pedido via iFood</span>
       </div>
     </article>
   )

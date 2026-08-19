@@ -5,8 +5,11 @@ import HeroSection from '../src/components/home/HeroSection'
 import LocationSection from '../src/components/home/LocationSection'
 import MenuSection from '../src/components/menu/MenuSection'
 import ReviewsSection from '../src/components/reviews/ReviewsSection'
+import MapEmbed from '../src/components/location/MapEmbed'
 import ChannelAction from '../src/components/ui/ChannelAction'
-import { BUSINESS_INFO, BUSINESS_STATUS } from '../src/data/contact'
+import Header from '../src/components/layout/Header'
+import Footer from '../src/components/layout/Footer'
+import { BUSINESS_INFO, BUSINESS_STATUS, IFOOD_URL } from '../src/data/contact'
 import { products } from '../src/data/menu'
 
 const demoProduct = {
@@ -22,14 +25,25 @@ const demoProduct = {
 }
 
 describe('dados comerciais e demonstrativos', () => {
-  it('não expõe URLs genéricas ou quebradas para canais indisponíveis', () => {
-    expect(BUSINESS_INFO.channels.ifood).toMatchObject({ status: BUSINESS_STATUS.UNAVAILABLE, url: null })
+  it('publica iFood oficial e mantém WhatsApp indisponível sem URL', () => {
+    expect(BUSINESS_INFO.channels.ifood).toMatchObject({
+      status: BUSINESS_STATUS.AVAILABLE,
+      url: 'https://www.ifood.com.br/delivery/marica-rj/turquia-lanches-parque-nanci',
+    })
     expect(BUSINESS_INFO.channels.whatsapp).toMatchObject({ status: BUSINESS_STATUS.UNAVAILABLE, url: null })
   })
 
-  it('renderiza canal indisponível sem criar link', () => {
-    render(<ChannelAction channel={BUSINESS_INFO.channels.ifood}>iFood em construção</ChannelAction>)
-    expect(screen.getByText('iFood em construção')).not.toHaveAttribute('href')
+  it('publica horários oficiais (terça a domingo; segunda fechado)', () => {
+    expect(BUSINESS_INFO.hours).toMatchObject({
+      status: BUSINESS_STATUS.AVAILABLE,
+      value: 'Terça a domingo · 17h às 00h',
+      closed: 'Segunda · Fechado',
+    })
+  })
+
+  it('renderiza canal indisponível (WhatsApp) sem criar link', () => {
+    render(<ChannelAction channel={BUSINESS_INFO.channels.whatsapp}>WhatsApp</ChannelAction>)
+    expect(screen.getByText('WhatsApp')).not.toHaveAttribute('href')
   })
 
   it('exibe os nove produtos no cardápio público', () => {
@@ -45,18 +59,51 @@ describe('dados comerciais e demonstrativos', () => {
     expect(screen.getByRole('group', { name: 'Filtrar por categoria' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 3, name: demoProduct.name })).toBeInTheDocument()
     expect(screen.getByText(demoProduct.price)).toBeInTheDocument()
-    expect(screen.getByText('Pedido em breve')).not.toHaveAttribute('href')
+    expect(screen.getByText('Pedido via iFood')).toBeInTheDocument()
   })
 
-  it('integra localização sem duplicar o CTA de rota', () => {
+  it('integra localização com endereço, horários e CTA único de rota', () => {
     render(<LocationSection />)
     const mapLink = screen.getByRole('link', { name: /abrir rota no google maps/i })
     expect(mapLink).toHaveAttribute('href', BUSINESS_INFO.channels.maps.url)
     expect(screen.getAllByText(BUSINESS_INFO.location.value)).toHaveLength(1)
-    expect(screen.getAllByText(BUSINESS_INFO.hours.note)).toHaveLength(1)
-    expect(screen.getByText('R. Canarinhos, 663')).toBeInTheDocument()
-    expect(screen.getByText(/Parque Nanci · Maricá - RJ/)).toBeInTheDocument()
+    expect(screen.getAllByText(BUSINESS_INFO.hours.value)).toHaveLength(1)
+    expect(screen.getAllByText(BUSINESS_INFO.hours.closed)).toHaveLength(1)
+    expect(screen.getByText('Nosso endereço')).toBeInTheDocument()
+    expect(screen.getByText('Siga-nos no Instagram')).toBeInTheDocument()
+    expect(screen.getByText(/estamos no parque nanci, em maricá/i)).toBeInTheDocument()
     expect(screen.getByText(/fotos de referência do local em breve/i)).toBeInTheDocument()
+    expect(screen.queryByText('Região informada')).not.toBeInTheDocument()
+    expect(screen.queryByText('Canal disponível')).not.toBeInTheDocument()
+  })
+
+  it('o mapa vetorial não usa iframe e mantém o CTA de rota', () => {
+    render(<MapEmbed />)
+    // O CTA está sempre presente, em qualquer estado do mapa
+    const link = screen.getByRole('link', { name: /abrir rota no google maps/i })
+    expect(link).toHaveAttribute('href', BUSINESS_INFO.channels.maps.url)
+    // Arquitetura nova: container acessível (role=img) em vez de iframe
+    expect(screen.getByRole('img', { name: /mapa da região do parque nanci/i })).toBeInTheDocument()
+    expect(document.querySelector('iframe')).toBeNull()
+    expect(document.querySelector('a[href*="openstreetmap.org/export/embed"]')).toBeNull()
+  })
+
+  it('Header expõe iFood real e Instagram, sem "Pedidos em breve"', () => {
+    render(<MemoryRouter><Header /></MemoryRouter>)
+    const ifoodLink = screen.getByRole('link', { name: 'Pedir no iFood' })
+    expect(ifoodLink).toHaveAttribute('href', IFOOD_URL)
+    expect(ifoodLink).toHaveAttribute('target', '_blank')
+    expect(screen.getByRole('link', { name: /instagram da turquia lanches/i })).toHaveAttribute('href', BUSINESS_INFO.channels.instagram.url)
+    expect(screen.queryByText('Pedidos em breve')).not.toBeInTheDocument()
+  })
+
+  it('Footer lista Maps, Instagram e iFood, sem "iFood em construção" e sem WhatsApp inventado', () => {
+    render(<Footer />)
+    expect(screen.getByRole('link', { name: /como chegar|abrir rota/i })).toHaveAttribute('href', BUSINESS_INFO.channels.maps.url)
+    expect(screen.getByRole('link', { name: 'Instagram' })).toHaveAttribute('href', BUSINESS_INFO.channels.instagram.url)
+    expect(screen.getByRole('link', { name: 'Pedir no iFood' })).toHaveAttribute('href', IFOOD_URL)
+    expect(screen.queryByText('iFood em construção')).not.toBeInTheDocument()
+    expect(screen.queryByText('WhatsApp')).not.toBeInTheDocument()
   })
 
   it('faz o botão Como chegar rolar até a localização', () => {

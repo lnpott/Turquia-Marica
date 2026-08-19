@@ -6,10 +6,11 @@
 
 - **Branch de integração e produção:** `main` (`origin/main`).
 - **Fluxo obrigatório:** atualizar `origin/main`, criar uma branch específica para o lote, validar, abrir PR para `main` e somente então fazer merge.
-- **Baseline operacional atual:** `98d570e6b776c85c340421cb3c88a8343f00f544` (`PLANO 26`).
+- **Baseline operacional atual:** `ec401c42c7ba3395dbb950eb13ff6f4abee24cd4` (`IMGs` — estado real de `origin/main` em 17/08/2026). A baseline histórica `98d570e` (`PLANO 26`) permanece apenas como referência de migração.
 - **Baseline histórica inicial:** `d242ed12756e1aa02b3f4d8f502e5eba80f012f1`.
 - **Início:** 12/08/2026
 - **Regra:** atualizar este documento no mesmo commit de cada lote.
+- **Governança (vigente):** toda implementação deve ser feita em branch derivada de `origin/main`, validada e entregue via Pull Request. As Etapas 30–43 registraram execução direta em `main` — isso foi **violação da governança** deste documento (registrada na Etapa 39 e corrigida a partir da Etapa 44); os registros históricos permanecem como estão, mas não representam o procedimento permitido.
 - **Estados:** `NÃO INICIADO`, `AGUARDANDO DECISÃO`, `BLOQUEADO`, `EM EXECUÇÃO`, `EM AUDITORIA`, `VALIDADO`, `CONCLUÍDO`.
 
 ## Baseline histórica validada — 12/08/2026
@@ -32,7 +33,7 @@
 | Área | Decisão |
 |---|---|
 | React/Vite/Tailwind | Manter stack e componentes compartilhados. |
-| Rotas | Gerar HTML estático para `/`, `/cardapio/` e `/localizacao/`. |
+| Rotas | Arquitetura vigente: **Home única** (`/`) com seções por âncora; `/cardapio` → `/#cardapio` e `/localizacao` → `/#localizacao` (redirect SPA fallback no `App.jsx`). Não existem páginas independentes `/cardapio/` e `/localizacao/`. |
 | Dados ausentes | Exibir “NÃO DISPONÍVEL / EM CONSTRUÇÃO”; nunca inventar. |
 | Imagens provisórias | Manter `alt` verdadeiro e comunicar a condição provisória sem badges repetitivos; nunca atribuir uma fotografia a um produto que ela não representa. |
 | Home | Remover catálogo completo e apresentar até quatro destaques. |
@@ -148,11 +149,11 @@
 
 ---
 
-#### Lote 14 — Pendências externas (bloqueadas, fora do controle do agente)
+#### Lote 14 — Pendências externas
 
-- **Estado:** BLOQUEADO — PENDENTE dos dados e do acervo oficiais listados abaixo.
+- **Estado vigente:** ver seção canônica **"Pendências externas — Lote 14"** (14A–14G) mais abaixo. Este bloco é apenas o registro histórico do plano; os estados atuais estão na seção canônica.
 - **Prioridade:** Depende do cliente, não é sequencial aos demais.
-- **Itens (já registrados em "Pendências externas" mais abaixo neste documento, repetidos aqui para consolidar o plano):**
+- **Itens (histórico do plano; estados individuais em 14A–14G):**
   - URL oficial da loja no iFood.
   - Telefone/WhatsApp válido.
   - Endereço completo e CEP.
@@ -1108,16 +1109,17 @@ Criar `src/data/menu.demo.js`, com aviso explícito e objetos compatíveis com o
 - **Veredito:** APROVADO — nenhum artefato demonstrativo foi encontrado no build público padrão.
 - O contrato final da fixture inclui `shortDescription`, `longDescription` e `imageUrl`; a camada isolada oferece simultaneamente a interface legada dos componentes, que seguem estruturalmente idênticos.
 
-## Pendências externas — Lote 14
+## Pendências externas — Lote 14 (seção canônica)
 
-Cada dependência deve ser desbloqueada e implementada de forma independente; a ausência de um item não bloqueia os demais. Nenhum dado ou asset pode ser inventado.
+Cada dependência deve ser desbloqueada e implementada de forma independente; a ausência de um item não bloqueia os demais. Nenhum dado ou asset pode ser inventado. **Estados atualizados na Etapa 45 (17/08/2026).**
 
-- **Lote 14A — iFood:** URL oficial da loja.
-- **Lote 14B — Contato:** telefone/WhatsApp válido.
-- **Lote 14C — Localização:** endereço completo e CEP.
-- **Lote 14D — Funcionamento:** horários oficiais.
-- **Lote 14E — Cardápio comercial:** produtos, ingredientes, preços e badges aprovados.
-- **Lote 14F — Direção fotográfica:** fotografias oficiais da casa e dos produtos; planejar enquadramento, recorte, tratamento, responsividade e atualização da imagem Open Graph, em vez de apenas substituir arquivos.
+- **Lote 14A — iFood:** ✅ **CONCLUÍDO (Etapa 45).** URL oficial publicada em `BUSINESS_INFO.channels.ifood` e integrada em `Header`, `Footer` e `ProductCard`: `https://www.ifood.com.br/delivery/marica-rj/turquia-lanches-parque-nanci`. Removidos os textos "Pedidos em breve", "Pedido em breve" e "iFood em construção".
+- **Lote 14B — Contato:** ⛔ **BLOQUEADO.** Telefone/WhatsApp oficial ainda não confirmado pelo responsável. `BUSINESS_INFO.channels.whatsapp` permanece `UNAVAILABLE` e nada é renderizado (Footer condiciona à disponibilidade).
+- **Lote 14C — Localização:** ✅ **CONCLUÍDO.** Endereço completo `R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160` confirmado em `contact.js` e CTA do Google Maps integrado (Etapas 32 e 45).
+- **Lote 14D — Funcionamento:** ✅ **CONCLUÍDO (Etapa 45).** Horários oficiais publicados em `BUSINESS_INFO.hours` (Terça a domingo · 17h às 00h; Segunda · Fechado).
+- **Lote 14E — Cardápio comercial:** 🟠 **EM AUDITORIA.** O cardápio público exibe 9 produtos publicados (Etapa 29) — a confirmação final de preços/ingredientes como dados oficiais permanece pendente de validação do responsável.
+- **Lote 14F — Direção fotográfica:** ⛔ **BLOQUEADO.** Acervo fotográfico oficial da casa e dos produtos ainda não foi entregue; o site usa placeholder explícito ("Fotos de referência do local em breve").
+- **Lote 14G — Formas de pagamento:** ⛔ **BLOQUEADO (criado na Etapa 45).** Meios de pagamento aceitos ainda não confirmados; **nenhum** método será exibido até confirmação oficial (nada de Pix/Dinheiro/cartões inventados).
 
 ## Changelog
 
@@ -1825,7 +1827,8 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
 
 ## Etapa 43 — Mapa OSM estilizado com pin da marca (grayscale + logo no pin)
 
-- **Estado:** ✅ CONCLUÍDO
+- **Estado:** ⚠️ IMPLEMENTAÇÃO CONCLUÍDA À ÉPOCA, **POSTERIORMENTE REJEITADA/SUPERADA pela Etapa 44** (17/08/2026). Registro preservado como histórico da evolução do mapa.
+- **Por que foi superada:** (1) o marcador customizado era posicionado por `left-1/2`/`top-1/2` — **não georreferenciado** — e duplicava o marker do iframe (`marker=` no embed do OSM), gerando dois pins e informação visual incorreta ao mover o mapa; (2) o iframe preservava pan/zoom, indesejado para uma representação fixa de localização; (3) o filtro CSS global era insuficiente para estilização semântica das camadas. Substituída pela Etapa 44 (MapLibre + OpenFreeMap, não interativo, marker georreferenciado).
 - **Data:** 17/08/2026
 - **Executado por:** DeepSeek (psique v4) via Freebuff MCP, direto em main (após aprovação do protótipo pelo responsável).
 - **Problema resolvido:** a Etapa 42 (duotone) foi revertida porque o resultado não agradou; o responsável pediu uma nova direção: base grayscale com finos detalhes em vermelho do site e pin com a "cabeça" contendo o logo oficial (crescente + mesquita), no tamanho do pin original, bem refinado.
@@ -1841,3 +1844,59 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
   - Pan/zoom do iframe confirmado funcional (camadas decorativas com pointer-events: none).
 - **Validação:** `npm run check` (lint + 8 testes + build), `npm audit --audit-level=high` (0 vulnerabilidades), `git diff --check` e MD5 do logo (`b8bfb19a…` / `77fa9b36…` — arquivo original intocado; o import via Vite gera hash no bundle sem alterar a fonte) aprovados.
 - **Arquivos modificados:** `src/components/location/MapEmbed.jsx`, `src/styles/index.css`, `BEST_PLAN.MD`
+
+## Etapa 44 — Mapa vetorial georreferenciado, branded e não interativo
+
+- **Estado:** ✅ CONCLUÍDO
+- **Data:** 17/08/2026
+- **Baseline SHA:** `ec401c42c7ba3395dbb950eb13ff6f4abee24cd4`
+- **Branch:** `feat/etapas-44-45-mapa-canais` (a partir de `origin/main`; PR para `main` — sem implementação direta, conforme governança vigente).
+- **Problema da Etapa 43:** marcador customizado não georreferenciado (`left-1/2`/`top-1/2`) duplicado com o marker do iframe OSM; pan/zoom indesejado; filtro CSS insuficiente para estilização semântica. Implementação superada.
+- **Arquitetura escolhida:** **MapLibre GL JS v6.4.0 + OpenFreeMap** (tiles vetoriais baseadas em OpenStreetMap; sem API key, sem cadastro, sem custo). O style `liberty` do OpenFreeMap foi baixado para `src/assets/map/liberty.json` (permite ajustes locais) com o source via TileJSON (`https://tiles.openfreemap.org/planet`, maxzoom 14 — o provedor migrou de PMTiles para tiles PBF individuais).
+- **Não interativo (configuração e verificação):** `interactive: false` no `Map` (nenhum listener de mouse/touch/teclado) + `pointer-events: none` no container do mapa (scroll da página nunca fica preso); atribuição legal renderizada como texto estático na barra do card (o controle padrão do MapLibre criaria um `<a>` focável dentro do container `role="img"`, violando `nested-interactive` no axe). Confirmado por Playwright: sem drag/zoom/controles; `map.getZoom()` estável.
+- **Marker:** **exatamente um** pin, georreferenciado em `[-42.8479579, -22.9215763]` (anchor bottom no ponto exato). Asset `src/assets/images/location/pin-map.webp` (90×144, 8,5 kB) otimizado a partir de `documentacao/PIN_MAP.png` (1024×1536, ~1,4 MB) — recorte do bbox + redimensionamento 3x para retina + WebP com transparência; original intocado. Nenhum marker OSM/overlay central remanescente.
+- **Enquadramento:** center nas coordenadas reais, zoom `14.2` (calibrado: mostra o bairro com estradas e área verde em contexto, mantendo o pin como foco; tiles z14 — maxzoom do snapshot).
+- **Componente reescrito:** `MapEmbed.jsx` — raiz `<div>`; canvas `h-full` (não `absolute inset-0` — o CSS do MapLibre aplica `position: relative` no container); card interno de endereço e bússola decorativa **removidos** (redundantes); CTA "Abrir rota" mantido (`BUSINESS_INFO.channels.maps.url`, `target=_blank`, `rel=noopener noreferrer`, `aria-label`, foco visível); placeholder de carregamento e **fallback** com o pin + mensagem + CTA quando o mapa não carrega (JS/tiles/WebGL indisponíveis).
+- **Worker do MapLibre no Vite (causa raiz técnica):** o pacote usa `new URL('./maplibre-gl-worker.mjs')` com nome dinâmico, que o bundler não emite como asset (404 silencioso → mapa nunca baixava tiles). Correção: `import('maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url')` + `maplibre.setWorkerUrl(...)` — o Vite gera o asset do worker (470 kB) e o mapa passa a carregar tiles.
+- **Attribution:** mantida a obrigatória ("© OpenStreetMap contributors · OpenFreeMap") como texto estático discreto na barra do card, abaixo do CTA — sem link, para não criar elemento focável dentro do container `role="img"; correção de acessibilidade pós-auditoria: violações `nested-interactive` (atribuição clicável no canvas) e `color-contrast` (texto a 45%) zeradas no axe (texto final em `text-on-surface/70`).
+- **Performance:** chunk `maplibre-gl` (980,5 kB min / 253,7 kB gzip) e style `liberty` (41,3 kB / 4,0 kB gzip) **lazy-loaded** via `import()` — fora do chunk inicial (`index` manteve ~222 kB). CSS do MapLibre em chunk próprio (82,9 kB / 10,7 kB gzip). O asset do pin adiciona 8,5 kB.
+- **Validação:** `npm run lint`, `npm run test` (12/12), `npm run build`, `npm audit` (0), `git diff --check` aprovados; mapa renderizado com 72+ features (readPixels confirmou o canvas WebGL); desktop 1280px e mobile 375px sem overflow; console sem erros; hashes do logo conferidos (`b8bfb19a…` / `77fa9b36…`).
+- **Arquivos modificados:** `src/components/location/MapEmbed.jsx`, `src/styles/index.css`, `src/assets/map/liberty.json` (novo), `src/assets/images/location/pin-map.webp` (novo), `package.json`/`package-lock.json` (maplibre-gl@6.4.0), `tests/business-info.test.jsx`, `tests/e2e/site.spec.js`, `BEST_PLAN.MD`
+
+### Refinamento pós-auditoria do PR #23
+
+- **Style realmente customizado (liberdade visual):** `liberty.json` reestilizado com os tokens do site sobre as camadas vetoriais reais (nenhuma geometria tocada): fundo `#faf7f2` (creme da marca); vias locais quase neutras (`#fbf7f0`/casing `#e2d9c9`); secundárias/terciárias em areia suave (`#f4e7cd`/`#dcc8a4`); **trunk (RJ-106, confirmada por `queryRenderedFeatures`: `class=trunk`, `ref=RJ-106`, nome "Rodovia Amaral Peixoto")** com hierarquia maior (fill `#f8e7c0`, casing `#cfaa7c`) sem dominar o mapa; parques/áreas verdes em sage dessaturado (`landcover_grass`/`wood`); água em azul frio suave (`#c9d9e8`); buildings em creme quente (`#efe9de`); labels em tons de on-surface (`#43342a`/`#7a6a58`); POIs silenciados. Medição: leitura de pixels do canvas (readPixels) — 98,3% claro, matizes creme/sand/sage dominantes, 0% escuro.
+- **Attribution correta e linkada:** substituída a versão "texto estático sem link" por links reais **fora** do container `role="img"` (na barra do card, abaixo do CTA): `© OpenStreetMap contributors` (→ openstreetmap.org/copyright) · `OpenMapTiles` (→ openmaptiles.org) · `OpenFreeMap` (→ openfreemap.org) — requisito da fonte confirmado no site oficial ("OpenFreeMap © OpenMapTiles Data from OpenStreetMap"). Axe: 0 violações bloqueantes com o mapa carregado.
+- **Lazy loading real por viewport:** `IntersectionObserver` (rootMargin `500px 0px`) + `import()` — MapLibre, style, worker e tiles só são baixados quando a seção se aproxima da viewport. Verificado por Playwright: **0 requisições de maplibre/tiles ao abrir a Home**; 14 requisições após rolar até a Localização. Em jsdom (sem IntersectionObserver) inicia direto, preservando os testes unitários.
+- **`preserveDrawingBuffer` removido de produção:** `canvasContextAttributes` só recebe `{ antialias, preserveDrawingBuffer }` quando a URL tem `?qa=1` (captura de screenshot/QA); sem custo permanente de memória para o visitante.
+- **Classificação de erros:** erros transitórios (tile/fonte/sprite) após o `load` apenas registram um `console.warn` único — não derrubam o mapa; fallback total só em falhas antes do load (engine/WebGL/style/source críticos) ou timeout de 12s sem load. Console limpo em condição normal.
+- **Validação do refinamento:** `npm run lint`, `npm run test` (22/22), `npm run build`, `npm run check`, `npm audit` (0), `git diff --check` aprovados; E2E **100% verde** (34/34); axe 0 bloqueantes com mapa carregado; screenshots de QA atualizados (375/390/768/1280/1440) em `documentacao/qa/etapa44-*.png`; hashes do logo conferidos.
+
+## Etapa 45 — Dados comerciais, canais e conversão
+
+- **Estado:** ✅ CONCLUÍDO
+- **Data:** 17/08/2026
+- **Branch:** `feat/etapas-44-45-mapa-canais` (PR para `main`).
+- **Horários oficiais:** `BUSINESS_INFO.hours` → `AVAILABLE`, `value: 'Terça a domingo · 17h às 00h'`, `closed: 'Segunda · Fechado'`; exibidos em duas linhas na seção Localização; removida a mensagem "Não disponível / em construção".
+- **Endereço e copy:** seção Localização passa a exibir **"Nosso endereço"** (substitui "Região informada"), **"Siga-nos no Instagram"** (substitui "Canal disponível") e novo texto introdutório "Estamos no Parque Nanci, em Maricá. Veja nossa localização no mapa e abra a rota para chegar até a Turquia Lanches." (substitui o texto burocrático anterior). Fatos rápidos da Home atualizados ("Pedidos · Disponíveis pelo iFood", "Instagram · @turquialanches").
+- **iFood:** `BUSINESS_INFO.channels.ifood` → `AVAILABLE` com URL oficial `https://www.ifood.com.br/delivery/marica-rj/turquia-lanches-parque-nanci`; **Header** substitui "Pedidos em breve" pelo CTA "Pedir no iFood" com ícone SVG próprio (`IconIfood.jsx`, sem pacote); **menu mobile** ganhou os canais iFood + Instagram; **Footer** lista Google Maps, Instagram e iFood (removido "iFood em construção"); **ProductCard** passa a dizer "Pedido via iFood" no texto acessível.
+- **Instagram:** canal oficial `https://www.instagram.com/turquialanches/` (`@turquialanches`) consumido via `BUSINESS_INFO.channels.instagram` em Header (ícone com `aria-label`), menu mobile, Footer e Localização.
+- **WhatsApp:** **não inventado.** Sem número/URL oficial confirmado, `BUSINESS_INFO.channels.whatsapp` permanece `UNAVAILABLE`; Footer já condiciona a renderização a `status === AVAILABLE && url` (ativação futura simples). **Correção na auditoria:** `AboutSection.jsx` continha um link hard-coded `wa.me/5521964699374` (número não oficial, herdado de etapa anterior) com CTA "Falar pelo WhatsApp" — **removido** (o número violava a regra de não-invenção e o botão falhava contraste 1.98:1 no axe). A seção Sobre permanece sem CTA de contato até existir canal oficial.
+- **Pagamentos:** **não inventados.** Nenhuma forma de pagamento é exibida; pendência registrada como **Lote 14G (BLOQUEADO)**.
+- **`ChannelAction`:** ganhou suporte a `aria-label` (necessário para ícones-only no Header) sem mudança de contrato.
+- **Testes:** suíte unitária ampliada para 12 testes (iFood oficial, horários, Header/Footer com canais, mapa sem iframe); teste E2E de Localização atualizado para o contrato novo (mapa vetorial, horários, "Nosso endereço").
+- **Validação:** `npm run lint`, `npm run test` (12/12), `npm run build`, `npm run check`, `npm audit` (0), `git diff --check` aprovados; hashes do logo conferidos. E2E: **4 falhas pré-existentes** (cardápio/reviews antigos, documentadas na Etapa 39) permanecem inalteradas; a regressão de acessibilidade introduzida no início da implementação (axe: `nested-interactive` + `color-contrast`) foi corrigida e o teste E2E "Home única… acessibilidade" voltou a passar (desktop e mobile).
+- **Arquivos modificados:** `src/data/contact.js`, `src/components/layout/Header.jsx`, `src/components/layout/Footer.jsx`, `src/components/home/LocationSection.jsx`, `src/components/home/AboutSection.jsx`, `src/components/product/ProductCard.jsx`, `src/components/ui/ChannelAction.jsx`, `src/components/ui/IconIfood.jsx` (novo), `src/pages/Home.jsx`, `tests/business-info.test.jsx`, `tests/e2e/site.spec.js`, `BEST_PLAN.MD`
+
+### Refinamento pós-auditoria do PR #23
+
+- **E2E 100% verde (dívida da Etapa 39 quitada):** os 4 testes obsoletos de Cardápio e Reviews foram reescritos para o contrato atual e a suíte completa passou de 28/32 para **34/34** (desktop + mobile): Cardápio valida os 9 produtos publicados com preço, filtro e ausência de dados fictícios; Reviews ganhou dois testes estáveis (mock da API para sucesso e fallback) — sem depender de resposta externa da Google no CI e sem exigir reviews fictícias.
+- **`audit:demo-leak` corrigido (Vercel Preview em ERROR):** o script tinha `relative(root.pathname, path)` — `root` já era string (`fileURLToPath`), então `root.pathname === undefined` e a Vercel (Node 24) derrubava o build com `TypeError [ERR_INVALID_ARG_TYPE]: The "from" argument must be of type string`. Corrigido para `relative(root, path)` e refatorado em funções testáveis (`findLeaks`/`main`, CLI preservado). **10 testes novos** (`tests/audit-demo-leak.test.js`) cobrem: sem leak, leak normal, ramo `isPlaceholder` + sentinela demo (o que quebrava na Vercel), `isPlaceholder` isolado (não é leak), paths relativos válidos sem prefixo de drive duplicado (Windows/Linux), exit codes 0/1 e demo esperada vs bloqueada em produção.
+- **Node alinhado (local/CI/Vercel):** `engines.node` de `">=20.19"` (que permitia à Vercel subir para Node 24) para **`"22.x"`**; matrix do GitHub Actions reduzida para Node 22 — mesma major em todos os ambientes, compatível com Vite 8 (`^20.19 || >=22.12`).
+- **Validação do refinamento:** `npm run lint`, `npm run test` (22/22), `npm run build`, `npm run check`, `npm audit` (0), `git diff --check` aprovados; E2E **34/34**; axe 0 bloqueantes.
+
+## Changelog
+
+- **17/08/2026:** Etapas 44 e 45 concluídas na branch `feat/etapas-44-45-mapa-canais` (baseline `ec401c4`): mapa vetorial MapLibre + OpenFreeMap não interativo com pin georreferenciado (asset otimizado de `PIN_MAP.png`), horários oficiais, iFood oficial, Instagram e copy nova na Localização; Etapa 43 marcada como superada; Lote 14 reconciliado (14A/14C/14D concluídos, 14B/14F/14G bloqueados, 14E em auditoria); baseline e matriz de rotas corrigidos; governança (branch+PR) declarada vigente.
+- **17/08/2026 (reauditoria):** correções de acessibilidade na Etapa 44/45 — atribuição do mapa migrada para texto estático na barra do card (elimina `nested-interactive` do axe); link WhatsApp não oficial (`wa.me/5521964699374`) removido do `AboutSection.jsx` (elimina `color-contrast` e a violação de não-invenção); zero violações críticas/sérias no axe na página inteira; E2E "Home única" verde; suíte E2E com 4 falhas pré-existentes (cardápio/reviews).
+- **17/08/2026 (refinamento pós-auditoria do PR #23):** (1) `audit:demo-leak` corrigido (`root.pathname` → `root`) com 10 testes unitários — o erro derrubava o Preview da Vercel (`ERR_INVALID_ARG_TYPE`); (2) Node alinhado em `22.x` (local/CI/Vercel); (3) E2E 100% verde (34/34) — os 4 testes obsoletos de cardápio/reviews foram reescritos para o contrato atual; (4) `liberty.json` reestilizado com a paleta Turquia (RJ-106/trunk em destaque hierárquico, parques/água/labels em tons da marca); (5) atribuição legal linkada (OSM/OpenMapTiles/OpenFreeMap) fora do `role="img"`; (6) lazy loading real por viewport (IntersectionObserver 500px — 0 requisições de mapa na Home); (7) `preserveDrawingBuffer` condicionado a `?qa=1`; (8) classificação de erros (transitórios não derrubam o mapa). Detalhes nos blocos "Refinamento pós-auditoria do PR #23" das Etapas 44 e 45.

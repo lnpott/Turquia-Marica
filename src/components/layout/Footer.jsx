@@ -1,7 +1,8 @@
-import { Instagram, MapPin, ShoppingBag } from 'lucide-react'
+import { Instagram, MapPin } from 'lucide-react'
 import logo from '../../assets/images/brand/logo-96.webp'
-import { BUSINESS_INFO } from '../../data/contact'
+import { BUSINESS_INFO, BUSINESS_STATUS } from '../../data/contact'
 import ChannelAction from '../ui/ChannelAction'
+import IconIfood from '../ui/IconIfood'
 
 const actionClasses = 'inline-flex min-h-11 items-center gap-2 text-sm font-medium text-[#c9b99a] transition-all duration-tactile ease-tactile hover:translate-x-1 hover:text-white active:scale-[0.98]'
 
@@ -32,14 +33,10 @@ function Footer() {
           <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#9a8a7a]">Canais disponíveis</p>
           <ChannelAction channel={BUSINESS_INFO.channels.maps} icon={MapPin} className={actionClasses} />
           <ChannelAction channel={BUSINESS_INFO.channels.instagram} icon={Instagram} className={actionClasses} />
-          <ChannelAction
-            channel={BUSINESS_INFO.channels.ifood}
-            icon={ShoppingBag}
-            className={actionClasses}
-            unavailableClassName="inline-flex min-h-11 cursor-not-allowed items-center gap-2 text-sm text-[#6f6257] line-through"
-          >
-            iFood em construção
-          </ChannelAction>
+          <ChannelAction channel={BUSINESS_INFO.channels.ifood} icon={IconIfood} className={actionClasses} />
+          {BUSINESS_INFO.channels.whatsapp.status === BUSINESS_STATUS.AVAILABLE && BUSINESS_INFO.channels.whatsapp.url ? (
+            <ChannelAction channel={BUSINESS_INFO.channels.whatsapp} className={actionClasses} />
+          ) : null}
         </div>
       </div>
     </footer>
