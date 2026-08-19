@@ -96,7 +96,7 @@ describe('dados comerciais e demonstrativos', () => {
 
   it('Header expõe iFood real, WhatsApp e Instagram, sem "Pedidos em breve"', () => {
     render(<MemoryRouter><Header /></MemoryRouter>)
-    const ifoodLink = screen.getByRole('link', { name: 'iFood Pedir no iFood' })
+    const ifoodLink = screen.getByRole('link', { name: 'Pedir no iFood' })
     expect(ifoodLink).toHaveAttribute('href', IFOOD_URL)
     expect(ifoodLink).toHaveAttribute('target', '_blank')
     expect(screen.getByRole('link', { name: /whatsapp da turquia lanches/i })).toHaveAttribute('href', BUSINESS_INFO.channels.whatsapp.url)
@@ -108,7 +108,7 @@ describe('dados comerciais e demonstrativos', () => {
     render(<Footer />)
     expect(screen.getByRole('link', { name: /como chegar|abrir rota/i })).toHaveAttribute('href', BUSINESS_INFO.channels.maps.url)
     expect(screen.getByRole('link', { name: 'Instagram' })).toHaveAttribute('href', BUSINESS_INFO.channels.instagram.url)
-    expect(screen.getByRole('link', { name: 'iFood Pedir no iFood' })).toHaveAttribute('href', IFOOD_URL)
+    expect(screen.getByRole('link', { name: 'Pedir no iFood' })).toHaveAttribute('href', IFOOD_URL)
     expect(screen.getByRole('link', { name: 'WhatsApp' })).toHaveAttribute('href', BUSINESS_INFO.channels.whatsapp.url)
     expect(screen.queryByText('iFood em construção')).not.toBeInTheDocument()
   })

@@ -1925,3 +1925,32 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
   - `src/assets/map/liberty.json`
   - `tests/business-info.test.jsx` (atualizado para novo estado do WhatsApp)
   - `BEST_PLAN.MD`
+
+## Etapa 47 — Correções visuais finais: Header, Footer iFood, Hero e labels do Mapa
+- **Estado:** ⚠️ IMPLEMENTADO — AGUARDANDO AUDITORIA INDEPENDENTE
+- **Início:** 19/08/2026
+- **Executado por:** OpenCode Agent
+- **Problema resolvido:** (1) Header transbordava texto (Instagram/WhatsApp 44px/scrollW 69–71; wordmark 87/135 em 768) e CTA iFood quebrava a responsividade; (2) IconIfood tinha `alt` impróprio e IconWhatsApp enviava props DOM inválidas (`stroke-width` → warning React); (3) Hero exibia texto obsoleto "iFood em construção"; (4) mapa vetorial não exibia nome da RJ-106 nem identificava o parque.
+- **Implementação:**
+  - T1: `Header.jsx` → IG/WA `iconOnly` com aria-label (elimina overflow); CTA iFood responsivo (`h-11 w-11` em md, `lg:w-auto lg:gap-2 lg:px-5`, texto `hidden lg:inline`); wordmark `sm:block`→`lg:block`; logo `shrink-0`; WhatsApp adicionado ao menu mobile.
+  - T2: `IconIfood.jsx` → `alt=""` + `aria-hidden="true"` (decorativo, junto ao nome no CTA).
+  - T3: `IconWhatsApp.jsx` → props corrigidas (`strokeWidth`/`strokeLinecap`/`strokeLinejoin`).
+  - T4: `HeroSection.jsx` → removido bloco obsoleto iFood e imports sem uso.
+  - T5: `liberty.json` → camadas `highway-name-rj106` (symbol, line placement, filter ref RJ-106 + class trunk, text #ae0011, halo) e `poi-park-nanci` (symbol, filter nome real, text #3d5c2a, `text-ignore-placement`), posicionadas no FIM do array de layers (única posição que renderiza na carga).
+  - T6: `public/images/ICON_IFOOD.png` → otimizado de 1536×1024/1.29MB para 96×96/13.7KB (crop do bbox alfa + resize), aparência preservada.
+  - T7: `tests/business-info.test.jsx` → nomes acessíveis `'iFood Pedir no iFood'`→`'Pedir no iFood'`; `tests/e2e/site.spec.js` → teste "header sem overflow de texto nos viewports de aceite".
+- **Fatos de dados (tiles OpenFreeMap):** RJ-106 existe em `transportation_name` (class trunk, name "Rodovia Amaral Peixoto", ref "RJ-106"); **não existe polígono `park` em nenhum tile da região** — o parque é POI real "Parque Céu Aberto Parque Nanci" (ponto -42.846444,-22.921886, class park). A shield existente exibe o ref "RJ-106"; a nova camada exibe o nome (sem duplicação visual).
+- **Validação:** `npm run lint` ✓, `npm run test` (22/22) ✓, `npm run build` ✓, `npm run test:e2e` (36/36, inclui axe e teste de overflow) ✓, `npm audit --audit-level=high` (0) ✓, `git diff --check` ✓.
+- **Evidência visual programática:** before/after em `documentacao/qa/etapa-47/`; pixels de texto verde do parque 0 (antes) → 364 (depois) em 1280; canvas isolado confirma label do parque na região do POI e 102 px vermelhos do rótulo RJ-106; `queryRenderedFeatures` rj106=1, park=1 em todos os viewports de aceite.
+- **Arquivos modificados:**
+  - `src/components/layout/Header.jsx`
+  - `src/components/ui/IconIfood.jsx`
+  - `src/components/ui/IconWhatsApp.jsx`
+  - `src/components/ui/ChannelAction.jsx`
+  - `src/components/home/HeroSection.jsx`
+  - `src/assets/map/liberty.json`
+  - `public/images/ICON_IFOOD.png`
+  - `tests/business-info.test.jsx`
+  - `tests/e2e/site.spec.js`
+  - `documentacao/qa/AUDITORIA_LOCALIZACAO.md`
+  - `BEST_PLAN.MD`

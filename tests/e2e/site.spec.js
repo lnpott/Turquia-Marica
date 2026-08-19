@@ -218,3 +218,19 @@ test('não há overflow horizontal nos viewports de aceite', async ({ page }) =>
     expect(dimensions.content, `${width}px`).toBeLessThanOrEqual(dimensions.viewport)
   }
 })
+
+test('header sem overflow de texto nos viewports de aceite', async ({ page }) => {
+  for (const width of [375, 390, 768, 1024, 1280, 1440]) {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/')
+    const overflows = await page.evaluate(() => {
+      const header = document.querySelector('header.sticky')
+      if (!header) return { error: 'header não encontrado' }
+      return [...header.querySelectorAll('a,button')]
+        .filter((el) => el.getBoundingClientRect().width > 0)
+        .filter((el) => el.scrollWidth > el.clientWidth + 1)
+        .map((el) => ({ label: (el.getAttribute('aria-label') || el.textContent || '').trim().slice(0, 30), client: el.clientWidth, scroll: el.scrollWidth }))
+    })
+    expect(overflows, `overflow no header em ${width}px`).toEqual([])
+  }
+})
