@@ -2051,3 +2051,18 @@ A revisão humana apontou 2 problemas remanescentes na auditoria automática ant
 - **Validação:** `npm run lint` ✓, `npm run test` (22/22) ✓, `npm run build` (+ `audit:demo-leak`) ✓, `npm run test:e2e` (36/36) ✓, `git diff --check` ✓.
 - **Arquivos modificados:** `src/components/location/MapEmbed.jsx`, `src/styles/index.css`, `tests/business-info.test.jsx`, `tests/e2e/site.spec.js`, `package.json`/`package-lock.json`, `BEST_PLAN.MD`.
 - **Pendências:** revisão humana do PR; `npm run test:e2e:demo` não executável em Windows (config do webServer usa sintaxe POSIX `VITE_VISUAL_QA_DEMO=true` — roda apenas em CI/Linux); verificação visual do iframe OSM renderizando (o agente não vê imagens; validação estrutural confirmada por e2e).
+
+## Etapa 50 — Ajustes finais no style `liberty.json` (remover `park_outline` e destacar label Parque Nanci)
+
+- **Estado:** ✅ CONCLUÍDO (20/08/2026, commit direto em `main`, sem PR, conforme instrução do usuário).
+- **TAREFA 1 — remover `park_outline`:** objeto `{"id":"park_outline","type":"line","source":"openmaptiles","source-layer":"park","paint":{"line-color":"#3d5c2a","line-dasharray":[1,1.5]}}` removido integralmente do array `layers` (114 → 113 layers). Nada mais foi removido.
+- **TAREFA 2 — label do parque em `poi-park-nanci`:** alterados apenas os 4 campos indicados:
+  - `layout.text-field` → `"Parque\nNanci"`;
+  - `layout.text-font` → `["Noto Sans Bold"]`;
+  - `layout.text-size` → `13`;
+  - `paint.text-halo-width` → `2`.
+  - Demais campos (`filter`, `minzoom`, `text-anchor`, `text-offset`, `text-ignore-placement`, `text-allow-overlap`, `text-color`, `text-halo-blur`, `text-halo-color`) mantidos.
+- **Método:** alteração via script Node (`JSON.parse`/`stringify` — a ferramenta de edição textual corrompe o arquivo de linha única); diff estrutural confirmou que apenas `park_outline` (removida) e `poi-park-nanci` (alterada) diferem; as outras 112 layers ficaram byte-idênticas (46 095 → 45 921 bytes).
+- **Validação:** `npm run build` ✓ (build limpo + `audit:demo-leak` sem artefatos da Etapa 28). Nenhum outro comando solicitado.
+- **Arquivos modificados:** `src/assets/map/liberty.json`, `BEST_PLAN.MD`.
+- **Pendências:** nenhuma. Nota: o `liberty.json` não é mais importado no build (mapa agora é iframe OSM, Etapa 49) — o style permanece no repo como fonte histórica/para reuso.
