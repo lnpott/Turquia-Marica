@@ -18,7 +18,6 @@ function MapEmbed() {
           title="Localização da Turquia Lanches no mapa"
           className="h-full w-full border-0"
           loading="lazy"
-          referrerPolicy="no-referrer"
           aria-label="Mapa da região do Parque Nanci em Maricá com a localização da Turquia Lanches"
         />
       </div>
