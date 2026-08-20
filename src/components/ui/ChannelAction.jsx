@@ -1,9 +1,9 @@
 import { BUSINESS_STATUS } from '../../data/contact'
 
-function ChannelAction({ channel, icon: Icon, className = '', unavailableClassName = '', children, 'aria-label': ariaLabel, iconOnly = false }) {
+function ChannelAction({ channel, icon: Icon, className = '', unavailableClassName = '', iconClassName = 'h-5 w-5 shrink-0', children, 'aria-label': ariaLabel, iconOnly = false }) {
   const content = (
     <>
-      {Icon ? <Icon className="h-5 w-5 shrink-0" aria-hidden="true" /> : null}
+      {Icon ? <Icon className={iconClassName} aria-hidden="true" /> : null}
       {iconOnly ? null : children ?? channel.label}
     </>
   )

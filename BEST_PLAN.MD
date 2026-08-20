@@ -1954,3 +1954,40 @@ Arquivos que se referenciam apenas entre si; nada no runtime, no `BEST_PLAN.MD` 
   - `tests/e2e/site.spec.js`
   - `documentacao/qa/AUDITORIA_LOCALIZACAO.md`
   - `BEST_PLAN.MD`
+
+## Etapa 48 — Correções pós-merge do PR #24 (Footer iFood/WhatsApp, Header WhatsApp, contorno e label do parque no mapa)
+- **Estado:** ⚠️ IMPLEMENTADO — AGUARDANDO AUDITORIA INDEPENDENTE
+- **Início:** 20/08/2026
+- **Executado por:** OpenCode Agent
+- **Branch:** `fix/post-merge-map-header-footer` (PR contra `main`).
+- **Problemas resolvidos (5):**
+  - A. iFood no Footer fora do padrão (quadrado vermelho sólido ao lado de ícones outline dourados);
+  - B. WhatsApp no Footer sem ícone;
+  - C. WhatsApp no Header com balão de conversa genérico em vez do glifo oficial;
+  - D. Parque Nanci sem contorno vermelho fino no mapa;
+  - E. nome do parque (label) não visível no mapa.
+- **Causas raiz:**
+  - A: `ICON_IFOOD.png` é quadrado vermelho sólido 96×96 sem padding; em 20×20 vira um blob vermelho destoante. Solução: badge arredondado `rounded-[4px]` **somente no Footer** via novo prop `iconClassName` (Header usa o mesmo PNG dentro de botão vermelho — comportamento aprovado, não alterado).
+  - B: `ChannelAction` do WhatsApp no Footer foi adicionado na Etapa 46 sem a prop `icon`.
+  - C: `IconWhatsApp.jsx` usava balão de conversa genérico; o glifo oficial da marca já existia como `WhatsAppIcon` em `Button.jsx` e foi adotado (`fill="currentColor"`).
+  - D: **não existe polígono/camada `park` nos tiles** (confirmado: `queryRenderedFeatures` da camada `park` = 0). A única geometria de área real do parque são polígonos `landcover` com `subclass=park` (fill sage). MapLibre não suporta filtro espacial (`within`) sobre fonte vetorial, então o contorno é aplicado a **todos** os `landcover subclass=park` visíveis no viewport fixo (que é exatamente o Parque Nanci). Cor `#ae0011` (vermelho RJ-106), largura 1.5 px (menor que o casing da RJ-106 ~3 px em z14.2), opacidade 0.9.
+  - E: `poi-park-nanci` tinha `text-ignore-placement: true` mas **sem `text-allow-overlap`** (default `false`) → o label era cancelado por colisão. Confirmado por pixels: 0–2 px de texto antes → 284 px (1280) / 280 px (390) depois.
+- **Implementação:**
+  - T1: `IconWhatsApp.jsx` → glifo oficial da marca (path do `WhatsAppIcon`), `fill="currentColor"`, `aria-hidden` preservado.
+  - T2: `Footer.jsx` → WhatsApp recebe `icon={IconWhatsApp}`; iFood recebe `iconClassName="h-5 w-5 shrink-0 rounded-[4px]"`.
+  - T3: `ChannelAction.jsx` → prop opcional `iconClassName` (default `'h-5 w-5 shrink-0'`).
+  - T4: `liberty.json` → nova camada `park-nanci-contour` (type `line`, source-layer `landcover`, filter `subclass == park`, `#ae0011`/1.5/0.9) inserida após `landcover_wetland`; `poi-park-nanci` ganha `text-allow-overlap: true`.
+- **Evidências (programáticas, canvas real 424×380 em 1280 / 350×300 em 390):**
+  - `queryRenderedFeatures` (harness standalone + app real): `park-nanci-contour` → 22 features (todas `subclass=park`); `poi-park-nanci` → 1 feature; `park` → 0 (confirma ausência de polígono).
+  - Pixels `#ae0011` do contorno no build final (1280), nas posições projetadas das features reais: A=153, B=25, D=26 px; canvas total 1124 px (inclui RJ-106, mesma cor).
+  - DOM Footer/Header: Footer WhatsApp `svg` 20×20, iFood `img` 20×20, Header WhatsApp `svg` 20×20 (1280).
+  - Teste de controle `#ff0000`/4 px validou a metodologia de leitura; as caixas "C/D" de uma análise preliminar estavam mal projetadas — o polígono C do parque está **fora do viewport real** do app (a "falta de vermelho" era artefato da projeção, não do rendering).
+- **Validação:** `npm run lint` ✓, `npm run test` (22/22) ✓, `npm run build` ✓, `npm run test:e2e` (36/36) ✓, `git diff --check` ✓.
+- **Arquivos modificados:**
+  - `src/components/layout/Footer.jsx`
+  - `src/components/ui/ChannelAction.jsx`
+  - `src/components/ui/IconWhatsApp.jsx`
+  - `src/assets/map/liberty.json`
+  - `documentacao/qa/AUDITORIA_LOCALIZACAO.md`
+  - `BEST_PLAN.MD`
+- **Pendências:** auditoria independente; quando o tile JSON do OpenFreeMap for atualizado, revalidar a abrangência do contorno (a geometria dos polígonos `landcover` pode mudar); o POI real continua sendo a fonte oficial do nome.
