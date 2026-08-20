@@ -2062,7 +2062,17 @@ A revisão humana apontou 2 problemas remanescentes na auditoria automática ant
   - `layout.text-size` → `13`;
   - `paint.text-halo-width` → `2`.
   - Demais campos (`filter`, `minzoom`, `text-anchor`, `text-offset`, `text-ignore-placement`, `text-allow-overlap`, `text-color`, `text-halo-blur`, `text-halo-color`) mantidos.
-- **Método:** alteração via script Node (`JSON.parse`/`stringify` — a ferramenta de edição textual corrompe o arquivo de linha única); diff estrutural confirmou que apenas `park_outline` (removida) e `poi-park-nanci` (alterada) diferem; as outras 112 layers ficaram byte-idênticas (46 095 → 45 921 bytes).
+- **Método:** alteração via script Node (`JSON.parse`/`stringify` — a ferramenta de edição textual corrompe o arquivo de linha única); diff estrutural confirmou que apenas `park_outline` (removida) e `poi-park-nanci` (alterada) diferem; as outras 112 layers ficaram idênticas (46 095 → 45 921 caracteres).
 - **Validação:** `npm run build` ✓ (build limpo + `audit:demo-leak` sem artefatos da Etapa 28). Nenhum outro comando solicitado.
 - **Arquivos modificados:** `src/assets/map/liberty.json`, `BEST_PLAN.MD`.
 - **Pendências:** nenhuma. Nota: o `liberty.json` não é mais importado no build (mapa agora é iframe OSM, Etapa 49) — o style permanece no repo como fonte histórica/para reuso.
+
+### Auditoria — 20/08/2026 (executada pelo agente, pós-commit `1038413`)
+
+**Veredito: CONFORME — as duas tarefas foram executadas exatamente como solicitado.**
+
+- **TAREFA 1:** ✅ camada `park_outline` removida integralmente (114 → 113 layers); nenhuma outra camada removida/adicionada; `sources`/`sprite`/`glyphs`/`version` inalterados.
+- **TAREFA 2:** ✅ apenas os 4 campos documentados mudaram (`text-field`, `text-font`, `text-size`, `text-halo-width`); `filter`, `minzoom`, `text-anchor`, `text-offset`, `text-ignore-placement`, `text-allow-overlap`, `text-color`, `text-halo-blur`, `text-halo-color` mantidos; as outras 112 layers byte-idênticas.
+- **Sem impacto em runtime:** `liberty.json` não é mais importado por nenhum arquivo em `src/` e `maplibre-gl` não está mais em `dependencies` — consistente com a nota da Etapa 50.
+- **Ressalvas:** (1) o valor "bytes" no registro acima é na verdade **caracteres** (corrigido nesta revisão); (2) o `npm run build` não foi re-executado na auditoria (o arquivo não é consumido pelo build, então a re-execução não exercitaria a mudança) — o build verde foi confirmado na implementação.
+- **Git:** branch `main`; working tree limpa; commit `1038413` local; push confirmado (`e57f007..1038413`).
