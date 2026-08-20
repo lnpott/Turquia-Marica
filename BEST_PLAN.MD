@@ -2012,3 +2012,28 @@ Verificações executadas de forma independente sobre o estado real (branch `fix
 **Metodologia declarada:** o agente não inspeciona imagens visualmente; as evidências visuais são programáticas (contagem de pixels sobre PNG capturado em resolução integral + `queryRenderedFeatures` + inspeção de DOM). A leitura de pixels foi validada por teste de controle (`#ff0000`/4 px) e pela posição projetada das features reais de contorno; uma análise preliminar que sugeria "0 vermelho em C/D" foi refutada por projeção correta (polígono C está fora do viewport real do app).
 
 **Pendências após a auditoria:** revisão/merge humano do PR #25; revalidação da abrangência do contorno quando o tile JSON do OpenFreeMap for atualizado.
+
+### Reabertura pós-revisão humana — 20/08/2026 (feedback visual do usuário)
+
+**Estado:** corrigido em `fix/post-merge-map-header-footer` (novo commit sobre `2861759`/`bcf26f2`); PR #25 aguarda re-revisão humana.
+
+A revisão humana apontou 2 problemas remanescentes na auditoria automática anterior:
+
+- **A (iFood do Footer):** mesmo com `rounded-[4px]`, o `ICON_IFOOD.png` vermelho sólido em 20×20 ainda destoava dos demais canais. **Decisão do usuário (autoridade visual):** iFood deve seguir os demais canais como ícone **dourado monocromático** (`#c9b99a`), não mais o PNG vermelho.
+- **D (contorno do mapa):** o contorno destacava **lugar errado** — vários polígonos `landcover subclass=park` espalhados ao sul e a leste do parque. A premissa anterior ("viewport mostra apenas A, B e parte de D") estava **errada**: polígonos fora do Parque Céu Aberto eram contornados. O label do parque está correto (usuário confirmou); apenas o contorno errava.
+
+**Causa raiz e correção:**
+
+- A: substituído o PNG vermelho por **wordmark oficial do iFood em SVG** (`IconIfoodGold.jsx`, paths extraídos de `public/images/IFood_idvFPAKYIS_1.svg`, `viewBox="0 0 1004 530.58"`, `fill="currentColor"`, `aria-hidden`), renderizado dourado `h-5 w-auto shrink-0` (~38×20, proporção correta do wordmark). Header inalterado (PNG vermelho em botão, aprovado).
+- D: confirmado empiricamente que o filtro espacial `within` do MapLibre **não funciona** no `maplibre-gl` v6.4.0 (0 features em fonte vetorial E em fonte GeoJSON — testado). Solução: fonte GeoJSON dedicada `parque-nanci-area` com **geometria real extraída dos tiles** (anéis exatos via `querySourceFeatures` do tile JSON `20260816_080001_pt`): polígono **A** (`-42.848021..-42.846336`, `-22.923071..-22.920754`, contém o pin do estabelecimento "Ilha Nanci" em `-42.847956,-22.921574`, que coincide com o est) e polígono **B** (`-42.847023..-42.845317`, `-22.922745..-22.920645`, contém o POI do nome). A camada `park-nanci-contour` passou a usar essa fonte (removeu `source-layer`/`filter`); paint inalterado (`#ae0011`/1.5/0.9). **Nenhuma geometria foi inventada.**
+
+**Evidências (harness com o `liberty.json` de produção, canvas real 424×380 / 350×300):**
+
+- `queryRenderedFeatures` de `park-nanci-contour` → **exatamente 2 features únicas** (A e B, bounds acima). C e D: **0** pixels vermelhos de contorno em 424×380 e 350×300.
+- `poi-park-nanci` → 1 feature (label do parque renderizado). Zero erros de console.
+- Capturas do build final (`capture\now-map-1280.png` / `now-map-390.png`): vermelho restante no canvas é da **RJ-106** (mesma cor primária, proposital); nenhum vermelho nas caixas projetadas de C (sul) e D (leste).
+- DOM Footer: iFood = `svg` dourado ~38×20 (sem `img`, sem quadrado vermelho), consistente com Instagram/Maps/WhatsApp (outline dourado).
+
+**Validação:** `npm run lint` ✓, `npm run test` (22/22) ✓, `npm run build` (+ `audit:demo-leak`) ✓, `npm run test:e2e` (36/36) ✓, `git diff --check` ✓, console errors = 0 ✓. Detalhes em `documentacao/qa/AUDITORIA_LOCALIZACAO.md` (seção "Reabertura 20/08/2026").
+
+**Pendências:** re-revisão humana do PR #25; quando o tile JSON do OpenFreeMap for atualizado, revalidar se a geometria de A/B ainda corresponde ao parque.
