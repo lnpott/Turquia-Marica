@@ -218,3 +218,43 @@ Decisão cartográfica: nenhuma geometria inventada. A label do parque aponta pa
 
 - O agente não inspeciona imagens visualmente; todas as evidências de "aparece no mapa" são programáticas (contagem de pixels + `queryRenderedFeatures`).
 - O contorno cobre todo `landcover subclass=park` do viewport, não uma geometria de "Parque Nanci" (inexistente nos tiles). Quando o tile JSON for atualizado, a abrangência do contorno deve ser revalidada.
+
+## Etapa 48 — Reabertura pós-revisão humana (20/08/2026)
+
+### Contexto
+
+A revisão humana do PR #25 apontou 2 problemas que a auditoria programática anterior não capturou. O usuário é a autoridade visual; novas evidências programáticas foram geradas.
+
+| # | Achado humano | Veredito na auditoria anterior | Diagnóstico | Correção aplicada |
+|---|---|---|---|---|
+| A | iFood do Footer ainda destoava dos demais canais (quadrado vermelho) | "Resolvido" via `rounded-[4px]` | O PNG vermelho 20×20 continuava fora do padrão de ícones outline dourados (`#c9b99a`) | Wordmark oficial do iFood em SVG dourado monocromático |
+| D | Contorno do mapa destacava lugar errado (polígonos `landcover` ao sul/leste do parque) | "Resolvido" (contorno em todo `subclass=park` do viewport) | A premissa "viewport mostra apenas A, B e parte de D" estava **errada**; vários `landcover subclass=park` fora do Parque Céu Aberto eram contornados | Contorno restrito à geometria real A+B via fonte GeoJSON dedicada |
+
+### A — iFood do Footer dourado monocromático (decisão do usuário)
+
+- **Causa raiz:** o `ICON_IFOOD.png` é um quadrado vermelho sólido 96×96; a correção anterior (`rounded-[4px]`) mitigou mas não alinhou o visual ao padrão dos demais canais.
+- **Correção:** novo componente `src/components/ui/IconIfoodGold.jsx` — wordmark oficial do iFood como SVG inline (`viewBox="0 0 1004 530.58"`, paths extraídos de `public/images/IFood_idvFPAKYIS_1.svg`), `fill="currentColor"`, `aria-hidden`. `Footer.jsx` usa `icon={IconIfoodGold}` com `iconClassName="h-5 w-auto shrink-0"` → renderiza dourado (`#c9b99a` via `actionClasses`) em ~38×20, proporção original do wordmark. Header inalterado (PNG vermelho em botão, aprovado nas Etapas 44/45).
+- **Evidência (DOM do build final, 1280 e 390):** iFood do Footer = `svg` dourado ~38×20, **sem `img`**, sem quadrado vermelho, sem `rounded-[4px]`; nome acessível "Pedir no iFood" preservado (testes 22/22 ✓). Consistente com Instagram/Maps/WhatsApp (outline dourado).
+
+### D — Contorno do parque restrito à geometria real (A+B)
+
+- **Causa raiz:** `within` está **quebrado** no `maplibre-gl` v6.4.0: retornou 0 features em fonte vetorial E em fonte GeoJSON (testado com `Geometry` puro e `Feature`); o operador nem aparece registrado no bundle. Logo, o contorno por filtro espacial era inviável.
+- **Correção:** extraída a **geometria real** dos tiles (snapshot `20260816_080001_pt`) via `querySourceFeatures` (anéis exatos, script `extract-park-rings.mjs`) e embutida como fonte GeoJSON `parque-nanci-area`:
+  - **A:** `-42.848021..-42.846336`, `-22.923071..-22.920754` (pts=15; contém o pin do estabelecimento "Ilha Nanci" `-42.847956,-22.921574`, que coincide com o est `-42.8479579,-22.9215763`);
+  - **B:** `-42.847023..-42.845317`, `-22.922745..-22.920645` (pts=14; contém o POI do nome "Parque Céu Aberto Parque Nanci").
+  - A camada `park-nanci-contour` passou de `source: openmaptiles` + `source-layer: landcover` + filter `subclass==park` para `source: parque-nanci-area` (sem filtro). Paint inalterado (`#ae0011`/1.5/0.9). **Nenhuma geometria foi inventada.**
+  - Os demais polígonos `landcover` do viewport (C ao sul, D a leste e pequenos espalhados) **não fazem parte** do Parque Nanci e não são mais contornados.
+- **Evidência (harness standalone com o `liberty.json` de produção, canvas 424×380):**
+  - `queryRenderedFeatures('park-nanci-contour')` → **exatamente 2 features únicas** (bounds de A e B acima; duplicatas apenas do retiling interno do GeoJSON);
+  - pixels vermelhos: A+B presente (~88 px nas bordas), **C = 0, D = 0**; restante do vermelho do canvas = RJ-106 (mesma cor primária, intencional);
+  - `poi-park-nanci` → 1 feature (label "Parque Céu Aberto Parque Nanci" renderizado); console errors = 0;
+  - repetido no canvas 350×300 com o mesmo resultado de contorno (0 em C/D).
+
+### Validações da reabertura
+
+`npm run lint` ✓ · `npm run test` (22/22) ✓ · `npm run build` (+ `audit:demo-leak`) ✓ · `npm run test:e2e` (36/36) ✓ · `git diff --check` ✓ · console/page errors = 0 ✓ · varredura de segredos no diff: nenhum ✓.
+
+### Limitações e pendências
+
+- Geometria A+B embutida é um snapshot do tile JSON `20260816_080001_pt`; revalidar quando o OpenFreeMap atualizar os tiles.
+- Re-revisão humana do PR #25.
