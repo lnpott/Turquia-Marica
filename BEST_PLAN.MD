@@ -2037,3 +2037,17 @@ A revisão humana apontou 2 problemas remanescentes na auditoria automática ant
 **Validação:** `npm run lint` ✓, `npm run test` (22/22) ✓, `npm run build` (+ `audit:demo-leak`) ✓, `npm run test:e2e` (36/36) ✓, `git diff --check` ✓, console errors = 0 ✓. Detalhes em `documentacao/qa/AUDITORIA_LOCALIZACAO.md` (seção "Reabertura 20/08/2026").
 
 **Pendências:** re-revisão humana do PR #25; quando o tile JSON do OpenFreeMap for atualizado, revalidar se a geometria de A/B ainda corresponde ao parque.
+
+## Etapa 49 — Mapa OpenStreetMap via iframe (substitui o mapa vetorial MapLibre)
+
+- **Estado:** ✅ IMPLEMENTADO e validado em `feat/map-osm-iframe` (20/08/2026); PR contra `main` aguarda revisão humana.
+- **Objetivo (decisão do usuário):** trocar o mapa vetorial (MapLibre GL + OpenFreeMap, canvas WebGL, ~254 kB gzip + style local) pelo **embed oficial do OpenStreetMap via iframe** — zero dependência, zero conta, zero manutenção. Arquivo de origem: `D:\Downloads\NEW_SYS\MapEmbed.jsx` (fornecido pelo usuário, copiado integralmente).
+- **Implementação:**
+  - `src/components/location/MapEmbed.jsx` → reescrito com iframe `openstreetmap.org/export/embed.html` (bbox `-42.8629579,-22.9315763,-42.8329579,-22.9115763`, `layer=mapnik`, `marker=-22.9215763,-42.8479579` — coordenadas validadas inalteradas), `title` acessível, `aria-label`, `loading="lazy"`, `referrerPolicy="no-referrer"`. Barra inferior preserva o CTA "Abrir rota" (`BUSINESS_INFO.channels.maps.url`) e a atribuição obrigatória © OpenStreetMap.
+  - Removidos código/asset/dependência mortos do mapa vetorial: classes `.map-embed-canvas`/`.map-pin-marker` em `src/styles/index.css`; dependência `maplibre-gl` (via `npm uninstall`, lockfile atualizado). `pin-map.webp` e `liberty.json` deixam de ser importados (assets permanecem no repo por referência histórica).
+  - Testes atualizados para o novo contrato (iframe OSM):
+    - `tests/business-info.test.jsx`: teste do mapa passa a exigir iframe OSM com `title`/`aria-label` + link de copyright.
+    - `tests/e2e/site.spec.js`: (a) título/asserts do iframe; (b) `blockOsmTraffic` via `beforeEach` (o iframe mantém tráfego externo e impedia `networkidle`); (c) `waitUntil: 'load'` no lugar de `networkidle`; (d) espera o carregamento das reviews terminar antes da análise axe (texto de loading tinha contraste 4.41 < 4.5 transitoriamente).
+- **Validação:** `npm run lint` ✓, `npm run test` (22/22) ✓, `npm run build` (+ `audit:demo-leak`) ✓, `npm run test:e2e` (36/36) ✓, `git diff --check` ✓.
+- **Arquivos modificados:** `src/components/location/MapEmbed.jsx`, `src/styles/index.css`, `tests/business-info.test.jsx`, `tests/e2e/site.spec.js`, `package.json`/`package-lock.json`, `BEST_PLAN.MD`.
+- **Pendências:** revisão humana do PR; `npm run test:e2e:demo` não executável em Windows (config do webServer usa sintaxe POSIX `VITE_VISUAL_QA_DEMO=true` — roda apenas em CI/Linux); verificação visual do iframe OSM renderizando (o agente não vê imagens; validação estrutural confirmada por e2e).
