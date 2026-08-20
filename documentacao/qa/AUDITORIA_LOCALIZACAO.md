@@ -195,7 +195,7 @@ Decisão cartográfica: nenhuma geometria inventada. A label do parque aponta pa
 
 ### Veredito
 
-**IMPLEMENTADO — AGUARDANDO AUDITORIA INDEPENDENTE.**
+**APROVADO — auditoria independente do agente executada em 20/08/2026 (após o commit `2861759`, PR #25). Nenhum achado P0/P1/P2.** Validações repetidas na auditoria: `npm run lint`, `npm run test` (22/22), `npm run build` (+ `audit:demo-leak` limpo), `npm run test:e2e` (36/36), `git diff --check`, varredura de segredos (nenhum), console/page errors = 0, CI do PR (quality 22, CodeRabbit, Vercel) verdes. Working tree limpa, branch sincronizada com `origin`.
 
 ### Problemas e causas raiz (5)
 
