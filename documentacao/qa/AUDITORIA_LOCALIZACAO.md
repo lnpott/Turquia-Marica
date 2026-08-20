@@ -188,3 +188,33 @@ Decisão cartográfica: nenhuma geometria inventada. A label do parque aponta pa
 
 - O agente não inspeciona imagens visualmente; as evidências de "aparece no mapa" são programáticas (pixels + `queryRenderedFeatures`). A leitura via `readPixels` de buffer WebGL mostrou-se não confiável e foi substituída por análise do PNG capturado.
 - O parque é exibido como POI nomeado, **não** como polígono/área — sem geometria oficial disponível nos tiles, qualquer área desenhada seria inventada.
+
+---
+
+## Etapa 48 — Pós-merge PR #24: Footer/Header (iFood/WhatsApp) e mapa (contorno + label do parque)
+
+### Veredito
+
+**APROVADO — auditoria independente do agente executada em 20/08/2026 (após o commit `2861759`, PR #25). Nenhum achado P0/P1/P2.** Validações repetidas na auditoria: `npm run lint`, `npm run test` (22/22), `npm run build` (+ `audit:demo-leak` limpo), `npm run test:e2e` (36/36), `git diff --check`, varredura de segredos (nenhum), console/page errors = 0, CI do PR (quality 22, CodeRabbit, Vercel) verdes. Working tree limpa, branch sincronizada com `origin`.
+
+### Problemas e causas raiz (5)
+
+1. **iFood do Footer fora do padrão (A):** `ICON_IFOOD.png` é um quadrado vermelho sólido 96×96 sem padding; renderizado em 20×20 vira um blob vermelho ao lado de ícones outline dourados (`#c9b99a`). Correção: `rounded-[4px]` apenas no Footer via novo prop `iconClassName` do `ChannelAction` (default `'h-5 w-5 shrink-0'`). O Header continua com o PNG dentro de botão vermelho (aprovado na Etapa 44/45 — não alterado).
+2. **WhatsApp do Footer sem ícone (B):** o `ChannelAction` do WhatsApp foi adicionado na Etapa 46 sem a prop `icon`. Correção: `icon={IconWhatsApp}`.
+3. **WhatsApp do Header com balão genérico (C):** `IconWhatsApp.jsx` usava balão de conversa inventado; o glifo oficial da marca já existia como `WhatsAppIcon` em `Button.jsx`. Correção: path oficial com `fill="currentColor"`.
+4. **Parque sem contorno vermelho fino (D):** **não existe polígono/camada `park` nos tiles** — `queryRenderedFeatures` da camada `park` = 0. A única geometria de área real são polígonos `landcover` com `subclass=park` (fill sage `rgba(208,216,192,0.45)`). MapLibre não suporta filtro espacial (`within`) sobre fonte vetorial; portanto o contorno é desenhado em **todos** os `landcover subclass=park` visíveis no viewport fixo — que corresponde ao Parque Nanci (única área de parque na região). Paint: `line-color #ae0011`, `line-width 1.5`, `line-opacity 0.9`, camada `park-nanci-contour` inserida após `landcover_wetland` (mantém a RJ-106 hierarquicamente mais importante). Nenhuma geometria foi inventada.
+5. **Label do parque não visível (E):** `poi-park-nanci` tinha `text-ignore-placement: true` sem `text-allow-overlap` → o label era cancelado por colisão com o símbolo. Correção: `text-allow-overlap: true` no layout.
+
+### Evidências (programáticas, resolução integral)
+
+- Harness standalone (MapLibre puro, mesmo style e tile JSON `20260816_080001_pt`), canvas 1280×720:
+  - `park-nanci-contour` → **22 features renderizadas**, todas `subclass=park` (filtro correto);
+  - `poi-park-nanci` → 1 feature; `park` → 0; `landcover_grass` → 355; `landcover_wood` → 44.
+- Build final do app (canvas real 424×380 em 1280 / 350×300 em 390), pixels `#ae0011` do contorno nas posições projetadas das features reais (1280): polígono A=153 px, B=25 px, D=26 px (borda direita); total do canvas 1124 px (inclui a RJ-106, mesma cor).
+- DOM: Footer WhatsApp `svg` 20×20 (390 e 1280), iFood `img` 20×20, Header WhatsApp `svg` 20×20 (1280).
+- Teste de controle com `#ff0000`/4 px validou a metodologia; uma análise preliminar reportou "0 vermelho em C/D", mas isso era artefato de projeção errada — o polígono C está **fora do viewport real** do app (o mapa fixo mostra apenas A, B e parte de D).
+
+### Limitação
+
+- O agente não inspeciona imagens visualmente; todas as evidências de "aparece no mapa" são programáticas (contagem de pixels + `queryRenderedFeatures`).
+- O contorno cobre todo `landcover subclass=park` do viewport, não uma geometria de "Parque Nanci" (inexistente nos tiles). Quando o tile JSON for atualizado, a abrangência do contorno deve ser revalidada.
