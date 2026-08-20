@@ -2015,7 +2015,7 @@ Verificações executadas de forma independente sobre o estado real (branch `fix
 
 ### Reabertura pós-revisão humana — 20/08/2026 (feedback visual do usuário)
 
-**Estado:** corrigido em `fix/post-merge-map-header-footer` (novo commit sobre `2861759`/`bcf26f2`); PR #25 aguarda re-revisão humana.
+**Estado:** corrigido e commitado em `fix/post-merge-map-header-footer` (commit `d135e32`, 20/08/2026); **PR #25 já foi MERGED** em `main` (`614dea4`, contém `2861759` + `bcf26f2`) — as correções desta reabertura ficaram fora desse merge e foram entregues via **PR #26** (OPEN, MERGEABLE, base `main`, commit único `d135e32`): https://github.com/lnpott/Turquia-Marica/pull/26. Aguarda revisão humana.
 
 A revisão humana apontou 2 problemas remanescentes na auditoria automática anterior:
 
@@ -2036,4 +2036,4 @@ A revisão humana apontou 2 problemas remanescentes na auditoria automática ant
 
 **Validação:** `npm run lint` ✓, `npm run test` (22/22) ✓, `npm run build` (+ `audit:demo-leak`) ✓, `npm run test:e2e` (36/36) ✓, `git diff --check` ✓, console errors = 0 ✓. Detalhes em `documentacao/qa/AUDITORIA_LOCALIZACAO.md` (seção "Reabertura 20/08/2026").
 
-**Pendências:** re-revisão humana do PR #25; quando o tile JSON do OpenFreeMap for atualizado, revalidar se a geometria de A/B ainda corresponde ao parque.
+**Pendências:** revisão humana do PR #26 (CI `quality` pending, CodeRabbit/Vercel pass); quando o tile JSON do OpenFreeMap for atualizado, revalidar se a geometria de A/B ainda corresponde ao parque.
