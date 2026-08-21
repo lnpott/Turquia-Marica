@@ -2076,3 +2076,10 @@ A revisão humana apontou 2 problemas remanescentes na auditoria automática ant
 - **Sem impacto em runtime:** `liberty.json` não é mais importado por nenhum arquivo em `src/` e `maplibre-gl` não está mais em `dependencies` — consistente com a nota da Etapa 50.
 - **Ressalvas:** (1) o valor "bytes" no registro acima é na verdade **caracteres** (corrigido nesta revisão); (2) o `npm run build` não foi re-executado na auditoria (o arquivo não é consumido pelo build, então a re-execução não exercitaria a mudança) — o build verde foi confirmado na implementação.
 - **Git:** branch `main`; working tree limpa; commit `1038413` local; push confirmado (`e57f007..1038413`).
+
+## Etapa 51 — Reposicionamento do enquadramento do mapa OSM
+
+- **Estado:** ✅ CONCLUÍDO (20/08/2026, commit direto em `main`).
+- **Objetivo:** deslocar o bbox do iframe OSM para revelar a RJ-106 e o Retorno ao norte; colocar o pin do estabelecimento no terço inferior do frame em vez do centro.
+- **Alteração:** `OSM_SRC` em `src/components/location/MapEmbed.jsx` — bbox S/N atualizado de `-22.9315763/-22.9115763` para `-22.9293763/-22.9033763`; span lat aumentado de 0.0200° para 0.0260° (~30% mais contexto ao norte); centro do frame sobe ~0.0052° norte; pin fica a ~70% do topo do frame (terço inferior). Marker `-22.9215763,-42.8479579` inalterado.
+- **Arquivos modificados:** `src/components/location/MapEmbed.jsx`, `BEST_PLAN.MD`.

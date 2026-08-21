@@ -5,7 +5,7 @@ import { BUSINESS_INFO } from '../../data/contact'
    Coordenadas validadas: -22.9215763, -42.8479579. Não alterar. */
 const OSM_SRC =
   'https://www.openstreetmap.org/export/embed.html' +
-  '?bbox=-42.8629579%2C-22.9315763%2C-42.8329579%2C-22.9115763' +
+  '?bbox=-42.8629579%2C-22.9293763%2C-42.8329579%2C-22.9033763' +
   '&layer=mapnik' +
   '&marker=-22.9215763%2C-42.8479579'
 
