@@ -2176,3 +2176,15 @@ A revisão humana apontou 2 problemas remanescentes na auditoria automática ant
 - **Validação:** `npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓. O certificado do OpenFreeMap foi ignorado apenas na execução Playwright local; `playwright.config.js` foi restaurado ao final.
 - **Evidências:** `documentacao/qa/etapa-56/before-mapa-1280.png`, `before-mapa-390.png`, `after-mapa-1280.png` e `after-mapa-390.png`, inspecionados em resolução integral.
 - **Escopo preservado:** câmera, zoom, pin, rodovia, parque, label, CTA, atribuições e geometria não foram alterados.
+
+## Etapa 57 — Reposicionamento da placa e seta de retorno refinada
+
+- **Estado:** ✅ IMPLEMENTADO e auditado (22/08/2026); atualização incorporada ao PR #30, aguardando revisão humana/merge.
+- **Decisão visual:** reposicionar `Retorno KM 25` abaixo/à direita da rampa, conforme a nova referência, e reintroduzir somente um ícone de seta compacto junto à via — sem linha ligando a placa ao ponto.
+- **Implementação:** o mesmo `maplibre.Marker` e a coordenada real da feature `1787747092` foram preservados. O marker volta ao anchor `top-left` com offset `[-2,-12]`; um SVG inline de seta de retorno usa path fechado, preenchimento creme, contorno vermelho `#ae0011`, joins/caps arredondados e sombra discreta. A ponta do SVG coincide com o anchor cartográfico; a placa fica em `top: 30px` / `left: 22px` dentro do marker, sem haste intermediária.
+- **Responsividade:** wrapper 130×68, texto 10 px e tracking reduzido mantêm placa e seta integralmente dentro do canvas de 350×300 e do canvas desktop de 424×380.
+- **Acessibilidade/fallback:** SVG e marker permanecem `aria-hidden`; o nome acessível continua informando `Retorno KM 25`; o conjunto só é criado após `map.load` e é removido no cleanup.
+- **Testes:** E2E passa a exigir também um único SVG `[data-map-role=return-anchor]` visível dentro do marker, além do texto e bounding box contida no mapa.
+- **Validação:** `npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓. Playwright local usou `ignoreHTTPSErrors` temporário pela CA do OpenFreeMap; configuração restaurada ao final.
+- **Evidências:** `documentacao/qa/etapa-57/before-mapa-1280.png`, `before-mapa-390.png`, `after-mapa-1280.png` e `after-mapa-390.png`, inspecionados em resolução integral.
+- **Escopo preservado:** nenhuma alteração em câmera, zoom, coordenadas, pin, rodovia, parque, CTA ou atribuições.

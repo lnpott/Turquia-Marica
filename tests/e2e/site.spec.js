@@ -114,6 +114,7 @@ test('Localização aparece uma vez, com mapa vetorial, CTA único e dados ofici
   await expect(section.getByText('Retorno KM 25')).toBeVisible({ timeout: 15_000 })
   const returnMarker = section.locator('.maplibregl-marker.map-return-marker[data-map-role="return"]')
   await expect(returnMarker).toHaveCount(1)
+  await expect(returnMarker.locator('svg[data-map-role="return-anchor"]')).toBeVisible()
   const [mapBox, markerBox] = await Promise.all([map.boundingBox(), returnMarker.boundingBox()])
   expect(mapBox).not.toBeNull()
   expect(markerBox).not.toBeNull()

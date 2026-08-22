@@ -84,13 +84,38 @@ html {
   object-fit: contain;
 }
 
-/* Placa do retorno georreferenciada pelo MapLibre, sem linha auxiliar. */
+/* Placa do retorno georreferenciada pelo MapLibre. A ponta da seta coincide
+   com o anchor da rampa; o selo fica abaixo e à direita, conforme a referência. */
 .map-return-marker {
+  position: relative;
   display: block;
+  width: 130px;
+  height: 68px;
   pointer-events: none;
 }
 
+.map-return-marker__arrow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 32px;
+  height: 32px;
+  overflow: visible;
+  fill: #fff8f1;
+  stroke: #ae0011;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  filter: drop-shadow(0 1px 1px rgba(33, 22, 13, 0.24));
+  transform: rotate(-18deg);
+  transform-origin: 2px 12px;
+}
+
 .map-return-marker__label {
+  position: absolute;
+  top: 30px;
+  left: 22px;
   display: inline-block;
   border: 1px solid #ae0011;
   border-radius: 3px;
@@ -98,11 +123,11 @@ html {
   box-shadow: 0 2px 5px rgba(33, 22, 13, 0.2);
   color: #fff8f1;
   font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   line-height: 1;
-  padding: 6px 8px;
+  padding: 6px 7px;
   text-transform: uppercase;
   white-space: nowrap;
 }

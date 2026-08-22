@@ -1,5 +1,36 @@
 # Auditoria independente — Lote 6 — Localização
 
+## Etapa 57 — Placa reposicionada e seta refinada — 22/08/2026
+
+### Veredito
+
+**IMPLEMENTADO E AUDITADO — INCORPORADO AO PR #30, AGUARDANDO REVISÃO HUMANA/MERGE.**
+
+### Alteração auditada
+
+- `Retorno KM 25` foi deslocado para baixo/à direita do acesso, seguindo a composição da referência.
+- Não existe linha entre placa e rampa.
+- Um SVG compacto representa o retorno junto à via: forma fechada, interior creme, contorno vermelho, cantos arredondados e sombra discreta.
+- A ponta do ícone coincide com o anchor da feature real `1787747092`; placa e ícone compartilham o marker georreferenciado.
+- Wrapper 130×68 e tipografia 10 px evitam corte no canvas mobile.
+
+### Auditoria visual
+
+- `after-mapa-1280.png`: ícone acompanha a direção da via, placa fica abaixo/à direita e nenhum dos elementos cobre o escudo `RJ-106`.
+- `after-mapa-390.png`: placa e seta aparecem integralmente dentro do canvas, sem colisão com pin, Parque Nanci, CTA ou atribuições.
+- `before-*` preserva a placa sem seta da Etapa 56 como baseline.
+
+### Cobertura e risco
+
+- E2E valida marker único, SVG de anchor visível, texto `Retorno KM 25` e bounding box contida em desktop/mobile.
+- Geometria e posição do anchor não mudaram; permanece a ressalva de revalidar a feature quando o TileJSON mudar.
+
+### Validação final
+
+`npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓. `ignoreHTTPSErrors` foi aplicado somente ao Playwright local e removido da configuração ao final.
+
+---
+
 ## Etapa 56 — Placa “Retorno KM 25” sem linha — 22/08/2026
 
 ### Veredito

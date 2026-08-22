@@ -101,8 +101,19 @@ function MapEmbed() {
           returnLabel.className = 'map-return-marker__label'
           returnLabel.textContent = 'Retorno KM 25'
 
-          returnElement.appendChild(returnLabel)
-          returnMarker = new maplibre.Marker({ element: returnElement, anchor: 'left', offset: [10, 0] })
+          const svgNamespace = 'http://www.w3.org/2000/svg'
+          const returnArrow = document.createElementNS(svgNamespace, 'svg')
+          returnArrow.classList.add('map-return-marker__arrow')
+          returnArrow.setAttribute('viewBox', '0 0 32 32')
+          returnArrow.setAttribute('aria-hidden', 'true')
+          returnArrow.dataset.mapRole = 'return-anchor'
+
+          const returnArrowPath = document.createElementNS(svgNamespace, 'path')
+          returnArrowPath.setAttribute('d', 'M28 26v-7c0-6.1-4.9-11-11-11h-6V3l-9 9 9 9v-6h6c2.2 0 4 1.8 4 4v7h7Z')
+          returnArrow.appendChild(returnArrowPath)
+
+          returnElement.append(returnArrow, returnLabel)
+          returnMarker = new maplibre.Marker({ element: returnElement, anchor: 'top-left', offset: [-2, -12] })
             .setLngLat(RETURN_COORDINATES)
             .addTo(map)
 
