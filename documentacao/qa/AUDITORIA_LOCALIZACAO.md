@@ -1,5 +1,30 @@
 # Auditoria independente — Lote 6 — Localização
 
+## Etapa 58 — Seta fora da pista — 22/08/2026
+
+### Veredito
+
+**IMPLEMENTADO E AUDITADO — INCORPORADO AO PR #30, AGUARDANDO REVISÃO HUMANA/MERGE.**
+
+### Correção e evidência
+
+- O SVG foi afastado da linha da RJ-106 para a superfície clara acima da via; placa e anchor cartográfico não mudaram.
+- Desktop: `top: -8px`, `left: 8px`, 32×32.
+- Mobile: `top: 2px`, `left: 10px`, 26×26 para evitar corte no topo do canvas.
+- `after-mapa-1280.png` confirma seta acima da pista, placa abaixo/à direita e escudo `RJ-106` livre.
+- `after-mapa-390.png` confirma ícone integralmente visível, fora da linha principal e sem colisão com a placa.
+- E2E valida que a base do SVG termina antes do topo do label, além da contenção do marker no mapa.
+
+### Risco residual
+
+A seta é uma indicação editorial deslocada dentro de um marker ancorado na feature real. Se centro/zoom forem alterados, repetir a inspeção visual em 390 e 1280 px.
+
+### Validação final
+
+`npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓. `ignoreHTTPSErrors` foi usado somente no Playwright local e removido da configuração ao final.
+
+---
+
 ## Etapa 57 — Placa reposicionada e seta refinada — 22/08/2026
 
 ### Veredito

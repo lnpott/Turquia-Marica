@@ -2188,3 +2188,13 @@ A revisão humana apontou 2 problemas remanescentes na auditoria automática ant
 - **Validação:** `npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓. Playwright local usou `ignoreHTTPSErrors` temporário pela CA do OpenFreeMap; configuração restaurada ao final.
 - **Evidências:** `documentacao/qa/etapa-57/before-mapa-1280.png`, `before-mapa-390.png`, `after-mapa-1280.png` e `after-mapa-390.png`, inspecionados em resolução integral.
 - **Escopo preservado:** nenhuma alteração em câmera, zoom, coordenadas, pin, rodovia, parque, CTA ou atribuições.
+
+## Etapa 58 — Seta afastada da pista da RJ-106
+
+- **Estado:** ✅ IMPLEMENTADO e auditado (22/08/2026); atualização incorporada ao PR #30, aguardando revisão humana/merge.
+- **Achado humano:** a seta refinada da Etapa 57 ainda ficava visualmente sobre a pista, competindo com a linha e o nome da rodovia.
+- **Correção:** somente o SVG foi deslocado para a área clara acima da via (`top: -8px`, `left: 8px`), mantendo placa, marker, anchor e coordenada inalterados. Em mobile, media query reduz o ícone de 32 para 26 px e usa `top: 2px` / `left: 10px`, evitando corte no topo do canvas sem recolocar a forma sobre a linha vermelha.
+- **Teste:** E2E mede SVG e label e exige que a base da seta termine antes do topo da placa, além dos contratos anteriores de marker único/contido.
+- **Validação:** `npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓. Playwright local usou `ignoreHTTPSErrors` temporário pela CA do OpenFreeMap; configuração restaurada ao final.
+- **Evidências:** `documentacao/qa/etapa-58/before-mapa-1280.png`, `before-mapa-390.png`, `after-mapa-1280.png` e `after-mapa-390.png`, inspecionados em resolução integral.
+- **Escopo preservado:** nenhuma mudança em texto, placa, geometria, câmera, zoom, pin, parque, CTA ou atribuições.
