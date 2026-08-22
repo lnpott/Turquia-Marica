@@ -59,9 +59,30 @@ html {
   background-size: 7px 7px;
 }
 
-/* Etapa 49: mapa OpenStreetMap via iframe (zero dependência). O iframe já
-   carrega o embed oficial do OSM com o marcador nas coordenadas validadas;
-   a atribuição legal fica na barra do card, fora do iframe. */
+/* Etapa 44 (restaurada na Etapa 52): mapa vetorial (MapLibre GL + OpenFreeMap)
+   — apresentação visual fixa, sem interação de mapa. pointer-events: none no
+   canvas impede que o scroll da página fique preso ao mapa. A atribuição legal
+   fica na barra do card, FORA do container role="img" (o controle padrão do
+   MapLibre criaria um <a> focável dentro dele — nested-interactive no axe). O
+   carregamento do mapa é lazy (IntersectionObserver + import dinâmico):
+   MapLibre, style, worker e tiles só são baixados quando a seção se aproxima
+   da viewport. */
+.map-embed-canvas {
+  pointer-events: none;
+}
+
+/* Pin oficial (PIN_MAP.png otimizado) — marcador georreferenciado, exibido
+   em 40×64 CSS (asset 90×144 = 2.25× para retina). */
+.map-pin-marker {
+  pointer-events: none;
+}
+
+.map-pin-marker img {
+  display: block;
+  width: 40px;
+  height: 64px;
+  object-fit: contain;
+}
 
 /* Etapa 37 (corrigida): padrão de fundo ancorado na viewport via body::before.
    A base creme é o background-color do html (canvas opaco); o pseudo carrega

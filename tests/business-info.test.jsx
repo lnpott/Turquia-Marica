@@ -83,18 +83,15 @@ describe('dados comerciais e demonstrativos', () => {
     expect(screen.queryByText('Canal disponível')).not.toBeInTheDocument()
   })
 
-  it('o mapa usa iframe OSM com atribuição e mantém o CTA de rota', () => {
+  it('o mapa vetorial não usa iframe e mantém o CTA de rota', () => {
     render(<MapEmbed />)
     // O CTA está sempre presente, em qualquer estado do mapa
     const link = screen.getByRole('link', { name: /abrir rota no google maps/i })
     expect(link).toHaveAttribute('href', BUSINESS_INFO.channels.maps.url)
-    // Arquitetura nova: iframe do OpenStreetMap com nome acessível e atribuição
-    const iframe = document.querySelector('iframe')
-    expect(iframe).not.toBeNull()
-    expect(iframe.src).toMatch(/openstreetmap\.org\/export\/embed/)
-    expect(iframe.title).toBe('Localização da Turquia Lanches no mapa')
-    expect(iframe.getAttribute('aria-label')).toMatch(/mapa da região do parque nanci/i)
-    expect(document.querySelector('a[href="https://www.openstreetmap.org/copyright"]')).not.toBeNull()
+    // Arquitetura nova: container acessível (role=img) em vez de iframe
+    expect(screen.getByRole('img', { name: /mapa da região do parque nanci/i })).toBeInTheDocument()
+    expect(document.querySelector('iframe')).toBeNull()
+    expect(document.querySelector('a[href*="openstreetmap.org/export/embed"]')).toBeNull()
   })
 
   it('Header expõe iFood real, WhatsApp e Instagram, sem "Pedidos em breve"', () => {
