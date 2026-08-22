@@ -2125,3 +2125,16 @@ A revisão humana apontou 2 problemas remanescentes na auditoria automática ant
 - **Destaque amarelo do Retorno:** a camada `road-trunk-return` usa `#fdc008` (amarelo da marca) para destacar as rampas de retorno. Em zoom 14, as rampas são segmentos curtos — a cor pode ser confundida com a rodovia (vermelha `#ae0011`) por usuários com daltonismo. A acessibilidade não é crítica (o mapa é não interativo), mas vale registro.
 - **Dependência de tile externo:** o mapa depende do OpenFreeMap (`https://tiles.openfreemap.org/planet`) — uma interrupção temporária deixa o mapa no estado `loading` (12 s de timeout) e depois exibe o fallback textual com CTA "Abrir rota". O fallback é funcional, mas sem mapa visual.
 - **Governança:** o commit `9150acf` foi feito diretamente em `main` e push sem PR, por autorização explícita do responsável (mesmo padrão das Etapas 50/51). A governança padrão (branch + PR) permanece como recomendação documental.
+
+## Etapa 53 — Correção do pin e chamada direta do Retorno RJ-106
+
+- **Estado:** ✅ IMPLEMENTADO e auditado (22/08/2026); aguardando revisão humana e merge do PR.
+- **Diagnóstico do pin:** a Etapa 52 deslocou `MAP_CENTER` ao norte para enquadrar a RJ-106, mas o marcador também passou a usar essa constante. Isso colocou o pin no centro da câmera (`[-42.8479579,-22.9185]`) em vez da coordenada validada do estabelecimento (`[-42.8479579,-22.9215763]`).
+- **Correção do pin:** `MapEmbed.jsx` agora separa `BUSINESS_COORDINATES` de `MAP_CENTER`; a câmera preserva o enquadramento aprovado e somente o marcador volta à coordenada real documentada.
+- **Retorno (decisão visual do responsável):** descartadas as propostas de casing e legenda inferior. Foi adicionada a chamada direta **“↩ Retorno”**, com selo amarelo e seta, na posição indicada pelo marcador rosa da referência fornecida. O callout é uma sobreposição editorial relativa ao canvas — não cria nem declara nova coordenada geográfica — e permanece decorativo (`aria-hidden`) dentro do mapa não interativo.
+- **Responsividade:** posição relativa preservada em canvas desktop e mobile; screenshots inspecionados em resolução integral mostram o texto sem colisão com o pin, o escudo `RJ-106`, o nome da rodovia ou o CTA.
+- **Testes:** contratos unitário e E2E passaram a exigir a presença da indicação `↩ Retorno`.
+- **Validação:** `npm run check` ✓ (lint, 22/22 testes e build/auditoria de demo) · `npm run test:e2e` ✓ (36/36 desktop + mobile; `ignoreHTTPSErrors` usado somente na execução local porque o Chromium do contêiner não reconhece a autoridade TLS do OpenFreeMap; configuração restaurada após o teste) · `git diff --check` ✓.
+- **Evidências:** `documentacao/qa/etapa-53/mapa-1280.png`, `documentacao/qa/etapa-53/mapa-390.png` e `documentacao/qa/etapa-53/localizacao-1280.png`.
+- **Arquivos modificados:** `src/components/location/MapEmbed.jsx`, `src/styles/index.css`, `tests/business-info.test.jsx`, `tests/e2e/site.spec.js`, `BEST_PLAN.MD`, `documentacao/qa/AUDITORIA_LOCALIZACAO.md`; evidências novas em `documentacao/qa/etapa-53/`.
+- **Ressalva:** como o mapa usa centro e zoom fixos, o callout é deliberadamente posicionado por percentual conforme a referência aprovada. Se centro, zoom ou altura do canvas mudarem em lote futuro, sua posição deve ser revalidada visualmente.

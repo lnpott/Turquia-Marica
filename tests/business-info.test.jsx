@@ -90,6 +90,7 @@ describe('dados comerciais e demonstrativos', () => {
     expect(link).toHaveAttribute('href', BUSINESS_INFO.channels.maps.url)
     // Arquitetura nova: container acessível (role=img) em vez de iframe
     expect(screen.getByRole('img', { name: /mapa da região do parque nanci/i })).toBeInTheDocument()
+    expect(screen.getByText('↩ Retorno')).toBeInTheDocument()
     expect(document.querySelector('iframe')).toBeNull()
     expect(document.querySelector('a[href*="openstreetmap.org/export/embed"]')).toBeNull()
   })

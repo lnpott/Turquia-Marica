@@ -84,6 +84,48 @@ html {
   object-fit: contain;
 }
 
+/* Chamada editorial do retorno da RJ-106, no ponto aprovado na referência
+   visual. O mapa tem centro e zoom fixos; percentuais preservam a posição
+   relativa nos canvases desktop e mobile sem criar uma coordenada geográfica. */
+.map-return-callout {
+  position: absolute;
+  z-index: 2;
+  top: 9%;
+  left: 61%;
+  pointer-events: none;
+  transform: translateX(-8%);
+}
+
+.map-return-callout span {
+  display: block;
+  border: 1px solid rgba(174, 0, 17, 0.22);
+  border-radius: 3px;
+  background: #fdc008;
+  box-shadow: 0 2px 5px rgba(33, 22, 13, 0.2);
+  color: #21160d;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  padding: 6px 8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.map-return-callout::after {
+  content: '';
+  display: block;
+  width: 3px;
+  height: 34px;
+  margin: -1px 0 0 9px;
+  border-radius: 999px;
+  background: #fdc008;
+  box-shadow: 0 1px 2px rgba(33, 22, 13, 0.18);
+  transform: rotate(42deg);
+  transform-origin: top center;
+}
+
 /* Etapa 37 (corrigida): padrão de fundo ancorado na viewport via body::before.
    A base creme é o background-color do html (canvas opaco); o pseudo carrega
    SOMENTE a imagem — opacity no box que também tinha background-color lavava o

@@ -109,6 +109,7 @@ test('Localização aparece uma vez, com mapa vetorial, CTA único e dados ofici
   await expect(section.getByText('Não disponível / em construção')).toHaveCount(0)
   await expect(section.locator('iframe')).toHaveCount(0)
   await expect(section.getByRole('img', { name: /mapa da região do parque nanci/i })).toBeVisible()
+  await expect(section.getByText('↩ Retorno')).toBeVisible()
   await expect(section.getByText(/CEP|estacionamento|acessibilidade|rota exata/i)).toHaveCount(0)
 })
 
