@@ -84,20 +84,20 @@ html {
   object-fit: contain;
 }
 
-/* Chamada editorial do retorno da RJ-106, no ponto aprovado na referência
-   visual. O mapa tem centro e zoom fixos; percentuais preservam a posição
-   relativa nos canvases desktop e mobile sem criar uma coordenada geográfica. */
-.map-return-callout {
-  position: absolute;
-  z-index: 2;
-  top: 23%;
-  left: 64%;
+/* Placa do retorno georreferenciada pelo MapLibre. A caixa tem espaço para o
+   label e a haste; o anchor top-left do Marker coincide com a ponta. */
+.map-return-marker {
+  position: relative;
+  width: 122px;
+  height: 68px;
   pointer-events: none;
-  transform: translateX(-8%);
 }
 
-.map-return-callout span {
-  display: block;
+.map-return-marker__label {
+  position: absolute;
+  top: 20px;
+  left: 27px;
+  display: inline-block;
   border: 1px solid #ae0011;
   border-radius: 3px;
   background: #ae0011;
@@ -111,6 +111,33 @@ html {
   padding: 6px 8px;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+.map-return-marker__pointer {
+  position: absolute;
+  left: 8px;
+  top: 3px;
+  display: block;
+  width: 3px;
+  height: 43px;
+  border-radius: 999px;
+  background: #ae0011;
+  box-shadow: 0 1px 2px rgba(33, 22, 13, 0.2);
+  transform: rotate(-25deg);
+  transform-origin: top center;
+}
+
+.map-return-marker__pointer::after {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-right: 5px solid transparent;
+  border-bottom: 8px solid #ae0011;
+  border-left: 5px solid transparent;
+  content: '';
+  transform: translateX(-50%);
 }
 
 /* Etapa 37 (corrigida): padrão de fundo ancorado na viewport via body::before.

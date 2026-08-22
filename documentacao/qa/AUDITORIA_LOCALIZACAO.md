@@ -1,5 +1,45 @@
 # Auditoria independente — Lote 6 — Localização
 
+## Etapa 55 — Placa georreferenciada do Retorno — 22/08/2026
+
+### Veredito
+
+**IMPLEMENTADO E AUDITADO — AGUARDANDO REVISÃO HUMANA/MERGE.**
+
+### Diagnóstico e fonte cartográfica
+
+- A placa anterior usava percentuais do card (`23%`/`64%`) e não apontava para uma geometria do mapa.
+- `queryRenderedFeatures` confirmou oito features `trunk ramp=1` no enquadramento.
+- A seta da referência corresponde à feature `transportation` `1787747092`; o anchor usa seu vértice real `[-42.846293449401855,-22.91403927778279]`, snapshot `20260816_080001_pt`.
+- A imagem serviu para escolher a feature entre as candidatas; a coordenada não foi inferida de pixels.
+
+### Implementação auditada
+
+- Um `maplibre.Marker` único substitui o overlay percentual.
+- A ponta do ponteiro é o anchor geográfico; placa e haste se deslocam com a projeção.
+- O marker só é criado depois do `load`, permanece `aria-hidden`, não recebe foco e é removido no cleanup.
+- O nome acessível do mapa preserva “indicação do retorno da RJ-106”.
+- Placa e ponteiro usam `#ae0011`; não foram alterados câmera, zoom, pin, contorno, label do parque ou camada da rodovia.
+
+### Auditoria visual
+
+- Em `after-mapa-1280.png`, a haste sai da placa à direita e termina no vértice real da rampa sem cobrir `RJ-106` ou o nome da rodovia.
+- Em `after-mapa-390.png`, marker e placa permanecem integralmente dentro do canvas e preservam pin, Parque Nanci, atribuição e CTA.
+- Comparativos `before-*` preservam a Etapa 54 como baseline.
+
+### Cobertura e risco
+
+- E2E valida lazy load, marker único dentro de `.maplibregl-marker`, texto e bounding box contida no mapa nos dois projetos Playwright.
+- A coordenada depende do snapshot real do tile; mudança do TileJSON exige nova consulta da feature e revisão visual, nunca atualização automática.
+
+### Validação final
+
+`npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · E2E focal inicial 0/2 por seletor de teste incorreto (`.maplibregl-marker` é classe aplicada no próprio elemento customizado, não ancestral) · seletor corrigido e E2E focal 2/2 ✓ · suíte final `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓.
+
+O Playwright local usou `ignoreHTTPSErrors` temporário pela CA do OpenFreeMap no contêiner; `playwright.config.js` foi restaurado e não contém a opção.
+
+---
+
 ## Etapa 54 — Revisão visual vermelha — 22/08/2026
 
 ### Veredito

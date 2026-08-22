@@ -2152,3 +2152,16 @@ A revisão humana apontou 2 problemas remanescentes na auditoria automática ant
 - **Validação:** `npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · primeira execução E2E 35/36 (o teste mobile procurava o callout antes de levar o mapa lazy à viewport) · teste corrigido para rolar o mapa e aguardar o `load` · `npm run test:e2e` final 36/36 ✓ · `git diff --check` ✓. `ignoreHTTPSErrors` foi usado apenas na execução local pela CA do contêiner e removido da configuração ao final.
 - **Evidências:** `documentacao/qa/etapa-54/mapa-1280.png` e `documentacao/qa/etapa-54/mapa-390.png`, capturas reais inspecionadas em resolução integral.
 - **Ressalva:** o polígono B continua sendo snapshot de geometria real do tile, não geometria inventada. Revalidar quando o TileJSON do OpenFreeMap mudar.
+
+## Etapa 55 — Placa do Retorno georreferenciada na rampa da RJ-106
+
+- **Estado:** ✅ IMPLEMENTADO e auditado (22/08/2026); aguardando revisão humana e merge do PR.
+- **Diagnóstico:** a placa da Etapa 54 era uma sobreposição React em `top: 23%` / `left: 64%`. Embora responsiva no canvas fixo, ela não possuía ligação cartográfica com a via e poderia divergir se centro, zoom ou dimensões mudassem.
+- **Fonte do ponto:** harness MapLibre real consultou `queryRenderedFeatures('road-trunk-return')` e confirmou oito rampas no viewport. A referência visual aponta para a feature `transportation` **1787747092** (`class=trunk`, `ramp=1`, `oneway=1`); foi usado seu vértice real `[-42.846293449401855,-22.91403927778279]`, pertencente ao snapshot OpenFreeMap `20260816_080001_pt`. Nenhuma coordenada foi estimada pela imagem.
+- **Implementação:** `MapEmbed.jsx` remove a placa percentual e cria, após `map.load`, um `maplibre.Marker` editorial com anchor `top-left`, ponta ancorada na coordenada real, corpo deslocado para a direita e haste/seta vermelha ligando a placa à via. O marker é `aria-hidden`, sem foco e removido no cleanup; o nome acessível do mapa continua oferecendo o contexto equivalente.
+- **Visual:** `index.css` substitui `.map-return-callout` por `.map-return-marker`, `__label` e `__pointer`. Placa e ponteiro preservam `#ae0011`; o ponteiro termina na rampa indicada e não cobre escudo `RJ-106`, nome da rodovia, pin, parque ou CTA.
+- **Fallback:** a placa só é criada no evento `load`; loading/erro continuam sem marcador editorial e preservam o CTA.
+- **Testes:** E2E exige um único marker dentro do container MapLibre, texto visível após o lazy load e bounding box integralmente contida no mapa em desktop/mobile.
+- **Validação:** `npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · E2E focal inicial 0/2 por seletor incorreto que tratava o elemento do Marker como filho, quando o MapLibre adiciona `.maplibregl-marker` ao próprio elemento · seletor corrigido para classes combinadas · E2E focal 2/2 ✓ · `npm run test:e2e` final 36/36 ✓ · `git diff --check` ✓. O certificado do OpenFreeMap foi ignorado apenas na execução Playwright local; configuração restaurada ao final.
+- **Evidências:** `documentacao/qa/etapa-55/before-mapa-1280.png`, `before-mapa-390.png`, `after-mapa-1280.png` e `after-mapa-390.png`, inspecionados em resolução integral.
+- **Ressalva:** a coordenada é um vértice real do snapshot do tile. Revalidar a feature se o TileJSON do OpenFreeMap mudar.
