@@ -2165,3 +2165,14 @@ A revisão humana apontou 2 problemas remanescentes na auditoria automática ant
 - **Validação:** `npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · E2E focal inicial 0/2 por seletor incorreto que tratava o elemento do Marker como filho, quando o MapLibre adiciona `.maplibregl-marker` ao próprio elemento · seletor corrigido para classes combinadas · E2E focal 2/2 ✓ · `npm run test:e2e` final 36/36 ✓ · `git diff --check` ✓. O certificado do OpenFreeMap foi ignorado apenas na execução Playwright local; configuração restaurada ao final.
 - **Evidências:** `documentacao/qa/etapa-55/before-mapa-1280.png`, `before-mapa-390.png`, `after-mapa-1280.png` e `after-mapa-390.png`, inspecionados em resolução integral.
 - **Ressalva:** a coordenada é um vértice real do snapshot do tile. Revalidar a feature se o TileJSON do OpenFreeMap mudar.
+
+## Etapa 56 — Simplificação da placa para “Retorno KM 25”
+
+- **Estado:** ✅ IMPLEMENTADO e auditado (22/08/2026); atualização incorporada ao PR #30, aguardando revisão humana/merge.
+- **Decisão do responsável:** a haste/seta entre placa e rampa da Etapa 55 ficou visualmente inadequada. Removê-la integralmente e trocar o texto `↩ Retorno` por **“Retorno KM 25”**.
+- **Implementação:** o `maplibre.Marker` georreferenciado e a coordenada real da feature `1787747092` foram preservados; somente o conteúdo e a apresentação mudaram. O marker agora usa anchor `left` com offset `[10,0]`, colocando a placa imediatamente ao lado da via sem linha auxiliar. Os elementos/classes `map-return-marker__pointer` foram removidos.
+- **Acessibilidade:** o nome acessível do mapa passou a informar “Retorno KM 25 da RJ-106”; a placa visual continua `aria-hidden` para evitar duplicação e só existe após `map.load`.
+- **Testes:** contratos unitário/E2E atualizados para o texto e nome acessível novos; E2E continua validando marker único e integralmente contido no canvas.
+- **Validação:** `npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓. O certificado do OpenFreeMap foi ignorado apenas na execução Playwright local; `playwright.config.js` foi restaurado ao final.
+- **Evidências:** `documentacao/qa/etapa-56/before-mapa-1280.png`, `before-mapa-390.png`, `after-mapa-1280.png` e `after-mapa-390.png`, inspecionados em resolução integral.
+- **Escopo preservado:** câmera, zoom, pin, rodovia, parque, label, CTA, atribuições e geometria não foram alterados.

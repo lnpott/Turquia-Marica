@@ -108,9 +108,9 @@ describe('dados comerciais e demonstrativos', () => {
     const link = screen.getByRole('link', { name: /abrir rota no google maps/i })
     expect(link).toHaveAttribute('href', BUSINESS_INFO.channels.maps.url)
     // Arquitetura nova: container acessível (role=img) em vez de iframe
-    expect(screen.getByRole('img', { name: /mapa da região do parque nanci.+retorno da rj-106/i })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: /mapa da região do parque nanci.+retorno km 25 da rj-106/i })).toBeInTheDocument()
     // O callout visual só aparece depois do evento load do MapLibre.
-    expect(screen.queryByText('↩ Retorno')).not.toBeInTheDocument()
+    expect(screen.queryByText('Retorno KM 25')).not.toBeInTheDocument()
     expect(document.querySelector('iframe')).toBeNull()
     expect(document.querySelector('a[href*="openstreetmap.org/export/embed"]')).toBeNull()
   })

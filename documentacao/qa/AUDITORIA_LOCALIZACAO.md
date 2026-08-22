@@ -1,5 +1,37 @@
 # Auditoria independente — Lote 6 — Localização
 
+## Etapa 56 — Placa “Retorno KM 25” sem linha — 22/08/2026
+
+### Veredito
+
+**IMPLEMENTADO E AUDITADO — INCORPORADO AO PR #30, AGUARDANDO REVISÃO HUMANA/MERGE.**
+
+### Alteração
+
+- Removida integralmente a haste/seta visual da Etapa 55.
+- Texto alterado de `↩ Retorno` para `Retorno KM 25`, conforme informação fornecida pelo responsável.
+- Preservados o `maplibre.Marker`, a feature real `1787747092` e sua coordenada; a placa usa anchor `left` e offset `[10,0]` para ficar ao lado da rodovia sem cobri-la.
+- Nome acessível atualizado para “indicação do Retorno KM 25 da RJ-106”.
+- Nenhum outro elemento do mapa foi modificado.
+
+### Auditoria visual
+
+- `after-mapa-1280.png`: placa vermelha legível, sem linha, integralmente dentro do mapa e sem colisão com o escudo `RJ-106`.
+- `after-mapa-390.png`: placa permanece dentro do canvas mobile e não cobre pin, Parque Nanci, CTA ou atribuições.
+- `before-*` preserva como baseline a versão com haste da Etapa 55.
+
+### Cobertura e risco
+
+- Unit/E2E passam a exigir `Retorno KM 25` e nome acessível equivalente.
+- E2E mantém a validação de um único marker e bounding box contida no canvas.
+- A posição continua vinculada ao snapshot cartográfico já auditado; somente o texto `KM 25` deriva da instrução explícita do responsável.
+
+### Validação final
+
+`npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓. O Playwright local usou `ignoreHTTPSErrors` temporário pela CA do OpenFreeMap; a configuração original foi restaurada.
+
+---
+
 ## Etapa 55 — Placa georreferenciada do Retorno — 22/08/2026
 
 ### Veredito

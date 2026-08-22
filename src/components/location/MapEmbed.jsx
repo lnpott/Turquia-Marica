@@ -90,8 +90,8 @@ function MapEmbed() {
           if (cancelled) return
 
           // Placa editorial ancorada em um vértice real da rampa. O elemento se
-          // desloca com a projeção do mapa; somente o corpo da placa recebe um
-          // offset visual, enquanto a ponta permanece na coordenada validada.
+          // desloca com a projeção do mapa e recebe apenas um pequeno afastamento
+          // lateral para não cobrir a própria via.
           const returnElement = document.createElement('div')
           returnElement.className = 'map-return-marker'
           returnElement.setAttribute('aria-hidden', 'true')
@@ -99,14 +99,10 @@ function MapEmbed() {
 
           const returnLabel = document.createElement('span')
           returnLabel.className = 'map-return-marker__label'
-          returnLabel.textContent = '↩ Retorno'
+          returnLabel.textContent = 'Retorno KM 25'
 
-          const returnPointer = document.createElement('span')
-          returnPointer.className = 'map-return-marker__pointer'
-          returnPointer.dataset.mapRole = 'return-anchor'
-
-          returnElement.append(returnLabel, returnPointer)
-          returnMarker = new maplibre.Marker({ element: returnElement, anchor: 'top-left', offset: [-8, -3] })
+          returnElement.appendChild(returnLabel)
+          returnMarker = new maplibre.Marker({ element: returnElement, anchor: 'left', offset: [10, 0] })
             .setLngLat(RETURN_COORDINATES)
             .addTo(map)
 
@@ -205,7 +201,7 @@ function MapEmbed() {
           ref={mapContainerRef}
           className="map-embed-canvas h-full w-full"
           role="img"
-          aria-label="Mapa da região do Parque Nanci em Maricá, com a localização da Turquia Lanches e indicação do retorno da RJ-106"
+          aria-label="Mapa da região do Parque Nanci em Maricá, com a localização da Turquia Lanches e indicação do Retorno KM 25 da RJ-106"
         />
 
       </div>
