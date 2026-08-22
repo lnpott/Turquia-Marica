@@ -8,6 +8,10 @@ import pinMap from '../../assets/images/location/pin-map.webp'
    o visitante abre a rota no Google Maps pelo CTA abaixo.
    Coordenadas validadas pelo responsável — não alterar. */
 const BUSINESS_COORDINATES = [-42.8479579, -22.9215763] // [longitude, latitude]
+// Vértice real da rampa indicada na referência (OpenFreeMap, feature
+// transportation 1787747092, snapshot 20260816_080001_pt). Não aproximar por
+// posição de tela: a ponta do callout deve permanecer presa à geometria da via.
+const RETURN_COORDINATES = [-42.846293449401855, -22.91403927778279]
 // Centro da câmera deslocado ao norte para incluir a RJ-106 e o retorno.
 const MAP_CENTER = [-42.8479579, -22.9185] // [longitude, latitude]
 // Zoom calibrado para mostrar o bairro com contexto (RJ-106 e área verde)
@@ -30,6 +34,7 @@ function MapEmbed() {
     if (!container) return
 
     let map = null
+    let returnMarker = null
     let cancelled = false
     let transientLogged = false
     let loadTimer = null
@@ -82,6 +87,36 @@ function MapEmbed() {
           .addTo(map)
 
         map.on('load', () => {
+          if (cancelled) return
+
+          // Placa editorial ancorada em um vértice real da rampa. O elemento se
+          // desloca com a projeção do mapa e recebe apenas um pequeno afastamento
+          // lateral para não cobrir a própria via.
+          const returnElement = document.createElement('div')
+          returnElement.className = 'map-return-marker'
+          returnElement.setAttribute('aria-hidden', 'true')
+          returnElement.dataset.mapRole = 'return'
+
+          const returnLabel = document.createElement('span')
+          returnLabel.className = 'map-return-marker__label'
+          returnLabel.textContent = 'Retorno KM 25'
+
+          const svgNamespace = 'http://www.w3.org/2000/svg'
+          const returnArrow = document.createElementNS(svgNamespace, 'svg')
+          returnArrow.classList.add('map-return-marker__arrow')
+          returnArrow.setAttribute('viewBox', '0 0 32 32')
+          returnArrow.setAttribute('aria-hidden', 'true')
+          returnArrow.dataset.mapRole = 'return-anchor'
+
+          const returnArrowPath = document.createElementNS(svgNamespace, 'path')
+          returnArrowPath.setAttribute('d', 'M28 26v-7c0-6.1-4.9-11-11-11h-6V3l-9 9 9 9v-6h6c2.2 0 4 1.8 4 4v7h7Z')
+          returnArrow.appendChild(returnArrowPath)
+
+          returnElement.append(returnArrow, returnLabel)
+          returnMarker = new maplibre.Marker({ element: returnElement, anchor: 'top-left', offset: [-2, -12] })
+            .setLngLat(RETURN_COORDINATES)
+            .addTo(map)
+
           if (!cancelled) setMapState('ready')
         })
 
@@ -122,6 +157,7 @@ function MapEmbed() {
       return () => {
         cancelled = true
         clearTimeout(loadTimer)
+        returnMarker?.remove()
         map?.remove()
       }
     }
@@ -141,6 +177,7 @@ function MapEmbed() {
       cancelled = true
       clearTimeout(loadTimer)
       observer.disconnect()
+      returnMarker?.remove()
       map?.remove()
     }
   }, [])
@@ -175,17 +212,9 @@ function MapEmbed() {
           ref={mapContainerRef}
           className="map-embed-canvas h-full w-full"
           role="img"
-          aria-label="Mapa da região do Parque Nanci em Maricá, com a localização da Turquia Lanches e indicação do retorno da RJ-106"
+          aria-label="Mapa da região do Parque Nanci em Maricá, com a localização da Turquia Lanches e indicação do Retorno KM 25 da RJ-106"
         />
 
-        {/* Indicação editorial do retorno, posicionada sobre o ponto assinalado
-            na referência aprovada. Só aparece quando o mapa está pronto; o nome
-            acessível do mapa oferece o mesmo contexto a tecnologias assistivas. */}
-        {mapState === 'ready' && (
-          <div className="map-return-callout" aria-hidden="true">
-            <span>↩ Retorno</span>
-          </div>
-        )}
       </div>
 
       {/* Barra inferior: contexto + CTA + atribuição legal (fora do role="img"). */}

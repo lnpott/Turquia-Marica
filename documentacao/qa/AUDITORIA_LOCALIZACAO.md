@@ -1,5 +1,133 @@
 # Auditoria independente — Lote 6 — Localização
 
+## Etapa 58 — Seta fora da pista — 22/08/2026
+
+### Veredito
+
+**IMPLEMENTADO E AUDITADO — INCORPORADO AO PR #30, AGUARDANDO REVISÃO HUMANA/MERGE.**
+
+### Correção e evidência
+
+- O SVG foi afastado da linha da RJ-106 para a superfície clara acima da via; placa e anchor cartográfico não mudaram.
+- Desktop: `top: -8px`, `left: 8px`, 32×32.
+- Mobile: `top: 2px`, `left: 10px`, 26×26 para evitar corte no topo do canvas.
+- `after-mapa-1280.png` confirma seta acima da pista, placa abaixo/à direita e escudo `RJ-106` livre.
+- `after-mapa-390.png` confirma ícone integralmente visível, fora da linha principal e sem colisão com a placa.
+- E2E valida que a base do SVG termina antes do topo do label, além da contenção do marker no mapa.
+
+### Risco residual
+
+A seta é uma indicação editorial deslocada dentro de um marker ancorado na feature real. Se centro/zoom forem alterados, repetir a inspeção visual em 390 e 1280 px.
+
+### Validação final
+
+`npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓. `ignoreHTTPSErrors` foi usado somente no Playwright local e removido da configuração ao final.
+
+---
+
+## Etapa 57 — Placa reposicionada e seta refinada — 22/08/2026
+
+### Veredito
+
+**IMPLEMENTADO E AUDITADO — INCORPORADO AO PR #30, AGUARDANDO REVISÃO HUMANA/MERGE.**
+
+### Alteração auditada
+
+- `Retorno KM 25` foi deslocado para baixo/à direita do acesso, seguindo a composição da referência.
+- Não existe linha entre placa e rampa.
+- Um SVG compacto representa o retorno junto à via: forma fechada, interior creme, contorno vermelho, cantos arredondados e sombra discreta.
+- A ponta do ícone coincide com o anchor da feature real `1787747092`; placa e ícone compartilham o marker georreferenciado.
+- Wrapper 130×68 e tipografia 10 px evitam corte no canvas mobile.
+
+### Auditoria visual
+
+- `after-mapa-1280.png`: ícone acompanha a direção da via, placa fica abaixo/à direita e nenhum dos elementos cobre o escudo `RJ-106`.
+- `after-mapa-390.png`: placa e seta aparecem integralmente dentro do canvas, sem colisão com pin, Parque Nanci, CTA ou atribuições.
+- `before-*` preserva a placa sem seta da Etapa 56 como baseline.
+
+### Cobertura e risco
+
+- E2E valida marker único, SVG de anchor visível, texto `Retorno KM 25` e bounding box contida em desktop/mobile.
+- Geometria e posição do anchor não mudaram; permanece a ressalva de revalidar a feature quando o TileJSON mudar.
+
+### Validação final
+
+`npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓. `ignoreHTTPSErrors` foi aplicado somente ao Playwright local e removido da configuração ao final.
+
+---
+
+## Etapa 56 — Placa “Retorno KM 25” sem linha — 22/08/2026
+
+### Veredito
+
+**IMPLEMENTADO E AUDITADO — INCORPORADO AO PR #30, AGUARDANDO REVISÃO HUMANA/MERGE.**
+
+### Alteração
+
+- Removida integralmente a haste/seta visual da Etapa 55.
+- Texto alterado de `↩ Retorno` para `Retorno KM 25`, conforme informação fornecida pelo responsável.
+- Preservados o `maplibre.Marker`, a feature real `1787747092` e sua coordenada; a placa usa anchor `left` e offset `[10,0]` para ficar ao lado da rodovia sem cobri-la.
+- Nome acessível atualizado para “indicação do Retorno KM 25 da RJ-106”.
+- Nenhum outro elemento do mapa foi modificado.
+
+### Auditoria visual
+
+- `after-mapa-1280.png`: placa vermelha legível, sem linha, integralmente dentro do mapa e sem colisão com o escudo `RJ-106`.
+- `after-mapa-390.png`: placa permanece dentro do canvas mobile e não cobre pin, Parque Nanci, CTA ou atribuições.
+- `before-*` preserva como baseline a versão com haste da Etapa 55.
+
+### Cobertura e risco
+
+- Unit/E2E passam a exigir `Retorno KM 25` e nome acessível equivalente.
+- E2E mantém a validação de um único marker e bounding box contida no canvas.
+- A posição continua vinculada ao snapshot cartográfico já auditado; somente o texto `KM 25` deriva da instrução explícita do responsável.
+
+### Validação final
+
+`npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓. O Playwright local usou `ignoreHTTPSErrors` temporário pela CA do OpenFreeMap; a configuração original foi restaurada.
+
+---
+
+## Etapa 55 — Placa georreferenciada do Retorno — 22/08/2026
+
+### Veredito
+
+**IMPLEMENTADO E AUDITADO — AGUARDANDO REVISÃO HUMANA/MERGE.**
+
+### Diagnóstico e fonte cartográfica
+
+- A placa anterior usava percentuais do card (`23%`/`64%`) e não apontava para uma geometria do mapa.
+- `queryRenderedFeatures` confirmou oito features `trunk ramp=1` no enquadramento.
+- A seta da referência corresponde à feature `transportation` `1787747092`; o anchor usa seu vértice real `[-42.846293449401855,-22.91403927778279]`, snapshot `20260816_080001_pt`.
+- A imagem serviu para escolher a feature entre as candidatas; a coordenada não foi inferida de pixels.
+
+### Implementação auditada
+
+- Um `maplibre.Marker` único substitui o overlay percentual.
+- A ponta do ponteiro é o anchor geográfico; placa e haste se deslocam com a projeção.
+- O marker só é criado depois do `load`, permanece `aria-hidden`, não recebe foco e é removido no cleanup.
+- O nome acessível do mapa preserva “indicação do retorno da RJ-106”.
+- Placa e ponteiro usam `#ae0011`; não foram alterados câmera, zoom, pin, contorno, label do parque ou camada da rodovia.
+
+### Auditoria visual
+
+- Em `after-mapa-1280.png`, a haste sai da placa à direita e termina no vértice real da rampa sem cobrir `RJ-106` ou o nome da rodovia.
+- Em `after-mapa-390.png`, marker e placa permanecem integralmente dentro do canvas e preservam pin, Parque Nanci, atribuição e CTA.
+- Comparativos `before-*` preservam a Etapa 54 como baseline.
+
+### Cobertura e risco
+
+- E2E valida lazy load, marker único dentro de `.maplibregl-marker`, texto e bounding box contida no mapa nos dois projetos Playwright.
+- A coordenada depende do snapshot real do tile; mudança do TileJSON exige nova consulta da feature e revisão visual, nunca atualização automática.
+
+### Validação final
+
+`npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · E2E focal inicial 0/2 por seletor de teste incorreto (`.maplibregl-marker` é classe aplicada no próprio elemento customizado, não ancestral) · seletor corrigido e E2E focal 2/2 ✓ · suíte final `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓.
+
+O Playwright local usou `ignoreHTTPSErrors` temporário pela CA do OpenFreeMap no contêiner; `playwright.config.js` foi restaurado e não contém a opção.
+
+---
+
 ## Etapa 54 — Revisão visual vermelha — 22/08/2026
 
 ### Veredito

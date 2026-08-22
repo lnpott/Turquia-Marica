@@ -2152,3 +2152,49 @@ A revisão humana apontou 2 problemas remanescentes na auditoria automática ant
 - **Validação:** `npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · primeira execução E2E 35/36 (o teste mobile procurava o callout antes de levar o mapa lazy à viewport) · teste corrigido para rolar o mapa e aguardar o `load` · `npm run test:e2e` final 36/36 ✓ · `git diff --check` ✓. `ignoreHTTPSErrors` foi usado apenas na execução local pela CA do contêiner e removido da configuração ao final.
 - **Evidências:** `documentacao/qa/etapa-54/mapa-1280.png` e `documentacao/qa/etapa-54/mapa-390.png`, capturas reais inspecionadas em resolução integral.
 - **Ressalva:** o polígono B continua sendo snapshot de geometria real do tile, não geometria inventada. Revalidar quando o TileJSON do OpenFreeMap mudar.
+
+## Etapa 55 — Placa do Retorno georreferenciada na rampa da RJ-106
+
+- **Estado:** ✅ IMPLEMENTADO e auditado (22/08/2026); aguardando revisão humana e merge do PR.
+- **Diagnóstico:** a placa da Etapa 54 era uma sobreposição React em `top: 23%` / `left: 64%`. Embora responsiva no canvas fixo, ela não possuía ligação cartográfica com a via e poderia divergir se centro, zoom ou dimensões mudassem.
+- **Fonte do ponto:** harness MapLibre real consultou `queryRenderedFeatures('road-trunk-return')` e confirmou oito rampas no viewport. A referência visual aponta para a feature `transportation` **1787747092** (`class=trunk`, `ramp=1`, `oneway=1`); foi usado seu vértice real `[-42.846293449401855,-22.91403927778279]`, pertencente ao snapshot OpenFreeMap `20260816_080001_pt`. Nenhuma coordenada foi estimada pela imagem.
+- **Implementação:** `MapEmbed.jsx` remove a placa percentual e cria, após `map.load`, um `maplibre.Marker` editorial com anchor `top-left`, ponta ancorada na coordenada real, corpo deslocado para a direita e haste/seta vermelha ligando a placa à via. O marker é `aria-hidden`, sem foco e removido no cleanup; o nome acessível do mapa continua oferecendo o contexto equivalente.
+- **Visual:** `index.css` substitui `.map-return-callout` por `.map-return-marker`, `__label` e `__pointer`. Placa e ponteiro preservam `#ae0011`; o ponteiro termina na rampa indicada e não cobre escudo `RJ-106`, nome da rodovia, pin, parque ou CTA.
+- **Fallback:** a placa só é criada no evento `load`; loading/erro continuam sem marcador editorial e preservam o CTA.
+- **Testes:** E2E exige um único marker dentro do container MapLibre, texto visível após o lazy load e bounding box integralmente contida no mapa em desktop/mobile.
+- **Validação:** `npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · E2E focal inicial 0/2 por seletor incorreto que tratava o elemento do Marker como filho, quando o MapLibre adiciona `.maplibregl-marker` ao próprio elemento · seletor corrigido para classes combinadas · E2E focal 2/2 ✓ · `npm run test:e2e` final 36/36 ✓ · `git diff --check` ✓. O certificado do OpenFreeMap foi ignorado apenas na execução Playwright local; configuração restaurada ao final.
+- **Evidências:** `documentacao/qa/etapa-55/before-mapa-1280.png`, `before-mapa-390.png`, `after-mapa-1280.png` e `after-mapa-390.png`, inspecionados em resolução integral.
+- **Ressalva:** a coordenada é um vértice real do snapshot do tile. Revalidar a feature se o TileJSON do OpenFreeMap mudar.
+
+## Etapa 56 — Simplificação da placa para “Retorno KM 25”
+
+- **Estado:** ✅ IMPLEMENTADO e auditado (22/08/2026); atualização incorporada ao PR #30, aguardando revisão humana/merge.
+- **Decisão do responsável:** a haste/seta entre placa e rampa da Etapa 55 ficou visualmente inadequada. Removê-la integralmente e trocar o texto `↩ Retorno` por **“Retorno KM 25”**.
+- **Implementação:** o `maplibre.Marker` georreferenciado e a coordenada real da feature `1787747092` foram preservados; somente o conteúdo e a apresentação mudaram. O marker agora usa anchor `left` com offset `[10,0]`, colocando a placa imediatamente ao lado da via sem linha auxiliar. Os elementos/classes `map-return-marker__pointer` foram removidos.
+- **Acessibilidade:** o nome acessível do mapa passou a informar “Retorno KM 25 da RJ-106”; a placa visual continua `aria-hidden` para evitar duplicação e só existe após `map.load`.
+- **Testes:** contratos unitário/E2E atualizados para o texto e nome acessível novos; E2E continua validando marker único e integralmente contido no canvas.
+- **Validação:** `npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓. O certificado do OpenFreeMap foi ignorado apenas na execução Playwright local; `playwright.config.js` foi restaurado ao final.
+- **Evidências:** `documentacao/qa/etapa-56/before-mapa-1280.png`, `before-mapa-390.png`, `after-mapa-1280.png` e `after-mapa-390.png`, inspecionados em resolução integral.
+- **Escopo preservado:** câmera, zoom, pin, rodovia, parque, label, CTA, atribuições e geometria não foram alterados.
+
+## Etapa 57 — Reposicionamento da placa e seta de retorno refinada
+
+- **Estado:** ✅ IMPLEMENTADO e auditado (22/08/2026); atualização incorporada ao PR #30, aguardando revisão humana/merge.
+- **Decisão visual:** reposicionar `Retorno KM 25` abaixo/à direita da rampa, conforme a nova referência, e reintroduzir somente um ícone de seta compacto junto à via — sem linha ligando a placa ao ponto.
+- **Implementação:** o mesmo `maplibre.Marker` e a coordenada real da feature `1787747092` foram preservados. O marker volta ao anchor `top-left` com offset `[-2,-12]`; um SVG inline de seta de retorno usa path fechado, preenchimento creme, contorno vermelho `#ae0011`, joins/caps arredondados e sombra discreta. A ponta do SVG coincide com o anchor cartográfico; a placa fica em `top: 30px` / `left: 22px` dentro do marker, sem haste intermediária.
+- **Responsividade:** wrapper 130×68, texto 10 px e tracking reduzido mantêm placa e seta integralmente dentro do canvas de 350×300 e do canvas desktop de 424×380.
+- **Acessibilidade/fallback:** SVG e marker permanecem `aria-hidden`; o nome acessível continua informando `Retorno KM 25`; o conjunto só é criado após `map.load` e é removido no cleanup.
+- **Testes:** E2E passa a exigir também um único SVG `[data-map-role=return-anchor]` visível dentro do marker, além do texto e bounding box contida no mapa.
+- **Validação:** `npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓. Playwright local usou `ignoreHTTPSErrors` temporário pela CA do OpenFreeMap; configuração restaurada ao final.
+- **Evidências:** `documentacao/qa/etapa-57/before-mapa-1280.png`, `before-mapa-390.png`, `after-mapa-1280.png` e `after-mapa-390.png`, inspecionados em resolução integral.
+- **Escopo preservado:** nenhuma alteração em câmera, zoom, coordenadas, pin, rodovia, parque, CTA ou atribuições.
+
+## Etapa 58 — Seta afastada da pista da RJ-106
+
+- **Estado:** ✅ IMPLEMENTADO e auditado (22/08/2026); atualização incorporada ao PR #30, aguardando revisão humana/merge.
+- **Achado humano:** a seta refinada da Etapa 57 ainda ficava visualmente sobre a pista, competindo com a linha e o nome da rodovia.
+- **Correção:** somente o SVG foi deslocado para a área clara acima da via (`top: -8px`, `left: 8px`), mantendo placa, marker, anchor e coordenada inalterados. Em mobile, media query reduz o ícone de 32 para 26 px e usa `top: 2px` / `left: 10px`, evitando corte no topo do canvas sem recolocar a forma sobre a linha vermelha.
+- **Teste:** E2E mede SVG e label e exige que a base da seta termine antes do topo da placa, além dos contratos anteriores de marker único/contido.
+- **Validação:** `npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · `npm run test:e2e` 36/36 ✓ · `git diff --check` ✓. Playwright local usou `ignoreHTTPSErrors` temporário pela CA do OpenFreeMap; configuração restaurada ao final.
+- **Evidências:** `documentacao/qa/etapa-58/before-mapa-1280.png`, `before-mapa-390.png`, `after-mapa-1280.png` e `after-mapa-390.png`, inspecionados em resolução integral.
+- **Escopo preservado:** nenhuma mudança em texto, placa, geometria, câmera, zoom, pin, parque, CTA ou atribuições.
