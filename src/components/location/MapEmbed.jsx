@@ -8,6 +8,10 @@ import pinMap from '../../assets/images/location/pin-map.webp'
    o visitante abre a rota no Google Maps pelo CTA abaixo.
    Coordenadas validadas pelo responsável — não alterar. */
 const BUSINESS_COORDINATES = [-42.8479579, -22.9215763] // [longitude, latitude]
+// Vértice real da rampa indicada na referência (OpenFreeMap, feature
+// transportation 1787747092, snapshot 20260816_080001_pt). Não aproximar por
+// posição de tela: a ponta do callout deve permanecer presa à geometria da via.
+const RETURN_COORDINATES = [-42.846293449401855, -22.91403927778279]
 // Centro da câmera deslocado ao norte para incluir a RJ-106 e o retorno.
 const MAP_CENTER = [-42.8479579, -22.9185] // [longitude, latitude]
 // Zoom calibrado para mostrar o bairro com contexto (RJ-106 e área verde)
@@ -30,6 +34,7 @@ function MapEmbed() {
     if (!container) return
 
     let map = null
+    let returnMarker = null
     let cancelled = false
     let transientLogged = false
     let loadTimer = null
@@ -82,6 +87,29 @@ function MapEmbed() {
           .addTo(map)
 
         map.on('load', () => {
+          if (cancelled) return
+
+          // Placa editorial ancorada em um vértice real da rampa. O elemento se
+          // desloca com a projeção do mapa; somente o corpo da placa recebe um
+          // offset visual, enquanto a ponta permanece na coordenada validada.
+          const returnElement = document.createElement('div')
+          returnElement.className = 'map-return-marker'
+          returnElement.setAttribute('aria-hidden', 'true')
+          returnElement.dataset.mapRole = 'return'
+
+          const returnLabel = document.createElement('span')
+          returnLabel.className = 'map-return-marker__label'
+          returnLabel.textContent = '↩ Retorno'
+
+          const returnPointer = document.createElement('span')
+          returnPointer.className = 'map-return-marker__pointer'
+          returnPointer.dataset.mapRole = 'return-anchor'
+
+          returnElement.append(returnLabel, returnPointer)
+          returnMarker = new maplibre.Marker({ element: returnElement, anchor: 'top-left', offset: [-8, -3] })
+            .setLngLat(RETURN_COORDINATES)
+            .addTo(map)
+
           if (!cancelled) setMapState('ready')
         })
 
@@ -122,6 +150,7 @@ function MapEmbed() {
       return () => {
         cancelled = true
         clearTimeout(loadTimer)
+        returnMarker?.remove()
         map?.remove()
       }
     }
@@ -141,6 +170,7 @@ function MapEmbed() {
       cancelled = true
       clearTimeout(loadTimer)
       observer.disconnect()
+      returnMarker?.remove()
       map?.remove()
     }
   }, [])
@@ -178,14 +208,6 @@ function MapEmbed() {
           aria-label="Mapa da região do Parque Nanci em Maricá, com a localização da Turquia Lanches e indicação do retorno da RJ-106"
         />
 
-        {/* Indicação editorial do retorno, posicionada sobre o ponto assinalado
-            na referência aprovada. Só aparece quando o mapa está pronto; o nome
-            acessível do mapa oferece o mesmo contexto a tecnologias assistivas. */}
-        {mapState === 'ready' && (
-          <div className="map-return-callout" aria-hidden="true">
-            <span>↩ Retorno</span>
-          </div>
-        )}
       </div>
 
       {/* Barra inferior: contexto + CTA + atribuição legal (fora do role="img"). */}
