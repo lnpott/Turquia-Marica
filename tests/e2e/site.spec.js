@@ -108,7 +108,10 @@ test('Localização aparece uma vez, com mapa vetorial, CTA único e dados ofici
   await expect(section.getByText('Siga-nos no Instagram')).toHaveCount(1)
   await expect(section.getByText('Não disponível / em construção')).toHaveCount(0)
   await expect(section.locator('iframe')).toHaveCount(0)
-  await expect(section.getByRole('img', { name: /mapa da região do parque nanci/i })).toBeVisible()
+  const map = section.getByRole('img', { name: /mapa da região do parque nanci.+retorno da rj-106/i })
+  await expect(map).toBeVisible()
+  await map.scrollIntoViewIfNeeded()
+  await expect(section.getByText('↩ Retorno')).toBeVisible({ timeout: 15_000 })
   await expect(section.getByText(/CEP|estacionamento|acessibilidade|rota exata/i)).toHaveCount(0)
 })
 

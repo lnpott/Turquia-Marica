@@ -2125,3 +2125,30 @@ A revisão humana apontou 2 problemas remanescentes na auditoria automática ant
 - **Destaque amarelo do Retorno:** a camada `road-trunk-return` usa `#fdc008` (amarelo da marca) para destacar as rampas de retorno. Em zoom 14, as rampas são segmentos curtos — a cor pode ser confundida com a rodovia (vermelha `#ae0011`) por usuários com daltonismo. A acessibilidade não é crítica (o mapa é não interativo), mas vale registro.
 - **Dependência de tile externo:** o mapa depende do OpenFreeMap (`https://tiles.openfreemap.org/planet`) — uma interrupção temporária deixa o mapa no estado `loading` (12 s de timeout) e depois exibe o fallback textual com CTA "Abrir rota". O fallback é funcional, mas sem mapa visual.
 - **Governança:** o commit `9150acf` foi feito diretamente em `main` e push sem PR, por autorização explícita do responsável (mesmo padrão das Etapas 50/51). A governança padrão (branch + PR) permanece como recomendação documental.
+
+## Etapa 53 — Correção do pin e chamada direta do Retorno RJ-106
+
+- **Estado:** ✅ IMPLEMENTADO e auditado (22/08/2026); aguardando revisão humana e merge do PR.
+- **Diagnóstico do pin:** a Etapa 52 deslocou `MAP_CENTER` ao norte para enquadrar a RJ-106, mas o marcador também passou a usar essa constante. Isso colocou o pin no centro da câmera (`[-42.8479579,-22.9185]`) em vez da coordenada validada do estabelecimento (`[-42.8479579,-22.9215763]`).
+- **Correção do pin:** `MapEmbed.jsx` agora separa `BUSINESS_COORDINATES` de `MAP_CENTER`; a câmera preserva o enquadramento aprovado e somente o marcador volta à coordenada real documentada.
+- **Retorno (decisão visual do responsável):** descartadas as propostas de casing e legenda inferior. Foi adicionada a chamada direta **“↩ Retorno”**, com selo amarelo e seta, na posição indicada pelo marcador rosa da referência fornecida. O callout é uma sobreposição editorial relativa ao canvas — não cria nem declara nova coordenada geográfica — e permanece decorativo (`aria-hidden`) dentro do mapa não interativo.
+- **Responsividade:** posição relativa preservada em canvas desktop e mobile; screenshots inspecionados em resolução integral mostram o texto sem colisão com o pin, o escudo `RJ-106`, o nome da rodovia ou o CTA.
+- **Testes:** contratos unitário e E2E passaram a exigir a presença da indicação `↩ Retorno`.
+- **Validação:** `npm run check` ✓ (lint, 22/22 testes e build/auditoria de demo) · `npm run test:e2e` ✓ (36/36 desktop + mobile; `ignoreHTTPSErrors` usado somente na execução local porque o Chromium do contêiner não reconhece a autoridade TLS do OpenFreeMap; configuração restaurada após o teste) · `git diff --check` ✓.
+- **Evidências:** `documentacao/qa/etapa-53/mapa-1280.png`, `documentacao/qa/etapa-53/mapa-390.png` e `documentacao/qa/etapa-53/localizacao-1280.png`.
+- **Arquivos modificados:** `src/components/location/MapEmbed.jsx`, `src/styles/index.css`, `tests/business-info.test.jsx`, `tests/e2e/site.spec.js`, `BEST_PLAN.MD`, `documentacao/qa/AUDITORIA_LOCALIZACAO.md`; evidências novas em `documentacao/qa/etapa-53/`.
+- **Ressalva:** como o mapa usa centro e zoom fixos, o callout é deliberadamente posicionado por percentual conforme a referência aprovada. Se centro, zoom ou altura do canvas mudarem em lote futuro, sua posição deve ser revalidada visualmente.
+
+## Etapa 54 — Revisão visual solicitada: placas, parque e label em vermelho
+
+- **Estado:** ✅ IMPLEMENTADO e auditado (22/08/2026); atualização incorporada ao PR #28, aguardando revisão humana/merge.
+- **Decisão visual:** todos os destaques cartográficos solicitados usam o vermelho primário existente `#ae0011`; nenhum novo token de cor foi criado.
+- **Placa do retorno:** fundo amarelo substituído por vermelho, texto creme; posição alterada para `top: 23%` / `left: 64%`, correspondente ao marca-texto rosa da nova referência. A haste anterior foi removida: a seta `↩` no próprio texto é a indicação direta aprovada.
+- **Fallback e acessibilidade (comentários inline do PR #28):** o callout agora só é montado quando `mapState === 'ready'`, portanto não aparece sobre loading/fallback. O nome acessível do mapa passou a mencionar a indicação do retorno da RJ-106, oferecendo contexto equivalente mesmo com o callout visual `aria-hidden`.
+- **Contorno do Parque Céu Aberto:** a fonte `parque-nanci-area` foi restringida ao polígono histórico **B**, extraído dos tiles OpenFreeMap no snapshot `20260816_080001_pt` (14 pontos, bounds `-42.847023..-42.845317`, `-22.922745..-22.920635`). É o polígono real que contém o POI “Parque Céu Aberto Parque Nanci” e corresponde à área marcada em verde; o polígono A, que abrangia a área do pin, deixou de ser contornado. A linha foi afinada de 1.5 para 1 px, em `#ae0011`/0.9, e movida ao fim das camadas-base para que ruas e fills não ocultem partes do perímetro.
+- **Label “Parque Nanci”:** cor alterada de verde para `#ae0011`, tamanho 15 → 17, halo 3 → 3.5 e offset vertical 2.6 → 1.3 para reforçar a leitura e impedir corte no canvas mobile.
+- **Camada das rampas:** `road-trunk-return` também passou de amarelo para `#ae0011`, mantendo a geometria real e o filtro existentes.
+- **Cobertura:** novo teste de contrato inspeciona as cores, espessura, tamanho/offset do label e a geometria única de 14 pontos; contratos anteriores de carregamento e acessibilidade foram ajustados.
+- **Validação:** `npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · primeira execução E2E 35/36 (o teste mobile procurava o callout antes de levar o mapa lazy à viewport) · teste corrigido para rolar o mapa e aguardar o `load` · `npm run test:e2e` final 36/36 ✓ · `git diff --check` ✓. `ignoreHTTPSErrors` foi usado apenas na execução local pela CA do contêiner e removido da configuração ao final.
+- **Evidências:** `documentacao/qa/etapa-54/mapa-1280.png` e `documentacao/qa/etapa-54/mapa-390.png`, capturas reais inspecionadas em resolução integral.
+- **Ressalva:** o polígono B continua sendo snapshot de geometria real do tile, não geometria inventada. Revalidar quando o TileJSON do OpenFreeMap mudar.

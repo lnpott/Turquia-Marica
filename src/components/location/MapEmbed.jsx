@@ -7,6 +7,8 @@ import pinMap from '../../assets/images/location/pin-map.webp'
    Não interativo por decisão de produto: a localização é informação fixa;
    o visitante abre a rota no Google Maps pelo CTA abaixo.
    Coordenadas validadas pelo responsável — não alterar. */
+const BUSINESS_COORDINATES = [-42.8479579, -22.9215763] // [longitude, latitude]
+// Centro da câmera deslocado ao norte para incluir a RJ-106 e o retorno.
 const MAP_CENTER = [-42.8479579, -22.9185] // [longitude, latitude]
 // Zoom calibrado para mostrar o bairro com contexto (RJ-106 e área verde)
 // mantendo o estabelecimento como foco. Ajustável sem alterar coordenadas.
@@ -76,7 +78,7 @@ function MapEmbed() {
         pinImg.decoding = 'async'
         pinElement.appendChild(pinImg)
         new maplibre.Marker({ element: pinElement, anchor: 'bottom' })
-          .setLngLat(MAP_CENTER)
+          .setLngLat(BUSINESS_COORDINATES)
           .addTo(map)
 
         map.on('load', () => {
@@ -173,8 +175,17 @@ function MapEmbed() {
           ref={mapContainerRef}
           className="map-embed-canvas h-full w-full"
           role="img"
-          aria-label="Mapa da região do Parque Nanci em Maricá, com a localização da Turquia Lanches"
+          aria-label="Mapa da região do Parque Nanci em Maricá, com a localização da Turquia Lanches e indicação do retorno da RJ-106"
         />
+
+        {/* Indicação editorial do retorno, posicionada sobre o ponto assinalado
+            na referência aprovada. Só aparece quando o mapa está pronto; o nome
+            acessível do mapa oferece o mesmo contexto a tecnologias assistivas. */}
+        {mapState === 'ready' && (
+          <div className="map-return-callout" aria-hidden="true">
+            <span>↩ Retorno</span>
+          </div>
+        )}
       </div>
 
       {/* Barra inferior: contexto + CTA + atribuição legal (fora do role="img"). */}
