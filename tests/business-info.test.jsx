@@ -11,6 +11,7 @@ import Header from '../src/components/layout/Header'
 import Footer from '../src/components/layout/Footer'
 import { BUSINESS_INFO, BUSINESS_STATUS, IFOOD_URL } from '../src/data/contact'
 import { products } from '../src/data/menu'
+import mapStyle from '../src/assets/map/liberty.json'
 
 const demoProduct = {
   id: 'fixture-product',
@@ -25,6 +26,24 @@ const demoProduct = {
 }
 
 describe('dados comerciais e demonstrativos', () => {
+  it('mantém retorno, contorno e label do parque no vermelho da marca', () => {
+    const layer = (id) => mapStyle.layers.find((item) => item.id === id)
+    const parkFeatures = mapStyle.sources['parque-nanci-area'].data.features
+
+    expect(layer('road-trunk-return').paint['line-color']).toBe('#ae0011')
+    expect(layer('park-nanci-contour').paint).toMatchObject({
+      'line-color': '#ae0011',
+      'line-width': 1,
+    })
+    expect(layer('poi-park-nanci').paint['text-color']).toBe('#ae0011')
+    expect(layer('poi-park-nanci').layout).toMatchObject({
+      'text-offset': [0, 1.3],
+      'text-size': 17,
+    })
+    expect(parkFeatures).toHaveLength(1)
+    expect(parkFeatures[0].geometry.coordinates[0]).toHaveLength(14)
+  })
+
   it('publica iFood oficial e WhatsApp oficial com URL', () => {
     expect(BUSINESS_INFO.channels.ifood).toMatchObject({
       status: BUSINESS_STATUS.AVAILABLE,
@@ -89,8 +108,9 @@ describe('dados comerciais e demonstrativos', () => {
     const link = screen.getByRole('link', { name: /abrir rota no google maps/i })
     expect(link).toHaveAttribute('href', BUSINESS_INFO.channels.maps.url)
     // Arquitetura nova: container acessível (role=img) em vez de iframe
-    expect(screen.getByRole('img', { name: /mapa da região do parque nanci/i })).toBeInTheDocument()
-    expect(screen.getByText('↩ Retorno')).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: /mapa da região do parque nanci.+retorno da rj-106/i })).toBeInTheDocument()
+    // O callout visual só aparece depois do evento load do MapLibre.
+    expect(screen.queryByText('↩ Retorno')).not.toBeInTheDocument()
     expect(document.querySelector('iframe')).toBeNull()
     expect(document.querySelector('a[href*="openstreetmap.org/export/embed"]')).toBeNull()
   })

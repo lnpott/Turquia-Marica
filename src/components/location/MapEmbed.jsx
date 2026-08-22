@@ -175,15 +175,17 @@ function MapEmbed() {
           ref={mapContainerRef}
           className="map-embed-canvas h-full w-full"
           role="img"
-          aria-label="Mapa da região do Parque Nanci em Maricá, com a localização da Turquia Lanches"
+          aria-label="Mapa da região do Parque Nanci em Maricá, com a localização da Turquia Lanches e indicação do retorno da RJ-106"
         />
 
         {/* Indicação editorial do retorno, posicionada sobre o ponto assinalado
-            na referência aprovada. É decorativa: o contexto completo permanece
-            no nome acessível do mapa e a rota é aberta pelo CTA abaixo. */}
-        <div className="map-return-callout" aria-hidden="true">
-          <span>↩ Retorno</span>
-        </div>
+            na referência aprovada. Só aparece quando o mapa está pronto; o nome
+            acessível do mapa oferece o mesmo contexto a tecnologias assistivas. */}
+        {mapState === 'ready' && (
+          <div className="map-return-callout" aria-hidden="true">
+            <span>↩ Retorno</span>
+          </div>
+        )}
       </div>
 
       {/* Barra inferior: contexto + CTA + atribuição legal (fora do role="img"). */}

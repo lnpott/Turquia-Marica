@@ -1,5 +1,39 @@
 # Auditoria independente — Lote 6 — Localização
 
+## Etapa 54 — Revisão visual vermelha — 22/08/2026
+
+### Veredito
+
+**IMPLEMENTADO E AUDITADO — INCORPORADO AO PR #28, AGUARDANDO REVISÃO HUMANA/MERGE.**
+
+### Correções auditadas
+
+1. **Placa:** selo `↩ Retorno` usa o vermelho primário `#ae0011`, texto creme e foi deslocado para a área do marca-texto rosa (`23%`/`64%`). A haste foi removida para manter a indicação direta pela seta textual.
+2. **Loading/fallback:** achado inline do PR resolvido; o selo só existe quando o mapa está `ready`.
+3. **Acessibilidade:** achado inline do PR resolvido; o nome acessível do mapa inclui “indicação do retorno da RJ-106”, enquanto a placa duplicada continua oculta para evitar anúncio redundante.
+4. **Parque Céu Aberto:** o contorno usa somente o polígono B real de 14 pontos do snapshot OpenFreeMap `20260816_080001_pt`, que contém o POI do parque e corresponde à marcação verde. A linha vermelha passou para 1 px e foi elevada acima das camadas-base para preservar todo o perímetro sem aumentar sua espessura. O polígono A, associado à área do pin e não à área verde solicitada, foi excluído da fonte dedicada.
+5. **Label:** “Parque Nanci” agora usa vermelho primário, 17 px, halo 3.5 e offset 1.3; o deslocamento evita o corte observado no canvas mobile e reforça a hierarquia.
+6. **Consistência:** a camada vetorial dos retornos também deixou o amarelo e passou a `#ae0011`.
+
+### Evidência e cobertura
+
+- `documentacao/qa/etapa-54/mapa-1280.png`: placa, pin, contorno e label inspecionados em resolução integral.
+- `documentacao/qa/etapa-54/mapa-390.png`: mesmos elementos inspecionados no canvas mobile; texto do parque integralmente visível após o ajuste de offset.
+- Teste unitário dedicado valida cores, largura do contorno, tamanho/offset do label e a fonte com exatamente um polígono/14 pontos.
+- E2E mantém verificação visual do callout após `ready`, nome acessível equivalente, axe, console e overflow.
+
+### Validação final
+
+`npm run check` ✓ (lint, 23/23 testes, build e `audit:demo-leak`) · E2E inicial 35/36 (o teste mobile não acionava o carregamento lazy do mapa antes de procurar a placa) · contrato corrigido com `scrollIntoViewIfNeeded` e espera de até 15 s · E2E focal 2/2 ✓ · `npm run test:e2e` final 36/36 ✓ · `git diff --check` ✓.
+
+Como nas Etapas 52/53, `ignoreHTTPSErrors` foi aplicado somente à execução local para contornar a CA do OpenFreeMap não reconhecida pelo Chromium do contêiner; `playwright.config.js` foi restaurado e não contém a opção.
+
+### Risco residual
+
+O polígono B é geometria real extraída do tile, mas permanece um snapshot. Mudança do TileJSON exige nova comparação cartográfica e visual.
+
+---
+
 ## Etapa 53 — Pin real e chamada direta do Retorno — 22/08/2026
 
 ### Veredito
