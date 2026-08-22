@@ -1,10 +1,9 @@
 # VERSION CLEAN — Plano de melhorias visuais, comerciais e técnicas
 
-> **Tipo de documento:** plano de execução solicitado pelo responsável.
-> **Estado:** PLANEJADO — nenhuma melhoria deste plano foi implementada nesta etapa.
+> **Tipo de documento:** relatório consultivo solicitado pelo responsável; não é um plano operacional nem controla estados de execução.
 > **Data do diagnóstico:** 22/08/2026.
 > **Fonte de verdade:** código e Git atuais, `BEST_PLAN.MD`, relatórios em `documentacao/qa/` e dados comerciais confirmados em `src/data/`.
-> **Relação com `BEST_PLAN.MD`:** este arquivo detalha somente a próxima versão de limpeza e evolução. Não substitui o histórico, os estados ou a governança do plano principal.
+> **Relação com `BEST_PLAN.MD`:** este arquivo preserva recomendações para avaliação. Todo item aprovado deve ser incorporado ao `BEST_PLAN.MD` antes de ser implementado, acompanhado ou concluído; somente o plano canônico registra estado e governança.
 
 ---
 
@@ -515,4 +514,4 @@ Antes de implementar, o responsável deve aprovar:
 4. texto final do CTA após a grade;
 5. se métricas e domínio próprio entram nesta versão ou ficam para ciclo posterior.
 
-Até essa aprovação, o estado permanece **PLANEJADO** e nenhuma mudança de runtime está autorizada por este documento.
+Este relatório não autoriza mudança de runtime nem atribui estado aos itens. Aprovações e execução devem ser registradas exclusivamente no `BEST_PLAN.MD`.
