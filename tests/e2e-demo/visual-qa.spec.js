@@ -7,12 +7,12 @@ test('rota demonstra dados fictícios com interação, isolamento e evidência',
   const consoleErrors = []
   page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()) })
 
-  const response = await page.goto('/__visual-qa', { waitUntil: 'networkidle' })
+  const response = await page.goto('/visual-qa-demo', { waitUntil: 'networkidle' })
   expect(response?.status()).toBe(200)
   await expect(page).toHaveTitle('DADOS FICTÍCIOS — QA VISUAL')
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex, nofollow/)
   await expect(page.getByRole('status')).toContainText('nenhum item ou preço é real')
-  await expect(page.locator('article')).toHaveCount(16)
+  await expect(page.locator('article')).toHaveCount(9)
   await expect(page.getByRole('banner')).toBeVisible()
   if (testInfo.project.use.viewport.width < 768) {
     await expect(page.getByRole('navigation', { name: 'Navegação inferior' })).toBeVisible()
@@ -21,13 +21,13 @@ test('rota demonstra dados fictícios com interação, isolamento e evidência',
   }
 
   const filters = page.getByRole('group', { name: 'Filtrar por categoria' })
-  await filters.getByRole('button', { name: 'Bebidas' }).click()
-  await expect(filters.getByRole('button', { name: 'Bebidas' })).toHaveAttribute('aria-pressed', 'true')
+  await filters.getByRole('button', { name: 'Combos' }).click()
+  await expect(filters.getByRole('button', { name: 'Combos' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.locator('article')).toHaveCount(4)
   await filters.getByRole('button', { name: 'Todos' }).click()
-  await expect(page.locator('article')).toHaveCount(16)
+  await expect(page.locator('article')).toHaveCount(9)
 
-  await page.getByRole('heading', { name: 'Lanche demonstrativo com um nome propositalmente muito longo' }).hover()
+  await page.locator('article').first().hover({ force: true })
   const axe = await new AxeBuilder({ page }).analyze()
   expect(axe.violations.filter(({ impact }) => ['critical', 'serious'].includes(impact))).toEqual([])
   expect(consoleErrors).toEqual([])

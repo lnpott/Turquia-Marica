@@ -134,6 +134,22 @@ describe('dados comerciais e demonstrativos', () => {
     expect(screen.queryByText('iFood em construção')).not.toBeInTheDocument()
   })
 
+  it('configura o Hero híbrido com vídeos silenciosos, fotografias e CTAs estáveis', () => {
+    render(<MemoryRouter><HeroSection /></MemoryRouter>)
+    const hero = screen.getByRole('region', { name: /experiências na turquia lanches/i })
+    expect(hero).toHaveAttribute('data-active-slide', '0')
+    expect(hero.querySelectorAll('[data-slide-type="video"]')).toHaveLength(2)
+    expect(hero.querySelectorAll('[data-slide-type="image"]')).toHaveLength(3)
+    for (const video of hero.querySelectorAll('video')) {
+      expect(video.muted).toBe(true)
+      expect(video).toHaveAttribute('playsinline')
+      expect(video).not.toHaveAttribute('controls')
+      expect(video).toHaveAttribute('poster')
+    }
+    expect(screen.getByRole('link', { name: /ver cardápio/i })).toHaveAttribute('href', '/cardapio')
+    expect(screen.getByRole('link', { name: /como chegar/i })).toHaveAttribute('href', '#localizacao')
+  })
+
   it('faz o botão Como chegar rolar até a localização', () => {
     const location = document.createElement('section')
     location.id = 'localizacao'
