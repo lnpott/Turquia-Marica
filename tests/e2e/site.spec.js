@@ -23,6 +23,25 @@ test('Home única carrega com metadados, seções e acessibilidade', async ({ pa
   expect(consoleErrors).toEqual([])
 })
 
+test('Hero híbrido preserva CTAs e reproduz somente o vídeo ativo', async ({ page }) => {
+  await page.goto('/')
+  const hero = page.getByRole('region', { name: 'Experiências na Turquia Lanches' })
+  await expect(hero.locator('[data-slide-type="video"]')).toHaveCount(2)
+  await expect(hero.locator('[data-slide-type="image"]')).toHaveCount(3)
+  await expect(hero.getByRole('link', { name: 'Ver cardápio' })).toHaveAttribute('href', '/cardapio')
+  await expect(hero.getByRole('link', { name: 'Como chegar' })).toHaveAttribute('href', '#localizacao')
+
+  const videos = hero.locator('video')
+  await expect(videos.first()).toHaveJSProperty('muted', true)
+  await expect(videos.first()).toHaveAttribute('playsinline', '')
+  await expect(videos.first()).not.toHaveAttribute('controls')
+  await expect.poll(async () => videos.first().evaluate((video) => !video.paused)).toBe(true)
+  expect(await videos.evaluateAll((items) => items.filter((video) => !video.paused).length)).toBe(1)
+
+  await page.locator('#cardapio').scrollIntoViewIfNeeded()
+  await expect.poll(async () => videos.evaluateAll((items) => items.every((video) => video.paused))).toBe(true)
+})
+
 test('rotas legadas usam fallback SPA e preservam a âncora', async ({ page }) => {
   for (const [path, hash] of [['/cardapio', '#cardapio'], ['/localizacao', '#localizacao']]) {
     const response = await page.goto(path, { waitUntil: 'networkidle' })
@@ -35,7 +54,7 @@ test('rotas legadas usam fallback SPA e preservam a âncora', async ({ page }) =
 test('navegação por âncora mantém a Home montada e atualiza o estado ativo', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await page.goto('/')
-  const hero = page.locator('.hero-ambient')
+  const hero = page.locator('.hero-carousel')
   const heroHandle = await hero.elementHandle()
   const navigation = page.getByRole('navigation', { name: 'Navegação principal' })
 
@@ -202,14 +221,16 @@ test('reduced motion desativa animações e mantém conteúdo visível', async (
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
   await expect(page.locator('.page-transition')).toHaveCSS('animation-name', 'none')
-  await expect(page.locator('.hero-ambient')).toHaveCSS('animation-name', 'none')
+  await expect(page.locator('.hero-carousel')).toHaveAttribute('data-motion', 'reduced')
+  await expect(page.locator('.hero-carousel')).toHaveAttribute('data-active-slide', '0')
   await expect(page.locator('.reveal').first()).toHaveCSS('transition-duration', '0s')
   await expect(page.locator('#reviews')).toBeVisible()
 })
 
 test('scroll reveal e motion ambiente funcionam sem biblioteca', async ({ page }) => {
   await page.goto('/')
-  await expect(page.locator('.hero-ambient')).not.toHaveCSS('animation-name', 'none')
+  await expect(page.locator('.hero-carousel')).toHaveAttribute('data-motion', 'full')
+  await expect(page.locator('.hero-carousel__slide--active .hero-carousel__media').first()).not.toHaveCSS('animation-name', 'none')
   const reveal = page.locator('#reviews .reveal').first()
   await reveal.scrollIntoViewIfNeeded()
   await expect(reveal).toHaveClass(/reveal-visible/)

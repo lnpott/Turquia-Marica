@@ -211,14 +211,76 @@ img {
   transform: translateY(0);
 }
 
-.hero-ambient {
-  animation: hero-ambient 16s ease-in-out infinite alternate;
-  transform-origin: 60% 50%;
+/* Hero híbrido da Home: crossfade nativo e mídia sempre preservada em cover.
+   O scrim concentra contraste na base/esquerda sem apagar a fotografia. */
+.hero-carousel__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 900ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes hero-ambient {
-  from { transform: scale(1.01) translate3d(0, 0, 0); }
-  to { transform: scale(1.07) translate3d(-1.2%, -0.8%, 0); }
+.hero-carousel__slide--active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.hero-carousel__media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.01);
+}
+
+.hero-carousel__slide--active .hero-carousel__media {
+  animation: hero-media-drift 6000ms ease-out both;
+}
+
+.hero-carousel__video {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.hero-carousel__slide--ready .hero-carousel__video {
+  opacity: 1;
+}
+
+.hero-carousel__scrim {
+  background:
+    linear-gradient(180deg, rgba(26, 16, 8, 0.12) 0%, rgba(26, 16, 8, 0.24) 38%, rgba(26, 16, 8, 0.92) 100%),
+    linear-gradient(90deg, rgba(26, 16, 8, 0.7) 0%, rgba(26, 16, 8, 0.24) 62%, transparent 100%);
+}
+
+.hero-carousel__headline {
+  text-wrap: balance;
+}
+
+.hero-carousel__indicator {
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.38);
+  transition: width 500ms ease, background-color 500ms ease;
+}
+
+.hero-carousel__indicator--active {
+  width: 38px;
+  background: var(--color-secondary-container);
+}
+
+@keyframes hero-media-drift {
+  from { transform: scale(1.01); }
+  to { transform: scale(1.045); }
+}
+
+@media (min-width: 768px) {
+  .hero-carousel__scrim {
+    background:
+      linear-gradient(180deg, rgba(26, 16, 8, 0.08) 0%, rgba(26, 16, 8, 0.48) 100%),
+      linear-gradient(90deg, rgba(26, 16, 8, 0.88) 0%, rgba(26, 16, 8, 0.58) 42%, rgba(26, 16, 8, 0.08) 78%);
+  }
 }
 
 /* Motion compartilhado: o gradiente escuro percorre CTAs primários sem
@@ -293,29 +355,6 @@ img {
   }
 }
 
-/* Hero da Home: zoom lento e quase imperceptível (Ken Burns sutil) no slide
-   ativo do crossfade. Escala mínima (1.02) — dá vida à fotografia sem cortar
-   ou reenquadrar o elemento principal (Lote 11.1). */
-.hero-kenburns {
-  animation: hero-kenburns 9000ms ease-in-out both;
-}
-
-/* LOTE 14.2 — Quebra de linhas editorial do texto de apoio do hero
-   (text-wrap: pretty = CSS nativo, sem dependência nova). Evita linhas
-   órfãs/estranhas e melhora o rag sem alterar o conteúdo. */
-.hero-tagline {
-  text-wrap: pretty;
-}
-
-@keyframes hero-kenburns {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.02);
-  }
-}
-
 /* Foco visível acessível em qualquer elemento interativo (teclado). */
 :focus-visible {
   outline: 2px solid var(--color-primary);
@@ -366,12 +405,17 @@ img {
     animation: none;
   }
 
-  .hero-kenburns {
-    animation: none;
+  .hero-carousel__slide {
+    transition: none;
   }
 
-  .hero-ambient {
+  .hero-carousel__slide--active .hero-carousel__media {
     animation: none;
+    transform: none;
+  }
+
+  .hero-carousel__indicator {
+    transition: none;
   }
 
   .reveal,

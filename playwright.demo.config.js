@@ -20,7 +20,7 @@ export default defineConfig({
   projects: viewports.map(({ name, viewport }) => ({ name, use: { viewport } })),
   webServer: {
     command: 'npm run build:demo && npm run preview -- --host 127.0.0.1 --port 4174',
-    url: 'http://127.0.0.1:4174/__visual-qa',
+    url: 'http://127.0.0.1:4174/visual-qa-demo',
     reuseExistingServer: false,
     timeout: 120_000,
   },
