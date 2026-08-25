@@ -3,6 +3,7 @@
 > Prompts prontos para execução da Etapa 60 (substituição cirúrgica do slide 4 do carrossel Hero).
 > O plano completo, diagnóstico e critérios de aceite estão em `BEST_PLAN.MD`.
 > **Não execute mais de um agente simultaneamente nesta etapa.**
+> **Estado:** executado e validado em 25/08/2026. Os prompts abaixo permanecem somente como registro; não reexecutar.
 
 ---
 
