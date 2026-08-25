@@ -2230,3 +2230,80 @@ A revisão humana apontou 2 problemas remanescentes na auditoria automática ant
 - **Evidências:** `documentacao/qa/etapa-59/hero-390.png` e `hero-1280.png`, inspecionadas em resolução integral. Todos os cinco slides também foram inspecionados temporariamente em 390 e 1280 px.
 - **Limitações:** os vídeos disponíveis continuam verticais e H.264/MP4; em desktop o crop é necessariamente mais fechado. Uma futura captação horizontal profissional, com cenas planejadas sem textos de Reel, pode elevar a qualidade sem mudar a arquitetura.
 - **Próximo passo recomendado:** revisão humana do enquadramento e ritmo no Preview do PR; não alterar demais seções neste lote.
+
+## Etapa 60 — Refinamento do carrossel Hero: substituição de slide e rebalanceamento narrativo
+
+- **Estado:** PLANEJADO (25/08/2026) — aguardando autorização para execução.
+- **Arquivo-alvo:** `src/components/home/HeroSection.jsx` — único arquivo a ser modificado.
+
+### Diagnóstico
+
+O carrossel da Etapa 59 funciona corretamente (38/38 testes, build limpo, acessibilidade aprovada). O problema é de curadoria, não de código.
+
+**Slides atuais:**
+
+| # | Tipo | Arquivo | Headline |
+|---|------|---------|----------|
+| 1 | vídeo | `turquia-ambiente-hero.mp4` | "Um lugar para chegar e ficar" |
+| 2 | foto | `turquia-hamburguer-artesanal-01.jpg` | "Fartura que reúne" |
+| 3 | vídeo | `turquia-espaco-infantil-hero.mp4` | "Diversão para toda a família" |
+| 4 | foto | `turquia-prato-vinho-01.jpg` | "Comida, chopp e bons encontros" ← **candidato a substituição** |
+| 5 | foto | `turquia-pizza-calabresa-01.jpg` | "Seu próximo sabor favorito" |
+
+**Por que o slide 4 é o candidato:** única foto com figura humana em cena e taça de vinho como elemento central — composição atípica para o perfil do estabelecimento (hamburgueria/petiscos/lanches); vinho não é produto do cardápio confirmado.
+
+**Substituta disponível no repositório (não usada no carrossel):** `src/assets/media/pictures/turquia-tabua-petiscos-chopp-01.jpg` — representa diretamente o cardápio real, composição horizontal que favorece o crop desktop e mantém o conceito de compartilhar sem figura humana central.
+
+### Decisão de abordagem
+
+Substituição cirúrgica do slide 4. O que muda: apenas um import e um objeto dentro do array `SLIDES`. Lógica do carrossel, CSS, demais slides e qualquer outro arquivo do projeto permanecem intocados.
+
+### Prompt para Codex / DeepSeek
+
+```
+Contexto: projeto React/Vite. Altere SOMENTE src/components/home/HeroSection.jsx.
+Não execute build, testes, git ou qualquer outro comando.
+
+PASSO 1 — Substituir o import:
+Remova:
+  import encontrosImage from '../../assets/media/pictures/turquia-prato-vinho-01.jpg'
+Adicione no mesmo lugar:
+  import petiscosImage from '../../assets/media/pictures/turquia-tabua-petiscos-chopp-01.jpg'
+
+PASSO 2 — Substituir o objeto no array SLIDES:
+Localize o objeto que contém src: encontrosImage e substitua-o integralmente por:
+  {
+    type: 'image',
+    src: petiscosImage,
+    alt: 'Tábua de petiscos e chopp gelado na Turquia Lanches',
+    headline: 'Petisco, chopp e boa companhia',
+    subheadline: 'A mesa certa para dividir o melhor da casa.',
+    objectPosition: 'center 45%',
+    duration: 5000,
+  },
+
+PASSO 3 — Verificação:
+Confirme que nenhuma outra linha do arquivo foi alterada.
+Reporte exatamente quais linhas foram modificadas.
+```
+
+### Validação pós-execução
+
+```bash
+npm run check          # lint + 24 testes unitários + build + audit:demo-leak
+npm run test:e2e       # deve manter 38/38 Playwright desktop/mobile
+git diff --check
+```
+
+Inspecionar visualmente o slide 4 em 390 px e 1280 px antes de commitar. Se `objectPosition: 'center 45%'` não enquadrar bem o sujeito principal, ajustar para `center 35%` ou `center 55%` conforme inspeção — não requer novo ciclo de aprovação.
+
+### Critérios de aceite
+
+- [ ] Import `turquia-prato-vinho-01.jpg` removido; import `turquia-tabua-petiscos-chopp-01.jpg` adicionado como `petiscosImage`
+- [ ] Slide 4 com `src`, `alt`, `headline`, `subheadline` e `objectPosition` atualizados
+- [ ] Slides 1, 2, 3 e 5 inalterados
+- [ ] `npm run check` ✓
+- [ ] `npm run test:e2e` 38/38 ✓
+- [ ] Inspeção visual aprovada em mobile e desktop
+- [ ] Commit atômico cobrindo somente `HeroSection.jsx`
+- [ ] Esta entrada atualizada com estado IMPLEMENTADO após conclusão
