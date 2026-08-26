@@ -2317,7 +2317,7 @@ Inspecionar visualmente o slide 4 em 390 px e 1280 px antes de commitar. Se `obj
 
 ## Etapa 61 — Adaptação da direção visual exportada pelo Grok
 
-- **Estado:** IMPLEMENTADO, aguardando auditoria independente (26/08/2026).
+- **Estado:** IMPLEMENTADO, AUDITORIA INDEPENDENTE REPROVADA (26/08/2026) — merge bloqueado por dois P1 no hero; ver `documentacao/qa/AUDITORIA_ETAPA_61.md`.
 - **Objetivo autorizado:** aplicar as melhorias aproveitáveis da exportação `lnpott/shadow-sky-sky-orbit`, preservando integralmente o mapa vetorial atual.
 - **Implementação:** os indicadores do hero passaram a ser controles acessíveis; a seção “A casa” passou a usar os vídeos e fotografia oficiais em uma composição editorial; e Localização passou a dar protagonismo ao `MapEmbed` vigente, ao lado da ficha comercial.
 - **Preservado:** stack React/Vite atual, fontes de verdade comerciais, API/fallback de avaliações, navegação, dados demonstrativos protegidos e implementação MapLibre completa (coordenadas, estilo, pin, retorno, lazy loading, fallback e atribuições).
