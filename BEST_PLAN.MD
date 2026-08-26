@@ -2325,3 +2325,4 @@ Inspecionar visualmente o slide 4 em 390 px e 1280 px antes de commitar. Se `obj
 - **Validação:** `npm run check` aprovado (24/24); `npm run test:e2e` aprovado (38/38, desktop/mobile, axe, console e overflow). O Chromium e as bibliotecas de sistema precisaram ser instalados no ambiente antes da repetição aprovada.
 - **QA visual:** screenshots de página completa em 390×844 e 1280×900 inspecionados em resolução integral. O ambiente local recusou o certificado de `tiles.openfreemap.org`, portanto as capturas registram corretamente o fallback do mesmo `MapEmbed`; a suíte E2E confirmou o contrato e o CTA único do mapa.
 - **Evidências:** `documentacao/qa/etapa-61/grok-adaptacao-mobile.png` e `documentacao/qa/etapa-61/grok-adaptacao-desktop.png`.
+- **Auditoria:** `documentacao/qa/AUDITORIA_ETAPA_61.md`; a revisão mais recente identificou falha no ciclo do autoplay e área tátil insuficiente nos indicadores, ambos bloqueantes para merge.
