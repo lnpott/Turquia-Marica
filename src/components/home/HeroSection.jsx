@@ -5,7 +5,7 @@ import ambientePoster from '../../assets/media/hero/turquia-ambiente-poster.jpg'
 import espacoInfantilVideo from '../../assets/media/hero/turquia-espaco-infantil-hero.mp4'
 import espacoInfantilPoster from '../../assets/media/hero/turquia-espaco-infantil-poster.jpg'
 import comidaImage from '../../assets/media/pictures/turquia-hamburguer-artesanal-01.jpg'
-import encontrosImage from '../../assets/media/pictures/turquia-prato-vinho-01.jpg'
+import petiscosImage from '../../assets/media/pictures/turquia-tabua-petiscos-chopp-01.jpg'
 import atmosferaImage from '../../assets/media/pictures/turquia-pizza-calabresa-01.jpg'
 import Button from '../ui/Button'
 
@@ -39,11 +39,11 @@ const SLIDES = [
   },
   {
     type: 'image',
-    src: encontrosImage,
-    alt: 'Pessoas brindando com copos de chopp na Turquia Lanches',
-    headline: 'Comida, chopp e bons encontros',
-    subheadline: 'A experiência fica melhor quando é compartilhada.',
-    objectPosition: 'center 58%',
+    src: petiscosImage,
+    alt: 'Porção de pastéis com molho na Turquia Lanches',
+    headline: 'Petisco e boa companhia',
+    subheadline: 'A mesa certa para dividir o melhor da casa.',
+    objectPosition: 'center 45%',
     duration: 5000,
   },
   {
