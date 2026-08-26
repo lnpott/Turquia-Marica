@@ -263,6 +263,16 @@ img {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.38);
   transition: width 500ms ease, background-color 500ms ease;
+  cursor: pointer;
+}
+
+.hero-carousel__indicator:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 4px;
+}
+
+.about-media {
+  height: 100%;
 }
 
 .hero-carousel__indicator--active {

@@ -1,4 +1,4 @@
-import { Clock3, ExternalLink, Image, Instagram, MapPin } from 'lucide-react'
+import { Clock3, ExternalLink, Instagram, MapPin } from 'lucide-react'
 import { BUSINESS_INFO } from '../../data/contact'
 import MapEmbed from '../location/MapEmbed'
 import ChannelAction from '../ui/ChannelAction'
@@ -6,8 +6,6 @@ import Reveal from '../ui/Reveal'
 import SectionHeading from '../ui/SectionHeading'
 
 function LocationSection() {
-  const referencePhoto = { isPlaceholder: true }
-
   return (
     <section id="localizacao" className="scroll-mt-24 bg-[#f0e7db]/[0.35] px-5 py-20 md:px-margin-desktop md:py-28">
       <div className="mx-auto max-w-[1280px]">
@@ -17,19 +15,11 @@ function LocationSection() {
           description="Estamos no Parque Nanci, em Maricá. Veja nossa localização no mapa e abra a rota para chegar até a Turquia Lanches."
         />
 
-        <div className="mt-12 grid gap-10 md:grid-cols-[1.15fr_0.85fr] md:items-stretch md:gap-14">
-          <Reveal>
-            <div className="relative flex min-h-[390px] items-end overflow-hidden rounded-sm bg-[#ded4c6] p-6 md:min-h-[560px] md:p-8">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(174,0,17,0.14),transparent_34%),linear-gradient(145deg,#eee5d8,#d5c7b6)]" aria-hidden="true" />
-              <Image className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 text-on-surface/20" strokeWidth={1.25} aria-hidden="true" />
-              {referencePhoto.isPlaceholder ? (
-                <div className="relative rounded-sm bg-white/85 px-4 py-3 text-xs font-bold uppercase tracking-[0.12em] text-on-surface/65 backdrop-blur-sm">
-                  Fotos de referência do local em breve
-                </div>
-              ) : null}
-            </div>
+        <div className="mt-12 grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-stretch">
+          <Reveal className="min-w-0">
+            <MapEmbed />
           </Reveal>
-          <Reveal delay={100} className="flex flex-col border-t border-[#d9cdbd] pt-8 md:border-l md:border-t-0 md:pl-10 md:pt-0">
+          <Reveal delay={100} className="flex flex-col justify-between rounded-xl bg-[#faf7f2]/90 p-6 ring-1 ring-[#d9cdbd] md:p-8">
             <div>
               <dl className="space-y-8">
                 <div>
@@ -51,10 +41,6 @@ function LocationSection() {
                   </dd>
                 </div>
               </dl>
-            </div>
-
-            <div className="mt-10 md:mt-auto md:pt-10">
-              <MapEmbed />
             </div>
           </Reveal>
         </div>
