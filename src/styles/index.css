@@ -258,14 +258,39 @@ img {
 }
 
 .hero-carousel__indicator {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.hero-carousel__indicator::before {
   width: 18px;
   height: 2px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.38);
+  content: '';
   transition: width 500ms ease, background-color 500ms ease;
 }
 
+.hero-carousel__indicator:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 4px;
+}
+
+.about-media {
+  height: 100%;
+}
+
 .hero-carousel__indicator--active {
+  width: 44px;
+}
+
+.hero-carousel__indicator--active::before {
   width: 38px;
   background: var(--color-secondary-container);
 }
