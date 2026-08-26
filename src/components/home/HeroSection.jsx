@@ -180,6 +180,10 @@ function HeroSection() {
     })
   }
 
+  const selectSlide = (index) => {
+    setActiveIndex(index)
+  }
+
   return (
     <section
       ref={heroRef}
@@ -252,12 +256,15 @@ function HeroSection() {
 
           <ol className="mt-6 flex items-center gap-2" aria-label={`Cena ${activeIndex + 1} de ${SLIDES.length}`}>
             {SLIDES.map((slide, index) => (
-              <li
-                key={slide.headline}
-                className={`hero-carousel__indicator ${index === activeIndex ? 'hero-carousel__indicator--active' : ''}`}
-                aria-current={index === activeIndex ? 'true' : undefined}
-                aria-label={`Cena ${index + 1}: ${slide.headline}`}
-              />
+              <li key={slide.headline}>
+                <button
+                  type="button"
+                  onClick={() => selectSlide(index)}
+                  className={`hero-carousel__indicator block ${index === activeIndex ? 'hero-carousel__indicator--active' : ''}`}
+                  aria-current={index === activeIndex ? 'true' : undefined}
+                  aria-label={`Mostrar cena ${index + 1}: ${slide.headline}`}
+                />
+              </li>
             ))}
           </ol>
         </div>
