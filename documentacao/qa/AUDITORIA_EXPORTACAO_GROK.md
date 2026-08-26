@@ -1,8 +1,8 @@
 # Auditoria da exportação do Grok
 
-**Data da análise:** 26/08/2026  
-**Repositório analisado:** <https://github.com/lnpott/shadow-sky-sky-orbit>  
-**Commit analisado:** `f20a268` (`Export from Grok`)  
+**Data da análise:** 26/08/2026
+**Repositório analisado:** <https://github.com/lnpott/shadow-sky-sky-orbit>
+**Commit analisado:** `f20a268` (`Export from Grok`)
 **Escopo:** comparação técnica e visual com a branch `work` de `Turquia-Marica`, sem incorporar código da exportação.
 
 ## Conclusão executiva
