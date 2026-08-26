@@ -162,7 +162,7 @@ function HeroSection() {
       activeSlide.duration
     )
     return () => window.clearTimeout(timer)
-  }, [activeSlide.duration, canAnimate])
+  }, [activeIndex, activeSlide.duration, canAnimate])
 
   const scrollToLocation = (event) => {
     const locationSection = document.querySelector('#localizacao')

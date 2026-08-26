@@ -15,25 +15,35 @@ const FACTS = [
 
 function AboutVideo({ src, poster, label }) {
   const videoRef = useRef(null)
-  const [canPlay, setCanPlay] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
+  const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false)
 
   useEffect(() => {
     const video = videoRef.current
     if (!video || typeof IntersectionObserver === 'undefined') return undefined
-    const motion = window.matchMedia?.('(prefers-reduced-motion: reduce)')
-    const observer = new IntersectionObserver(([entry]) => {
-      const shouldPlay = entry.isIntersecting && !motion?.matches
-      setCanPlay(shouldPlay)
-      if (shouldPlay) video.play()?.catch(() => undefined)
-      else video.pause()
-    }, { threshold: 0.35 })
+    const observer = new IntersectionObserver(([entry]) => setIsVisible(entry.isIntersecting), { threshold: 0.35 })
     observer.observe(video)
     return () => observer.disconnect()
   }, [])
 
+  useEffect(() => {
+    const motion = window.matchMedia?.('(prefers-reduced-motion: reduce)')
+    if (!motion) return undefined
+    const updateMotion = () => setReducedMotion(motion.matches)
+    motion.addEventListener('change', updateMotion)
+    return () => motion.removeEventListener('change', updateMotion)
+  }, [])
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+    if (isVisible && !reducedMotion) video.play()?.catch(() => undefined)
+    else video.pause()
+  }, [isVisible, reducedMotion])
+
   return (
     <div className="about-media relative overflow-hidden rounded-xl bg-[#1a1008]">
-      <video ref={videoRef} src={src} poster={poster} muted playsInline loop preload="metadata" className="h-full w-full object-cover" aria-label={label} data-playing={canPlay} />
+      <video ref={videoRef} src={src} poster={poster} muted playsInline loop preload="metadata" className="h-full w-full object-cover" aria-label={label} data-playing={isVisible && !reducedMotion} />
       <span className="absolute bottom-3 left-3 rounded-full bg-[#1a1008]/75 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white backdrop-blur-sm">{label}</span>
     </div>
   )

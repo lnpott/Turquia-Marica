@@ -38,6 +38,16 @@ test('Hero híbrido preserva CTAs e reproduz somente o vídeo ativo', async ({ p
   await expect.poll(async () => videos.first().evaluate((video) => !video.paused)).toBe(true)
   expect(await videos.evaluateAll((items) => items.filter((video) => !video.paused).length)).toBe(1)
 
+  const indicators = hero.getByRole('button', { name: /mostrar cena/i })
+  await expect(indicators).toHaveCount(5)
+  for (const indicator of await indicators.all()) {
+    const box = await indicator.boundingBox()
+    expect(box?.width).toBeGreaterThanOrEqual(44)
+    expect(box?.height).toBeGreaterThanOrEqual(44)
+  }
+  await indicators.nth(3).click()
+  await expect(hero).toHaveAttribute('data-active-slide', '3')
+
   await page.locator('#cardapio').scrollIntoViewIfNeeded()
   await expect.poll(async () => videos.evaluateAll((items) => items.every((video) => video.paused))).toBe(true)
 })
@@ -225,6 +235,19 @@ test('reduced motion desativa animações e mantém conteúdo visível', async (
   await expect(page.locator('.hero-carousel')).toHaveAttribute('data-active-slide', '0')
   await expect(page.locator('.reveal').first()).toHaveCSS('transition-duration', '0s')
   await expect(page.locator('#reviews')).toBeVisible()
+})
+
+test('vídeos da casa reagem à mudança dinâmica de reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/')
+  const about = page.locator('#sobre')
+  await about.scrollIntoViewIfNeeded()
+  const videos = about.locator('video')
+  await expect(videos).toHaveCount(2)
+  await expect.poll(async () => videos.evaluateAll((items) => items.some((video) => !video.paused))).toBe(true)
+
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await expect.poll(async () => videos.evaluateAll((items) => items.every((video) => video.paused))).toBe(true)
 })
 
 test('scroll reveal e motion ambiente funcionam sem biblioteca', async ({ page }) => {

@@ -2317,12 +2317,13 @@ Inspecionar visualmente o slide 4 em 390 px e 1280 px antes de commitar. Se `obj
 
 ## Etapa 61 — Adaptação da direção visual exportada pelo Grok
 
-- **Estado:** IMPLEMENTADO, AUDITORIA INDEPENDENTE REPROVADA (26/08/2026) — merge bloqueado por dois P1 no hero; ver `documentacao/qa/AUDITORIA_ETAPA_61.md`.
+- **Estado:** CONCLUÍDO — correções e reauditoria independente aprovadas em 26/08/2026; apto para merge.
 - **Objetivo autorizado:** aplicar as melhorias aproveitáveis da exportação `lnpott/shadow-sky-sky-orbit`, preservando integralmente o mapa vetorial atual.
 - **Implementação:** os indicadores do hero passaram a ser controles acessíveis; a seção “A casa” passou a usar os vídeos e fotografia oficiais em uma composição editorial; e Localização passou a dar protagonismo ao `MapEmbed` vigente, ao lado da ficha comercial.
 - **Preservado:** stack React/Vite atual, fontes de verdade comerciais, API/fallback de avaliações, navegação, dados demonstrativos protegidos e implementação MapLibre completa (coordenadas, estilo, pin, retorno, lazy loading, fallback e atribuições).
 - **Não incorporado:** scaffold TanStack/Nitro, banco, autenticação, PWA, dependências, `iframe` de mapa e dados soltos da exportação.
-- **Validação:** `npm run check` aprovado (24/24); `npm run test:e2e` aprovado (38/38, desktop/mobile, axe, console e overflow). O Chromium e as bibliotecas de sistema precisaram ser instalados no ambiente antes da repetição aprovada.
+- **Validação final:** `npm run check` aprovado (25/25); `npm run test:e2e` aprovado (40/40, desktop/mobile, axe, console, overflow, área tátil e mudança dinâmica de reduced motion).
 - **QA visual:** screenshots de página completa em 390×844 e 1280×900 inspecionados em resolução integral. O ambiente local recusou o certificado de `tiles.openfreemap.org`, portanto as capturas registram corretamente o fallback do mesmo `MapEmbed`; a suíte E2E confirmou o contrato e o CTA único do mapa.
 - **Evidências:** `documentacao/qa/etapa-61/grok-adaptacao-mobile.png` e `documentacao/qa/etapa-61/grok-adaptacao-desktop.png`.
-- **Auditoria:** `documentacao/qa/AUDITORIA_ETAPA_61.md`; a revisão mais recente identificou falha no ciclo do autoplay e área tátil insuficiente nos indicadores, ambos bloqueantes para merge.
+- **Correções da auditoria:** timer reagendado por cena ativa; indicadores com alvo real de 44×44 px e traço visual preservado; vídeos de “A casa” reagem a mudanças de `prefers-reduced-motion`. Evidências adicionais em `documentacao/qa/etapa-61-correcoes/`.
+- **Auditoria final:** `documentacao/qa/AUDITORIA_ETAPA_61.md`; nenhum bloqueio remanescente para merge.

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import HeroSection from '../src/components/home/HeroSection'
@@ -26,6 +26,27 @@ const demoProduct = {
 }
 
 describe('dados comerciais e demonstrativos', () => {
+  it('mantém o ciclo completo do hero e reinicia o timer após seleção manual', () => {
+    vi.useFakeTimers()
+    try {
+      const { container } = render(<MemoryRouter><HeroSection /></MemoryRouter>)
+      const hero = container.querySelector('.hero-carousel')
+      expect(hero).toHaveAttribute('data-active-slide', '0')
+
+      fireEvent.click(screen.getByRole('button', { name: /mostrar cena 4/i }))
+      expect(hero).toHaveAttribute('data-active-slide', '3')
+
+      act(() => vi.advanceTimersByTime(4999))
+      expect(hero).toHaveAttribute('data-active-slide', '3')
+      act(() => vi.advanceTimersByTime(1))
+      expect(hero).toHaveAttribute('data-active-slide', '4')
+      act(() => vi.advanceTimersByTime(5000))
+      expect(hero).toHaveAttribute('data-active-slide', '0')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('mantém retorno, contorno e label do parque no vermelho da marca', () => {
     const layer = (id) => mapStyle.layers.find((item) => item.id === id)
     const parkFeatures = mapStyle.sources['parque-nanci-area'].data.features
