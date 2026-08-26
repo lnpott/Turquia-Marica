@@ -2314,3 +2314,14 @@ Inspecionar visualmente o slide 4 em 390 px e 1280 px antes de commitar. Se `obj
 - **Validação:** `npm run check` aprovado (24/24), `npm run test:e2e` aprovado (38/38) e `git diff --check` aprovado. O primeiro E2E não iniciou por ausência do Chromium e de bibliotecas do sistema; após `npx playwright install chromium` e `npx playwright install-deps chromium`, a suíte completa foi reexecutada e aprovada.
 - **QA visual:** slide 4 inspecionado em resolução integral a 390×844 e 1280×900 px; `center 45%` manteve os pastéis e o molho visíveis, sem overflow horizontal nem erro de console.
 - **Evidências:** `documentacao/qa/etapa-60/hero-slide-4-390.png` e `documentacao/qa/etapa-60/hero-slide-4-1280.png`.
+
+## Etapa 61 — Adaptação da direção visual exportada pelo Grok
+
+- **Estado:** IMPLEMENTADO, aguardando auditoria independente (26/08/2026).
+- **Objetivo autorizado:** aplicar as melhorias aproveitáveis da exportação `lnpott/shadow-sky-sky-orbit`, preservando integralmente o mapa vetorial atual.
+- **Implementação:** os indicadores do hero passaram a ser controles acessíveis; a seção “A casa” passou a usar os vídeos e fotografia oficiais em uma composição editorial; e Localização passou a dar protagonismo ao `MapEmbed` vigente, ao lado da ficha comercial.
+- **Preservado:** stack React/Vite atual, fontes de verdade comerciais, API/fallback de avaliações, navegação, dados demonstrativos protegidos e implementação MapLibre completa (coordenadas, estilo, pin, retorno, lazy loading, fallback e atribuições).
+- **Não incorporado:** scaffold TanStack/Nitro, banco, autenticação, PWA, dependências, `iframe` de mapa e dados soltos da exportação.
+- **Validação:** `npm run check` aprovado (24/24); `npm run test:e2e` aprovado (38/38, desktop/mobile, axe, console e overflow). O Chromium e as bibliotecas de sistema precisaram ser instalados no ambiente antes da repetição aprovada.
+- **QA visual:** screenshots de página completa em 390×844 e 1280×900 inspecionados em resolução integral. O ambiente local recusou o certificado de `tiles.openfreemap.org`, portanto as capturas registram corretamente o fallback do mesmo `MapEmbed`; a suíte E2E confirmou o contrato e o CTA único do mapa.
+- **Evidências:** `documentacao/qa/etapa-61/grok-adaptacao-mobile.png` e `documentacao/qa/etapa-61/grok-adaptacao-desktop.png`.

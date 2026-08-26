@@ -27,9 +27,10 @@ Há **duas ideias que merecem um lote próprio**, sem copiar a arquitetura do Gr
    editorial com o acervo oficial já presente no projeto, após aprovação visual e
    validação em 390 px e 1280 px.
 
-Nenhuma dessas ideias foi implementada nesta auditoria, porque ambas alteram UI e o
-pedido atual foi de análise. Elas devem ser executadas somente após autorização do
-lote correspondente.
+As duas ideias foram posteriormente autorizadas pelo responsável e implementadas na
+Etapa 61. A adaptação manteve a arquitetura do projeto e, por decisão explícita, o
+`MapEmbed` MapLibre vigente; nenhum código de infraestrutura ou dado da exportação foi
+copiado.
 
 ## Comparação confirmada
 
