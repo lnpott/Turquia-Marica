@@ -139,11 +139,16 @@ describe('dados comerciais e demonstrativos', () => {
 
   it('Header expõe iFood real, WhatsApp e Instagram, sem "Pedidos em breve"', () => {
     render(<MemoryRouter><Header /></MemoryRouter>)
-    const ifoodLink = screen.getByRole('link', { name: 'Pedir no iFood' })
-    expect(ifoodLink).toHaveAttribute('href', IFOOD_URL)
-    expect(ifoodLink).toHaveAttribute('target', '_blank')
-    expect(screen.getByRole('link', { name: /whatsapp da turquia lanches/i })).toHaveAttribute('href', BUSINESS_INFO.channels.whatsapp.url)
-    expect(screen.getByRole('link', { name: /instagram da turquia lanches/i })).toHaveAttribute('href', BUSINESS_INFO.channels.instagram.url)
+    for (const ifoodLink of screen.getAllByRole('link', { name: 'Pedir no iFood' })) {
+      expect(ifoodLink).toHaveAttribute('href', IFOOD_URL)
+      expect(ifoodLink).toHaveAttribute('target', '_blank')
+    }
+    for (const whatsappLink of screen.getAllByRole('link', { name: /whatsapp da turquia lanches/i })) {
+      expect(whatsappLink).toHaveAttribute('href', BUSINESS_INFO.channels.whatsapp.url)
+    }
+    for (const instagramLink of screen.getAllByRole('link', { name: /instagram da turquia lanches/i })) {
+      expect(instagramLink).toHaveAttribute('href', BUSINESS_INFO.channels.instagram.url)
+    }
     expect(screen.queryByText('Pedidos em breve')).not.toBeInTheDocument()
   })
 

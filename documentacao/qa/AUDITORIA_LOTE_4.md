@@ -87,6 +87,8 @@ Nenhum bloqueio remanescente dentro da Home após as correções.
 
 ## UX e funcionamento
 
+> **Atualização posterior (Etapa 63, 30/08/2026):** as observações abaixo sobre hamburger, foco inicial e fechamento por `Escape` registram o estado histórico deste lote. O menu mobile foi removido integralmente e substituído por atalhos permanentes de iFood, WhatsApp e Instagram no Header; a navegação por seções permanece disponível na BottomNavBar.
+
 - Header navega para Cardápio, Localização e âncora Sobre nós.
 - Menu mobile abre, leva foco ao primeiro link, fecha por `Escape` e devolve foco ao botão.
 - BottomNavBar navega para as três rotas; “Pedir” permanece desabilitado e não finge ser link.

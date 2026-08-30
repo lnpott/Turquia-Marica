@@ -289,14 +289,14 @@
 
 ---
 
-#### Lote 23 — Estado ativo e sublinhado animado na navegação
+#### Lote 23 — Estado ativo e sublinhado animado na navegação (contrato mobile superado)
 
-- **Estado:** CONCLUÍDO — Header desktop/mobile identifica a rota atual com cor e sublinhado; o hash `/#sobre` é tratado sem falso estado ativo na raiz.
+- **Estado:** CONCLUÍDO no escopo histórico — o Header desktop continua identificando a seção atual; o menu mobile descrito neste lote foi removido por decisão posterior registrada na Etapa 63.
 - **Prioridade:** Média.
 - **Constatação:** `Header.jsx` usa `NavLink`, mas `linkClasses` (~linha 15) é uma string fixa — a rota atual não recebe nenhum destaque visual no menu.
-- **Implementação:** usar a função de `className` do `NavLink` para aplicar estado ativo (cor + sublinhado animado via `transform: scaleX`) com os tokens do Lote 18, em desktop e mobile, sem alterar a lógica de foco/teclado já existente no menu mobile.
-- **Fora de escopo:** mudar itens do menu ou adicionar novo item de navegação.
-- **Critério de aceite:** rota atual identificável no Header; teclado e `focus-visible` continuam funcionando sem regressão.
+- **Implementação histórica:** o estado ativo foi aplicado ao Header desktop e ao menu mobile então existente. A parcela mobile — incluindo sua lógica de foco/teclado — deixou de ser código vigente após a Etapa 63; o desktop permanece preservado.
+- **Fora de escopo histórico:** mudar itens do menu ou adicionar novo item de navegação.
+- **Critério de aceite vigente:** seção atual identificável no Header desktop; no mobile, navegação por seções permanece na BottomNavBar e os canais permanentes do Header mantêm teclado e `focus-visible` sem regressão.
 
 ---
 
@@ -474,7 +474,7 @@ O site inteiro é construído sobre um único "kit de peças" repetido mecanicam
 - `data/contact.js`, `data/menu.js` como fonte de dados (conteúdo, não estrutura visual) — nenhum dado novo inventado.
 - Lógica funcional de `ChannelAction.jsx`, `Badge.jsx`, `UnavailableNotice.jsx` (podem mudar de visual, não de comportamento).
 - Testes E2E existentes (`tests/e2e/site.spec.js`) — atualizados apenas onde o comportamento mudar legitimamente, nunca removidos para "destravar" a refatoração.
-- Acessibilidade: navegação por teclado, foco visível, `Escape` no menu mobile, landmarks, contraste AA, `prefers-reduced-motion`.
+- Acessibilidade: navegação por teclado, foco visível, landmarks, contraste AA e `prefers-reduced-motion`. O contrato histórico de `Escape` no menu mobile foi superado pela remoção integral do menu na Etapa 63.
 - Nenhuma biblioteca nova sem necessidade comprovada.
 - Nenhuma imagem nova gerada/baixada sem autorização explícita.
 
@@ -2341,3 +2341,20 @@ Inspecionar visualmente o slide 4 em 390 px e 1280 px antes de commitar. Se `obj
 - **Fechamento do Lote 1:** remoção final reduziu o índice de 310 para 309 arquivos e eliminou mais 24.755 bytes de asset público; todos os órfãos de alta confiança autorizados foram tratados.
 - **Ressalvas:** medição de LCP e os Lotes 0 e 2–6 continuam pendentes. `limpeza.MD` permanece ativo e não foi arquivado porque o checklist completo não terminou.
 - **Rollback:** reverter o commit do lote restaura assets/metadados e preload anterior; o arquivo local `.freebuff/project-id` continuou presente e ignorado durante a execução.
+
+## Etapa 63 — Substituição do menu mobile por atalhos permanentes de contato
+
+- **Estado:** IMPLEMENTADO E AUDITADO (30/08/2026); aguardando revisão humana e conclusão do PR.
+- **Objetivo autorizado:** remover integralmente o botão hamburger e o menu expansível no mobile e substituí-los por três ações sempre visíveis no Header: iFood, WhatsApp e Instagram, nessa ordem.
+- **Diagnóstico inicial:** o menu anterior exigia interação para revelar tanto a navegação quanto os canais comerciais, mantinha estado, listeners de teclado, controle de foco e integração com `MainLayout`, e já havia motivado correções sucessivas de contraste. A `BottomNavBar` continua oferecendo a navegação primária entre seções no mobile; portanto os atalhos do Header podem ser dedicados aos canais de contato sem eliminar o acesso a Início, Cardápio, Localização e Reviews.
+- **Implementação auditada:** `Header.jsx` não importa mais `Menu`/`X` nem hooks de estado/foco para dropdown; não renderiza botão com `aria-expanded`, `#menu-mobile` ou links colapsáveis. A nova navegação nomeada `Canais de contato` renderiza `ChannelAction` para iFood, WhatsApp e Instagram. O CSS específico do menu removido foi eliminado. O `MainLayout` permanece sem estado de menu e monta a `BottomNavBar` de forma estável.
+- **Dados e destinos:** nenhum URL foi criado nesta etapa. Os três atalhos consomem `BUSINESS_INFO.channels`; iFood aponta para a ficha vigente, WhatsApp preserva o destino `wa.me` vigente e Instagram preserva o perfil `@turquialanches`. `ChannelAction` mantém `_blank`, `noopener noreferrer` e o comportamento honesto para canal indisponível.
+- **Acessibilidade:** cada ação possui nome acessível descritivo, ícone decorativo com `aria-hidden`, foco visível e alvo de 44×44 px. Os ícones usam 24×24 px. A ordem no DOM e de teclado é iFood → WhatsApp → Instagram. A remoção do dropdown também remove corretamente os contratos de focus trap e fechamento por `Escape`, que deixaram de ser aplicáveis.
+- **Responsividade:** o Header sticky mantém os canais visíveis nas páginas do `MainLayout`; o gap é 8 px no mobile e 4 px abaixo de 360 px. A auditoria automatizada cobre 320 e 390 px e a suíte global mantém os contratos de ausência de overflow nos viewports de aceite. Não foi necessário carrossel horizontal porque os três alvos de 44 px, a marca e os paddings cabem em 320 px sem corte.
+- **Testes atualizados:** o teste unitário aceita as representações mobile/desktop dos mesmos canais e verifica seus destinos. O E2E substitui o contrato removido do dropdown por presença permanente dos três links, ausência do botão “Abrir menu” e de `Menu mobile`, e medição mínima de 44×44 px em 320 e 390 px.
+- **Validação local:** `npm run check` ✓ (lint, 25/25 testes, build e `audit:demo-leak`); `npm run test:e2e` ✓ (40/40 em Chromium desktop/mobile); `git diff --check` ✓. Nenhuma dependência foi adicionada.
+- **QA visual:** `documentacao/qa/header-mobile-contact-bar-390.png`, captura de viewport 390×844 inspecionada em resolução integral. A imagem confirma marca à esquerda, ações horizontais no topo e ausência de hamburger/dropdown, sem colisão com Hero ou BottomNavBar.
+- **Auditoria de escopo:** desktop preserva navegação por seções e ações comerciais anteriores; Hero, conteúdo, Footer, dados comerciais e BottomNavBar não foram redesenhados. A busca por `menu-mobile`, “Abrir menu”, `Menu`/`X` no Header e estilos `.mobile-menu*` ficou restrita às asserções negativas/histórico, sem implementação ativa.
+- **Limitações técnicas:** o projeto é React/Vite próprio, sem restrições de template de WordPress/Shopify. A persistência no topo depende do `Header` sticky já compartilhado pelo `MainLayout`; páginas futuras fora desse layout precisarão montá-lo explicitamente.
+- **Riscos residuais:** o ícone do iFood é raster enquanto WhatsApp/Instagram são vetoriais, diferença herdada do acervo oficial do projeto; todos mantêm caixa e escala visual comuns. Alterações futuras na quantidade de canais exigem revalidar 320 px antes de adicionar agrupamento ou rolagem horizontal.
+- **Rollback:** reverter o commit desta etapa restaura hamburger, dropdown, estilos e testes anteriores; não há migração, dependência ou alteração de dados para desfazer.

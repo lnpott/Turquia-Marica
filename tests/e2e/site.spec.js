@@ -88,23 +88,27 @@ test('rolagem manual destaca a seção com maior área visível', async ({ page 
   }
 })
 
-test('menu mobile fecha por âncora e por Escape com foco restaurado', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto('/')
-  const toggle = page.getByRole('button', { name: 'Abrir menu' })
-  await toggle.click()
-  const mobile = page.getByRole('navigation', { name: 'Menu mobile' })
-  await expect(mobile).toHaveCSS('background-color', 'rgb(26, 16, 8)')
-  await expect(mobile.getByRole('link', { name: 'Cardápio' })).toHaveCSS('color', 'rgba(255, 255, 255, 0.78)')
-  await expect(page.getByRole('navigation', { name: 'Navegação inferior' })).toBeHidden()
-  await mobile.getByRole('link', { name: 'Reviews' }).click()
-  await expect(mobile).toBeHidden()
-  await expect(page.getByRole('navigation', { name: 'Navegação inferior' })).toBeVisible()
-  await expect(page).toHaveURL(/\/#reviews$/)
-  await toggle.click()
-  await page.keyboard.press('Escape')
-  await expect(mobile).toBeHidden()
-  await expect(toggle).toBeFocused()
+test('header mobile mantém os canais de contato visíveis e acessíveis', async ({ page }) => {
+  for (const width of [320, 390]) {
+    await page.setViewportSize({ width, height: 844 })
+    await page.goto('/')
+    const channels = page.getByRole('navigation', { name: 'Canais de contato' })
+    const links = [
+      channels.getByRole('link', { name: 'Pedir no iFood' }),
+      channels.getByRole('link', { name: 'Iniciar conversa no WhatsApp da Turquia Lanches' }),
+      channels.getByRole('link', { name: 'Instagram da Turquia Lanches — @turquialanches' }),
+    ]
+
+    await expect(channels).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Abrir menu' })).toHaveCount(0)
+    await expect(page.getByRole('navigation', { name: 'Menu mobile' })).toHaveCount(0)
+    for (const link of links) {
+      await expect(link).toBeVisible()
+      const box = await link.boundingBox()
+      expect(box.width).toBeGreaterThanOrEqual(44)
+      expect(box.height).toBeGreaterThanOrEqual(44)
+    }
+  }
 })
 
 test('BottomNavBar navega por âncoras e acompanha a seção', async ({ page }) => {

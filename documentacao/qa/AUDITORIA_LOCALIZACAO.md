@@ -296,6 +296,8 @@ Foram inspecionados 320 × 568, 360 × 640, 390 × 844, 390 × 664 e 640 × 360.
 
 ## Acessibilidade, responsividade e rotas
 
+> **Atualização posterior (Etapa 63, 30/08/2026):** a menção abaixo ao fechamento do menu mobile por `Escape` é evidência histórica desta auditoria. O hamburger/dropdown foi removido; o Header mobile agora expõe iFood, WhatsApp e Instagram permanentemente, enquanto a BottomNavBar mantém a navegação por seções.
+
 - Viewports 320, 360, 390, 768, 1.280 e 1.440 px: sem overflow horizontal, corte de texto ou sobreposição crítica.
 - Teclado: ordem lógica, foco visível, links nativos e menu mobile fecha com `Escape` devolvendo foco.
 - Semântica: um `h1` com a marca, `h2` no bloco prático, `main`, navegações nomeadas e lista descritiva.
