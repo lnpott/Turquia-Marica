@@ -20,6 +20,10 @@ npm-debug.log*
 # MCP local config (contém tokens/credenciais)
 mcp_servers.json
 
+# Local agent metadata
+.freebuff/
+.kilo/
+
 # Editor / OS
 .vscode/*
 !.vscode/extensions.json

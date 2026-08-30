@@ -12,12 +12,19 @@
 | Asset | Dimensões | Conteúdo observado | Uso | Estado |
 |---|---:|---|---|---|
 | `src/assets/images/brand/logo-96.webp` | 96×96 | Logo circular otimizado | Header, footer e favicon | Marca aprovada |
-| `src/assets/images/hero/hero-fries.webp` | 410×512 | Batatas em material promocional | Hero e categoria Porções | Ilustrativo; JPEG mantido como fallback |
-| `src/assets/images/hero/hero-gallery.webp` | 409×512 | Brinde com cervejas | Categoria Bebidas | Ilustrativo; JPEG mantido como fallback |
-| `src/assets/images/menu/menu-hero.webp` | 512×279 | Hambúrguer em cenário genérico | Hero do cardápio e categoria Lanches | Ilustrativo; JPEG mantido como fallback |
+| `src/assets/media/hero/turquia-ambiente-hero.mp4` | 720×1280 | Ambiente da casa | Slides do Hero e seção Sobre | Mídia real; clip otimizado sem áudio |
+| `src/assets/media/hero/turquia-ambiente-poster.jpg` | 720×1280 | Poster do ambiente da casa | Fallback do vídeo de ambiente | Mídia real |
+| `src/assets/media/hero/turquia-espaco-infantil-hero.mp4` | 720×1280 | Espaço infantil | Slides do Hero e seção Sobre | Mídia real; clip otimizado sem áudio |
+| `src/assets/media/hero/turquia-espaco-infantil-poster.jpg` | 720×1280 | Poster do espaço infantil | Fallback do vídeo infantil | Mídia real |
+| `src/assets/media/pictures/turquia-hamburguer-artesanal-01.jpg` | 1080×1440 | Tábua com hambúrguer, batatas e porções | Slide do Hero | Mídia real |
+| `src/assets/media/pictures/turquia-tabua-petiscos-chopp-01.jpg` | 1080×1440 | Porção de petiscos | Slide do Hero e seção Sobre | Mídia real |
+| `src/assets/media/pictures/turquia-pizza-calabresa-01.jpg` | 1080×1350 | Pizza servida na casa | Slide do Hero | Mídia real |
+| `src/assets/images/hero/hero-fries.webp` | 410×512 | Batatas em material promocional | Categoria Porções | Ilustrativo; JPEG mantido como fallback |
+| `src/assets/images/menu/menu-hero.webp` | 512×279 | Hambúrguer em cenário genérico | Categoria Lanches | Ilustrativo; JPEG mantido como fallback |
 | `src/assets/images/menu/category-combos.webp` | 512×279 | Evento/premiação | Categoria Combos | Ilustrativo; JPEG mantido como fallback |
 | `src/assets/images/menu/category-sobremesas.webp` | 410×512 | Cena de confeitaria | Categoria Sobremesas | Ilustrativo; JPEG mantido como fallback |
-| `src/assets/images/location/map.png` | 512×512 | Mapa ilustrativo | Link visual para Google Maps | Ilustrativo |
+| `src/assets/images/location/pin-map.webp` | 96×96 | Pin da marca | Marcador do mapa vetorial | Marca aprovada |
+| `src/assets/map/liberty.json` | — | Estilo e dados do mapa vetorial | Mapa da Localização | Ativo |
 | `public/og-image.png` | 1200×630 | Composição com logo e assinatura | Open Graph/Twitter | Marca aprovada |
 
 As fontes `DM Sans` e `Rubik` estão hospedadas em `public/fonts/` no formato WOFF2, eliminando a dependência de renderização do Google Fonts.
