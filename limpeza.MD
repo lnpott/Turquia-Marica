@@ -67,7 +67,7 @@ Estes arquivos não têm consumidor de runtime e não são identificados como ma
 |---|---:|---|
 | `src/assets/images/hero/hero-gallery.jpg` | 78.073 | **Executado no PR #34:** removido; catálogo ativo corrigido. |
 | `src/assets/images/hero/hero-gallery.webp` | 42.149 | **Executado no PR #34:** removido; Bebidas permanece sem imagem. |
-| `public/images/IFood_idvFPAKYIS_0.png` | 24.755 | Confirmar ausência de URL/import e conferir o manifesto de `dist`. |
+| `public/images/IFood_idvFPAKYIS_0.png` | 24.755 | **Executado:** removido sem referência ativa; `ICON_IFOOD.png` preservado em uso. |
 | `.freebuff/project-id` | <1 KiB | **Executado no PR #34:** removido do índice com `git rm --cached`; arquivo local ignorado. |
 | `.kilo/plans/1787353384286-map-vectorial-correcao-etapa-52.md` | ~8 KiB | **Executado no PR #34:** Etapa 52 confirmada no `BEST_PLAN.MD`; scratch removido e `.kilo/` ignorado. |
 
@@ -259,16 +259,16 @@ Rollback normal: `git revert <commit-do-lote>`. Se houver rewrite de histórico,
 4. A produção acompanha `main` ou `BEST_ONE` para fins de CI?
 5. Haverá apenas limpeza do tree ou também migração destrutiva do histórico?
 
-## 9. Execução e auditoria do Lote 1 parcial + preload — 30/08/2026
+## 9. Execução e auditoria do Lote 1 + preload — 30/08/2026
 
-- **Estado:** implementado e auditado no PR #34; aguardando revisão humana e merge.
-- **Executado:** remoção de `hero-gallery.{jpg,webp}`; `.freebuff/` retirado do índice e preservado localmente; scratch `.kilo/` removido após confirmar a consolidação da Etapa 52; regras adicionadas ao `.gitignore`; catálogo de assets alinhado ao Hero/mapa atuais; preload trocado pelo poster inicial.
+- **Estado:** Lote 1 implementado e auditado; aguardando revisão humana e merge.
+- **Executado:** remoção de `hero-gallery.{jpg,webp}`; `.freebuff/` retirado do índice e preservado localmente; scratch `.kilo/` removido após confirmar a consolidação da Etapa 52; regras adicionadas ao `.gitignore`; catálogo de assets alinhado ao Hero/mapa atuais; preload trocado pelo poster inicial; PNG público residual do iFood removido sem afetar `ICON_IFOOD.png`.
 - **Correção da auditoria:** dimensões do catálogo registradas na orientação visual (largura×altura), respeitando EXIF dos JPEGs verticais.
 - **Inventário do commit de implementação:** 310 arquivos rastreados, 129.930.065 bytes (123,91 MiB); contra `origin/main` antes do lote, redução de quatro arquivos rastreados e 127.381 bytes no tree.
 - **Referências:** zero ocorrências ativas de `hero-gallery` em `src/`, `tests/`, `index.html` e `documentacao/ASSETS.md`; menções históricas foram preservadas.
 - **Validação:** `npm run check` aprovado (lint, 25/25 unitários, build e `audit:demo-leak`); CI do PR aprovado, incluindo Playwright 40/40; `git diff --check` aprovado.
 - **Preview Vercel:** Home respondeu 200; HTML publicou preload hasheado de `turquia-ambiente-poster.jpg`; poster respondeu 200 com `image/jpeg` e cache imutável; `/api/reviews` alcançou a função e respondeu JSON 502 `GOOGLE_PLACES_UNAVAILABLE`, confirmando que o catch-all não a mascarou e registrando a indisponibilidade externa.
-- **Pendente neste lote:** `public/images/IFood_idvFPAKYIS_0.png` continua candidato de alta confiança e não foi removido.
+- **Fechamento do Lote 1:** todos os órfãos de alta confiança autorizados foram tratados; a remoção final reduziu o índice de 310 para 309 arquivos e eliminou mais 24.755 bytes de asset público.
 - **Pendente no plano:** Lotes 0, 2, 3, 4, 5 e 6, além da medição de LCP/Network do preload. Por isso, **o plano de limpeza não está finalizado e este arquivo não deve ser arquivado ainda**.
 
-**Estado geral:** execução parcial auditada; plano ativo até concluir ou deliberadamente encerrar os itens pendentes.
+**Estado geral:** Lote 1 fechado e auditado; plano geral ativo até concluir ou deliberadamente encerrar os demais lotes.
