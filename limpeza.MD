@@ -9,14 +9,14 @@
 
 ## 1. Conclusão executiva
 
-Após o Lote 1 parcial, o repositório tem **310 arquivos rastreados e 123,91 MiB**. Os dois maiores blocos continuam sendo:
+Após o fechamento do Lote 1, o repositório tem **309 arquivos rastreados e 123,89 MiB**. Os dois maiores blocos continuam sendo:
 
 | Área | Arquivos | Tamanho | Efeito atual |
 |---|---:|---:|---|
 | `documentacao/` | 203 | 63,61 MiB | Não entra no `dist`; pesa checkout e histórico. |
 | `src/assets/media/videos/` | 2 | 50,02 MiB | Masters sem import; não entram no `dist`, mas o plano exige preservação dos originais. |
-| `src/` restante | 65 | ~7,65 MiB | Código e assets; somente imports entram no bundle. |
-| `public/` | 10 | 2,19 MiB | Copiado integralmente para `dist`. |
+| `src/` restante | 63 | ~7,54 MiB | Código e assets; somente imports entram no bundle. |
+| `public/` | 9 | 2,16 MiB | Copiado integralmente para `dist`. |
 
 A limpeza correta tem dois objetivos diferentes:
 
@@ -264,7 +264,7 @@ Rollback normal: `git revert <commit-do-lote>`. Se houver rewrite de histórico,
 - **Estado:** Lote 1 implementado e auditado; aguardando revisão humana e merge.
 - **Executado:** remoção de `hero-gallery.{jpg,webp}`; `.freebuff/` retirado do índice e preservado localmente; scratch `.kilo/` removido após confirmar a consolidação da Etapa 52; regras adicionadas ao `.gitignore`; catálogo de assets alinhado ao Hero/mapa atuais; preload trocado pelo poster inicial; PNG público residual do iFood removido sem afetar `ICON_IFOOD.png`.
 - **Correção da auditoria:** dimensões do catálogo registradas na orientação visual (largura×altura), respeitando EXIF dos JPEGs verticais.
-- **Inventário do commit de implementação:** 310 arquivos rastreados, 129.930.065 bytes (123,91 MiB); contra `origin/main` antes do lote, redução de quatro arquivos rastreados e 127.381 bytes no tree.
+- **Inventário intermediário do primeiro commit de implementação:** 310 arquivos rastreados, 129.930.065 bytes (123,91 MiB); o fechamento abaixo registra a quinta remoção do lote.
 - **Referências:** zero ocorrências ativas de `hero-gallery` em `src/`, `tests/`, `index.html` e `documentacao/ASSETS.md`; menções históricas foram preservadas.
 - **Validação:** `npm run check` aprovado (lint, 25/25 unitários, build e `audit:demo-leak`); CI do PR aprovado, incluindo Playwright 40/40; `git diff --check` aprovado.
 - **Preview Vercel:** Home respondeu 200; HTML publicou preload hasheado de `turquia-ambiente-poster.jpg`; poster respondeu 200 com `image/jpeg` e cache imutável; `/api/reviews` alcançou a função e respondeu JSON 502 `GOOGLE_PLACES_UNAVAILABLE`, confirmando que o catch-all não a mascarou e registrando a indisponibilidade externa.
