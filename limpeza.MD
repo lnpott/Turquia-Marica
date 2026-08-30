@@ -464,11 +464,11 @@ Esses 11 arquivos totalizam 54.907.248 bytes (aproximadamente 52,36 MiB) no chec
 
 ---
 
-## 11. Revalidação integral e consolidação do registro anterior — 30/08/2026
+## 12. Revalidação integral e consolidação do registro anterior — 30/08/2026
 
 Esta seção foi acrescentada **abaixo** do levantamento existente, conforme solicitado, sem apagar ou reescrever as considerações do agente anterior. A revalidação percorreu os **314 caminhos versionados** da base `3932b8011c5b6c2050f7377b052884917ba3872e`, conferiu inventário, tamanhos, imports/referências, configuração de build, testes, CI e Vercel. Depois da inspeção inicial, o remote público informado foi verificado: `origin/main` apontava para essa mesma base; a consolidação também preserva abaixo o complemento do agente anterior publicado na branch `work`.
 
-### 11.1 Conotação das considerações já registradas
+### 12.1 Conotação das considerações já registradas
 
 - **Mantidas:** a separação entre peso do clone e peso do `dist`, as prioridades P0–P3, a exigência de backup externo e a execução em commits atômicos continuam tecnicamente coerentes.
 - **Confirmadas pelo build real:** `npm run check` passou (25 testes) e o build gerou 42 arquivos em `dist` (~11 MB). Os JPEGs `BATATA`, `X` e `cebola` somam aproximadamente 2,61 MB no artefato; o chunk lazy do MapLibre tem 986,39 KB (255,43 KB gzip); e o Vite realmente emite separadamente as duplicatas de conteúdo `tabua`/foto do Hero e `PIZZA`/foto do Hero.
@@ -476,7 +476,7 @@ Esta seção foi acrescentada **abaixo** do levantamento existente, conforme sol
 - **Sem autorização de exclusão:** este documento segue sendo um plano. A lista abaixo não deve ser aplicada em massa sem backup e aprovação das fases A–D. Em particular, auditorias Markdown, testes e arquivos de governança permanecem fora da lista de eliminação automática.
 - **Limite da `.vercelignore`:** ela é defesa útil para deploy via CLI, mas não substitui retirar blobs pesados do Git quando a integração começa por checkout do repositório. O ganho ao usuário final depende principalmente de otimizar o que aparece no `dist`; o ganho de pipeline depende da limpeza do tree/histórico.
 
-### 11.2 Manifesto exaustivo dos candidatos de eliminação
+### 12.2 Manifesto exaustivo dos candidatos de eliminação
 
 O manifesto abaixo explicita todos os caminhos agrupados anteriormente. São **204 arquivos**, totalizando **114.24 MiB** no working tree atual. “Candidato” significa que o arquivo é inútil ao runtime/build atual ou é lastro histórico de uma etapa; não significa que já exista autorização para apagá-lo. Os masters, fontes de marca e evidências visuais devem ser copiados para armazenamento externo antes da exclusão.
 
@@ -692,7 +692,7 @@ update_liberty.py
 
 </details>
 
-### 11.3 Arquivos condicionais que não entram nos 204 candidatos
+### 12.3 Arquivos condicionais que não entram nos 204 candidatos
 
 Estes itens exigem alteração funcional ou decisão humana antes de qualquer remoção:
 
@@ -702,7 +702,7 @@ Estes itens exigem alteração funcional ou decisão humana antes de qualquer re
 - `documentacao/qa/AUDITORIA_*.md`, `version_clean.md` e `BEST_PLAN.MD`: preservar até consolidação explícita; são rastreabilidade, não peso relevante.
 - `tests/`, `src/pages/demo/`, `src/data/menu.demo.js` e configurações de QA: preservar; protegem o build público contra vazamento do modo demo.
 
-### 11.4 Ordem final recomendada para Vercel
+### 12.4 Ordem final recomendada para Vercel
 
 1. **Baseline:** salvar backup externo, executar `npm run check`, guardar a listagem/tamanho de `dist` e verificar a função `/api/reviews` em preview.
 2. **Clone/build:** executar A (masters) e B (binários históricos), uma por commit; depois C (órfãos e metadados de agente).
@@ -713,7 +713,7 @@ Estes itens exigem alteração funcional ou decisão humana antes de qualquer re
 7. **Histórico Git (opcional e destrutivo):** reescrever apenas com autorização, backup, coordenação e plano de reclone; apagar no HEAD, sozinho, não remove blobs de commits antigos.
 8. **Aceite:** repetir lint, testes, build, E2E, smoke da API, console, teclado, overflow e screenshots 390/1280. Comparar métricas de build e Lighthouse com a baseline; somente então marcar a limpeza como implementada.
 
-### 11.5 Resultado desta passagem
+### 12.5 Resultado desta passagem
 
 - Nenhum arquivo de aplicação, mídia ou documentação histórica foi apagado.
 - A entrega desta passagem é exclusivamente a consolidação auditável do plano e o manifesto completo.
