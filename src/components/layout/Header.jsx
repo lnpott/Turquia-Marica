@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { Instagram, Menu, X } from 'lucide-react'
+import { Instagram } from 'lucide-react'
 import logo from '../../assets/images/brand/logo-96.webp'
 import { BUSINESS_INFO } from '../../data/contact'
 import ChannelAction from '../ui/ChannelAction'
@@ -17,55 +16,8 @@ const NAV_LINKS = [
 const linkClasses = (isActive) =>
   `nav-link inline-flex min-h-11 items-center px-3 font-body-md text-sm font-medium transition-colors duration-tactile ease-tactile after:transition-transform after:duration-smooth after:ease-smooth hover:text-primary active:scale-95 ${isActive ? 'nav-link-active text-primary' : 'text-on-surface-variant'}`
 
-const mobileLinkClasses = (isActive) =>
-  `mobile-menu__link inline-flex min-h-11 items-center px-3 font-body-md transition-colors duration-tactile ease-tactile active:scale-95 ${isActive ? 'mobile-menu__link--active' : ''}`
-
-function Header({ onMenuOpenChange }) {
-  const menuRef = useRef(null)
-  const toggleRef = useRef(null)
+function Header() {
   const activeSection = useActiveSection()
-  const [menuOpen, setMenuOpen] = useState(false)
-
-  const closeMenu = useCallback(() => {
-    setMenuOpen(false)
-    onMenuOpenChange?.(false)
-  }, [onMenuOpenChange])
-
-  const toggleMenu = () => {
-    const nextMenuOpen = !menuOpen
-    setMenuOpen(nextMenuOpen)
-    onMenuOpenChange?.(nextMenuOpen)
-  }
-
-  useEffect(() => {
-    if (!menuOpen) return undefined
-
-    const firstLink = menuRef.current?.querySelector('a')
-    firstLink?.focus()
-
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        closeMenu()
-        toggleRef.current?.focus()
-        return
-      }
-
-      if (event.key !== 'Tab') return
-      const focusable = [...(menuRef.current?.querySelectorAll('a') ?? []), toggleRef.current].filter(Boolean)
-      const first = focusable[0]
-      const last = focusable[focusable.length - 1]
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault()
-        last.focus()
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault()
-        first.focus()
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [closeMenu, menuOpen])
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#faf7f2]/95 shadow-[0_1px_0_#e8e0d4] backdrop-blur-md">
@@ -81,6 +33,33 @@ function Header({ onMenuOpenChange }) {
               {link.label}
             </a>
           ))}
+        </nav>
+
+        <nav className="flex items-center gap-2 max-[359px]:gap-1 md:hidden" aria-label="Canais de contato">
+          <ChannelAction
+            channel={BUSINESS_INFO.channels.ifood}
+            icon={IconIfood}
+            aria-label="Pedir no iFood"
+            iconOnly
+            iconClassName="h-6 w-6 shrink-0"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-on-primary transition-all duration-tactile ease-tactile active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          />
+          <ChannelAction
+            channel={BUSINESS_INFO.channels.whatsapp}
+            icon={IconWhatsApp}
+            aria-label="Iniciar conversa no WhatsApp da Turquia Lanches"
+            iconOnly
+            iconClassName="h-6 w-6 shrink-0"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          />
+          <ChannelAction
+            channel={BUSINESS_INFO.channels.instagram}
+            icon={Instagram}
+            aria-label="Instagram da Turquia Lanches — @turquialanches"
+            iconOnly
+            iconClassName="h-6 w-6 shrink-0"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          />
         </nav>
 
         <div className="flex items-center gap-2">
@@ -107,59 +86,8 @@ function Header({ onMenuOpenChange }) {
           >
             <span className="hidden lg:inline">Pedir no iFood</span>
           </ChannelAction>
-          <button
-            ref={toggleRef}
-            type="button"
-            aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
-            aria-expanded={menuOpen}
-            aria-controls="menu-mobile"
-            onClick={toggleMenu}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-primary transition-all duration-tactile ease-tactile hover:bg-surface-container-low active:scale-90 md:hidden"
-          >
-            {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
-          </button>
         </div>
       </div>
-
-      {menuOpen ? (
-        <nav
-          id="menu-mobile"
-          ref={menuRef}
-          aria-label="Menu mobile"
-          className="mobile-menu flex min-h-[calc(100svh-64px)] flex-col gap-3 px-margin-mobile pb-8 pt-8 md:hidden"
-        >
-          {NAV_LINKS.map((link) => (
-            <a key={link.label} href={`#${link.id}`} onClick={closeMenu} aria-current={activeSection === link.id ? 'location' : undefined} className={mobileLinkClasses(activeSection === link.id)}>
-              {link.label}
-            </a>
-          ))}
-
-          <div className="mt-auto flex flex-col gap-3 border-t border-white/10 pt-6">
-            <ChannelAction
-              channel={BUSINESS_INFO.channels.ifood}
-              icon={IconIfood}
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-bold text-on-primary active:scale-95"
-            >
-              Pedir no iFood
-            </ChannelAction>
-            <ChannelAction
-              channel={BUSINESS_INFO.channels.instagram}
-              icon={Instagram}
-              aria-label="Instagram da Turquia Lanches — @turquialanches"
-              className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-white/85 hover:text-white"
-            >
-              {BUSINESS_INFO.channels.instagram.handle}
-            </ChannelAction>
-            <ChannelAction
-              channel={BUSINESS_INFO.channels.whatsapp}
-              icon={IconWhatsApp}
-              className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-white/85 hover:text-white"
-            >
-              WhatsApp
-            </ChannelAction>
-          </div>
-        </nav>
-      ) : null}
     </header>
   )
 }
