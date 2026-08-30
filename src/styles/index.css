@@ -461,12 +461,22 @@ img {
   }
 }
 
-#menu-mobile .nav-link {
+.mobile-menu {
+  background-color: #1a1008;
+  color: #fff;
+}
+
+.mobile-menu__link {
   color: rgba(255, 255, 255, 0.78);
   font-size: 1.5rem;
   font-weight: 700;
 }
 
-#menu-mobile .nav-link-active {
+.mobile-menu__link:hover {
+  color: #fff;
+}
+
+.mobile-menu__link--active,
+.mobile-menu__link--active:hover {
   color: var(--color-secondary-container);
 }

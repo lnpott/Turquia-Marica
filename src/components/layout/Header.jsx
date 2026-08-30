@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Instagram, Menu, X } from 'lucide-react'
 import logo from '../../assets/images/brand/logo-96.webp'
 import { BUSINESS_INFO } from '../../data/contact'
@@ -18,7 +18,7 @@ const linkClasses = (isActive) =>
   `nav-link inline-flex min-h-11 items-center px-3 font-body-md text-sm font-medium transition-colors duration-tactile ease-tactile after:transition-transform after:duration-smooth after:ease-smooth hover:text-primary active:scale-95 ${isActive ? 'nav-link-active text-primary' : 'text-on-surface-variant'}`
 
 const mobileLinkClasses = (isActive) =>
-  `nav-link inline-flex min-h-11 items-center px-3 font-body-md text-2xl font-bold transition-colors duration-tactile ease-tactile active:scale-95 ${isActive ? 'nav-link-active text-secondary-container' : 'text-white/80 hover:text-white'}`
+  `mobile-menu__link inline-flex min-h-11 items-center px-3 font-body-md transition-colors duration-tactile ease-tactile active:scale-95 ${isActive ? 'mobile-menu__link--active' : ''}`
 
 function Header({ onMenuOpenChange }) {
   const menuRef = useRef(null)
@@ -26,9 +26,16 @@ function Header({ onMenuOpenChange }) {
   const activeSection = useActiveSection()
   const [menuOpen, setMenuOpen] = useState(false)
 
-  useEffect(() => {
-    onMenuOpenChange?.(menuOpen)
-  }, [menuOpen, onMenuOpenChange])
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false)
+    onMenuOpenChange?.(false)
+  }, [onMenuOpenChange])
+
+  const toggleMenu = () => {
+    const nextMenuOpen = !menuOpen
+    setMenuOpen(nextMenuOpen)
+    onMenuOpenChange?.(nextMenuOpen)
+  }
 
   useEffect(() => {
     if (!menuOpen) return undefined
@@ -38,7 +45,7 @@ function Header({ onMenuOpenChange }) {
 
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
-        setMenuOpen(false)
+        closeMenu()
         toggleRef.current?.focus()
         return
       }
@@ -58,7 +65,7 @@ function Header({ onMenuOpenChange }) {
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [menuOpen])
+  }, [closeMenu, menuOpen])
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#faf7f2]/95 shadow-[0_1px_0_#e8e0d4] backdrop-blur-md">
@@ -106,7 +113,7 @@ function Header({ onMenuOpenChange }) {
             aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
             aria-expanded={menuOpen}
             aria-controls="menu-mobile"
-            onClick={() => setMenuOpen((open) => !open)}
+            onClick={toggleMenu}
             className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-primary transition-all duration-tactile ease-tactile hover:bg-surface-container-low active:scale-90 md:hidden"
           >
             {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
@@ -119,10 +126,10 @@ function Header({ onMenuOpenChange }) {
           id="menu-mobile"
           ref={menuRef}
           aria-label="Menu mobile"
-          className="flex min-h-[calc(100svh-64px)] flex-col gap-3 bg-[#1a1008] px-margin-mobile pb-8 pt-8 text-white md:hidden"
+          className="mobile-menu flex min-h-[calc(100svh-64px)] flex-col gap-3 px-margin-mobile pb-8 pt-8 md:hidden"
         >
           {NAV_LINKS.map((link) => (
-            <a key={link.label} href={`#${link.id}`} onClick={() => setMenuOpen(false)} aria-current={activeSection === link.id ? 'location' : undefined} className={mobileLinkClasses(activeSection === link.id)}>
+            <a key={link.label} href={`#${link.id}`} onClick={closeMenu} aria-current={activeSection === link.id ? 'location' : undefined} className={mobileLinkClasses(activeSection === link.id)}>
               {link.label}
             </a>
           ))}
