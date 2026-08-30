@@ -2327,3 +2327,16 @@ Inspecionar visualmente o slide 4 em 390 px e 1280 px antes de commitar. Se `obj
 - **Evidências:** `documentacao/qa/etapa-61/grok-adaptacao-mobile.png` e `documentacao/qa/etapa-61/grok-adaptacao-desktop.png`.
 - **Correções da auditoria:** timer reagendado por cena ativa; indicadores com alvo real de 44×44 px e traço visual preservado; vídeos de “A casa” reagem a mudanças de `prefers-reduced-motion`. Evidências adicionais em `documentacao/qa/etapa-61-correcoes/`.
 - **Auditoria final:** `documentacao/qa/AUDITORIA_ETAPA_61.md`; nenhum bloqueio remanescente para merge.
+
+## Etapa 62 — Limpeza inicial do repositório e preload do Hero
+
+- **Estado:** IMPLEMENTADO E AUDITADO (30/08/2026) no PR #34; aguardando revisão humana e merge.
+- **Escopo autorizado:** Lote 1 parcial de `limpeza.MD` e correção do preload. Demais lotes de deduplicação, conversão de imagens, retenção histórica, configuração Vercel e rewrite de histórico permaneceram fora do escopo.
+- **Implementação:** `hero-gallery.jpg` e `.webp` removidos sem referências ativas; `.freebuff/project-id` retirado do índice e preservado localmente; `.kilo/` removido depois de confirmar que a Etapa 52 está consolidada neste plano; `.freebuff/` e `.kilo/` adicionados ao `.gitignore`.
+- **Documentação:** `documentacao/ASSETS.md` deixou de classificar `hero-gallery`, `map.png`, Bebidas com imagem e `hero-fries` como mídia do Hero; passou a listar os vídeos, posters, fotografias, pin e estilo realmente ativos. A auditoria corrigiu as dimensões visuais largura×altura dos JPEGs com EXIF.
+- **Performance preparada:** `index.html` passou a pre-carregar `turquia-ambiente-poster.jpg`, poster do primeiro slide, no lugar de `hero-fries.webp`. A medição comparativa de LCP/Network permanece pendente e não é inferida pelo build.
+- **Inventário do commit de implementação:** 314 → 310 arquivos rastreados; 130.057.446 → 129.930.065 bytes contra `origin/main`, redução de 127.381 bytes no tree desta etapa.
+- **Validação local:** busca de referências ativas dos órfãos = zero; `npm run check` ✓ (lint, 25/25 testes, build e `audit:demo-leak`); build reescreveu o preload para o poster hasheado; `git diff --check` ✓.
+- **CI/preview:** quality check do PR ✓, incluindo Playwright 40/40; deployment Vercel ✓. Home e poster responderam 200; poster publicado como `image/jpeg` com cache imutável; `/api/reviews` alcançou a função e retornou JSON 502 `GOOGLE_PLACES_UNAVAILABLE`, uma indisponibilidade externa e não colisão com o fallback SPA.
+- **Ressalvas:** `public/images/IFood_idvFPAKYIS_0.png` ainda não foi removido; medição de LCP e os demais lotes continuam pendentes. `limpeza.MD` permanece ativo e não foi arquivado porque o checklist completo não terminou.
+- **Rollback:** reverter o commit do lote restaura assets/metadados e preload anterior; o arquivo local `.freebuff/project-id` continuou presente e ignorado durante a execução.
