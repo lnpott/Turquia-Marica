@@ -17,11 +17,18 @@ const NAV_LINKS = [
 const linkClasses = (isActive) =>
   `nav-link inline-flex min-h-11 items-center px-3 font-body-md text-sm font-medium transition-colors duration-tactile ease-tactile after:transition-transform after:duration-smooth after:ease-smooth hover:text-primary active:scale-95 ${isActive ? 'nav-link-active text-primary' : 'text-on-surface-variant'}`
 
-function Header() {
+const mobileLinkClasses = (isActive) =>
+  `nav-link inline-flex min-h-11 items-center px-3 font-body-md text-2xl font-bold transition-colors duration-tactile ease-tactile active:scale-95 ${isActive ? 'nav-link-active text-secondary-container' : 'text-white/80 hover:text-white'}`
+
+function Header({ onMenuOpenChange }) {
   const menuRef = useRef(null)
   const toggleRef = useRef(null)
   const activeSection = useActiveSection()
   const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    onMenuOpenChange?.(menuOpen)
+  }, [menuOpen, onMenuOpenChange])
 
   useEffect(() => {
     if (!menuOpen) return undefined
@@ -112,10 +119,10 @@ function Header() {
           id="menu-mobile"
           ref={menuRef}
           aria-label="Menu mobile"
-          className="flex min-h-[calc(100svh-64px)] flex-col gap-3 bg-[#1a1008]/98 px-margin-mobile pb-8 pt-8 text-white md:hidden"
+          className="flex min-h-[calc(100svh-64px)] flex-col gap-3 bg-[#1a1008] px-margin-mobile pb-8 pt-8 text-white md:hidden"
         >
           {NAV_LINKS.map((link) => (
-            <a key={link.label} href={`#${link.id}`} onClick={() => setMenuOpen(false)} aria-current={activeSection === link.id ? 'location' : undefined} className={linkClasses(activeSection === link.id)}>
+            <a key={link.label} href={`#${link.id}`} onClick={() => setMenuOpen(false)} aria-current={activeSection === link.id ? 'location' : undefined} className={mobileLinkClasses(activeSection === link.id)}>
               {link.label}
             </a>
           ))}
