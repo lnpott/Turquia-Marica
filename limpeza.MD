@@ -131,7 +131,7 @@ Exports Stitch, HTML morto, assets provisórios, `.bat` Windows:
 ```
 documentacao/historico/exports-html/     (~3,8 MB: code.html + screen.png de 9 telas)
 documentacao/historico/assets-provisorios/
-ocumentacao/historico/migracao-stitch/  (organizar_projeto.bat, v3.bat, mapeamentos)
+documentacao/historico/migracao-stitch/  (organizar_projeto.bat, v3.bat, mapeamentos)
 documentacao/historico/implementation_plan.md
 ```
 
@@ -340,6 +340,6 @@ Antes de qualquer `git rm`:
 2. Autorizar **Fase B** (PNG de QA / histórico / logos-fonte)?
 3. Os `AUDITORIA_*.md` ficam ou saem com os PNG?
 4. `food-pattern-bg.png`: comprimir ou remover (WebP-only)?
-5. Aut rewrite de history (Fase F) ou só tree novo?
+5. Autorizar rewrite de history (Fase F) ou só tree novo?
 
-Este arquivo **não** apaga nada. A execuCão começa quando o responsável marcar as fases acima no `BEST_PLAN.MD`.
+Este arquivo **não** apaga nada. A execução começa quando o responsável marcar as fases acima no `BEST_PLAN.MD`.
