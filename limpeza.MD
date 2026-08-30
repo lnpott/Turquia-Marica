@@ -343,3 +343,260 @@ Antes de qualquer `git rm`:
 5. Autorizar rewrite de history (Fase F) ou só tree novo?
 
 Este arquivo **não** apaga nada. A execução começa quando o responsável marcar as fases acima no `BEST_PLAN.MD`.
+
+---
+
+## 9. Revalidação integral e consolidação do registro anterior — 30/08/2026
+
+Esta seção foi acrescentada **abaixo** do levantamento existente, conforme solicitado, sem apagar ou reescrever as considerações do agente anterior. A revalidação percorreu os **314 caminhos versionados** do commit local `3932b8011c5b6c2050f7377b052884917ba3872e`, conferiu inventário, tamanhos, imports/referências, configuração de build, testes, CI e Vercel. O remote Git não está configurado neste checkout; portanto, o link para a `main` informado pelo responsável é a referência pública desejada, mas a equivalência deste checkout com a ponta remota não pôde ser confirmada nesta execução.
+
+### 9.1 Conotação das considerações já registradas
+
+- **Mantidas:** a separação entre peso do clone e peso do `dist`, as prioridades P0–P3, a exigência de backup externo e a execução em commits atômicos continuam tecnicamente coerentes.
+- **Confirmadas pelo build real:** `npm run check` passou (25 testes) e o build gerou 42 arquivos em `dist` (~11 MB). Os JPEGs `BATATA`, `X` e `cebola` somam aproximadamente 2,61 MB no artefato; o chunk lazy do MapLibre tem 986,39 KB (255,43 KB gzip); e o Vite realmente emite separadamente as duplicatas de conteúdo `tabua`/foto do Hero e `PIZZA`/foto do Hero.
+- **Escopo corrigido:** o registro anterior contabilizava 313 arquivos porque antecedia o próprio `limpeza.MD`; o estado auditado agora tem 314 arquivos versionados.
+- **Sem autorização de exclusão:** este documento segue sendo um plano. A lista abaixo não deve ser aplicada em massa sem backup e aprovação das fases A–D. Em particular, auditorias Markdown, testes e arquivos de governança permanecem fora da lista de eliminação automática.
+- **Limite da `.vercelignore`:** ela é defesa útil para deploy via CLI, mas não substitui retirar blobs pesados do Git quando a integração começa por checkout do repositório. O ganho ao usuário final depende principalmente de otimizar o que aparece no `dist`; o ganho de pipeline depende da limpeza do tree/histórico.
+
+### 9.2 Manifesto exaustivo dos candidatos de eliminação
+
+O manifesto abaixo explicita todos os caminhos agrupados anteriormente. São **204 arquivos**, totalizando **114.24 MiB** no working tree atual. “Candidato” significa que o arquivo é inútil ao runtime/build atual ou é lastro histórico de uma etapa; não significa que já exista autorização para apagá-lo. Os masters, fontes de marca e evidências visuais devem ser copiados para armazenamento externo antes da exclusão.
+
+<details>
+<summary>Exibir os 204 caminhos exatos</summary>
+
+```text
+.freebuff/project-id
+.kilo/plans/1787353384286-map-vectorial-correcao-etapa-52.md
+ETAPA_60_PROMPTS.md
+PROMPT_DEEPSEEK_ETAPA32.md
+Roadmap_Mestre_CLAUDE.md
+documentacao/LOGO1.jpg
+documentacao/LOGO_FULL.png
+documentacao/LOGO_VAR.png
+documentacao/LOGO_WALL.png
+documentacao/PIN_MAP.png
+documentacao/design/screen.png
+documentacao/historico/assets-provisorios/category-bebidas.jpg
+documentacao/historico/assets-provisorios/category-lanches.jpg
+documentacao/historico/assets-provisorios/gallery-2.jpg
+documentacao/historico/assets-provisorios/gallery-3.jpg
+documentacao/historico/assets-provisorios/hero-ambience.jpg
+documentacao/historico/assets-provisorios/highlight-sweet.jpg
+documentacao/historico/assets-provisorios/product-combo-classico.jpg
+documentacao/historico/assets-provisorios/product-combo-galera.jpg
+documentacao/historico/assets-provisorios/product-futuro-turquia.jpg
+documentacao/historico/exports-html/index.html_homepage_production/code.html
+documentacao/historico/exports-html/index.html_homepage_production/screen.png
+documentacao/historico/exports-html/index.html_homepage_production_final_audit/code.html
+documentacao/historico/exports-html/index.html_homepage_production_final_audit/screen.png
+documentacao/historico/exports-html/index.html_homepage_production_fixed/code.html
+documentacao/historico/exports-html/index.html_homepage_production_fixed/screen.png
+documentacao/historico/exports-html/turquia_lanches_card_pio_production/code.html
+documentacao/historico/exports-html/turquia_lanches_card_pio_production/screen.png
+documentacao/historico/exports-html/turquia_lanches_checkout_production/code.html
+documentacao/historico/exports-html/turquia_lanches_checkout_production/screen.png
+documentacao/historico/exports-html/turquia_lanches_confirma_o_production/code.html
+documentacao/historico/exports-html/turquia_lanches_confirma_o_production/screen.png
+documentacao/historico/exports-html/turquia_lanches_homepage_production/code.html
+documentacao/historico/exports-html/turquia_lanches_homepage_production/screen.png
+documentacao/historico/exports-html/turquia_lanches_localiza_o_production/code.html
+documentacao/historico/exports-html/turquia_lanches_localiza_o_production/screen.png
+documentacao/historico/exports-html/turquia_lanches_sacola_production/code.html
+documentacao/historico/exports-html/turquia_lanches_sacola_production/screen.png
+documentacao/historico/implementation_plan.md
+documentacao/historico/migracao-stitch/guia_de_exporta_o_simples_github_vercel.md
+documentacao/historico/migracao-stitch/instrucoes_organizacao.md
+documentacao/historico/migracao-stitch/mapeamento_de_nomes_para_exporta_o.md
+documentacao/historico/migracao-stitch/mapeamento_de_rotas_de_produ_o.json
+documentacao/historico/migracao-stitch/organizar_projeto.bat
+documentacao/historico/migracao-stitch/organizar_projeto_v3.bat
+documentacao/historico/migracao-stitch/readme.md_guia_de_deploy.md
+documentacao/qa/cardapio-desktop-after.png
+documentacao/qa/cardapio-lote-11-desktop.png
+documentacao/qa/cardapio-lote-11-mobile.png
+documentacao/qa/cardapio-lote-12-15-mobile.png
+documentacao/qa/cardapio-lote-12-375x667.png
+documentacao/qa/cardapio-lote-15-desktop.png
+documentacao/qa/cardapio-lote-20-hover-desktop.png
+documentacao/qa/cardapio-mobile-390.png
+documentacao/qa/cardapio-mobile-after.png
+documentacao/qa/etapa-27/cardapio-desktop-after.png
+documentacao/qa/etapa-27/cardapio-mobile-after.png
+documentacao/qa/etapa-27/home-desktop-after.png
+documentacao/qa/etapa-27/home-desktop-before.png
+documentacao/qa/etapa-27/home-mobile-after.png
+documentacao/qa/etapa-27/home-mobile-before.png
+documentacao/qa/etapa-27/localizacao-desktop-after.png
+documentacao/qa/etapa-27/localizacao-mobile-after.png
+documentacao/qa/etapa-27/reviews-desktop-after.png
+documentacao/qa/etapa-27/reviews-mobile-after.png
+documentacao/qa/etapa-28/demo-1280.png
+documentacao/qa/etapa-28/demo-1440.png
+documentacao/qa/etapa-28/demo-320.png
+documentacao/qa/etapa-28/demo-390.png
+documentacao/qa/etapa-28/demo-768.png
+documentacao/qa/etapa-29/demo-grid-1280.png
+documentacao/qa/etapa-29/demo-hover-1280.png
+documentacao/qa/etapa-29/demo-hover-390.png
+documentacao/qa/etapa-29/demo-repouso-1280.png
+documentacao/qa/etapa-29/demo-repouso-390.png
+documentacao/qa/etapa-47/after/footer-1024.png
+documentacao/qa/etapa-47/after/footer-1280.png
+documentacao/qa/etapa-47/after/footer-1440.png
+documentacao/qa/etapa-47/after/footer-375.png
+documentacao/qa/etapa-47/after/footer-390.png
+documentacao/qa/etapa-47/after/footer-768.png
+documentacao/qa/etapa-47/after/header-1024.png
+documentacao/qa/etapa-47/after/header-1280.png
+documentacao/qa/etapa-47/after/header-1440.png
+documentacao/qa/etapa-47/after/header-375.png
+documentacao/qa/etapa-47/after/header-390.png
+documentacao/qa/etapa-47/after/header-768.png
+documentacao/qa/etapa-47/after/location-1024.png
+documentacao/qa/etapa-47/after/location-1280.png
+documentacao/qa/etapa-47/after/location-1440.png
+documentacao/qa/etapa-47/after/location-375.png
+documentacao/qa/etapa-47/after/location-390.png
+documentacao/qa/etapa-47/after/location-768.png
+documentacao/qa/etapa-47/after/map-1024.png
+documentacao/qa/etapa-47/after/map-1280.png
+documentacao/qa/etapa-47/after/map-1440.png
+documentacao/qa/etapa-47/after/map-375.png
+documentacao/qa/etapa-47/after/map-390.png
+documentacao/qa/etapa-47/after/map-768.png
+documentacao/qa/etapa-47/before/footer-1024.png
+documentacao/qa/etapa-47/before/footer-1280.png
+documentacao/qa/etapa-47/before/footer-1440.png
+documentacao/qa/etapa-47/before/footer-375.png
+documentacao/qa/etapa-47/before/footer-390.png
+documentacao/qa/etapa-47/before/footer-768.png
+documentacao/qa/etapa-47/before/header-1024.png
+documentacao/qa/etapa-47/before/header-1280.png
+documentacao/qa/etapa-47/before/header-1440.png
+documentacao/qa/etapa-47/before/header-375.png
+documentacao/qa/etapa-47/before/header-390.png
+documentacao/qa/etapa-47/before/header-768.png
+documentacao/qa/etapa-47/before/location-1024.png
+documentacao/qa/etapa-47/before/location-1280.png
+documentacao/qa/etapa-47/before/location-1440.png
+documentacao/qa/etapa-47/before/location-375.png
+documentacao/qa/etapa-47/before/location-390.png
+documentacao/qa/etapa-47/before/location-768.png
+documentacao/qa/etapa-47/before/map-1024.png
+documentacao/qa/etapa-47/before/map-1280.png
+documentacao/qa/etapa-47/before/map-1440.png
+documentacao/qa/etapa-47/before/map-375.png
+documentacao/qa/etapa-47/before/map-390.png
+documentacao/qa/etapa-47/before/map-768.png
+documentacao/qa/etapa-52/mapa-desktop-1280.png
+documentacao/qa/etapa-52/mapa-mobile-390.png
+documentacao/qa/etapa-53/localizacao-1280.png
+documentacao/qa/etapa-53/mapa-1280.png
+documentacao/qa/etapa-53/mapa-390.png
+documentacao/qa/etapa-54/mapa-1280.png
+documentacao/qa/etapa-54/mapa-390.png
+documentacao/qa/etapa-55/after-mapa-1280.png
+documentacao/qa/etapa-55/after-mapa-390.png
+documentacao/qa/etapa-55/before-mapa-1280.png
+documentacao/qa/etapa-55/before-mapa-390.png
+documentacao/qa/etapa-56/after-mapa-1280.png
+documentacao/qa/etapa-56/after-mapa-390.png
+documentacao/qa/etapa-56/before-mapa-1280.png
+documentacao/qa/etapa-56/before-mapa-390.png
+documentacao/qa/etapa-57/after-mapa-1280.png
+documentacao/qa/etapa-57/after-mapa-390.png
+documentacao/qa/etapa-57/before-mapa-1280.png
+documentacao/qa/etapa-57/before-mapa-390.png
+documentacao/qa/etapa-58/after-mapa-1280.png
+documentacao/qa/etapa-58/after-mapa-390.png
+documentacao/qa/etapa-58/before-mapa-1280.png
+documentacao/qa/etapa-58/before-mapa-390.png
+documentacao/qa/etapa-59/hero-1280.png
+documentacao/qa/etapa-59/hero-390.png
+documentacao/qa/etapa-60/hero-slide-4-1280.png
+documentacao/qa/etapa-60/hero-slide-4-390.png
+documentacao/qa/etapa-61-correcoes/hero-indicadores-desktop.png
+documentacao/qa/etapa-61-correcoes/hero-indicadores-mobile.png
+documentacao/qa/etapa-61/grok-adaptacao-desktop.png
+documentacao/qa/etapa-61/grok-adaptacao-mobile.png
+documentacao/qa/etapa44-full-1280.png
+documentacao/qa/etapa44-full-1440.png
+documentacao/qa/etapa44-full-375.png
+documentacao/qa/etapa44-full-390.png
+documentacao/qa/etapa44-full-768.png
+documentacao/qa/etapa44-location-1280.png
+documentacao/qa/etapa44-location-1440.png
+documentacao/qa/etapa44-location-375.png
+documentacao/qa/etapa44-location-390.png
+documentacao/qa/etapa44-location-768.png
+documentacao/qa/etapa44-map-restyled.png
+documentacao/qa/home-desktop-1280.png
+documentacao/qa/home-desktop-after.png
+documentacao/qa/home-lotes-18-19-20-23-desktop.png
+documentacao/qa/home-lotes-18-19-20-23-mobile.png
+documentacao/qa/home-mobile-390.png
+documentacao/qa/home-mobile-after.png
+documentacao/qa/localizacao-desktop-1280.png
+documentacao/qa/localizacao-desktop-after.png
+documentacao/qa/localizacao-desktop-before.png
+documentacao/qa/localizacao-lote-12-375x667.png
+documentacao/qa/localizacao-lote-12-mobile.png
+documentacao/qa/localizacao-mobile-after.png
+documentacao/qa/localizacao-mobile-before.png
+documentacao/qa/lote-26/cardapio-desktop-after.png
+documentacao/qa/lote-26/cardapio-desktop-before.png
+documentacao/qa/lote-26/cardapio-mobile-after.png
+documentacao/qa/lote-26/cardapio-mobile-before.png
+documentacao/qa/lote-26/home-desktop-after.png
+documentacao/qa/lote-26/home-desktop-before.png
+documentacao/qa/lote-26/home-mobile-after.png
+documentacao/qa/lote-26/home-mobile-before.png
+documentacao/qa/lote-26/localizacao-desktop-after.png
+documentacao/qa/lote-26/localizacao-desktop-before.png
+documentacao/qa/lote-26/localizacao-mobile-after.png
+documentacao/qa/lote-26/localizacao-mobile-before.png
+public/images/IFood_idvFPAKYIS_0.png
+public/images/IFood_idvFPAKYIS_1.svg
+relatoriodofinal.md
+src/assets/images/brand/logo.jpg
+src/assets/images/hero/hero-gallery.jpg
+src/assets/images/hero/hero-gallery.webp
+src/assets/media/pictures/turquia-bolinhos-porcao-01.jpg
+src/assets/media/pictures/turquia-hamburguer-bacon-01.jpg
+src/assets/media/pictures/turquia-hamburguer-camadas-01.jpg
+src/assets/media/pictures/turquia-pasteis-porcao-01.jpg
+src/assets/media/pictures/turquia-prato-vinho-01.jpg
+src/assets/media/videos/turquia-video-01.mp4
+src/assets/media/videos/turquia-video-02.mp4
+update_liberty.py
+```
+
+</details>
+
+### 9.3 Arquivos condicionais que não entram nos 204 candidatos
+
+Estes itens exigem alteração funcional ou decisão humana antes de qualquer remoção:
+
+- `public/images/patterns/food-pattern-bg.png`: substituir por fallback pequeno ou confirmar a política WebP-only; não apagar às cegas.
+- `src/assets/images/products/tabua.jpg` e `src/assets/images/products/PIZZA.jpg`: primeiro apontar os consumidores para uma única fonte compartilhada e validar visualmente.
+- `src/assets/images/products/BATATA.jpg`, `X.jpg` e `cebola.jpg`: converter e atualizar imports; são usados e não são lixo.
+- `documentacao/qa/AUDITORIA_*.md`, `version_clean.md` e `BEST_PLAN.MD`: preservar até consolidação explícita; são rastreabilidade, não peso relevante.
+- `tests/`, `src/pages/demo/`, `src/data/menu.demo.js` e configurações de QA: preservar; protegem o build público contra vazamento do modo demo.
+
+### 9.4 Ordem final recomendada para Vercel
+
+1. **Baseline:** salvar backup externo, executar `npm run check`, guardar a listagem/tamanho de `dist` e verificar a função `/api/reviews` em preview.
+2. **Clone/build:** executar A (masters) e B (binários históricos), uma por commit; depois C (órfãos e metadados de agente).
+3. **Artefato entregue:** converter os três JPEGs de ~850 KB, eliminar duplicação de assets por import compartilhado, corrigir o preload e revisar cache de `public/`.
+4. **Bundle:** medir a rota que abre o mapa antes de mexer no MapLibre. O chunk é lazy, mas ultrapassa o aviso de 500 KB; otimizar somente com medição, sem remover funcionalidade.
+5. **Roteamento:** validar `/api/reviews` e deep links antes/depois de restringir o catch-all do `vercel.json`.
+6. **CI:** incluir a branch real de produção no workflow somente depois de confirmar se ela é `main` ou `BEST_ONE`.
+7. **Histórico Git (opcional e destrutivo):** reescrever apenas com autorização, backup, coordenação e plano de reclone; apagar no HEAD, sozinho, não remove blobs de commits antigos.
+8. **Aceite:** repetir lint, testes, build, E2E, smoke da API, console, teclado, overflow e screenshots 390/1280. Comparar métricas de build e Lighthouse com a baseline; somente então marcar a limpeza como implementada.
+
+### 9.5 Resultado desta passagem
+
+- Nenhum arquivo de aplicação, mídia ou documentação histórica foi apagado.
+- A entrega desta passagem é exclusivamente a consolidação auditável do plano e o manifesto completo.
+- A próxima ação depende da aprovação humana das fases e da definição do local de backup dos masters/evidências.
