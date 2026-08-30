@@ -291,6 +291,8 @@
 
 #### Lote 23 — Estado ativo e sublinhado animado na navegação
 
+> **Atualização (30/08/2026):** o registro abaixo permanece como histórico do lote. A navegação textual mobile e seu menu colapsável foram removidos por decisão posterior na Etapa 63; o estado ativo continua no Header desktop e na `BottomNavBar` mobile.
+
 - **Estado:** CONCLUÍDO — Header desktop/mobile identifica a rota atual com cor e sublinhado; o hash `/#sobre` é tratado sem falso estado ativo na raiz.
 - **Prioridade:** Média.
 - **Constatação:** `Header.jsx` usa `NavLink`, mas `linkClasses` (~linha 15) é uma string fixa — a rota atual não recebe nenhum destaque visual no menu.
@@ -474,7 +476,7 @@ O site inteiro é construído sobre um único "kit de peças" repetido mecanicam
 - `data/contact.js`, `data/menu.js` como fonte de dados (conteúdo, não estrutura visual) — nenhum dado novo inventado.
 - Lógica funcional de `ChannelAction.jsx`, `Badge.jsx`, `UnavailableNotice.jsx` (podem mudar de visual, não de comportamento).
 - Testes E2E existentes (`tests/e2e/site.spec.js`) — atualizados apenas onde o comportamento mudar legitimamente, nunca removidos para "destravar" a refatoração.
-- Acessibilidade: navegação por teclado, foco visível, `Escape` no menu mobile, landmarks, contraste AA, `prefers-reduced-motion`.
+- Acessibilidade: navegação por teclado, foco visível, landmarks, contraste AA e `prefers-reduced-motion`. O contrato de `Escape` era específico do menu mobile removido posteriormente na Etapa 63.
 - Nenhuma biblioteca nova sem necessidade comprovada.
 - Nenhuma imagem nova gerada/baixada sem autorização explícita.
 
@@ -2341,3 +2343,20 @@ Inspecionar visualmente o slide 4 em 390 px e 1280 px antes de commitar. Se `obj
 - **Fechamento do Lote 1:** remoção final reduziu o índice de 310 para 309 arquivos e eliminou mais 24.755 bytes de asset público; todos os órfãos de alta confiança autorizados foram tratados.
 - **Ressalvas:** medição de LCP e os Lotes 0 e 2–6 continuam pendentes. `limpeza.MD` permanece ativo e não foi arquivado porque o checklist completo não terminou.
 - **Rollback:** reverter o commit do lote restaura assets/metadados e preload anterior; o arquivo local `.freebuff/project-id` continuou presente e ignorado durante a execução.
+
+## Etapa 63 — Substituição do menu mobile por atalhos permanentes de contato
+
+- **Estado:** IMPLEMENTADO E AUDITADO (30/08/2026); aguardando revisão humana e merge do PR.
+- **Decisão autorizada:** remover integralmente o botão hamburger e o menu mobile colapsável. O Header mobile passa a expor permanentemente, sem interação prévia, os atalhos iFood, WhatsApp e Instagram, nessa ordem. A navegação entre seções continua disponível na `BottomNavBar`; o Header desktop permanece com seus links textuais e estado ativo.
+- **Diagnóstico confirmado:** a implementação anterior mantinha estado local, listeners de teclado, focus trap, dropdown em tela cheia, CSS específico e comunicação `Header` → `MainLayout` apenas para ocultar a `BottomNavBar`. Todo esse encadeamento deixou de ter função após a troca por contatos sempre visíveis.
+- **Implementação auditada:** `Header.jsx` não importa mais `Menu`, `X` nem hooks de estado/foco; não renderiza botão com `aria-controls` nem `#menu-mobile`. A barra `Canais de contato` usa `ChannelAction` e as URLs oficiais já centralizadas em `src/data/contact.js`. Os três ícones medem 24×24 px, cada link mede 44×44 px, possui nome acessível e foco visível. Em larguras abaixo de 360 px, somente o gap cai de 8 para 4 px; nenhum canal é ocultado, comprimido ou movido para carrossel.
+- **Integração de layout:** `MainLayout.jsx` voltou a renderizar `Header` e `BottomNavBar` sem estado intermediário. Os estilos `.mobile-menu*` foram removidos por estarem órfãos. Desktop continua usando a navegação principal e os canais já existentes.
+- **Dados e segurança:** nenhum telefone, perfil ou URL foi inventado. iFood, `wa.me` e Instagram vêm de `BUSINESS_INFO`; links externos preservam `_blank`, `noopener` e `noreferrer` por meio de `ChannelAction`.
+- **Acessibilidade:** os SVGs/imagem dos ícones permanecem decorativos (`aria-hidden`/`alt=""`) porque o nome acessível está no link; a ordem DOM é iFood → WhatsApp → Instagram; áreas táteis cumprem 44×44 px; teclado e `focus-visible` permanecem funcionais. A remoção do contrato `Escape` é intencional porque não existe mais modal, dropdown ou estado colapsável.
+- **Responsividade e UX:** auditado em 320 e 390 px sem overflow, corte ou necessidade de agrupamento. O Header é `sticky` e pertence ao `MainLayout`, portanto os contatos ficam disponíveis nas páginas do layout durante a rolagem. A `BottomNavBar` permanece fixa e cobre a navegação de conteúdo mobile.
+- **Testes atualizados:** o contrato unitário aceita as representações responsivas duplicadas no DOM e confirma as mesmas URLs oficiais. O E2E exige a barra visível, ausência do hamburger e do menu antigo e bounding box mínima de 44×44 px para cada canal em 320 e 390 px. A suíte compartilhada continua cobrindo navegação inferior, teclado, axe, console e overflow.
+- **Validação:** `npm run check` ✓ (lint, 25/25 testes, build e `audit:demo-leak`); `npm run test:e2e` ✓ (40/40 em Chromium desktop/mobile); `git diff --check` ✓.
+- **QA visual:** `documentacao/qa/header-mobile-contact-bar-390.png`, captura de viewport 390×844 inspecionada em resolução integral. A evidência obsoleta do dropdown foi removida.
+- **Arquivos funcionais auditados:** `src/components/layout/Header.jsx`, `src/layouts/MainLayout.jsx`, `src/styles/index.css`, `tests/business-info.test.jsx` e `tests/e2e/site.spec.js`. Evidência criada em `documentacao/qa/header-mobile-contact-bar-390.png`.
+- **Resultado da auditoria:** nenhum bloqueio funcional, responsivo ou de acessibilidade encontrado no escopo. Não há limitação de plataforma: o projeto é React/Vite próprio e o Header é controlado diretamente pelo repositório. Risco residual limitado à revisão humana do equilíbrio visual dos três ícones em aparelhos reais.
+- **Rollback:** reverter o commit funcional da Etapa 63 restaura hamburger/dropdown e seu estado associado; não reintroduzir parcialmente o CSS ou listeners sem restaurar o componente completo.

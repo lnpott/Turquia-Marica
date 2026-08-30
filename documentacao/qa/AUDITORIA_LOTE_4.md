@@ -87,8 +87,10 @@ Nenhum bloqueio remanescente dentro da Home após as correções.
 
 ## UX e funcionamento
 
+> **Atualização posterior — Etapa 63 (30/08/2026):** os itens abaixo descrevem o estado histórico auditado neste lote. O menu hamburger foi removido por decisão autorizada e substituído por atalhos permanentes de iFood, WhatsApp e Instagram no Header mobile. A navegação de seções mobile permanece na `BottomNavBar`; detalhes, testes e evidência estão registrados na Etapa 63 de `BEST_PLAN.MD`.
+
 - Header navega para Cardápio, Localização e âncora Sobre nós.
-- Menu mobile abre, leva foco ao primeiro link, fecha por `Escape` e devolve foco ao botão.
+- Menu mobile abria, levava foco ao primeiro link, fechava por `Escape` e devolvia foco ao botão no estado histórico deste lote; esse componente não existe mais.
 - BottomNavBar navega para as três rotas; “Pedir” permanece desabilitado e não finge ser link.
 - Hero oferece Cardápio e Google Maps; iFood indisponível não gera link falso.
 - Âncora `#sobre` rola a seção ao topo e recebe foco programático.

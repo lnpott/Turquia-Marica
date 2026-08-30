@@ -296,8 +296,10 @@ Foram inspecionados 320 × 568, 360 × 640, 390 × 844, 390 × 664 e 640 × 360.
 
 ## Acessibilidade, responsividade e rotas
 
+> **Atualização posterior — Etapa 63 (30/08/2026):** a referência ao menu mobile abaixo é histórica. O hamburger/dropdown foi removido e substituído por uma barra de contatos sempre visível; teclado, foco e áreas táteis da nova solução foram revalidados, conforme `BEST_PLAN.MD`.
+
 - Viewports 320, 360, 390, 768, 1.280 e 1.440 px: sem overflow horizontal, corte de texto ou sobreposição crítica.
-- Teclado: ordem lógica, foco visível, links nativos e menu mobile fecha com `Escape` devolvendo foco.
+- Teclado: ordem lógica, foco visível e links nativos; o fechamento por `Escape` pertencia ao menu removido.
 - Semântica: um `h1` com a marca, `h2` no bloco prático, `main`, navegações nomeadas e lista descritiva.
 - Axe: nenhuma violação séria/crítica nas três rotas.
 - Reduced motion: transições/animações principais são desativadas pela regra global já existente.
@@ -306,7 +308,7 @@ Foram inspecionados 320 × 568, 360 × 640, 390 × 844, 390 × 664 e 640 × 360.
 
 ## Cobertura dos testes
 
-Os testes verificam URL exata do Maps, `_blank`/`noopener`, marca no `h1`, região parcial, Instagram, ausência de dados inventados, representação inequivocamente ilustrativa, ausência de linguagem de precisão exagerada e separação do painel em relação à BottomNavBar. A suíte compartilhada cobre metadados, acesso direto, axe, console, reduced motion, menu mobile e overflow.
+Os testes verificam URL exata do Maps, `_blank`/`noopener`, marca no `h1`, região parcial, Instagram, ausência de dados inventados, representação inequivocamente ilustrativa, ausência de linguagem de precisão exagerada e separação do painel em relação à BottomNavBar. A suíte compartilhada cobre metadados, acesso direto, axe, console, reduced motion, barra mobile de contatos e overflow.
 
 Limite identificado: parte das asserções compara a interface com constantes do próprio repositório; elas comprovam consistência/regressão, não autenticidade externa. A autenticidade foi avaliada separadamente pela cadeia de redirecionamento e matriz de fontes.
 
