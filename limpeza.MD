@@ -346,11 +346,129 @@ Este arquivo **não** apaga nada. A execução começa quando o responsável mar
 
 ---
 
-## 9. Revalidação integral e consolidação do registro anterior — 30/08/2026
+# Complemento de validação — 30/08/2026
 
-Esta seção foi acrescentada **abaixo** do levantamento existente, conforme solicitado, sem apagar ou reescrever as considerações do agente anterior. A revalidação percorreu os **314 caminhos versionados** do commit local `3932b8011c5b6c2050f7377b052884917ba3872e`, conferiu inventário, tamanhos, imports/referências, configuração de build, testes, CI e Vercel. O remote Git não está configurado neste checkout; portanto, o link para a `main` informado pelo responsável é a referência pública desejada, mas a equivalência deste checkout com a ponta remota não pôde ser confirmada nesta execução.
+> **Relação com o registro de 29/08/2026:** o registro anterior foi lido integralmente antes desta continuação. Esta seção não substitui o inventário acima: confirma seus principais números, corrige o grau de certeza de algumas exclusões e acrescenta critérios de execução/rollback. Nenhum arquivo foi eliminado nesta validação.
 
-### 9.1 Conotação das considerações já registradas
+## 7. Conotação das considerações do agente anterior
+
+### Confirmado novamente
+
+- O checkout-base tinha 313 arquivos rastreados e aproximadamente 125 MiB; `documentacao/` respondia por 63,61 MiB e `src/` por 57,67 MiB.
+- Os 144 PNGs de `documentacao/qa/` somavam 53,09 MiB.
+- `src/assets/media/videos/turquia-video-01.mp4` e `turquia-video-02.mp4` não têm imports no runtime e somam 52.451.783 bytes (50,02 MiB).
+- `public/` é copiado para `dist/`: `IFood_idvFPAKYIS_0.png` (24.755 B) e `food-pattern-bg.png` (1.667.824 B) aparecem no artefato mesmo sem consumidor atual.
+- O build produz aproximadamente 11 MiB e alerta para chunk acima de 500 kB. O MapLibre fica em chunk dinâmico de 986.399 B (255,43 kB gzip), com worker separado de 475.777 B.
+- Foram reconfirmados os órfãos `hero-gallery.{jpg,webp}`, quatro fotos em `media/pictures/`, `turquia-prato-vinho-01.jpg`, o PNG residual do iFood e os dois vídeos-master.
+- As duplicatas SHA-256 descritas no registro anterior foram reproduzidas, inclusive imagens de produto e pares `before`/`after` de QA.
+
+### Ajuste de prudência antes de eliminar
+
+O registro anterior usa “inútil” para todo arquivo que não participa do build. Nesta continuação, a decisão é dividida por função:
+
+1. **órfão comprovado e sem valor único** — remover no primeiro lote;
+2. **master de mídia** — retirar do Git somente depois de confirmar backup externo e identificador recuperável;
+3. **evidência de QA/documentação** — não apagar em massa antes de corrigir links, definir retenção e obter aceite humano;
+4. **ferramenta de manutenção** — só apagar se estiver comprovadamente one-shot e houver processo substituto documentado.
+
+Com isso:
+
+- `src/assets/images/brand/logo.jpg` deve permanecer nesta limpeza: embora não entre no bundle, é fonte canônica da marca e sua integridade é citada por regras/auditorias.
+- `update_liberty.py` deve permanecer até que a manutenção/reprodução do estilo cartográfico tenha substituto documentado. O fato de conter um path antigo é motivo para corrigir ou aposentar conscientemente, não para exclusão automática.
+- Os 144 PNGs de QA não devem ser apagados todos em um único passo. Primeiro manter a evidência final citada de cada etapa e as larguras exigidas (390/1280); duplicatas exatas podem virar uma única cópia depois de atualizar referências.
+- Os logos-fonte e `PIN_MAP.png` em `documentacao/` só saem após backup externo confirmado. Não são runtime, mas podem ser fontes únicas de alta resolução.
+- `version_clean.md`, `Roadmap_Mestre_CLAUDE.md` e `relatoriodofinal.md` só saem após decisões vigentes serem consolidadas no plano canônico.
+- `public/images/IFood_idvFPAKYIS_1.svg` pode ser eliminado se uma busca final confirmar que o SVG continua totalmente inline em `IconIfoodGold.jsx`; documentação que cita o arquivo deve ser atualizada no mesmo commit.
+
+## 8. Manifesto mínimo de remoção com confiança alta
+
+Após backup dos dois masters, estes são os candidatos confirmados para o primeiro lote:
+
+| Arquivo | Motivo confirmado |
+|---|---|
+| `public/images/IFood_idvFPAKYIS_0.png` | Sem referência e copiado para `dist/`. |
+| `public/images/patterns/food-pattern-bg.png` | CSS atual usa somente WebP; confirmar visual antes/depois. |
+| `src/assets/images/hero/hero-gallery.jpg` | Sem import no código. |
+| `src/assets/images/hero/hero-gallery.webp` | Sem import no código. |
+| `src/assets/media/pictures/turquia-bolinhos-porcao-01.jpg` | Sem import e idêntico a `products/Baca.jpg`. |
+| `src/assets/media/pictures/turquia-hamburguer-bacon-01.jpg` | Sem import e idêntico a `products/TABUCAMA.jpg`. |
+| `src/assets/media/pictures/turquia-hamburguer-camadas-01.jpg` | Sem import no código. |
+| `src/assets/media/pictures/turquia-pasteis-porcao-01.jpg` | Sem import no código. |
+| `src/assets/media/pictures/turquia-prato-vinho-01.jpg` | Substituído na Etapa 60; atualizar citação histórica. |
+| `src/assets/media/videos/turquia-video-01.mp4` | Master sem import; arquivar fora do Git primeiro. |
+| `src/assets/media/videos/turquia-video-02.mp4` | Master sem import; arquivar fora do Git primeiro. |
+
+Esses 11 arquivos totalizam 54.907.248 bytes (aproximadamente 52,36 MiB) no checkout. A parcela em `public/` reduz também o build atual em 1.692.579 bytes; os demais reduzem checkout/contexto, não o JavaScript entregue.
+
+## 9. Plano consolidado de execução e otimização Vercel
+
+### Lote 1 — limpeza sem alteração funcional
+
+1. confirmar backup dos masters e working tree limpa;
+2. medir checkout, `dist/` e manifesto de assets;
+3. remover somente o manifesto da seção 8;
+4. atualizar `documentacao/ASSETS.md` e citações afetadas;
+5. executar `npm ci`, `npm run check`, `npm run test:e2e`, `npm run test:e2e:demo` e `git diff --check`;
+6. comparar `dist/` antes/depois e validar 390/1280 px;
+7. reverter o commit atômico se qualquer asset/URL ficar ausente.
+
+### Lote 2 — contexto de deploy
+
+1. confirmar na documentação oficial vigente a semântica de `.vercelignore` antes de criá-lo;
+2. excluir do upload por CLI apenas documentação, screenshots e artefatos de agente; nunca `api/`, `src/`, `public/`, lockfile ou configurações de build;
+3. validar em preview redirects, função `/api/reviews`, arquivos estáticos e headers;
+4. não prometer redução do histórico Git por meio de `.vercelignore`.
+
+### Lote 3 — bytes realmente entregues
+
+1. medir Lighthouse mobile e waterfall em cache vazio nas entradas Home, Cardápio e Localização;
+2. recodificar as três imagens de produto de aproximadamente 0,86 MiB e criar dimensões responsivas;
+3. revisar o preload de `hero-fries.webp` contra o LCP real do carrossel;
+4. otimizar bitrate/resolução dos vídeos e posters preservando acessibilidade, layout e movimento reduzido;
+5. manter fallback somente quando a matriz de navegadores justificar;
+6. criar orçamento de JS, CSS, mapa, worker, imagens e vídeo a partir da nova baseline.
+
+### Lote 4 — MapLibre, cache e função serverless
+
+1. preservar o `import('maplibre-gl')` dinâmico;
+2. analisar o bundle antes de alterar a biblioteca ou silenciar o aviso de chunk;
+3. confirmar que mapa/worker continuam fora do caminho crítico do Hero;
+4. conferir no preview os headers hashados em `/assets/*` e planejar cache apropriado para `/images/*`, `/fonts/*` e OG sem tornar HTML/API imutáveis;
+5. medir `/api/reviews` separadamente (timeout, cache, payload e cold start).
+
+### Lote 5 — retenção histórica
+
+1. definir política: evidência final por etapa/viewport crítico e pacote externo recuperável;
+2. corrigir links Markdown antes de deduplicar PNGs;
+3. consolidar decisões no `BEST_PLAN.MD` e README;
+4. eliminar prompts concluídos, metadados de agente e exports antigos em commits separados;
+5. tratar eventual rewrite do histórico Git como migração destrutiva separada, com backup e autorização explícita.
+
+## 10. Critérios de aceite consolidados
+
+- instalação reprodutível com Node 22.x;
+- lint, unitários, build, gate de demo e E2E aprovados;
+- build sem os dois arquivos públicos órfãos;
+- smoke test de Home, Cardápio, Localização, mapa, reviews e `/api/reviews` no preview;
+- console limpo, teclado/foco/axe e ausência de overflow em 390/1280 px;
+- headers e redirects verificados no domínio de preview;
+- relatório antes/depois com bytes, transferência real, Lighthouse e manifesto eliminado;
+- zero exclusão de dado comercial, fonte oficial ou evidência necessária sem confirmação.
+
+## 11. Estado e ressalvas desta continuação
+
+- Auditoria e plano: **registrados; nenhuma exclusão executada**.
+- A consulta automatizada à documentação web da Vercel retornou erro de autenticação neste ambiente. A sintaxe final de `.vercelignore` não foi presumida e deve ser verificada antes do lote.
+- O checkout inicialmente não tinha remote configurado. Após a primeira redação, `origin/main` foi consultada e revelou o registro de 29/08/2026; esta seção foi então rebaseada e acrescentada abaixo, preservando o trabalho anterior conforme solicitado.
+- Apagar arquivos no HEAD não elimina blobs do histórico Git já publicado. Reescrita de histórico permanece fora de escopo sem autorização específica.
+
+---
+
+## 11. Revalidação integral e consolidação do registro anterior — 30/08/2026
+
+Esta seção foi acrescentada **abaixo** do levantamento existente, conforme solicitado, sem apagar ou reescrever as considerações do agente anterior. A revalidação percorreu os **314 caminhos versionados** da base `3932b8011c5b6c2050f7377b052884917ba3872e`, conferiu inventário, tamanhos, imports/referências, configuração de build, testes, CI e Vercel. Depois da inspeção inicial, o remote público informado foi verificado: `origin/main` apontava para essa mesma base; a consolidação também preserva abaixo o complemento do agente anterior publicado na branch `work`.
+
+### 11.1 Conotação das considerações já registradas
 
 - **Mantidas:** a separação entre peso do clone e peso do `dist`, as prioridades P0–P3, a exigência de backup externo e a execução em commits atômicos continuam tecnicamente coerentes.
 - **Confirmadas pelo build real:** `npm run check` passou (25 testes) e o build gerou 42 arquivos em `dist` (~11 MB). Os JPEGs `BATATA`, `X` e `cebola` somam aproximadamente 2,61 MB no artefato; o chunk lazy do MapLibre tem 986,39 KB (255,43 KB gzip); e o Vite realmente emite separadamente as duplicatas de conteúdo `tabua`/foto do Hero e `PIZZA`/foto do Hero.
@@ -358,7 +476,7 @@ Esta seção foi acrescentada **abaixo** do levantamento existente, conforme sol
 - **Sem autorização de exclusão:** este documento segue sendo um plano. A lista abaixo não deve ser aplicada em massa sem backup e aprovação das fases A–D. Em particular, auditorias Markdown, testes e arquivos de governança permanecem fora da lista de eliminação automática.
 - **Limite da `.vercelignore`:** ela é defesa útil para deploy via CLI, mas não substitui retirar blobs pesados do Git quando a integração começa por checkout do repositório. O ganho ao usuário final depende principalmente de otimizar o que aparece no `dist`; o ganho de pipeline depende da limpeza do tree/histórico.
 
-### 9.2 Manifesto exaustivo dos candidatos de eliminação
+### 11.2 Manifesto exaustivo dos candidatos de eliminação
 
 O manifesto abaixo explicita todos os caminhos agrupados anteriormente. São **204 arquivos**, totalizando **114.24 MiB** no working tree atual. “Candidato” significa que o arquivo é inútil ao runtime/build atual ou é lastro histórico de uma etapa; não significa que já exista autorização para apagá-lo. Os masters, fontes de marca e evidências visuais devem ser copiados para armazenamento externo antes da exclusão.
 
@@ -574,7 +692,7 @@ update_liberty.py
 
 </details>
 
-### 9.3 Arquivos condicionais que não entram nos 204 candidatos
+### 11.3 Arquivos condicionais que não entram nos 204 candidatos
 
 Estes itens exigem alteração funcional ou decisão humana antes de qualquer remoção:
 
@@ -584,7 +702,7 @@ Estes itens exigem alteração funcional ou decisão humana antes de qualquer re
 - `documentacao/qa/AUDITORIA_*.md`, `version_clean.md` e `BEST_PLAN.MD`: preservar até consolidação explícita; são rastreabilidade, não peso relevante.
 - `tests/`, `src/pages/demo/`, `src/data/menu.demo.js` e configurações de QA: preservar; protegem o build público contra vazamento do modo demo.
 
-### 9.4 Ordem final recomendada para Vercel
+### 11.4 Ordem final recomendada para Vercel
 
 1. **Baseline:** salvar backup externo, executar `npm run check`, guardar a listagem/tamanho de `dist` e verificar a função `/api/reviews` em preview.
 2. **Clone/build:** executar A (masters) e B (binários históricos), uma por commit; depois C (órfãos e metadados de agente).
@@ -595,7 +713,7 @@ Estes itens exigem alteração funcional ou decisão humana antes de qualquer re
 7. **Histórico Git (opcional e destrutivo):** reescrever apenas com autorização, backup, coordenação e plano de reclone; apagar no HEAD, sozinho, não remove blobs de commits antigos.
 8. **Aceite:** repetir lint, testes, build, E2E, smoke da API, console, teclado, overflow e screenshots 390/1280. Comparar métricas de build e Lighthouse com a baseline; somente então marcar a limpeza como implementada.
 
-### 9.5 Resultado desta passagem
+### 11.5 Resultado desta passagem
 
 - Nenhum arquivo de aplicação, mídia ou documentação histórica foi apagado.
 - A entrega desta passagem é exclusivamente a consolidação auditável do plano e o manifesto completo.
