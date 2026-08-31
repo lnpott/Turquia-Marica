@@ -144,6 +144,35 @@ test('BottomNavBar navega por âncoras e acompanha a seção', async ({ page }) 
   await expect(navigation.getByRole('link', { name: 'Localização' })).toHaveAttribute('aria-current', 'location')
 })
 
+test('Footer encerra a Home sem navegação redundante e não fica coberto no mobile', async ({ page }) => {
+  for (const viewport of [{ width: 320, height: 568 }, { width: 390, height: 844 }, { width: 1280, height: 900 }]) {
+    await page.setViewportSize(viewport)
+    await page.goto('/')
+    const footer = page.getByRole('contentinfo')
+    await footer.scrollIntoViewIfNeeded()
+    await expect(footer.getByText('Navegue')).toHaveCount(0)
+    await expect(footer.getByText(/Catálogo institucional em atualização/i)).toHaveCount(0)
+    await expect(footer.getByText('Parque Nanci · Maricá')).toBeVisible()
+    await expect(footer.getByText('Terça a domingo · 17h às 00h')).toBeVisible()
+    for (const link of await footer.getByRole('link').all()) {
+      const box = await link.boundingBox()
+      expect(box?.width).toBeGreaterThanOrEqual(44)
+      expect(box?.height).toBeGreaterThanOrEqual(44)
+    }
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
+    expect(overflow).toBe(false)
+    if (viewport.width < 768) {
+      const [copyright, navigation] = await Promise.all([
+        footer.getByText(/© 2026 Turquia Lanches/).boundingBox(),
+        page.getByRole('navigation', { name: 'Navegação inferior' }).boundingBox(),
+      ])
+      expect(copyright).not.toBeNull()
+      expect(navigation).not.toBeNull()
+      expect(copyright.y + copyright.height).toBeLessThanOrEqual(navigation.y)
+    }
+  }
+})
+
 test('cardápio público exibe os produtos publicados, com filtro e sem dados fictícios', async ({ page }) => {
   await page.goto('/#cardapio')
   const section = page.locator('#cardapio')
