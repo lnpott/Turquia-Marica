@@ -2384,3 +2384,12 @@ Inspecionar visualmente o slide 4 em 390 px e 1280 px antes de commitar. Se `obj
 - **Docs:** README descreve CI/CD e o badge do workflow.
 - **Proteção de `main`:** status check obrigatório `quality`, sem exigir review (repositório pessoal).
 - **Rollback:** restaurar o workflow anterior (push só em `BEST_ONE`) e remover a proteção da branch.
+
+## Etapa 66 — Refinamento final do Footer, acabamento responsivo e otimizações leves
+
+- **Estado:** IMPLEMENTADO — aguardando validação de CI/Preview.
+- **Data:** 31/08/2026.
+- **Baseline:** `origin/main` em `6f4980d615c1cb486a7fe8e2b4b725d72b543e79`; branch `fix/etapa-66-footer-polish`.
+- **Escopo entregue:** Footer convertido de três colunas para assinatura institucional e agrupamento de canais. A navegação interna redundante (`Navegue`, Cardápio, Sobre nós, Localização e Reviews) e a copy provisória foram removidas. A assinatura agora exibe logo responsivo (64px mobile, 96px desktop), nome, `Parque Nanci · Maricá`, horário proveniente de `BUSINESS_INFO.hours.value` e copyright. Os canais continuam consumindo `BUSINESS_INFO.channels`, com grade 2×2 no mobile e lista no desktop; o rodapé reserva espaço para BottomNavBar e safe-area.
+- **Fora de escopo preservado:** Header, Hero, facts, mapa, BottomNavBar, dados comerciais e arquitetura de mídia não foram alterados.
+- **Testes:** contratos unitários do Footer atualizados; validações completas e QA visual registradas na entrega desta etapa.

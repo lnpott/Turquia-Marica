@@ -184,13 +184,17 @@ describe('dados comerciais e demonstrativos', () => {
     expect(within(facts).queryByText('Disponíveis pelo iFood')).not.toBeInTheDocument()
   })
 
-  it('Footer lista Maps, Instagram, iFood e WhatsApp, sem "iFood em construção"', () => {
+  it('Footer lista os canais comerciais sem repetir a navegação interna', () => {
     render(<Footer />)
     expect(screen.getByRole('link', { name: /como chegar|abrir rota/i })).toHaveAttribute('href', BUSINESS_INFO.channels.maps.url)
     expect(screen.getByRole('link', { name: 'Instagram' })).toHaveAttribute('href', BUSINESS_INFO.channels.instagram.url)
     expect(screen.getByRole('link', { name: 'Pedir no iFood' })).toHaveAttribute('href', IFOOD_URL)
     expect(screen.getByRole('link', { name: 'WhatsApp' })).toHaveAttribute('href', BUSINESS_INFO.channels.whatsapp.url)
-    expect(screen.queryByText('iFood em construção')).not.toBeInTheDocument()
+    expect(screen.getByText('Parque Nanci · Maricá')).toBeInTheDocument()
+    expect(screen.getByText(BUSINESS_INFO.hours.value)).toBeInTheDocument()
+    expect(screen.queryByText('Navegue')).not.toBeInTheDocument()
+    expect(screen.queryByText('Catálogo institucional em atualização. Informações comerciais só serão publicadas após confirmação.')).not.toBeInTheDocument()
+    for (const href of ['#cardapio', '#sobre', '#localizacao', '#reviews']) expect(document.querySelector(`footer a[href="${href}"]`)).toBeNull()
   })
 
   it('configura o Hero híbrido com vídeos silenciosos, fotografias e CTAs estáveis', () => {
