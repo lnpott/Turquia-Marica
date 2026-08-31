@@ -2374,3 +2374,13 @@ Inspecionar visualmente o slide 4 em 390 px e 1280 px antes de commitar. Se `obj
 - **Fora de escopo:** redesign do Header desktop, texto ao lado dos ícones no mobile, métricas de avaliação, WhatsApp na faixa.
 - **Riscos residuais:** o ícone raster do iFood permanece; horário agora aparece na faixa e de novo em Localização (intencional, com destino para a seção completa).
 - **Rollback:** reverter o commit desta etapa restaura ordem iFood-primeiro, o wrapper desktop visível no fluxo mobile e os três fatos estáticos anteriores.
+
+## Etapa 65 — CI/CD na branch `main`
+
+- **Estado:** IMPLEMENTADO (31/08/2026); aguardando revisão humana e merge.
+- **Diagnóstico:** o workflow `Quality` só disparava `push` em `BEST_ONE` (branch histórica). PRs já rodavam CI com sucesso; merge em `main` não revalidava. `main` não tinha branch protection. O CD público continua no Vercel existente (`turquia-marica.vercel.app`); não foi criado um segundo projeto Vercel nesta conta para não duplicar produção.
+- **CI:** `.github/workflows/quality.yml` passa a rodar em `pull_request`, `push` em `main` e `workflow_dispatch`. Job único `quality` (Node 22, sem matrix), `concurrency` com cancelamento, `timeout-minutes: 20`, `permissions: contents: read`, `CI=true`. Em falha, anexa `playwright-report` / `test-results`.
+- **CD:** inalterado no provedor já publicado. Segredos `GOOGLE_PLACE_ID` e `GOOGLE_MAPS_API_KEY` permanecem só no painel Vercel.
+- **Docs:** README descreve CI/CD e o badge do workflow.
+- **Proteção de `main`:** status check obrigatório `quality`, sem exigir review (repositório pessoal).
+- **Rollback:** restaurar o workflow anterior (push só em `BEST_ONE`) e remover a proteção da branch.

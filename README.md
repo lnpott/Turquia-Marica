@@ -1,5 +1,7 @@
 # Turquia Lanches
 
+[![Quality](https://github.com/lnpott/Turquia-Marica/actions/workflows/quality.yml/badge.svg)](https://github.com/lnpott/Turquia-Marica/actions/workflows/quality.yml)
+
 Site institucional e catálogo da Turquia Lanches em Parque Nanci, Maricá/RJ. O site apresenta a marca, o cardápio em preparação e a localização; pedidos serão encaminhados ao iFood somente quando existir uma URL oficial da loja.
 
 ## Stack
@@ -51,7 +53,11 @@ No baseline da branch `BEST_ONE`:
 
 O acervo atual é provisório. Imagens públicas são identificadas como ilustrativas e não representam produtos específicos ou fotografia oficial da casa. Consulte `documentacao/ASSETS.md` antes de trocar ou reutilizar imagens.
 
-## Deploy
+## CI/CD
+
+- **CI:** GitHub Actions (`Quality`) em todo pull request, em push para `main` e via `workflow_dispatch`. Roda `npm ci`, `npm run check` (lint, testes, build, auditoria demo) e Playwright E2E. Relatório Playwright é anexado se o E2E falhar.
+- **CD:** Vercel publica [turquia-marica.vercel.app](https://turquia-marica.vercel.app) a partir de `main`. Preview de PR fica a cargo da integração Git do projeto Vercel já existente.
+- **Segredos:** `GOOGLE_PLACE_ID` e `GOOGLE_MAPS_API_KEY` só no painel do Vercel (Preview e Production). Nunca no repositório e nunca com prefixo `VITE_`. `VITE_VISUAL_QA_DEMO` permanece desligado no deploy público.
 
 O build gera `dist/index.html`, `dist/cardapio/index.html` e `dist/localizacao/index.html`. O `vercel.json` preserva os deep links e configura cache imutável para assets hasheados.
 
