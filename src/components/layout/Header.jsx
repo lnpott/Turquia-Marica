@@ -35,14 +35,14 @@ function Header() {
           ))}
         </nav>
 
-        <nav className="flex items-center gap-2 max-[359px]:gap-1 md:hidden" aria-label="Canais de contato">
+        <nav className="ml-auto flex items-center gap-2 max-[359px]:gap-1 md:hidden" aria-label="Canais de contato">
           <ChannelAction
-            channel={BUSINESS_INFO.channels.ifood}
-            icon={IconIfood}
-            aria-label="Pedir no iFood"
+            channel={BUSINESS_INFO.channels.instagram}
+            icon={Instagram}
+            aria-label="Instagram da Turquia Lanches — @turquialanches"
             iconOnly
             iconClassName="h-6 w-6 shrink-0"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-on-primary transition-all duration-tactile ease-tactile active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           />
           <ChannelAction
             channel={BUSINESS_INFO.channels.whatsapp}
@@ -53,36 +53,36 @@ function Header() {
             className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           />
           <ChannelAction
-            channel={BUSINESS_INFO.channels.instagram}
-            icon={Instagram}
-            aria-label="Instagram da Turquia Lanches — @turquialanches"
+            channel={BUSINESS_INFO.channels.ifood}
+            icon={IconIfood}
+            aria-label="Pedir no iFood"
             iconOnly
             iconClassName="h-6 w-6 shrink-0"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-on-primary transition-all duration-tactile ease-tactile active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           />
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="hidden items-center gap-2 md:flex">
           <ChannelAction
             channel={BUSINESS_INFO.channels.instagram}
             icon={Instagram}
             aria-label="Instagram da Turquia Lanches — @turquialanches"
             iconOnly
-            className="hidden h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:inline-flex"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           />
           <ChannelAction
             channel={BUSINESS_INFO.channels.whatsapp}
             icon={IconWhatsApp}
             aria-label="WhatsApp da Turquia Lanches"
             iconOnly
-            className="hidden h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:inline-flex"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           />
           <ChannelAction
             channel={BUSINESS_INFO.channels.ifood}
             icon={IconIfood}
             aria-label="Pedir no iFood"
-            className="cta-fill-primary hidden h-11 w-11 items-center justify-center rounded-lg bg-primary text-sm font-bold text-on-primary transition-all duration-tactile ease-tactile hover:shadow-lg active:scale-95 md:inline-flex lg:w-auto lg:gap-2 lg:px-5"
-            unavailableClassName="hidden min-h-11 cursor-not-allowed items-center gap-2 px-3 text-xs font-bold uppercase tracking-wide text-on-surface-variant/70 md:inline-flex"
+            className="cta-fill-primary inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-sm font-bold text-on-primary transition-all duration-tactile ease-tactile hover:shadow-lg active:scale-95 lg:w-auto lg:gap-2 lg:px-5"
+            unavailableClassName="inline-flex min-h-11 cursor-not-allowed items-center gap-2 px-3 text-xs font-bold uppercase tracking-wide text-on-surface-variant/70"
           >
             <span className="hidden lg:inline">Pedir no iFood</span>
           </ChannelAction>

@@ -2358,3 +2358,19 @@ Inspecionar visualmente o slide 4 em 390 px e 1280 px antes de commitar. Se `obj
 - **Limitações técnicas:** o projeto é React/Vite próprio, sem restrições de template de WordPress/Shopify. A persistência no topo depende do `Header` sticky já compartilhado pelo `MainLayout`; páginas futuras fora desse layout precisarão montá-lo explicitamente.
 - **Riscos residuais:** o ícone do iFood é raster enquanto WhatsApp/Instagram são vetoriais, diferença herdada do acervo oficial do projeto; todos mantêm caixa e escala visual comuns. Alterações futuras na quantidade de canais exigem revalidar 320 px antes de adicionar agrupamento ou rolagem horizontal.
 - **Rollback:** reverter o commit desta etapa restaura hamburger, dropdown, estilos e testes anteriores; não há migração, dependência ou alteração de dados para desfazer.
+
+## Etapa 64 — Header mobile à direita e fatos rápidos acionáveis
+
+- **Estado:** IMPLEMENTADO (30/08/2026); aguardando revisão humana e merge.
+- **Objetivo autorizado:** (1) alinhar os três atalhos do Header mobile à direita, na ordem Instagram → WhatsApp → iFood (último, mais à direita), sem texto no mobile; (2) transformar a faixa “Informações rápidas” abaixo do Hero em três cards acionáveis, substituindo o bloco estático “Compromisso”.
+- **Header:** o grupo desktop deixou de ocupar um flex item vazio no mobile (`hidden md:flex` no wrapper). A nav `Canais de contato` usa `ml-auto` e a ordem DOM/teclado Instagram → WhatsApp → iFood. Continua `iconOnly`, alvos 44×44 px, destinos de `BUSINESS_INFO.channels`. Desktop inalterado em conteúdo.
+- **Fatos rápidos:**
+  1. Pedidos → “Pedir no **iFood**” (`#EA1D2C`, negrito) → URL oficial do iFood.
+  2. Instagram → `@turquialanches` → perfil oficial.
+  3. Funcionamento → `BUSINESS_INFO.hours.value` (“Terça a domingo · 17h às 00h”) → âncora `#localizacao`.
+- **Dados:** nenhum dado comercial novo. iFood, Instagram e horário já estavam em `contact.js`. O card “Só publicamos dados confirmados” foi removido.
+- **Testes:** unitário cobre ordem/alinhamento do Header mobile e os três links da faixa; E2E cobre ordem, alinhamento à direita em 320/390 px e destinos da faixa.
+- **Validação local:** `npm run check` ✓ (lint, 27/27 testes, build e `audit:demo-leak`); `npm run test:e2e` ✓ (42/42 em Chromium desktop/mobile); `git diff --check` ✓. Nenhuma dependência foi adicionada.
+- **Fora de escopo:** redesign do Header desktop, texto ao lado dos ícones no mobile, métricas de avaliação, WhatsApp na faixa.
+- **Riscos residuais:** o ícone raster do iFood permanece; horário agora aparece na faixa e de novo em Localização (intencional, com destino para a seção completa).
+- **Rollback:** reverter o commit desta etapa restaura ordem iFood-primeiro, o wrapper desktop visível no fluxo mobile e os três fatos estáticos anteriores.

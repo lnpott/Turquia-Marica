@@ -93,22 +93,46 @@ test('header mobile mantém os canais de contato visíveis e acessíveis', async
     await page.setViewportSize({ width, height: 844 })
     await page.goto('/')
     const channels = page.getByRole('navigation', { name: 'Canais de contato' })
-    const links = [
-      channels.getByRole('link', { name: 'Pedir no iFood' }),
-      channels.getByRole('link', { name: 'Iniciar conversa no WhatsApp da Turquia Lanches' }),
-      channels.getByRole('link', { name: 'Instagram da Turquia Lanches — @turquialanches' }),
-    ]
+    const links = channels.getByRole('link')
 
     await expect(channels).toBeVisible()
     await expect(page.getByRole('button', { name: 'Abrir menu' })).toHaveCount(0)
     await expect(page.getByRole('navigation', { name: 'Menu mobile' })).toHaveCount(0)
-    for (const link of links) {
-      await expect(link).toBeVisible()
-      const box = await link.boundingBox()
+    await expect(links).toHaveCount(3)
+    await expect(links.nth(0)).toHaveAttribute('aria-label', 'Instagram da Turquia Lanches — @turquialanches')
+    await expect(links.nth(1)).toHaveAttribute('aria-label', 'Iniciar conversa no WhatsApp da Turquia Lanches')
+    await expect(links.nth(2)).toHaveAttribute('aria-label', 'Pedir no iFood')
+
+    const logo = page.getByRole('banner').getByRole('link', { name: 'Turquia Lanches — início' })
+    const logoBox = await logo.boundingBox()
+    const channelsBox = await channels.boundingBox()
+    expect(logoBox).toBeTruthy()
+    expect(channelsBox).toBeTruthy()
+    expect(channelsBox.x).toBeGreaterThan(logoBox.x + logoBox.width)
+    expect(width - (channelsBox.x + channelsBox.width)).toBeLessThanOrEqual(24)
+
+    for (const index of [0, 1, 2]) {
+      const box = await links.nth(index).boundingBox()
       expect(box.width).toBeGreaterThanOrEqual(44)
       expect(box.height).toBeGreaterThanOrEqual(44)
     }
   }
+})
+
+test('fatos rápidos ligam iFood, Instagram e horário confirmado', async ({ page }) => {
+  await page.goto('/')
+  const facts = page.getByRole('region', { name: 'Informações rápidas' })
+  await expect(facts.getByRole('link', { name: 'Pedir no iFood' })).toHaveAttribute(
+    'href',
+    'https://www.ifood.com.br/delivery/marica-rj/turquia-lanches-parque-nanci',
+  )
+  await expect(facts.getByRole('link', { name: 'Instagram da Turquia Lanches — @turquialanches' })).toHaveAttribute(
+    'href',
+    'https://www.instagram.com/turquialanches/',
+  )
+  await expect(facts.getByRole('link', { name: 'Ver horário e localização' })).toHaveAttribute('href', '#localizacao')
+  await expect(facts.getByText('Terça a domingo · 17h às 00h')).toBeVisible()
+  await expect(facts.getByText('Só publicamos dados confirmados')).toHaveCount(0)
 })
 
 test('BottomNavBar navega por âncoras e acompanha a seção', async ({ page }) => {

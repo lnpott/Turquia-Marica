@@ -9,6 +9,7 @@ import MapEmbed from '../src/components/location/MapEmbed'
 import ChannelAction from '../src/components/ui/ChannelAction'
 import Header from '../src/components/layout/Header'
 import Footer from '../src/components/layout/Footer'
+import Home from '../src/pages/Home'
 import { BUSINESS_INFO, BUSINESS_STATUS, IFOOD_URL } from '../src/data/contact'
 import { products } from '../src/data/menu'
 import mapStyle from '../src/assets/map/liberty.json'
@@ -150,6 +151,37 @@ describe('dados comerciais e demonstrativos', () => {
       expect(instagramLink).toHaveAttribute('href', BUSINESS_INFO.channels.instagram.url)
     }
     expect(screen.queryByText('Pedidos em breve')).not.toBeInTheDocument()
+  })
+
+  it('Header mobile alinha canais à direita na ordem Instagram, WhatsApp e iFood', () => {
+    render(<MemoryRouter><Header /></MemoryRouter>)
+    const channels = screen.getByRole('navigation', { name: 'Canais de contato' })
+    const links = within(channels).getAllByRole('link')
+    expect(links.map((link) => link.getAttribute('aria-label'))).toEqual([
+      'Instagram da Turquia Lanches — @turquialanches',
+      'Iniciar conversa no WhatsApp da Turquia Lanches',
+      'Pedir no iFood',
+    ])
+    expect(channels).toHaveClass('ml-auto')
+    expect(channels).toHaveClass('md:hidden')
+  })
+
+  it('liga os fatos rápidos da Home a iFood, Instagram e horário confirmado', () => {
+    render(<MemoryRouter><Home /></MemoryRouter>)
+    const facts = screen.getByRole('region', { name: 'Informações rápidas' })
+    const ifood = within(facts).getByRole('link', { name: 'Pedir no iFood' })
+    const instagram = within(facts).getByRole('link', { name: 'Instagram da Turquia Lanches — @turquialanches' })
+    const hours = within(facts).getByRole('link', { name: 'Ver horário e localização' })
+
+    expect(ifood).toHaveAttribute('href', IFOOD_URL)
+    expect(ifood).toHaveAttribute('target', '_blank')
+    expect(within(ifood).getByText('iFood')).toHaveClass('text-[#EA1D2C]')
+    expect(instagram).toHaveAttribute('href', BUSINESS_INFO.channels.instagram.url)
+    expect(within(instagram).getByText('@turquialanches')).toBeInTheDocument()
+    expect(hours).toHaveAttribute('href', '#localizacao')
+    expect(within(hours).getByText(BUSINESS_INFO.hours.value)).toBeInTheDocument()
+    expect(within(facts).queryByText('Só publicamos dados confirmados')).not.toBeInTheDocument()
+    expect(within(facts).queryByText('Disponíveis pelo iFood')).not.toBeInTheDocument()
   })
 
   it('Footer lista Maps, Instagram, iFood e WhatsApp, sem "iFood em construção"', () => {
