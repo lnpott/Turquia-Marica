@@ -532,6 +532,19 @@ Quando este arquivo estiver sendo usado no projeto **Turquia Lanches**, aplique 
 - nunca invente estado de GitHub;
 - ao terminar o lote, pare.
 
+### 20.1 Padrões de implementação de e-commerce e navegação
+
+Para novas features de pedidos, sacola ou rotas:
+
+1. **Hooks de Contexto com Fallback Defensivo:**
+   - Ao criar ou consumir contextos globais (como `useOrderCart`), o hook deve retornar um estado padrão defensivo com arrays vazios e funções noop se executado fora do Provider, preservando a integridade dos testes unitários legados.
+
+2. **Aritmética Monetária Segura:**
+   - Em cálculos de preços e subtotais, nunca confie em somas brutas de floats. Sempre normalize centavos usando `Math.round(valor * 100) / 100` para evitar inconsistências de precisão como `89.69999999999999`.
+
+3. **Testes E2E com Âncoras e Múltiplos Viewports:**
+   - Em testes Playwright que iteram sobre resoluções diferentes navegando para hashes (ex.: `/#localizacao` ou `/#pedido`), navegue para `/` antes da âncora em cada ciclo para forçar a reexecução do efeito de scroll do SPA no novo viewport.
+
 ---
 
 # 21. Formato padrão do relatório final
