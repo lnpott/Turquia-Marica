@@ -3,6 +3,9 @@ import { Outlet, useLocation } from 'react-router-dom'
 import BottomNavBar from '../components/layout/BottomNavBar'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
+import CartDrawer from '../components/order/CartDrawer'
+import CartFloatingTrigger from '../components/order/CartFloatingTrigger'
+import { OrderCartProvider } from '../hooks/useOrderCart'
 
 function MainLayout() {
   const location = useLocation()
@@ -25,17 +28,21 @@ function MainLayout() {
   }, [location.pathname, location.hash])
 
   return (
-    <div className="flex min-h-screen flex-col text-on-background">
-      <a href="#conteudo-principal" className="skip-link">Pular para o conteúdo</a>
-      <Header />
-      <main id="conteudo-principal" className="mobile-bottom-safe flex-1 md:pb-0" tabIndex="-1">
-        <div key={location.pathname} className="page-transition">
-          <Outlet />
-        </div>
-      </main>
-      <Footer />
-      <BottomNavBar />
-    </div>
+    <OrderCartProvider>
+      <div className="flex min-h-screen flex-col text-on-background">
+        <a href="#conteudo-principal" className="skip-link">Pular para o conteúdo</a>
+        <Header />
+        <main id="conteudo-principal" className="mobile-bottom-safe flex-1 md:pb-0" tabIndex="-1">
+          <div key={location.pathname} className="page-transition">
+            <Outlet />
+          </div>
+        </main>
+        <Footer />
+        <BottomNavBar />
+        <CartDrawer />
+        <CartFloatingTrigger />
+      </div>
+    </OrderCartProvider>
   )
 }
 

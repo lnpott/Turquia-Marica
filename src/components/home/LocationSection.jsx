@@ -7,7 +7,7 @@ import SectionHeading from '../ui/SectionHeading'
 
 function LocationSection() {
   return (
-    <section id="localizacao" className="scroll-mt-24 bg-[#f0e7db]/[0.35] px-5 py-20 md:px-margin-desktop md:py-28">
+    <section id="localizacao" className="scroll-mt-24 bg-[#f0e7db]/[0.35] px-5 pt-14 pb-20 md:py-28">
       <div className="mx-auto max-w-[1280px]">
         <SectionHeading
           eyebrow="Localização"

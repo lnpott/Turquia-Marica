@@ -4,6 +4,7 @@ import HeroSection from '../components/home/HeroSection'
 import LocationSection from '../components/home/LocationSection'
 import MenuSection from '../components/menu/MenuSection'
 import ReviewsSection from '../components/reviews/ReviewsSection'
+import OrderSection from '../components/order/OrderSection'
 import IconIfood from '../components/ui/IconIfood'
 import Reveal from '../components/ui/Reveal'
 import { BUSINESS_INFO } from '../data/contact'
@@ -73,6 +74,7 @@ function Home() {
           })}
         </ul>
       </Reveal>
+      <OrderSection />
       <MenuSection />
       <AboutSection />
       <LocationSection />

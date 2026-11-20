@@ -1,8 +1,9 @@
-import { Home, MapPin, MessageSquareText, Utensils } from 'lucide-react'
+import { Home, MapPin, MessageSquareText, ShoppingBag, Utensils } from 'lucide-react'
 import useActiveSection from '../../hooks/useActiveSection'
 
 const ITEMS = [
   { label: 'Início', Icon: Home, id: 'topo' },
+  { label: 'Pedir', Icon: ShoppingBag, id: 'pedido' },
   { label: 'Cardápio', Icon: Utensils, id: 'cardapio' },
   { label: 'Localização', Icon: MapPin, id: 'localizacao' },
   { label: 'Reviews', Icon: MessageSquareText, id: 'reviews' },

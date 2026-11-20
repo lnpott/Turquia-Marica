@@ -194,7 +194,7 @@ describe('dados comerciais e demonstrativos', () => {
     expect(screen.getByText(BUSINESS_INFO.hours.value)).toBeInTheDocument()
     expect(screen.queryByText('Navegue')).not.toBeInTheDocument()
     expect(screen.queryByText('Catálogo institucional em atualização. Informações comerciais só serão publicadas após confirmação.')).not.toBeInTheDocument()
-    for (const href of ['#cardapio', '#sobre', '#localizacao', '#reviews']) expect(document.querySelector(`footer a[href="${href}"]`)).toBeNull()
+    for (const href of ['#pedido', '#cardapio', '#sobre', '#localizacao', '#reviews']) expect(document.querySelector(`footer a[href="${href}"]`)).toBeNull()
   })
 
   it('configura o Hero híbrido com vídeos silenciosos, fotografias e CTAs estáveis', () => {

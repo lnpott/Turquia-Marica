@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-const DEFAULT_SECTIONS = ['cardapio', 'sobre', 'localizacao', 'reviews']
+const DEFAULT_SECTIONS = ['pedido', 'cardapio', 'sobre', 'localizacao', 'reviews']
 const THRESHOLDS = Array.from({ length: 21 }, (_, index) => index / 20)
 
 function visiblePixels(rect, viewportHeight) {

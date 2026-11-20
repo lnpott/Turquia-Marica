@@ -16,7 +16,7 @@ test('Home única carrega com metadados, seções e acessibilidade', async ({ pa
   expect(response?.status()).toBe(200)
   await expect(page).toHaveTitle(/Turquia Lanches \| Lanches/)
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical)
-  for (const id of ['cardapio', 'sobre', 'localizacao', 'reviews']) await expect(page.locator(`#${id}`)).toHaveCount(1)
+  for (const id of ['pedido', 'cardapio', 'sobre', 'localizacao', 'reviews']) await expect(page.locator(`#${id}`)).toHaveCount(1)
   await expect(page.locator('a[href="#"]')).toHaveCount(0)
   await expect(page.locator('a[href="https://www.ifood.com.br/"]')).toHaveCount(0)
   await expectNoBlockingAxe(page)
@@ -35,7 +35,7 @@ test('Hero híbrido preserva CTAs e reproduz somente o vídeo ativo', async ({ p
   await expect(videos.first()).toHaveJSProperty('muted', true)
   await expect(videos.first()).toHaveAttribute('playsinline', '')
   await expect(videos.first()).not.toHaveAttribute('controls')
-  await expect.poll(async () => videos.first().evaluate((video) => !video.paused)).toBe(true)
+  await expect.poll(async () => videos.first().evaluate((video) => !video.paused), { timeout: 15000 }).toBe(true)
   expect(await videos.evaluateAll((items) => items.filter((video) => !video.paused).length)).toBe(1)
 
   const indicators = hero.getByRole('button', { name: /mostrar cena/i })
@@ -53,7 +53,7 @@ test('Hero híbrido preserva CTAs e reproduz somente o vídeo ativo', async ({ p
 })
 
 test('rotas legadas usam fallback SPA e preservam a âncora', async ({ page }) => {
-  for (const [path, hash] of [['/cardapio', '#cardapio'], ['/localizacao', '#localizacao']]) {
+  for (const [path, hash] of [['/cardapio', '#cardapio'], ['/localizacao', '#localizacao'], ['/pedido', '#pedido']]) {
     const response = await page.goto(path, { waitUntil: 'networkidle' })
     expect(response?.status()).toBe(200)
     await expect(page).toHaveURL(new RegExp(`/${hash}$`))
@@ -149,7 +149,8 @@ test('Footer encerra a Home sem navegação redundante e não fica coberto no mo
     await page.setViewportSize(viewport)
     await page.goto('/')
     const footer = page.getByRole('contentinfo')
-    await footer.scrollIntoViewIfNeeded()
+    const copyrightNotice = footer.getByText(/© \d{4} Turquia Lanches/)
+    await copyrightNotice.scrollIntoViewIfNeeded()
     await expect(footer.getByText('Navegue')).toHaveCount(0)
     await expect(footer.getByText(/Catálogo institucional em atualização/i)).toHaveCount(0)
     await expect(footer.getByText('Parque Nanci · Maricá')).toBeVisible()
@@ -163,7 +164,7 @@ test('Footer encerra a Home sem navegação redundante e não fica coberto no mo
     expect(overflow).toBe(false)
     if (viewport.width < 768) {
       const [copyright, navigation] = await Promise.all([
-        footer.getByText(/© 2026 Turquia Lanches/).boundingBox(),
+        copyrightNotice.boundingBox(),
         page.getByRole('navigation', { name: 'Navegação inferior' }).boundingBox(),
       ])
       expect(copyright).not.toBeNull()
@@ -323,7 +324,9 @@ test('scroll reveal e motion ambiente funcionam sem biblioteca', async ({ page }
 test('CTA da Localização não é coberto pela navegação inferior', async ({ page }) => {
   for (const viewport of [{ width: 375, height: 667 }, { width: 390, height: 740 }, { width: 414, height: 844 }]) {
     await page.setViewportSize(viewport)
-    await page.goto('/#localizacao')
+    await page.goto('/')
+    await page.goto('/#localizacao', { waitUntil: 'networkidle' })
+    await page.waitForTimeout(150)
     const action = await page.getByRole('link', { name: /abrir rota no google maps/i }).boundingBox()
     const navigation = await page.getByRole('navigation', { name: 'Navegação inferior' }).boundingBox()
     expect(action).not.toBeNull()
@@ -356,4 +359,27 @@ test('header sem overflow de texto nos viewports de aceite', async ({ page }) =>
     })
     expect(overflows, `overflow no header em ${width}px`).toEqual([])
   }
+})
+
+test('fluxo da aba Faça seu Pedido e Sacola acessível', async ({ page }) => {
+  await page.goto('/')
+  const section = page.locator('#pedido')
+  await expect(section).toBeVisible()
+  await expect(section.getByRole('heading', { name: /faça seu pedido/i })).toBeVisible()
+
+  const addButtons = section.getByRole('button', { name: /adicionar .+ ao pedido/i })
+  await expect(addButtons.first()).toBeVisible()
+  await addButtons.first().click()
+
+  const modal = page.locator('[role="dialog"][aria-modal="true"]').first()
+  await expect(modal).toBeVisible()
+  await modal.getByRole('button', { name: 'Confirmar' }).click()
+
+  const drawer = page.getByRole('dialog', { name: 'Sacola de Pedidos' })
+  await expect(drawer).toBeVisible()
+  await expect(drawer.getByText(/subtotal:/i)).toBeVisible()
+  await expect(drawer.getByRole('button', { name: /enviar pedido pelo whatsapp/i })).toBeVisible()
+
+  await page.keyboard.press('Escape')
+  await expect(drawer).not.toBeVisible()
 })

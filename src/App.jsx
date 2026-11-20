@@ -29,6 +29,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/cardapio" element={<Navigate replace to="/#cardapio" />} />
             <Route path="/localizacao" element={<Navigate replace to="/#localizacao" />} />
+            <Route path="/pedido" element={<Navigate replace to="/#pedido" />} />
+            <Route path="/faca-seu-pedido" element={<Navigate replace to="/#pedido" />} />
             {visualQaDemoEnabled ? (
               <Route path="/visual-qa-demo" element={<Suspense fallback={null}><VisualQaDemo /></Suspense>} />
             ) : null}

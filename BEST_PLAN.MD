@@ -2393,3 +2393,23 @@ Inspecionar visualmente o slide 4 em 390 px e 1280 px antes de commitar. Se `obj
 - **Escopo entregue:** Footer convertido de três colunas para assinatura institucional e agrupamento de canais. A navegação interna redundante (`Navegue`, Cardápio, Sobre nós, Localização e Reviews) e a copy provisória foram removidas. A assinatura agora exibe logo responsivo (64px mobile, 96px desktop), nome, `Parque Nanci · Maricá`, horário proveniente de `BUSINESS_INFO.hours.value` e copyright. Os canais continuam consumindo `BUSINESS_INFO.channels`, com grade 2×2 no mobile e lista no desktop; o rodapé reserva espaço para BottomNavBar e safe-area.
 - **Fora de escopo preservado:** Header, Hero, facts, mapa, BottomNavBar, dados comerciais e arquitetura de mídia não foram alterados.
 - **Testes:** contratos unitários do Footer atualizados; validações completas e QA visual registradas na entrega desta etapa.
+
+## Etapa 67 — Aba "Faça seu Pedido" e canal próprio de vendas diretas
+
+- **Estado:** IMPLEMENTADO E VALIDADO (20/11/2026); aguardando revisão humana e conclusão do PR.
+- **Objetivo autorizado:** Criar a aba e seção "Faça seu Pedido" (`#pedido`) com suporte a montagem de pedidos diretos e finalização via WhatsApp oficial (`+55 21 96469-9374`), utilizando as fotos e produtos já existentes no repositório como exemplos funcionais.
+- **Implementação entregue:**
+  1. `src/data/orderConfig.js`: Enums para modalidades (`delivery`, `pickup`), formas de pagamento (`pix`, `card`, `cash`) e bairros atendidos em Maricá.
+  2. `src/utils/orderPayload.js`: Utilitários de cálculo de subtotal, formatação pt-BR e montagem do payload em markdown legível para WhatsApp com encoding seguro.
+  3. `src/hooks/useOrderCart.jsx`: Hook e contexto com persistência em `localStorage` (`turquia_order_cart_v1`) e fallback seguro para renderização isolada.
+  4. `src/components/order/OrderSection.jsx`: Seção `#pedido` com grade de produtos, tags de preço, modal de observações/quantidades e botão "Adicionar ao pedido".
+  5. `src/components/order/CartDrawer.jsx`: Gaveta lateral deslizante acessível (`role="dialog"`, `aria-modal="true"`, foco gerenciado, fechamento com `Escape`), seletor Delivery/Retirada e formulário de checkout.
+  6. `src/components/order/CartFloatingTrigger.jsx`: Botão flutuante na viewport com badge de quantidade e subtotal em tempo real.
+  7. Navegação e Roteamento: Aba `Faça seu pedido` integrada aos links do Header, aba `Pedir` na `BottomNavBar` móvel, seções ativas no `useActiveSection` e redirects SPA `/pedido` e `/faca-seu-pedido` para `/#pedido` no `App.jsx`.
+- **Validação local:**
+  - `npm run check` aprovado (ESLint 0 erros / 0 warnings, 35/35 testes Vitest, build Vite e auditoria de demo leak).
+  - `npm run test:e2e` aprovado (46/46 testes Playwright em desktop e mobile, incluindo acessibilidade `axe-core` e ausência de overflow).
+  - `git diff --check` aprovado.
+- **Documentação:** Criado documento técnico completo em `documentacao/PLANO_FACA_SEU_PEDIDO.md`.
+- **Rollback:** Reverter o commit desta etapa desfaz a integração da sacola e aba de pedidos sem resíduos no backend ou banco de dados.
+

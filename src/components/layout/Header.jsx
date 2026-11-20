@@ -1,12 +1,14 @@
-import { Instagram } from 'lucide-react'
+import { Instagram, ShoppingBag } from 'lucide-react'
 import logo from '../../assets/images/brand/logo-96.webp'
 import { BUSINESS_INFO } from '../../data/contact'
 import ChannelAction from '../ui/ChannelAction'
 import IconIfood from '../ui/IconIfood'
 import IconWhatsApp from '../ui/IconWhatsApp'
 import useActiveSection from '../../hooks/useActiveSection'
+import { useOrderCart } from '../../hooks/useOrderCart'
 
 const NAV_LINKS = [
+  { label: 'Faça seu pedido', id: 'pedido' },
   { label: 'Cardápio', id: 'cardapio' },
   { label: 'Sobre nós', id: 'sobre' },
   { label: 'Localização', id: 'localizacao' },
@@ -18,6 +20,7 @@ const linkClasses = (isActive) =>
 
 function Header() {
   const activeSection = useActiveSection()
+  const { totalItems, setIsDrawerOpen } = useOrderCart()
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#faf7f2]/95 shadow-[0_1px_0_#e8e0d4] backdrop-blur-md">
@@ -63,6 +66,17 @@ function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          {totalItems > 0 && (
+            <button
+              type="button"
+              onClick={() => setIsDrawerOpen(true)}
+              aria-label={`Ver sacola com ${totalItems} itens`}
+              className="inline-flex h-11 items-center gap-2 rounded-lg bg-secondary-container px-3 text-xs font-extrabold text-on-secondary-container transition-all duration-tactile ease-tactile hover:bg-secondary-container/90 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              <ShoppingBag className="h-4 w-4 text-on-surface" aria-hidden="true" />
+              <span>Sacola ({totalItems})</span>
+            </button>
+          )}
           <ChannelAction
             channel={BUSINESS_INFO.channels.instagram}
             icon={Instagram}
