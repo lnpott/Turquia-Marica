@@ -30,3 +30,5 @@ mcp_servers.json
 .idea/
 .DS_Store
 Thumbs.db
+.vercel
+.env*
