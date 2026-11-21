@@ -1,0 +1,15 @@
+# Text files use LF. A CRLF checkout must not show up as a content conflict.
+* text=auto eol=lf
+
+# Media and fonts stay byte-for-byte.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.mp4 binary
+*.webm binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
