@@ -22,7 +22,7 @@ React 18, React Router 7, Vite 8, Tailwind 3, MapLibre GL, Vitest, Playwright, a
 - `/cardapio` e `/localizacao` redirecionam para essas âncoras.
 - `/visual-qa-demo` só com `VITE_VISUAL_QA_DEMO=true`.
 
-Não existem `/sacola`, `/checkout` nem `/produto/:id`. Documentos que descrevem isso estão em `documentacao/historico/`.
+Não existem `/sacola`, `/checkout` nem `/produto/:id`. Os documentos que descreviam isso foram apagados. O Git ainda tem o texto nos commits antigos.
 
 ## Dados (`src/data/contact.js`)
 
@@ -67,6 +67,6 @@ Segredos de mapa só no painel da Vercel, nunca no repositório e nunca com pref
 | O que vamos construir | ROADMAP.md |
 | Como um agente edita | AGENTS.md |
 | Qual foto pode vender | documentacao/ASSETS.md |
-| Etapas, migração, QA antigo | documentacao/historico/ |
+| Etapas, migração, QA antigo | Apagados. Não usar. Git history se precisar |
 
 Branch de trabalho da retirada do iFood: `feat/sem-ifood`. `main` pode ainda ter o site anterior até o merge. Conferir a branch antes de editar.

@@ -516,7 +516,7 @@ Não marque lote como “concluído” quando ainda estiver em estado “impleme
 Quando este arquivo estiver sendo usado no projeto **Turquia Lanches**, aplique adicionalmente:
 
 - leia `GUIA.md` (estado atual) e `ROADMAP.md` (fase autorizada) antes de editar;
-- não use `documentacao/historico/` para decidir escopo. Aquilo é arquivo morto, inclusive `BEST_PLAN.MD`, `ROADMAP_MIGRACAO.md` e os relatórios em `documentacao/historico/qa/`;
+- não use `documentacao/historico/` para decidir escopo. Os planos antigos (BEST_PLAN, migração, limpeza, QA) foram apagados do tree; o que sobrou lá não é fonte de verdade;
 - preserve o escopo da fase autorizada no ROADMAP;
 - não invente telefone, WhatsApp, horário, endereço, CEP, coordenadas, produtos, preços, entrega, estacionamento ou acessibilidade;
 - para dados comerciais, priorize: dados oficiais do projeto → canais oficiais → Instagram oficial → Google Maps verificável → fontes públicas auxiliares;

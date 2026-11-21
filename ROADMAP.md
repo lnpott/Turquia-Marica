@@ -71,7 +71,7 @@ Pronto, em fase que mexe em UI ou dado: `npm run check`, E2E do fluxo, 390 px e 
 
 Fases 2 e 3 podem usar cardápio de teste fora do build público (`menu.demo.js` + `audit:demo-leak`). Fase 4 não vai a produção sem D4.
 
-Higiene de asset (o que era `limpeza.MD`, agora em `documentacao/historico/limpeza.MD`) é PR separado, nunca no meio de uma fase de pedido.
+Higiene de asset é PR separado, nunca no meio de uma fase de pedido. O plano antigo de limpeza foi apagado.
 
 ## Status em 21/11/2026
 
