@@ -1,36 +1,45 @@
-# GUIA — Turquia Lanches (Maricá)
+# GUIA — estado atual
 
+> O que o produto **é hoje**. Futuro (cardápio comprável, pedido, entrega) está só em [`ROADMAP.md`](ROADMAP.md).
+> Atualizado em 21/11/2026 na branch `feat/sem-ifood`.
+> Divergência: **código + Git > este GUIA > ROADMAP (só da fase autorizada) > AGENTS > ASSETS > `documentacao/historico/`**.
 > **Documento canônico unificado** (atualizado em 21/11/2026 na branch `feat/sem-ifood`).  
 > Substitui a necessidade de consultar múltiplos `.md` espalhados para entender o projeto atual.  
 > Em caso de divergência: **código + Git da branch de trabalho > este GUIA > BEST_PLAN.MD > demais documentos**.
 
----
+## Produto
 
-## 1. Identidade e objetivo
+Site institucional da **Turquia Lanches**, Parque Nanci, Maricá/RJ.
 
+Faz: marca, fotografia e vídeo reais, cardápio em vitrine, localização, contato.
 **Projeto:** Site institucional + catálogo da **Turquia Lanches**  
 **Local:** Parque Nanci · Maricá/RJ  
 **Produto digital:** presença de marca, desejo (fotografia/vídeo reais), cardápio e localização.  
 **Canal de pedido:** **nenhum no site.** iFood foi removido do sistema (UI, dados, ícones e testes). O site **não é e-commerce**.
 
-O site existe para:
+Não faz: pedido, sacola, checkout, pagamento, login, taxa de entrega, iFood ou outro marketplace.
 
+## Stack
 - apresentar a marca com honestidade radical;
 - mostrar ambiente e comida reais;
 - informar cardápio (quando validado);
 - facilitar localização e contato (WhatsApp, Instagram, Maps);
 
-**Fora de escopo** (sem autorização explícita nova):
+React 18, React Router 7, Vite 8, Tailwind 3, MapLibre GL, Vitest, Playwright, axe. Node 22. Deploy Vercel a partir de `main`. CI: GitHub Actions `quality.yml`.
 
+## Rotas
 - reintroduzir iFood ou qualquer marketplace;
 - checkout próprio, pagamento, autenticação, backend transacional;
 - inventar dados comerciais (preço, horário, produto, telefone, WhatsApp, etc.);
 - transformar o site em plataforma de delivery.
 
----
+- `/` — home com âncoras (`#cardapio`, `#localizacao`).
+- `/cardapio` e `/localizacao` redirecionam para essas âncoras.
+- `/visual-qa-demo` só com `VITE_VISUAL_QA_DEMO=true`.
 
-## 2. Fontes de verdade (ordem de precedência)
+Não existem `/sacola`, `/checkout` nem `/produto/:id`. Os documentos que descreviam isso foram apagados. O Git ainda tem o texto nos commits antigos.
 
+## Dados (`src/data/contact.js`)
 1. **Código + estado do Git** da branch `feat/sem-ifood` (ainda não é `main`)
 2. **Este `GUIA.md`**
 3. **`BEST_PLAN.MD`** — plano operacional vivo (etapas, estados, evidências)
@@ -38,27 +47,27 @@ O site existe para:
 5. **`documentacao/ASSETS.md`** — catálogo de mídia ativa
 6. Restante (relatórios de QA, limpeza, histórico) → consulta pontual
 
-Nunca invente dado comercial. Nunca trate documento antigo como estado atual.
+| Campo | Estado |
+|-------|--------|
+| Endereço | R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160 |
+| Horário | Terça a domingo, 17h–00h. Segunda fechado |
+| WhatsApp | https://wa.me/5521964699374 |
+| Instagram | @turquialanches |
+| Maps | disponível |
+| Telefone | indisponível |
+| iFood | removido |
 
----
+Não inventar telefone, preço, taxa, área de entrega ou horário diferente.
 
-## 3. Stack atual
+## Cardápio (`src/data/menu.js`)
 
-| Camada | Tecnologia |
-|--------|------------|
-| Runtime | React 18 + React Router 7 |
-| Build | Vite 8 |
-| Estilo | Tailwind CSS 3 + CSS próprio (`src/styles/index.css`) |
-| Mapa | MapLibre GL (lazy) |
-| Testes | Vitest + Testing Library + Playwright + axe-core |
-| Node | 22.x (`engines` + `.nvmrc`) |
-| Deploy | Vercel (`turquia-marica.vercel.app`) |
-| CI | GitHub Actions `quality.yml` (PR + push em `main`) |
+Vitrine provisória. Nove itens publicados, todos a R$ 29,90, incluindo "Pizza Teste". Categorias em `construction`. Imagens de produto não são o acervo oficial — ver [`documentacao/ASSETS.md`](documentacao/ASSETS.md). Esses preços **não** são cardápio operacional.
 
-Dependências principais: `lucide-react`, `maplibre-gl`, `react-router-dom`.
+## Hero
 
----
+Cinco slides em `src/components/home/HeroSection.jsx`: ambiente (vídeo), hambúrguer, espaço infantil (vídeo), tábua de petiscos, pizza. Não redesenhar fora de uma tarefa que peça isso.
 
+## Comandos
 ## 4. Arquitetura atual
 
 ### Navegação
@@ -108,13 +117,15 @@ MapLibre + estilo local (`src/assets/map/liberty.json`), carregamento sob demand
 ```bash
 npm install
 npm run dev
-npm run lint
-npm run test
-npm run build          # inclui audit:demo-leak
+npm run check
 npm run test:e2e
-npm run check          # lint + test + build
 ```
 
+E2E na primeira vez: `npx playwright install chromium`.
+
+Segredos de mapa só no painel da Vercel, nunca no repositório e nunca com prefixo `VITE_`.
+
+## Onde mexer
 Primeira execução de E2E local:
 
 ```bash
@@ -246,6 +257,13 @@ Todo o resto em `documentacao/historico/` e prompts/snapshots antigos são **his
 > Sem canal de pedido no site.  
 > Código e Git mandam.
 
----
+| Pergunta | Arquivo |
+|----------|---------|
+| O que está no ar neste código | este GUIA |
+| O que vamos construir | ROADMAP.md |
+| Como um agente edita | AGENTS.md |
+| Qual foto pode vender | documentacao/ASSETS.md |
+| Etapas, migração, QA antigo | Apagados. Não usar. Git history se precisar |
 
+Branch de trabalho da retirada do iFood: `feat/sem-ifood`. `main` pode ainda ter o site anterior até o merge. Conferir a branch antes de editar.
 *Última atualização: 21/11/2026 — branch `feat/sem-ifood`. iFood retirado do sistema ativo. Plano das próximas melhorias está na seção 7.*
