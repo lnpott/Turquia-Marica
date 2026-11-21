@@ -77,17 +77,17 @@ A lista detalhada está em `documentacao/DECISOES-PENDENTES.md`.
 
 Cada fase deve ser entregue em PR separado, salvo dependência técnica que justifique divisão menor. A fase só pode ser marcada como concluída após validação e evidência.
 
-| Fase | Entrega | Dependências / bloqueios |
-|---|---|---|
-| 0 | Alinhamento documental, inventário técnico, confirmação de ambiente e decisões | Nenhuma alteração funcional |
-| 1 | Projeto Supabase, schema inicial, RLS, migrations e configuração segura dos ambientes | D10; política de acesso aprovada |
-| 2 | Catálogo real vindo do Supabase, com categorias, produtos, preços, imagens e disponibilidade | D1, D2, D8 |
-| 3 | Sacola, quantidades, opcionais e resumo calculado; estado local apenas como conveniência | Fase 2; D2 |
-| 4 | Dados do cliente, entrega/retirada, validação de área, taxa, horário e total | D3, D4, D7, D9 |
-| 5 | Endpoint server-side de finalização e gravação transacional de pedido, itens e snapshots | Fases 1–4; D5, D6, D9 |
-| 6 | Confirmação do pedido e botão opcional de WhatsApp com resumo gerado a partir do pedido persistido | Fase 5; D5 |
-| 7 | Operação do catálogo e acompanhamento de pedidos; começar com Supabase Dashboard restrito e avaliar painel próprio | D8; requisitos operacionais |
-| 8 | QA integrado, segurança, acessibilidade, monitoramento, contingência e lançamento gradual | Fases anteriores aprovadas |
+| Fase | Entrega | Dependências / bloqueios | Status |
+|---|---|---|---|
+| 0 | Alinhamento documental, inventário técnico, confirmação de ambiente e decisões | Nenhuma alteração funcional | **Concluída** (Decisões D1-D10 confirmadas em `documentacao/DECISOES-PENDENTES.md`) |
+| 1 | Projeto Supabase, schema inicial, RLS, migrations e configuração segura dos ambientes | D10; política de acesso aprovada | **Concluída** (Projeto `sxpsewnfgpkppqivzvcc` ativo, migration aplicada, Vercel linkada com envs) |
+| 2 | Catálogo real vindo do Supabase, com categorias, produtos, preços, imagens e disponibilidade | D1, D2, D8 | Próxima fase |
+| 3 | Sacola, quantidades, opcionais e resumo calculado; estado local apenas como conveniência | Fase 2; D2 | Pendente |
+| 4 | Dados do cliente, entrega/retirada, validação de área, taxa, horário e total | D3, D4, D7, D9 | Pendente |
+| 5 | Endpoint server-side de finalização e gravação transacional de pedido, itens e snapshots | Fases 1–4; D5, D6, D9 | Pendente |
+| 6 | Confirmação do pedido e botão opcional de WhatsApp com resumo gerado a partir do pedido persistido | Fase 5; D5 | Pendente |
+| 7 | Operação do catálogo e acompanhamento de pedidos; começar com Supabase Dashboard restrito e avaliar painel próprio | D8; requisitos operacionais | Pendente |
+| 8 | QA integrado, segurança, acessibilidade, monitoramento, contingência e lançamento gradual | Fases anteriores aprovadas | Pendente |
 
 ### Fase 0 — alinhamento e inventário
 

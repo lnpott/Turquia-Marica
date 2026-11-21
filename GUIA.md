@@ -25,8 +25,9 @@ A Turquia Lanches possui um site institucional e uma vitrine de cardápio. A dir
 - React Router DOM 7.
 - Vite 8.
 - Tailwind CSS 3.
-- Node.js 22 ou superior.
-- Vercel para hospedagem e funções server-side.
+- Node.js 22 ou superior (definido como `>=22.x` em `package.json`).
+- Supabase PostgreSQL (projeto dedicado `turquia-lanches`, ref `sxpsewnfgpkppqivzvcc`, região `sa-east-1`).
+- Vercel para hospedagem, funções server-side e variáveis de ambiente (projeto `turquia-marica`).
 - Vitest para testes unitários.
 - Playwright para testes E2E.
 - axe-core/Playwright para verificações de acessibilidade.
@@ -45,6 +46,21 @@ npm run audit:demo-leak
 ```
 
 `npm run check` executa lint, testes Vitest e build. O workflow `.github/workflows/quality.yml` também executa E2E no Chromium.
+
+### Banco de dados e infraestrutura Supabase
+
+- Projeto hospedado: `turquia-lanches` (ref `sxpsewnfgpkppqivzvcc`) ativo na organização `lnpott's Org`.
+- Migrations versionadas no repositório em `supabase/migrations/` (migration inicial `20261121205545_init_schema.sql` aplicada no banco remoto).
+- Tabelas criadas com Row Level Security (RLS) habilitado:
+  - `categories` (com carga inicial dos 5 grupos da vitrine);
+  - `products` (com carga inicial dos 9 itens do catálogo atual, preços em centavos);
+  - `product_option_groups` e `product_options` (modelagem expansível para adicionais);
+  - `delivery_zones` (suporte a regras de taxa por raio em km);
+  - `orders` e `order_items` (estrutura para pedidos com snapshot de itens e dados de entrega).
+- Variáveis de ambiente configuradas no projeto Vercel (`turquia-marica`) nos ambientes Production, Preview e Development:
+  - `VITE_SUPABASE_URL`
+  - `VITE_SUPABASE_ANON_KEY`
+  - `SUPABASE_SERVICE_ROLE_KEY` (segredo restrito do servidor)
 
 ### Aplicação e rotas
 
