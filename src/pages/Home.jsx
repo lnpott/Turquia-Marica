@@ -4,22 +4,18 @@ import HeroSection from '../components/home/HeroSection'
 import LocationSection from '../components/home/LocationSection'
 import MenuSection from '../components/menu/MenuSection'
 import ReviewsSection from '../components/reviews/ReviewsSection'
-import IconIfood from '../components/ui/IconIfood'
+import IconWhatsApp from '../components/ui/IconWhatsApp'
 import Reveal from '../components/ui/Reveal'
 import { BUSINESS_INFO } from '../data/contact'
 
 const FACTS = [
   {
-    Icon: IconIfood,
-    title: 'Pedidos',
-    value: (
-      <>
-        Pedir no <span className="font-bold text-[#EA1D2C]">iFood</span>
-      </>
-    ),
-    href: BUSINESS_INFO.channels.ifood.url,
+    Icon: IconWhatsApp,
+    title: 'WhatsApp',
+    value: 'Falar no WhatsApp',
+    href: BUSINESS_INFO.channels.whatsapp.url,
     external: true,
-    ariaLabel: 'Pedir no iFood',
+    ariaLabel: 'WhatsApp da Turquia Lanches',
   },
   {
     Icon: Instagram,

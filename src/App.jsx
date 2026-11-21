@@ -19,8 +19,8 @@ function PagePlaceholder() {
   )
 }
 
-// A aplicação mantém somente as rotas institucionais e de descoberta do menu;
-// pedidos são concluídos externamente no iFood.
+// A aplicação mantém somente as rotas institucionais e de descoberta do menu.
+// Não há canal de pedido no site.
 function App() {
   return (
     <BrowserRouter>
