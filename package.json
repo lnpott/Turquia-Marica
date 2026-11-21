@@ -19,6 +19,7 @@
     "audit:demo-leak": "node scripts/audit-demo-leak.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.119.2",
     "lucide-react": "^0.300.0",
     "maplibre-gl": "^6.5.0",
     "react": "^18.3.1",
