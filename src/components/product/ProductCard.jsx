@@ -1,38 +1,41 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { Plus, Check } from 'lucide-react'
+import { useCart } from '../../contexts/CartContext'
 
 function ProductCard({ product }) {
-  const [imgSrc, setImgSrc] = useState(null)
+  const { addItem } = useCart()
+  const [added, setAdded] = useState(false)
 
-  useEffect(() => {
-    let active = true
-    const imageSource = product.resolveImage
-      ? product.resolveImage()
-      : Promise.resolve(product.image ?? null)
-
-    Promise.resolve(imageSource).then((source) => {
-      if (active) setImgSrc(source ?? null)
-    })
-
-    return () => { active = false }
-  }, [product])
+  const handleAddToCart = (e) => {
+    e.stopPropagation()
+    addItem(product, 1)
+    setAdded(true)
+    setTimeout(() => setAdded(false), 1500)
+  }
 
   return (
     <article
       tabIndex={0}
-      className="group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-sm focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      className="group relative aspect-[4/3] overflow-hidden rounded-sm bg-surface-container focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
     >
-      {/* Foto — zoom no hover/foco */}
-      <img
-        src={imgSrc ?? undefined}
-        alt={product.imageAlt ?? product.name}
-        width="512"
-        height="384"
-        loading="lazy"
-        className="h-full w-full object-cover transition-transform duration-smooth ease-smooth group-hover:scale-[1.15] group-focus-within:scale-[1.15]"
-      />
+      {/* Imagem do produto */}
+      {product.image ? (
+        <img
+          src={product.image}
+          alt={product.imageAlt ?? product.name}
+          width="512"
+          height="384"
+          loading="lazy"
+          className="h-full w-full object-cover transition-transform duration-smooth ease-smooth group-hover:scale-[1.10]"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center bg-surface-container-high text-on-surface-variant text-sm font-medium">
+          Foto em breve
+        </div>
+      )}
 
-      {/* Badge TESTE — sempre visível, canto superior esquerdo */}
-      {product[['is', 'Mock'].join('')] && (
+      {/* Badge de Categoria ou Teste */}
+      {product.isMock && (
         <span
           aria-hidden="true"
           className="absolute left-3 top-3 rounded-sm bg-primary px-2 py-1 text-[9px] font-extrabold uppercase tracking-wide text-on-primary"
@@ -41,23 +44,39 @@ function ProductCard({ product }) {
         </span>
       )}
 
-      {/* Overlay reveal — sobe da base no hover/foco */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-on-surface/95 via-on-surface/75 to-transparent px-5 pb-5 pt-14 opacity-0 transition-[transform,opacity] duration-smooth ease-smooth group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100"
+      {/* Botão de Adicionar à Sacola no canto superior direito */}
+      <button
+        type="button"
+        onClick={handleAddToCart}
+        aria-label={`Adicionar ${product.name} à sacola`}
+        className={`absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full shadow-md transition-all ${
+          added
+            ? 'bg-green-600 text-white scale-110'
+            : 'bg-primary text-on-primary hover:bg-primary-hover active:scale-95'
+        }`}
       >
-        <p className="font-headline-md text-[18px] font-extrabold leading-tight text-on-image">
-          {product.name}
-        </p>
-        <p className="mt-1 text-sm font-bold text-secondary-container">
-          {product.price} *
-        </p>
-      </div>
+        {added ? <Check className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+      </button>
 
-      {/* Texto acessível para leitores de tela */}
-      <div className="sr-only">
-        <h3>{product.name}</h3>
-        <span>{product.price}</span>
+      {/* Informações no rodapé do card */}
+      <div
+        className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-on-surface/95 via-on-surface/75 to-transparent px-5 pb-4 pt-12 text-on-image"
+      >
+        <div className="flex items-end justify-between gap-2">
+          <div>
+            <h3 className="font-headline-md text-[17px] font-extrabold leading-tight text-white">
+              {product.name}
+            </h3>
+            {product.description && (
+              <p className="mt-1 line-clamp-1 text-xs text-on-surface-variant text-stone-300">
+                {product.description}
+              </p>
+            )}
+          </div>
+          <span className="shrink-0 text-base font-bold text-secondary-container">
+            {product.price}
+          </span>
+        </div>
       </div>
     </article>
   )

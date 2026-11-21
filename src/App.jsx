@@ -2,6 +2,11 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import Home from './pages/Home'
+import CartPage from './pages/CartPage'
+import CheckoutPage from './pages/CheckoutPage'
+import OrderConfirmedPage from './pages/OrderConfirmedPage'
+import AdminPage from './pages/AdminPage'
+import { CartProvider } from './contexts/CartContext'
 
 const visualQaDemoEnabled = import.meta.env.VITE_VISUAL_QA_DEMO === 'true'
 const VisualQaDemo = visualQaDemoEnabled ? lazy(() => import('./pages/demo/VisualQaDemo')) : null
@@ -19,23 +24,27 @@ function PagePlaceholder() {
   )
 }
 
-// A aplicação mantém somente as rotas institucionais e de descoberta do menu.
-// Não há canal de pedido no site.
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
+    <CartProvider>
+      <BrowserRouter>
+        <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/cardapio" element={<Navigate replace to="/#cardapio" />} />
             <Route path="/localizacao" element={<Navigate replace to="/#localizacao" />} />
+            <Route path="/sacola" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/pedido/confirmado" element={<OrderConfirmedPage />} />
+            <Route path="/admin" element={<AdminPage />} />
             {visualQaDemoEnabled ? (
               <Route path="/visual-qa-demo" element={<Suspense fallback={null}><VisualQaDemo /></Suspense>} />
             ) : null}
             <Route path="*" element={<PagePlaceholder />} />
           </Route>
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </CartProvider>
   )
 }
 

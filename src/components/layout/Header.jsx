@@ -1,9 +1,11 @@
-import { Instagram } from 'lucide-react'
+import { Instagram, ShoppingBag } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import logo from '../../assets/images/brand/logo-96.webp'
 import { BUSINESS_INFO } from '../../data/contact'
 import ChannelAction from '../ui/ChannelAction'
 import IconWhatsApp from '../ui/IconWhatsApp'
 import useActiveSection from '../../hooks/useActiveSection'
+import { useCart } from '../../contexts/CartContext'
 
 const NAV_LINKS = [
   { label: 'Cardápio', id: 'cardapio' },
@@ -17,23 +19,39 @@ const linkClasses = (isActive) =>
 
 function Header() {
   const activeSection = useActiveSection()
+  const { totalItems } = useCart()
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#faf7f2]/95 shadow-[0_1px_0_#e8e0d4] backdrop-blur-md">
       <div className="mx-auto flex min-h-16 max-w-[1280px] items-center justify-between gap-3 px-4 md:h-[76px] md:px-margin-desktop">
-        <a href="#topo" aria-label="Turquia Lanches — início" className="flex shrink-0 items-center gap-3 rounded-lg focus-visible:outline-offset-4">
+        <Link to="/" aria-label="Turquia Lanches — início" className="flex shrink-0 items-center gap-3 rounded-lg focus-visible:outline-offset-4">
           <img src={logo} alt="Turquia Lanches" width="48" height="48" className="h-11 w-11 rounded-full object-cover md:h-12 md:w-12" />
           <span className="hidden font-headline-md text-base font-extrabold uppercase leading-none tracking-[-0.03em] text-on-surface lg:block">Turquia<br/><span className="text-primary">Lanches</span></span>
-        </a>
+        </Link>
 
         <nav className="hidden items-center gap-2 md:flex" aria-label="Navegação principal">
           {NAV_LINKS.map((link) => (
-            <a key={link.label} href={`#${link.id}`} aria-current={activeSection === link.id ? 'location' : undefined} className={linkClasses(activeSection === link.id)}>
+            <a key={link.label} href={`/#${link.id}`} aria-current={activeSection === link.id ? 'location' : undefined} className={linkClasses(activeSection === link.id)}>
               {link.label}
             </a>
           ))}
         </nav>
 
+        {/* Sacola mobile (fora da nav de canais para manter teste de ordem) */}
+        <Link
+          to="/sacola"
+          aria-label={`Ver sacola com ${totalItems} itens`}
+          className="relative flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary md:hidden"
+        >
+          <ShoppingBag className="h-5 w-5" />
+          {totalItems > 0 && (
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-extrabold text-on-primary">
+              {totalItems}
+            </span>
+          )}
+        </Link>
+
+        {/* Navegação mobile de canais mantendo acessibilidade */}
         <nav className="ml-auto flex items-center gap-2 max-[359px]:gap-1 md:hidden" aria-label="Canais de contato">
           <ChannelAction
             channel={BUSINESS_INFO.channels.instagram}
@@ -53,7 +71,22 @@ function Header() {
           />
         </nav>
 
+        {/* Desktop actions */}
         <div className="hidden items-center gap-2 md:flex">
+          <Link
+            to="/sacola"
+            aria-label={`Ver sacola com ${totalItems} itens`}
+            className="relative flex h-11 items-center gap-2 rounded-lg bg-primary/10 px-3.5 font-label-bold text-sm text-primary transition-all hover:bg-primary/20 active:scale-95"
+          >
+            <ShoppingBag className="h-5 w-5" />
+            <span>Sacola</span>
+            {totalItems > 0 && (
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[11px] font-extrabold text-on-primary">
+                {totalItems}
+              </span>
+            )}
+          </Link>
+
           <ChannelAction
             channel={BUSINESS_INFO.channels.instagram}
             icon={Instagram}
