@@ -3,14 +3,28 @@ import { extname, join, relative } from 'node:path'
 import process from 'node:process'
 import { fileURLToPath, pathToFileURL, URL } from 'node:url'
 
-export const DEFAULT_SENTINELS = ['visual-qa-demo', 'menu.demo', 'demo-lanche-curto', 'DADOS FICTÍCIOS — QA VISUAL', 'isMock', 'shortDescription', 'longDescription', 'imageUrl']
+// Apenas identificadores exclusivos do modo de demonstração / QA visual.
+// NÃO usar propriedades legítimas do catálogo ou reviews (isMock, isPlaceholder
+// isolado, shortDescription, longDescription, imageUrl): elas existem no
+// bundle público e geravam falso positivo na Vercel.
+export const DEFAULT_SENTINELS = [
+  'visual-qa-demo',
+  'menu.demo',
+  'demo-lanche-curto',
+  'DADOS FICTÍCIOS — QA VISUAL',
+  'DADOS FICTÍCIOS — uso exclusivo',
+  'Produto fictício para validação visual',
+  'Foto fictícia de',
+  'VisualQaDemo',
+]
+
 export const TEXT_EXTENSIONS = new Set(['.html', '.js', '.css', '.json', '.xml', '.txt', '.map'])
 
 // Varre `directory` (caminho absoluto ou relativo, sempre STRING) e retorna a
 // lista de vazamentos encontrados. `isPlaceholder` também pertence aos Reviews
 // públicos legítimos; só é vazamento da demo quando aparece no mesmo artefato
-// que uma sentinela demo. `relative()` recebe apenas paths válidos — o bug
-// `relative(root.pathname, path)` (root já era string ⇒ root.pathname ===
+// que uma sentinela demo exclusiva. `relative()` recebe apenas paths válidos —
+// o bug `relative(root.pathname, path)` (root já era string ⇒ root.pathname ===
 // undefined) derrubava o build da Vercel com ERR_INVALID_ARG_TYPE.
 export async function findLeaks(directory, { sentinels = DEFAULT_SENTINELS } = {}) {
   const leaks = []

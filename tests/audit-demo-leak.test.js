@@ -38,8 +38,10 @@ describe('scripts/audit-demo-leak.mjs', () => {
     expect(leaks[0]).toContain('visual-qa-demo')
   })
 
-  it('identifica isPlaceholder quando co-ocorre com sentinela demo (ramo que quebrava na Vercel)', async () => {
-    const dir = await makeFixture({ 'assets/demo.js': 'isMock: true, isPlaceholder: true' })
+  it('identifica isPlaceholder quando co-ocorre com sentinela demo exclusiva', async () => {
+    const dir = await makeFixture({
+      'assets/demo.js': 'VisualQaDemo, isPlaceholder: true, Produto fictício para validação visual',
+    })
     const leaks = await findLeaks(dir)
     expect(leaks.some((leak) => leak.includes('isPlaceholder (contexto demo)'))).toBe(true)
   })
@@ -49,6 +51,32 @@ describe('scripts/audit-demo-leak.mjs', () => {
     expect(await findLeaks(dir)).toEqual([])
   })
 
+  it('não marca bundle legítimo de catálogo/reviews como vazamento', async () => {
+    const dir = await makeFixture({
+      'assets/app.js': [
+        'product.isMock&&renderBadge()',
+        'isMock:!1',
+        'isPlaceholder:!1',
+        'shortDescription:e.short_description',
+        'longDescription:e.long_description',
+        'imageUrl:e.image_url',
+      ].join(';'),
+    })
+    expect(await findLeaks(dir)).toEqual([])
+  })
+
+  it('detecta inclusão acidental do módulo de demonstração', async () => {
+    const dir = await makeFixture({
+      'assets/demo-chunk.js': [
+        'import{demoProducts}from"./menu.demo"',
+        'export function VisualQaDemo(){return "Produto fictício para validação visual"}',
+      ].join('\n'),
+    })
+    const leaks = await findLeaks(dir)
+    expect(leaks.some((leak) => leak.includes('menu.demo'))).toBe(true)
+    expect(leaks.some((leak) => leak.includes('VisualQaDemo') || leak.includes('Produto fictício'))).toBe(true)
+  })
+
   it('retorna paths relativos válidos, sem prefixo de drive duplicado (Windows/Linux)', async () => {
     const dir = await makeFixture({
       'assets/sub/pages.js': 'menu.demo sentinela',
@@ -56,7 +84,6 @@ describe('scripts/audit-demo-leak.mjs', () => {
     const leaks = await findLeaks(dir)
     expect(leaks).toHaveLength(1)
     const path = leaks[0].split(':')[0]
-    // Não pode conter prefixo duplicado tipo `C:\C:\` nem `//`
     expect(path).not.toMatch(new RegExp(`[A-Za-z]:${sep}[A-Za-z]:`))
     expect(path).not.toContain(`${sep}${sep}`)
     expect(path.startsWith('assets')).toBe(true)
@@ -84,7 +111,13 @@ describe('scripts/audit-demo-leak.mjs', () => {
     expect(await main(dir, { env, stdout: quiet, stderr: quiet })).toBe(1)
   })
 
-  it('a sentinela padrão inclui os identificadores do contrato da demo', () => {
-    expect(DEFAULT_SENTINELS).toEqual(expect.arrayContaining(['visual-qa-demo', 'menu.demo', 'isMock', 'shortDescription', 'longDescription', 'imageUrl']))
+  it('a sentinela padrão usa só identificadores exclusivos da demo', () => {
+    expect(DEFAULT_SENTINELS).toEqual(
+      expect.arrayContaining(['visual-qa-demo', 'menu.demo', 'VisualQaDemo', 'Produto fictício para validação visual']),
+    )
+    expect(DEFAULT_SENTINELS).not.toContain('isMock')
+    expect(DEFAULT_SENTINELS).not.toContain('shortDescription')
+    expect(DEFAULT_SENTINELS).not.toContain('longDescription')
+    expect(DEFAULT_SENTINELS).not.toContain('imageUrl')
   })
 })
