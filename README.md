@@ -3,6 +3,9 @@
 [![Quality](https://github.com/lnpott/Turquia-Marica/actions/workflows/quality.yml/badge.svg)](https://github.com/lnpott/Turquia-Marica/actions/workflows/quality.yml)
 
 Site institucional da **Turquia Lanches** em Parque Nanci, Maricá/RJ. Não é e-commerce e não encaminha pedido ao iFood.
+Site institucional e catálogo da **Turquia Lanches** em Parque Nanci, Maricá/RJ.
+
+O site **não é e-commerce** e **não encaminha pedido para o iFood**. Contato público: WhatsApp, Instagram e Google Maps.
 
 **Produção:** [turquia-marica.vercel.app](https://turquia-marica.vercel.app)
 
