@@ -23,12 +23,6 @@ export const BUSINESS_INFO = Object.freeze({
     note: 'Não disponível / em construção',
   },
   channels: {
-    ifood: {
-      status: BUSINESS_STATUS.AVAILABLE,
-      label: 'Pedir no iFood',
-      url: 'https://www.ifood.com.br/delivery/marica-rj/turquia-lanches-parque-nanci',
-      note: null,
-    },
     whatsapp: {
       status: BUSINESS_STATUS.AVAILABLE,
       label: 'WhatsApp',
@@ -49,7 +43,6 @@ export const BUSINESS_INFO = Object.freeze({
   },
 })
 
-export const IFOOD_URL = BUSINESS_INFO.channels.ifood.url
 export const WHATSAPP_URL = BUSINESS_INFO.channels.whatsapp.url
 export const INSTAGRAM_URL = BUSINESS_INFO.channels.instagram.url
 export const MAPS_LINK = BUSINESS_INFO.channels.maps.url

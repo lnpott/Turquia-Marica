@@ -18,7 +18,7 @@ test('Home única carrega com metadados, seções e acessibilidade', async ({ pa
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical)
   for (const id of ['cardapio', 'sobre', 'localizacao', 'reviews']) await expect(page.locator(`#${id}`)).toHaveCount(1)
   await expect(page.locator('a[href="#"]')).toHaveCount(0)
-  await expect(page.locator('a[href="https://www.ifood.com.br/"]')).toHaveCount(0)
+  await expect(page.locator('a[href*="ifood"]')).toHaveCount(0)
   await expectNoBlockingAxe(page)
   expect(consoleErrors).toEqual([])
 })
@@ -98,10 +98,9 @@ test('header mobile mantém os canais de contato visíveis e acessíveis', async
     await expect(channels).toBeVisible()
     await expect(page.getByRole('button', { name: 'Abrir menu' })).toHaveCount(0)
     await expect(page.getByRole('navigation', { name: 'Menu mobile' })).toHaveCount(0)
-    await expect(links).toHaveCount(3)
+    await expect(links).toHaveCount(2)
     await expect(links.nth(0)).toHaveAttribute('aria-label', 'Instagram da Turquia Lanches — @turquialanches')
     await expect(links.nth(1)).toHaveAttribute('aria-label', 'Iniciar conversa no WhatsApp da Turquia Lanches')
-    await expect(links.nth(2)).toHaveAttribute('aria-label', 'Pedir no iFood')
 
     const logo = page.getByRole('banner').getByRole('link', { name: 'Turquia Lanches — início' })
     const logoBox = await logo.boundingBox()
@@ -111,7 +110,7 @@ test('header mobile mantém os canais de contato visíveis e acessíveis', async
     expect(channelsBox.x).toBeGreaterThan(logoBox.x + logoBox.width)
     expect(width - (channelsBox.x + channelsBox.width)).toBeLessThanOrEqual(24)
 
-    for (const index of [0, 1, 2]) {
+    for (const index of [0, 1]) {
       const box = await links.nth(index).boundingBox()
       expect(box.width).toBeGreaterThanOrEqual(44)
       expect(box.height).toBeGreaterThanOrEqual(44)
@@ -119,12 +118,12 @@ test('header mobile mantém os canais de contato visíveis e acessíveis', async
   }
 })
 
-test('fatos rápidos ligam iFood, Instagram e horário confirmado', async ({ page }) => {
+test('fatos rápidos ligam WhatsApp, Instagram e horário confirmado', async ({ page }) => {
   await page.goto('/')
   const facts = page.getByRole('region', { name: 'Informações rápidas' })
-  await expect(facts.getByRole('link', { name: 'Pedir no iFood' })).toHaveAttribute(
+  await expect(facts.getByRole('link', { name: 'WhatsApp da Turquia Lanches' })).toHaveAttribute(
     'href',
-    'https://www.ifood.com.br/delivery/marica-rj/turquia-lanches-parque-nanci',
+    'https://wa.me/5521964699374',
   )
   await expect(facts.getByRole('link', { name: 'Instagram da Turquia Lanches — @turquialanches' })).toHaveAttribute(
     'href',

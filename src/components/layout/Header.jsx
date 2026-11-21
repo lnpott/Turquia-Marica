@@ -2,7 +2,6 @@ import { Instagram } from 'lucide-react'
 import logo from '../../assets/images/brand/logo-96.webp'
 import { BUSINESS_INFO } from '../../data/contact'
 import ChannelAction from '../ui/ChannelAction'
-import IconIfood from '../ui/IconIfood'
 import IconWhatsApp from '../ui/IconWhatsApp'
 import useActiveSection from '../../hooks/useActiveSection'
 
@@ -52,14 +51,6 @@ function Header() {
             iconClassName="h-6 w-6 shrink-0"
             className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           />
-          <ChannelAction
-            channel={BUSINESS_INFO.channels.ifood}
-            icon={IconIfood}
-            aria-label="Pedir no iFood"
-            iconOnly
-            iconClassName="h-6 w-6 shrink-0"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-on-primary transition-all duration-tactile ease-tactile active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-          />
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
@@ -77,15 +68,6 @@ function Header() {
             iconOnly
             className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-on-surface transition-all duration-tactile ease-tactile hover:bg-surface-container-low hover:text-primary active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           />
-          <ChannelAction
-            channel={BUSINESS_INFO.channels.ifood}
-            icon={IconIfood}
-            aria-label="Pedir no iFood"
-            className="cta-fill-primary inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary text-sm font-bold text-on-primary transition-all duration-tactile ease-tactile hover:shadow-lg active:scale-95 lg:w-auto lg:gap-2 lg:px-5"
-            unavailableClassName="inline-flex min-h-11 cursor-not-allowed items-center gap-2 px-3 text-xs font-bold uppercase tracking-wide text-on-surface-variant/70"
-          >
-            <span className="hidden lg:inline">Pedir no iFood</span>
-          </ChannelAction>
         </div>
       </div>
     </header>

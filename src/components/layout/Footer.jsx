@@ -2,7 +2,6 @@ import { Instagram, MapPin } from 'lucide-react'
 import logo from '../../assets/images/brand/logo-96.webp'
 import { BUSINESS_INFO, BUSINESS_STATUS } from '../../data/contact'
 import ChannelAction from '../ui/ChannelAction'
-import IconIfoodGold from '../ui/IconIfoodGold'
 import IconWhatsApp from '../ui/IconWhatsApp'
 
 const actionClasses = 'inline-flex min-h-11 items-center gap-3 rounded-md px-2 text-sm font-medium text-[#d9c8a8] transition-colors duration-tactile ease-tactile hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f4cf72] active:scale-[0.98]'
@@ -26,7 +25,6 @@ function Footer() {
           <div className="grid grid-cols-2 gap-2 md:grid-cols-1">
           <ChannelAction channel={BUSINESS_INFO.channels.maps} icon={MapPin} className={actionClasses} />
           <ChannelAction channel={BUSINESS_INFO.channels.instagram} icon={Instagram} className={actionClasses} />
-          <ChannelAction channel={BUSINESS_INFO.channels.ifood} icon={IconIfoodGold} iconClassName="h-5 w-auto shrink-0" className={`${actionClasses} text-[#f4cf72]`} />
           {BUSINESS_INFO.channels.whatsapp.status === BUSINESS_STATUS.AVAILABLE && BUSINESS_INFO.channels.whatsapp.url ? (
             <ChannelAction channel={BUSINESS_INFO.channels.whatsapp} icon={IconWhatsApp} className={actionClasses} />
           ) : null}
