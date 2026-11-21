@@ -515,10 +515,9 @@ Não marque lote como “concluído” quando ainda estiver em estado “impleme
 
 Quando este arquivo estiver sendo usado no projeto **Turquia Lanches**, aplique adicionalmente:
 
-- leia `BEST_PLAN.MD` antes de editar;
-- leia o relatório de QA do lote;
-- para Localização, use `documentacao/qa/AUDITORIA_LOCALIZACAO.md`;
-- preserve o escopo do lote;
+- leia `GUIA.md` (estado atual) e `ROADMAP.md` (fase autorizada) antes de editar;
+- não use `documentacao/historico/` para decidir escopo. Os planos antigos (BEST_PLAN, migração, limpeza, QA) foram apagados do tree; o que sobrou lá não é fonte de verdade;
+- preserve o escopo da fase autorizada no ROADMAP;
 - não invente telefone, WhatsApp, horário, endereço, CEP, coordenadas, produtos, preços, entrega, estacionamento ou acessibilidade;
 - para dados comerciais, priorize: dados oficiais do projeto → canais oficiais → Instagram oficial → Google Maps verificável → fontes públicas auxiliares;
 - registre fonte, data, confiança, divergência e decisão;
@@ -526,11 +525,11 @@ Quando este arquivo estiver sendo usado no projeto **Turquia Lanches**, aplique 
 - gere/inspecione screenshots nas larguras previstas pelo plano, incluindo 390 px e 1280 px quando exigidas;
 - screenshots devem ser inspecionados em resolução integral;
 - após correções, repita validações;
-- atualize planejamento/QA;
+- atualize `GUIA.md` se o presente mudou, ou `ROADMAP.md` se o status da fase mudou;
 - crie somente o commit local específico autorizado;
 - verifique branch, working tree e remote antes de falar em PR;
 - nunca invente estado de GitHub;
-- ao terminar o lote, pare.
+- ao terminar a fase, pare.
 
 ---
 
