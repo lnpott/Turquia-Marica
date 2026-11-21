@@ -1,41 +1,24 @@
-# Decisões pendentes — Turquia Lanches
+# Decisões confirmadas — Turquia Lanches
 
-Este registro evita que agentes ou desenvolvedores inventem informações comerciais. Preencher com confirmação de pessoa responsável pela loja e registrar fonte/data.
+Registro canônico de decisões comerciais e arquiteturais alinhadas para a evolução do sistema.
 
 | ID | Pergunta | Resposta confirmada | Responsável | Data / evidência |
 |---|---|---|---|---|
-| D1 | Qual é o catálogo completo oficial, com nome, categoria, descrição, preço e disponibilidade? | PENDENTE | | |
-| D1-A | Quais fotos são oficiais e podem representar cada produto? | PENDENTE | | |
-| D2 | Quais produtos têm tamanhos, adicionais, complementos ou escolhas obrigatórias? Qual preço de cada um? | PENDENTE | | |
-| D3 | A loja aceita retirada, entrega ou ambas? | PENDENTE | | |
-| D4-A | Quais bairros/ruas ou raio fazem parte da área de entrega? | PENDENTE | | |
-| D4-B | Qual é a taxa por região? Há pedido mínimo? | PENDENTE | | |
-| D4-C | Qual é o prazo informado e como lidar com alta demanda? | PENDENTE | | |
-| D5 | O WhatsApp publicado em `src/data/contact.js` é o número oficial que receberá pedidos? | PENDENTE | | |
-| D6 | Quais formas de pagamento são aceitas e em qual momento? | PENDENTE | | |
-| D7 | O sistema aceita pedidos durante todo o horário publicado? Há horário limite, pausa ou feriados? | PENDENTE | | |
-| D8 | Quem atualiza catálogo, preço e disponibilidade? Supabase Dashboard é suficiente no início? | PENDENTE | | |
-| D9-A | Quais dados do cliente são realmente necessários para retirada? | PENDENTE | | |
-| D9-B | Quais dados são necessários para entrega? | PENDENTE | | |
-| D9-C | Qual aviso de privacidade, prazo de retenção e processo de exclusão serão adotados? | PENDENTE | | |
-| D10-A | Já existe projeto Supabase exclusivo da Turquia? | PENDENTE | | |
-| D10-B | Quais ambientes serão usados (dev, preview, produção)? | PENDENTE | | |
-| D10-C | Quem terá acesso administrativo ao projeto e às chaves? | PENDENTE | | |
+| D1 / D1-A | Catálogo inicial e fotos | Inicialmente cadastrar no Supabase o catálogo existente (`src/data/menu.js`). Posteriormente os preços/itens serão ajustados via painel administrativo próprio. | Usuário / Alinhamento | 21/11/2026 (/grill-me) |
+| D2 | Opcionais, tamanhos e complementos | Inicialmente manter a base de itens conforme o catálogo atual; suportar modelagem expansível para adicionais no banco. | Usuário / Alinhamento | 21/11/2026 (/grill-me) |
+| D3 | Modalidade de atendimento | **Apenas entregas em domicílio** disponíveis no site no MVP. | Usuário / Alinhamento | 21/11/2026 (/grill-me) |
+| D4 | Área e cálculo de entrega | **Raio em quilômetros** a partir da loja física (R. Canarinhos, 663 - Parque Nanci, Maricá). | Usuário / Alinhamento | 21/11/2026 (/grill-me) |
+| D5 | Canal de WhatsApp para pedidos | **Sim**, o número oficial já publicado (`+55 21 96469-9374`) receberá o resumo estruturado dos pedidos após a gravação. | Usuário / Alinhamento | 21/11/2026 (/grill-me) |
+| D6 | Formas de pagamento | **Na entrega** (Cartão de crédito/débito na maquininha do entregador, Dinheiro com troco, Pix no ato da entrega). Sem gateway online no MVP. | Usuário / Alinhamento | 21/11/2026 (/grill-me) |
+| D7 | Janela de pedidos e aceite | O site **aceitará pedidos sempre**, com aviso claro de que a confirmação e o tempo de preparo/entrega serão validados pela loja via WhatsApp. | Usuário / Alinhamento | 21/11/2026 (/grill-me) |
+| D8 | Gestão do catálogo e painel admin | Criação do Supabase com os dados iniciais; em seguida implementação de um **painel interno no sistema** para o admin alterar preços/disponibilidade sem acessar diretamente o Supabase. | Usuário / Alinhamento | 21/11/2026 (/grill-me) |
+| D9 | Dados obrigatórios do cliente | **Nome**, **Telefone/WhatsApp**, **Endereço completo** (Rua, Número, Bairro, CEP/Referência) e **Ponto de referência**. | Usuário / Alinhamento | 21/11/2026 (/grill-me) |
+| D10 | Projeto Supabase e infraestrutura | **Criar um novo projeto Supabase exclusivo** para a Turquia Lanches. | Usuário / Alinhamento | 21/11/2026 (/grill-me) |
 
-## Dados atualmente publicados no código
+## Dados atualmente confirmados
 
-Os dados abaixo foram observados em `src/data/contact.js` na revisão de `main`, em 21/11/2026. A confirmação operacional ainda deve ser feita antes de usar esses dados para aceitar pedidos:
-
-- Endereço: R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160.
-- Horário: terça a domingo, 17h às 00h; segunda fechado.
-- WhatsApp: https://wa.me/5521964699374.
-- Instagram: @turquialanches.
-- Telefone convencional: indisponível.
-
-## Regras
-
-1. Não converter PENDENTE em valor presumido.
-2. Não usar preço de `src/data/menu.js` como preço oficial sem validação.
-3. Guardar evidência: mensagem da pessoa responsável, documento oficial ou fonte pública verificável.
-4. Se houver divergência entre fontes, registrar ambas e solicitar decisão.
-5. Só desbloquear a fase correspondente quando os dados essenciais estiverem confirmados.
+- **Endereço Loja:** R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160
+- **Horário Balcão:** Terça a domingo, 17h às 00h (segunda fechado)
+- **WhatsApp Oficial:** +55 21 96469-9374
+- **Instagram:** @turquialanches
+- **Canal de Pedido:** Site (checkout próprio com gravação no Supabase) -> Notificação/Confirmação no WhatsApp Oficial
