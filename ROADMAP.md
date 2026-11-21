@@ -1,92 +1,269 @@
-# ROADMAP — cardápio, pedido e entrega
+# ROADMAP — plataforma digital Turquia Lanches
 
-> Plano do que o produto **vai ser**. Não descreve o código de hoje.
-> O presente está em [GUIA.md](GUIA.md).
-> Data: 21/11/2026.
+> Este documento descreve o produto-alvo e a sequência de implantação.
+> O estado implementado está em `GUIA.md`.
+> Revisão documental baseada em `main`, em 21/11/2026.
+> Supabase é obrigatório para catálogo, preços e pedidos. Esta decisão não é opcional nem depende de o WhatsApp ser suficiente.
 
-A decisão antiga ("o site não é e-commerce") está revogada como direção de produto. O código ainda é vitrine até as fases abaixo entrarem.
+## 1. Objetivo do produto
 
-Honestidade continua: endereço, horário, telefone, preço, taxa, raio e pagamento só entram se um humano confirmar. Dado ausente fica ausente.
+Transformar o site institucional da Turquia Lanches em uma plataforma própria, com portfólio completo, catálogo comercial ativo e fluxo de pedidos persistido.
 
-## Produto alvo
+O cliente deverá conseguir:
 
-No celular, dentro do horário, a pessoa:
+1. conhecer a loja, ambiente, localização, canais e informações institucionais;
+2. consultar categorias e produtos ativos;
+3. visualizar preços oficiais, imagens aprovadas, descrições e opcionais;
+4. selecionar produtos e quantidades;
+5. montar e revisar uma sacola;
+6. escolher entrega ou retirada, conforme modalidades realmente oferecidas;
+7. informar os dados necessários;
+8. visualizar subtotal, taxa e total calculados com valores oficiais;
+9. finalizar e registrar o pedido no Supabase;
+10. receber uma referência e resumo;
+11. opcionalmente abrir o WhatsApp com o resumo estruturado para comunicação com a loja.
 
-1. vê o cardápio oficial;
-2. escolhe quantidade e opcionais reais, se existirem;
-3. monta a sacola;
-4. escolhe entrega ou retirada;
-5. se entrega, informa endereço dentro da área e vê a taxa real, ou a recusa se estiver fora;
-6. vê o total;
-7. envia um pedido que a casa consegue executar;
-8. vê confirmação com número e resumo, sem tela de "pago" se não houve pagamento.
+O sistema não deve alegar pagamento realizado, pedido aceito pela loja ou mensagem enviada sem confirmação técnica correspondente.
 
-Fora da primeira versão: login, app nativo, iFood, fidelidade, cartão no site sem gateway contratado, estoque, rastreio de motoboy, redesign de hero ou mapa.
+## 2. Decisões arquiteturais obrigatórias
 
-## Decisões que bloqueiam código
+| Tema | Decisão |
+|---|---|
+| Banco | Supabase PostgreSQL |
+| Catálogo | Categorias, produtos, preços e disponibilidade persistidos no Supabase |
+| Pedidos | Todo pedido finalizado deve ser gravado no Supabase |
+| Itens | Salvar snapshots de nome, preço, quantidade e opcionais |
+| Autoridade de preço | Servidor/banco, nunca o navegador |
+| Atomicidade | Pedido, itens e opcionais em uma transação |
+| WhatsApp | Canal complementar após persistência, nunca armazenamento principal |
+| Backend | Funções server-side da Vercel, alinhadas ao padrão já usado em `api/reviews.js` |
+| Segredos | Somente variáveis server-side protegidas na Vercel |
+| Autenticação do cliente | Fora do MVP, salvo decisão posterior fundamentada |
+| Administração inicial | Supabase Dashboard com acesso restrito; painel próprio é evolução posterior |
+| Pagamento online | Fora do MVP até contratação e integração de gateway |
+| Marketplace | Não reintroduzir iFood ou outro marketplace sem decisão explícita |
 
-Sem resposta, a fase não começa. Não chutar.
+## 3. Estado inicial conhecido
 
-| ID | Decisão | Bloqueia | Enquanto não houver resposta |
-|----|---------|----------|------------------------------|
-| D1 | Lista oficial: nome, categoria, preço, foto, disponível | Fase 1 | Não publicar item comprável. Os nove atuais continuam vitrine |
-| D2 | Opcionais e o preço de cada um | Fase 2 | Só quantidade |
-| D3 | Entrega, retirada ou as duas | Fase 4 | Não desenhar as duas por precaução |
-| D4 | Raio ou bairros, taxa, pedido mínimo, tempo | Fase 4 | Entrega desligada. Sem número inventado |
-| D5 | Quem recebe o pedido: WhatsApp atual, outro número, ou painel | Fase 5 | WhatsApp já publicado, mensagem pronta, sem backend |
-| D6 | Pagamento: na entrega/retirada, Pix manual, ou gateway | Fase 5 | Só pagar na entrega ou na retirada, texto confirmado |
-| D7 | Horário em que o site aceita pedido | Fase 4 | Horário já em `contact.js`. Fora dele, cardápio visível e pedido fechado |
-| D8 | Quem edita o cardápio: Git ou painel | Fase 7 | Git. Sem admin no MVP |
+- `main` possui site institucional React/Vite.
+- `src/data/menu.js` tem nove produtos e preços uniformes de R$ 29,90, sem confirmação de que sejam valores comerciais válidos.
+- `documentacao/ASSETS.md` classifica imagens de categorias e produtos como provisórias/ilustrativas.
+- Não há sacola, checkout ou pedidos implementados.
+- Há função Vercel em `api/reviews.js`, mas não foi localizada integração Supabase ou API de pedidos.
+- Endereço, horário e WhatsApp estão publicados em `src/data/contact.js`; devem ser reconfirmados para operação de pedidos.
 
-## Arquitetura alvo
+Nenhum dos itens acima significa que o sistema de pedidos já esteja pronto.
 
-Manter React, Vite, Tailwind e Vercel. Sem banco até a fase 6.
+## 4. Bloqueios comerciais
 
-Rotas quando a fase autorizar: `/cardapio` deixa de ser só redirect; `/produto/:id` se houver detalhe; `/sacola`; `/pedido`; `/pedido/confirmado`.
+A fase dependente não começa enquanto a decisão correspondente não estiver confirmada pela loja.
 
-Carrinho no browser (`Context` + `localStorage`). Preço em centavos, cálculo num único módulo. Componente não soma por conta própria.
+| ID | Informação/decisão | Fases afetadas | Regra |
+|---|---|---|---|
+| D1 | Catálogo oficial: nomes, categorias, descrições, fotos e preços | 1–2 | Não vender itens ou preços de demonstração |
+| D2 | Opcionais, tamanhos, complementos e acréscimos | 2–3 | Só cadastrar o que existir e tiver preço confirmado |
+| D3 | Entrega, retirada ou ambas | 4 | Não presumir modalidade |
+| D4 | Área atendida, bairros/raio, taxa, pedido mínimo e prazo | 4 | Não calcular nem prometer entrega sem regra oficial |
+| D5 | WhatsApp que receberá o resumo do pedido | 5 | Confirmar canal e formato operacional |
+| D6 | Pagamento aceito e momento do pagamento | 5 | Não mostrar opção não confirmada |
+| D7 | Horários em que o sistema aceita pedidos e exceções | 4–5 | Horário comercial publicado não equivale automaticamente a janela de pedidos |
+| D8 | Responsável e processo de atualização do catálogo | 1 e 7 | Definir quem publica preços e disponibilidade |
+| D9 | Dados obrigatórios do cliente e política de privacidade/retenção | 4–5 | Minimização de dados e finalidade explícita |
+| D10 | Projeto Supabase, ambientes e responsáveis pelo acesso | 0–1 | Separar desenvolvimento e produção; nunca compartilhar service role |
 
-MVP (D5 = WhatsApp): a confirmação abre `wa.me` com mensagem estruturada. A tela diz que a casa ainda precisa confirmar. Não dizer "pedido aceito".
+A lista detalhada está em `documentacao/DECISOES-PENDENTES.md`.
 
-Fase 6: `POST` no servidor valida preço, horário e área. Segredo só no painel da Vercel, nunca com prefixo `VITE_`.
+## 5. Fases de implantação
 
-Não reintroduzir iFood. Não vender com imagem ilustrativa (`documentacao/ASSETS.md`). Não deixar taxa "a calcular" em produção.
+Cada fase deve ser entregue em PR separado, salvo dependência técnica que justifique divisão menor. A fase só pode ser marcada como concluída após validação e evidência.
 
-## Fases
+| Fase | Entrega | Dependências / bloqueios |
+|---|---|---|
+| 0 | Alinhamento documental, inventário técnico, confirmação de ambiente e decisões | Nenhuma alteração funcional |
+| 1 | Projeto Supabase, schema inicial, RLS, migrations e configuração segura dos ambientes | D10; política de acesso aprovada |
+| 2 | Catálogo real vindo do Supabase, com categorias, produtos, preços, imagens e disponibilidade | D1, D2, D8 |
+| 3 | Sacola, quantidades, opcionais e resumo calculado; estado local apenas como conveniência | Fase 2; D2 |
+| 4 | Dados do cliente, entrega/retirada, validação de área, taxa, horário e total | D3, D4, D7, D9 |
+| 5 | Endpoint server-side de finalização e gravação transacional de pedido, itens e snapshots | Fases 1–4; D5, D6, D9 |
+| 6 | Confirmação do pedido e botão opcional de WhatsApp com resumo gerado a partir do pedido persistido | Fase 5; D5 |
+| 7 | Operação do catálogo e acompanhamento de pedidos; começar com Supabase Dashboard restrito e avaliar painel próprio | D8; requisitos operacionais |
+| 8 | QA integrado, segurança, acessibilidade, monitoramento, contingência e lançamento gradual | Fases anteriores aprovadas |
 
-Uma fase por PR. Não misturar com mapa, hero ou limpeza de asset.
+### Fase 0 — alinhamento e inventário
 
-Pronto, em fase que mexe em UI ou dado: `npm run check`, E2E do fluxo, 390 px e 1280 px sem overflow, `audit:demo-leak` sem vazar demo.
+- Resolver contradições entre `README.md`, `GUIA.md`, `ROADMAP.md` e regras Turquia do `AGENTS.md`.
+- Auditar `main` localmente antes de editar código.
+- Confirmar que não existe integração Supabase preexistente não localizada na inspeção remota inicial.
+- Confirmar proprietários, ambientes e acesso ao projeto Supabase.
+- Registrar D1–D10 e bloqueios.
 
-| Fase | Entrega | Trava |
-|------|---------|-------|
-| 0 | Este arquivo no repositório; GUIA só no presente | — |
-| 1 | Cardápio vendável, `priceCents`, item indisponível some | D1 |
-| 2 | Quantidade; opcional só com D2 | D2 se houver opcional |
-| 3 | Sacola persistida, subtotal único | — |
-| 4 | Entrega ou retirada, taxa da tabela, fora da área não conclui | D3, D4, D7 |
-| 5 | Fechar pedido. WhatsApp no MVP | D5, D6 |
-| 6 | Pedido no servidor | Só se o WhatsApp não bastar |
-| 7 | Admin do cardápio | Só se D8 pedir |
+**Aceite:** documentação coerente, decisões registradas e plano técnico revisado.
 
-Fases 2 e 3 podem usar cardápio de teste fora do build público (`menu.demo.js` + `audit:demo-leak`). Fase 4 não vai a produção sem D4.
+### Fase 1 — fundação Supabase
 
-Higiene de asset é PR separado, nunca no meio de uma fase de pedido. O plano antigo de limpeza foi apagado.
+- Criar ou confirmar projeto Supabase da Turquia.
+- Separar ambientes de desenvolvimento e produção.
+- Adicionar migrations versionadas em `supabase/migrations/`.
+- Criar tabelas, constraints, índices, RLS e políticas.
+- Configurar variáveis server-side na Vercel e variáveis públicas estritamente necessárias.
+- Documentar backup, recuperação e rotação de segredos.
 
-## Status em 21/11/2026
+**Aceite:** migrations aplicáveis em ambiente de desenvolvimento; RLS testado com anon e service role; nenhum segredo no bundle, Git ou logs.
 
-| Item | Estado |
-|------|--------|
-| Fase 0 | Este arquivo entra neste PR de documentação |
-| Fases 1–7 | Não iniciadas |
-| D1–D8 | Em aberto |
+### Fase 2 — catálogo oficial
 
-## Como executar
+- Migrar dados comerciais confirmados para o Supabase.
+- Implementar leitura de categorias e produtos publicados.
+- Usar valores monetários em centavos (`price_cents`).
+- Exibir indisponibilidade conforme regra definida.
+- Preservar imagens ilustrativas fora do catálogo vendável até aprovação.
+- Remover dependência de preço comercial hardcoded no frontend.
 
-1. Ler `AGENTS.md`, `GUIA.md` e este arquivo.
-2. Confirmar branch. A vitrine sem iFood está em `feat/sem-ifood`; `main` pode estar atrás.
-3. Uma fase. Se D1–D8 não estiver escrito aqui, parar e perguntar.
-4. Menor diff. Não editar hero, mapa nem avaliações nessa fase.
-5. `npm run check` e E2E do fluxo.
-6. Atualizar a tabela de status neste arquivo.
-7. Parar.
+**Aceite:** UI apresenta dados retornados pelo Supabase; preço e status conferem com a base; erro de conexão não transforma catálogo vazio em sucesso falso.
+
+### Fase 3 — sacola
+
+- Adicionar estado de sacola e persistência local apenas para conveniência.
+- Persistir identificadores, quantidades e seleções, não confiar em preço local.
+- Recalcular exibição a partir do catálogo atual.
+- Tratar item removido, indisponível ou preço alterado.
+- Não criar pedido nesta fase.
+
+**Aceite:** adicionar, alterar quantidade, remover, atualizar e recuperar sacola sem totais divergentes.
+
+### Fase 4 — dados e modalidade
+
+- Implementar apenas modalidade aprovada.
+- Validar endereço/área com regra oficial.
+- Calcular taxa no servidor com tabela/regra confirmada.
+- Validar horário de aceitação e exceções.
+- Exibir claramente subtotal, taxa e total.
+- Coletar somente dados pessoais necessários.
+
+**Aceite:** cenários dentro/fora da área, horário aberto/fechado, retirada/entrega e taxa conferidos com casos de teste aprovados pela loja.
+
+### Fase 5 — gravação transacional de pedidos
+
+- Criar endpoint server-side, por exemplo `POST /api/orders`.
+- Validar payload e normalizar os dados.
+- Consultar produtos/opcionais atuais no banco.
+- Recalcular preços, subtotal, taxa e total no servidor/banco.
+- Criar pedido, itens e opcionais com snapshots na mesma transação.
+- Implementar idempotência para impedir duplicidade em retry.
+- Retornar apenas referência e resumo necessários ao cliente.
+- Registrar estado inicial como `pending_confirmation` ou equivalente acordado.
+
+**Aceite:** pedido e todos os itens persistidos atomicamente; erro não deixa pedido parcial; retry idempotente; cliente não consegue alterar o total enviando preço adulterado.
+
+### Fase 6 — WhatsApp após persistência
+
+- Gerar mensagem usando o pedido confirmado no banco.
+- Oferecer botão para abrir o WhatsApp.
+- Não depender da abertura do WhatsApp para salvar o pedido.
+- Não marcar `sent`, `accepted` ou `paid` por inferência do navegador.
+- Registrar no máximo o evento de clique/abertura, se houver finalidade operacional e isso for claramente nomeado.
+
+**Aceite:** pedido permanece consultável no Supabase mesmo sem abertura/envio de WhatsApp; texto contém referência, itens e total consistentes.
+
+### Fase 7 — operação e administração
+
+- Definir responsável por manter catálogo, preços, disponibilidade e pedidos.
+- Começar com acesso restrito ao Supabase Dashboard se for suficiente.
+- Avaliar painel administrativo próprio apenas quando houver requisitos operacionais claros.
+- Definir papéis, autenticação, trilha de auditoria e procedimento de alteração.
+- Não expor painel administrativo ao público.
+
+**Aceite:** processo operacional documentado e testado por pessoa autorizada.
+
+### Fase 8 — lançamento
+
+- Testes unitários, integração, E2E, acessibilidade e responsividade.
+- Testes de RLS e tentativa de acesso cruzado a pedidos.
+- Testes de preço adulterado, produto indisponível, retry, timeout e falha de banco.
+- Testes de WhatsApp sem envio e com número ausente.
+- Verificação de logs sem dados pessoais desnecessários.
+- Configuração de alertas, backups e procedimento de rollback.
+- Lançamento gradual após aprovação da loja.
+
+**Aceite:** checklist de lançamento assinado, sem falhas críticas e com recuperação testada.
+
+## 6. Modelo de dados proposto
+
+O esquema final deve ser validado antes da migration inicial. Modelo lógico sugerido:
+
+| Entidade | Responsabilidade | Campos importantes |
+|---|---|---|
+| `menu_categories` | Categorias do catálogo | `id`, `name`, `slug`, `sort_order`, `is_active` |
+| `menu_items` | Produtos e preços | `id`, `category_id`, `name`, `description`, `price_cents`, `image_path`, `is_published`, `is_available` |
+| `menu_item_options` | Opcionais/acréscimos | `id`, `menu_item_id`, `name`, `price_delta_cents`, `is_available` |
+| `orders` | Cabeçalho do pedido | `id`, `order_number`, `status`, `fulfillment_type`, dados mínimos do cliente, subtotal/taxa/total em centavos, `idempotency_key`, timestamps |
+| `order_items` | Snapshot de cada produto | `order_id`, `menu_item_id` opcional, `item_name_snapshot`, `unit_price_cents_snapshot`, `quantity`, `line_total_cents` |
+| `order_item_options` | Snapshot de cada opcional | `order_item_id`, `option_name_snapshot`, `price_delta_cents_snapshot`, quantidade, total |
+
+Regras:
+- Valores monetários em inteiro de centavos, moeda BRL.
+- `price_cents >= 0`; quantidades inteiras dentro de limites definidos.
+- Não depender de JOIN com o catálogo atual para reconstruir pedido antigo.
+- Snapshots preservam o nome e o preço praticado na hora da compra.
+- Exclusão de produto não deve apagar histórico de pedido.
+- Adicionar índices para status/data e chaves de consulta operacional.
+- Definir política de retenção de dados pessoais.
+
+## 7. Segurança, RLS e fronteiras de confiança
+
+- RLS habilitado em todas as tabelas expostas.
+- `anon` pode ler somente categorias/produtos publicados e dados públicos necessários.
+- O cliente não pode ler pedidos nem pedidos de outros clientes.
+- Não liberar INSERT público direto em `orders`, `order_items` ou `order_item_options`.
+- A criação ocorre por backend confiável e transação no PostgreSQL.
+- `SUPABASE_SERVICE_ROLE_KEY` somente em ambiente server-side protegido.
+- Nunca prefixar service role com `VITE_`.
+- Validar input, tamanho, tipos, quantidade, rate limit e idempotência.
+- Não armazenar dados de cartão.
+- Não registrar endereço/telefone em logs de aplicação sem necessidade.
+- Separar ambientes e credenciais; não usar banco de produção em teste destrutivo.
+
+## 8. Estados e semântica
+
+Estados iniciais sugeridos, sujeitos à aprovação operacional:
+
+- `pending_confirmation`: pedido gravado, aguardando confirmação humana da loja.
+- `confirmed`: loja confirmou.
+- `preparing`: em preparo.
+- `ready`: pronto para retirada/expedição.
+- `out_for_delivery`: saiu para entrega, se aplicável.
+- `completed`: concluído.
+- `cancelled`: cancelado.
+- `rejected`: recusado pela loja.
+
+Abrir WhatsApp não altera automaticamente o estado. “Pedido registrado” significa persistência concluída; não significa que a loja aceitou ou que o cliente pagou.
+
+## 9. Critérios gerais de qualidade
+
+Em cada PR aplicável:
+- `npm run check`;
+- `npm run test:e2e`;
+- testes específicos de integração Supabase;
+- RLS verificado com perfis anon/autorizado;
+- mobile 390 px e desktop 1280 px, além dos viewports já cobertos;
+- sem overflow horizontal;
+- console sem erros;
+- estados de carregamento, vazio e falha tratados;
+- nenhuma credencial em artefatos públicos;
+- documentação atualizada.
+
+## 10. Fora do MVP
+
+- Aplicativo nativo.
+- Login obrigatório do cliente.
+- Programa de fidelidade.
+- Integração com iFood ou marketplace.
+- Pagamento online sem gateway contratado.
+- Rastreamento de motoboy.
+- Gestão de estoque avançada.
+- Painel administrativo próprio antes de comprovar necessidade.
+- Automação de WhatsApp Business/API sem decisão e contratação específicas.
+
+## 11. Regra de avanço
+
+Não pular fases por conveniência. Uma fase pode ser dividida em PRs menores, mas não pode ser declarada concluída sem critérios de aceite, testes e evidências. Se uma decisão comercial estiver pendente, implementar apenas o que não dependa dela e manter a funcionalidade bloqueada em produção.

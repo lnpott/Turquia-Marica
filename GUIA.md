@@ -1,269 +1,171 @@
-# GUIA — estado atual
+# GUIA — estado atual e direção aprovada
 
-> O que o produto **é hoje**. Futuro (cardápio comprável, pedido, entrega) está só em [`ROADMAP.md`](ROADMAP.md).
-> Atualizado em 21/11/2026 na branch `feat/sem-ifood`.
-> Divergência: **código + Git > este GUIA > ROADMAP (só da fase autorizada) > AGENTS > ASSETS > `documentacao/historico/`**.
-> **Documento canônico unificado** (atualizado em 21/11/2026 na branch `feat/sem-ifood`).  
-> Substitui a necessidade de consultar múltiplos `.md` espalhados para entender o projeto atual.  
-> Em caso de divergência: **código + Git da branch de trabalho > este GUIA > BEST_PLAN.MD > demais documentos**.
+> Este documento separa o que está implementado em `main` do que é apenas planejado.
+> Base da revisão: branch `main`, consultada em 21/11/2026.
+> Não interpretar o roadmap como funcionalidade já disponível.
 
-## Produto
+## 1. Produto e objetivo
 
-Site institucional da **Turquia Lanches**, Parque Nanci, Maricá/RJ.
+A Turquia Lanches possui um site institucional e uma vitrine de cardápio. A direção aprovada é evoluir esse produto para uma plataforma própria que reúna:
 
-Faz: marca, fotografia e vídeo reais, cardápio em vitrine, localização, contato.
-**Projeto:** Site institucional + catálogo da **Turquia Lanches**  
-**Local:** Parque Nanci · Maricá/RJ  
-**Produto digital:** presença de marca, desejo (fotografia/vídeo reais), cardápio e localização.  
-**Canal de pedido:** **nenhum no site.** iFood foi removido do sistema (UI, dados, ícones e testes). O site **não é e-commerce**.
+- portfólio institucional completo;
+- catálogo comercial ativo;
+- preços e opcionais oficiais;
+- sacola e finalização de pedidos;
+- persistência de catálogo, preços e pedidos no Supabase;
+- encaminhamento opcional do pedido pelo WhatsApp após sua gravação.
 
-Não faz: pedido, sacola, checkout, pagamento, login, taxa de entrega, iFood ou outro marketplace.
+**Decisão arquitetural permanente:** Supabase é parte obrigatória da solução. Não existe alternativa de produção baseada apenas em `localStorage`, link de WhatsApp ou dados estáticos para armazenar pedidos.
 
-## Stack
-- apresentar a marca com honestidade radical;
-- mostrar ambiente e comida reais;
-- informar cardápio (quando validado);
-- facilitar localização e contato (WhatsApp, Instagram, Maps);
+## 2. Estado confirmado em `main`
 
-React 18, React Router 7, Vite 8, Tailwind 3, MapLibre GL, Vitest, Playwright, axe. Node 22. Deploy Vercel a partir de `main`. CI: GitHub Actions `quality.yml`.
+### Stack e execução
 
-## Rotas
-- reintroduzir iFood ou qualquer marketplace;
-- checkout próprio, pagamento, autenticação, backend transacional;
-- inventar dados comerciais (preço, horário, produto, telefone, WhatsApp, etc.);
-- transformar o site em plataforma de delivery.
+- React 18 e React DOM 18.
+- React Router DOM 7.
+- Vite 8.
+- Tailwind CSS 3.
+- Node.js 22 ou superior.
+- Vercel para hospedagem e funções server-side.
+- Vitest para testes unitários.
+- Playwright para testes E2E.
+- axe-core/Playwright para verificações de acessibilidade.
 
-- `/` — home com âncoras (`#cardapio`, `#localizacao`).
-- `/cardapio` e `/localizacao` redirecionam para essas âncoras.
-- `/visual-qa-demo` só com `VITE_VISUAL_QA_DEMO=true`.
-
-Não existem `/sacola`, `/checkout` nem `/produto/:id`. Os documentos que descreviam isso foram apagados. O Git ainda tem o texto nos commits antigos.
-
-## Dados (`src/data/contact.js`)
-1. **Código + estado do Git** da branch `feat/sem-ifood` (ainda não é `main`)
-2. **Este `GUIA.md`**
-3. **`BEST_PLAN.MD`** — plano operacional vivo (etapas, estados, evidências)
-4. **`AGENTS.md`** — regras obrigatórias para qualquer agente de IA
-5. **`documentacao/ASSETS.md`** — catálogo de mídia ativa
-6. Restante (relatórios de QA, limpeza, histórico) → consulta pontual
-
-| Campo | Estado |
-|-------|--------|
-| Endereço | R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160 |
-| Horário | Terça a domingo, 17h–00h. Segunda fechado |
-| WhatsApp | https://wa.me/5521964699374 |
-| Instagram | @turquialanches |
-| Maps | disponível |
-| Telefone | indisponível |
-| iFood | removido |
-
-Não inventar telefone, preço, taxa, área de entrega ou horário diferente.
-
-## Cardápio (`src/data/menu.js`)
-
-Vitrine provisória. Nove itens publicados, todos a R$ 29,90, incluindo "Pizza Teste". Categorias em `construction`. Imagens de produto não são o acervo oficial — ver [`documentacao/ASSETS.md`](documentacao/ASSETS.md). Esses preços **não** são cardápio operacional.
-
-## Hero
-
-Cinco slides em `src/components/home/HeroSection.jsx`: ambiente (vídeo), hambúrguer, espaço infantil (vídeo), tábua de petiscos, pizza. Não redesenhar fora de uma tarefa que peça isso.
-
-## Comandos
-## 4. Arquitetura atual
-
-### Navegação
-
-- **Home única** (`/`) com seções por âncora (`#cardapio`, `#localizacao`, etc.).
-- Rotas legadas `/cardapio` e `/localizacao` redirecionam para as âncoras correspondentes.
-
-### Hero
-
-Carrossel híbrido de **5 slides** em `src/components/home/HeroSection.jsx`:
-
-| # | Tipo | Mídia | Headline |
-|---|------|-------|----------|
-| 1 | vídeo | `turquia-ambiente-hero.mp4` | Um lugar para chegar e ficar |
-| 2 | foto | `turquia-hamburguer-artesanal-01.jpg` | Fartura que reúne |
-| 3 | vídeo | `turquia-espaco-infantil-hero.mp4` | Diversão para toda a família |
-| 4 | foto | `turquia-tabua-petiscos-chopp-01.jpg` | Petisco e boa companhia |
-| 5 | foto | `turquia-pizza-calabresa-01.jpg` | Seu próximo sabor favorito |
-
-- Crossfade nativo, suporte a `prefers-reduced-motion`.
-- Vídeos são clips otimizados (sem áudio) derivados de material real.
-
-### Dados comerciais
-
-**Fonte única:** `src/data/contact.js`
-
-Estado vigente (não invente nem “complete”):
-
-- **Localização:** AVAILABLE — `R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160`
-- **Horários:** AVAILABLE — Terça a domingo · 17h às 00h (Segunda fechado)
-- **Telefone:** UNAVAILABLE
-- **iFood:** removido. Não existe `channels.ifood`, CTA, ícone nem asset público.
-- **WhatsApp:** AVAILABLE — `https://wa.me/5521964699374`
-- **Instagram:** AVAILABLE — `@turquialanches`
-- **Maps:** AVAILABLE
-
-Cardápio e preços: somente o que estiver validado em `src/data/menu.js`. Mock/demo fica isolado e protegido pelo `audit:demo-leak`.
-
-### Mapa
-
-MapLibre + estilo local (`src/assets/map/liberty.json`), carregamento sob demanda, marcador e contorno do Parque Nanci. Fallback textual e CTA de Maps oficiais existem.
-
----
-
-## 5. Comandos essenciais
+Scripts confirmados em `package.json`:
 
 ```bash
-npm install
 npm run dev
+npm run lint
+npm run test
+npm run build
 npm run check
 npm run test:e2e
+npm run test:e2e:demo
+npm run audit:demo-leak
 ```
 
-E2E na primeira vez: `npx playwright install chromium`.
+`npm run check` executa lint, testes Vitest e build. O workflow `.github/workflows/quality.yml` também executa E2E no Chromium.
 
-Segredos de mapa só no painel da Vercel, nunca no repositório e nunca com prefixo `VITE_`.
+### Aplicação e rotas
 
-## Onde mexer
-Primeira execução de E2E local:
+- `src/App.jsx` mantém a Home institucional em `/`.
+- `/cardapio` redireciona para `/#cardapio`.
+- `/localizacao` redireciona para `/#localizacao`.
+- A rota de QA visual depende de `VITE_VISUAL_QA_DEMO=true`.
+- Não existem rotas implementadas de sacola, checkout ou confirmação de pedido.
+- O próprio comentário de `src/App.jsx` declara que não há canal de pedido no site.
 
-```bash
-npx playwright install chromium
-```
+### Cardápio
 
-Sempre valide com `npm run check` antes de considerar uma mudança pronta.
+- `src/data/menu.js` é atualmente a fonte estática consumida pela vitrine.
+- Há nove registros de produtos.
+- Os preços encontrados são uniformemente `R$ 29,90`.
+- As categorias estão marcadas como `construction`.
+- A documentação de assets declara que imagens de categorias e produtos são provisórias/ilustrativas.
+- Os registros existentes não podem ser promovidos automaticamente a catálogo oficial nem utilizados para pedidos reais sem validação comercial.
 
----
+### Contato conhecido no código
 
-## 6. CI/CD
+A fonte atual é `src/data/contact.js`:
 
-- **CI:** GitHub Actions (`Quality`) em todo PR, push para `main` e `workflow_dispatch`.
-- **CD:** Vercel publica a partir de `main` → [turquia-marica.vercel.app](https://turquia-marica.vercel.app).
-- Segredos (`GOOGLE_PLACE_ID`, `GOOGLE_MAPS_API_KEY`) ficam **somente** no painel do Vercel. Nunca no repositório e nunca com prefixo `VITE_`.
-- `VITE_VISUAL_QA_DEMO` permanece desligado em produção.
+- Endereço publicado: R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160.
+- Horário publicado: terça a domingo, 17h às 00h; segunda fechado.
+- WhatsApp publicado: `https://wa.me/5521964699374`.
+- Instagram: `@turquialanches`.
+- Telefone convencional: indisponível.
 
----
+Esses dados foram observados no código. Antes de usá-los para regras de aceitação de pedidos, a loja deve confirmar que continuam corretos e que o WhatsApp publicado é o canal operacional que receberá pedidos.
 
-## 7. Decisão vigente — retirada do iFood
+### Backend e integrações
 
-Branch de trabalho: **`feat/sem-ifood`**, criada a partir de `main`. `main` continua com o site antigo até o merge.
+- Existe uma função Vercel `api/reviews.js`, usada para consultar avaliações do Google Places.
+- `.env.example` contém `GOOGLE_PLACE_ID` e `GOOGLE_MAPS_API_KEY`, destinados exclusivamente ao servidor.
+- A função de avaliações é evidência de que o repositório já utiliza o padrão de funções server-side da Vercel.
+- Não foi localizada integração Supabase no `main` consultado.
+- Não foi localizado `supabase/`, migration SQL, cliente Supabase, API de pedidos ou endpoint `/api/health` no `main` consultado.
+- Não há persistência de pedidos implementada.
 
-O que esta etapa faz:
+A ausência foi verificada nos caminhos pesquisados; não equivale a uma auditoria byte a byte de todos os diretórios. Antes de implementar, o agente deve repetir a busca no checkout local.
 
-| Superfície | Antes | Agora |
-|------------|-------|-------|
-| `src/data/contact.js` | `channels.ifood` + `IFOOD_URL` | canal e export removidos |
-| Header (mobile e desktop) | botão “Pedir no iFood” | só Instagram e WhatsApp |
-| Footer | wordmark iFood | Maps, Instagram, WhatsApp |
-| Faixa “Informações rápidas” | card iFood | card WhatsApp |
-| `ProductCard` | texto “Pedido via iFood” | só nome e preço |
-| Assets | `IconIfood`, `IconIfoodGold`, `ICON_IFOOD.png`, SVG iFood | apagados |
-| Testes | contratos que exigiam o link | contratos que exigem ausência de iFood |
+## 3. Contradições documentais identificadas
 
-O que esta etapa **não** faz:
+A documentação existente em `main` contém afirmações incompatíveis entre si:
 
-- não inventa outro marketplace no lugar;
-- não reescreve `BEST_PLAN.MD`, `documentacao/qa/` nem `limpeza.MD` (histórico);
-- não muda cardápio, preços, Hero, mapa ou horários.
+- `ROADMAP.md` descreve pedidos no futuro, mas condiciona o backend transacional a uma hipótese em que o WhatsApp não bastaria.
+- `GUIA.md` contém trechos que proíbem checkout, pedidos e backend transacional, embora o novo objetivo os exija.
+- `README.md` ainda declara que o site não é e-commerce e não encaminha pedidos.
+- `GUIA.md` contém referências operacionais à branch `feat/sem-ifood` e afirma que `main` poderia estar atrás, embora esta revisão tenha sido feita diretamente em `main`.
+- O texto do roadmap afirma que não haverá banco até uma fase posterior. Isso está revogado: Supabase é requisito estrutural obrigatório.
 
-### Próximas melhorias (planejadas, não iniciadas)
+Este pacote propõe substituir essas instruções contraditórias. Não afirma que o repositório já foi alterado.
 
-Ordem sugerida, uma por PR a partir desta branch:
+## 4. Arquitetura aprovada para o produto futuro
 
-1. **Fechar a retirada** — `npm run check` + E2E verdes; merge de `feat/sem-ifood` em `main`.
-2. **Limpeza de runtime** — lotes ainda abertos em `limpeza.MD` (duplicatas de foto, JPEGs grandes, masters de vídeo só depois de backup).
-3. **Cardápio** — revisar nomes e preços já publicados contra a fonte que o responsável entregar. Sem fonte, não alterar `menu.js`.
-4. **Performance** — Lighthouse mobile depois do MapLibre; imagens responsivas só onde o ganho for medido.
-5. **Telefone e pagamento** — continuam fora até confirmação humana.
+### Supabase
 
-### Governança
+Fonte persistente para:
+- categorias;
+- produtos;
+- preços;
+- disponibilidade;
+- opcionais e seus acréscimos;
+- pedidos;
+- itens e opcionais congelados no momento da compra.
 
-1. Trabalhar em `feat/sem-ifood` (ou branch filha dela) até o merge.
-2. Validar com `npm run check` e, se a UI mudar, `npm run test:e2e`.
-3. PR para `main`.
-4. Atualizar este `GUIA.md` no mesmo commit quando o estado do produto mudar.
+### Frontend
 
----
+React continua responsável pela experiência de navegação:
+- consultar catálogo publicado;
+- exibir preço e disponibilidade;
+- manter sacola temporária no navegador;
+- coletar dados necessários para o pedido;
+- apresentar confirmação somente após resposta persistida do servidor.
 
-## 8. Pendências reais (não inventar)
+O navegador não define o preço final.
 
-### Dados comerciais (Lote 14)
+### Servidor
 
-| Item | Estado |
-|------|--------|
-| Telefone oficial | UNAVAILABLE |
-| Canal de pedido no site | Removido (sem iFood) |
-| Catálogo completo + preços oficiais | Em construção / auditoria |
-| Acervo fotográfico profissional completo (especialmente horizontal) | Pendente |
-| Formas de pagamento oficiais | Não publicadas (não inventar) |
+A Vercel recebe a solicitação de pedido e valida:
+- método e formato;
+- campos obrigatórios;
+- quantidade e IDs;
+- disponibilidade atual;
+- preço atual no banco;
+- opcionais válidos;
+- regras de entrega/retirada;
+- idempotência e duplicidade.
 
-### Técnico / limpeza
+A gravação de pedido, itens e opcionais deve ser atômica, preferencialmente por função transacional PostgreSQL/RPC no Supabase. Não gravar cabeçalho e itens em chamadas independentes sem transação.
 
-- Plano de limpeza (`limpeza.MD`) — Lote 1 concluído; lotes restantes de otimização de assets e retenção histórica ainda abertos.
-- Vídeos masters pesados e alguns JPEGs originais ainda no tree (backup externo antes de remover).
-- Medição formal de Lighthouse pós-MapLibre e refinamentos de performance de imagem.
+### WhatsApp
 
-### Governança antiga (lotes em `main`)
+Depois da confirmação de persistência:
+- apresentar número/referência e resumo do pedido;
+- oferecer botão para abrir WhatsApp com mensagem estruturada;
+- não marcar pedido como enviado, aceito ou pago apenas porque o navegador abriu o WhatsApp;
+- preservar o pedido no Supabase mesmo se o cliente fechar a página ou não enviar a mensagem.
 
-O fluxo abaixo vale para lotes novos depois do merge:
+## 5. Segurança e privacidade
 
-1. Branch derivada de `origin/main`
-2. Validação local (`check` + E2E quando aplicável)
-3. PR para `main`
-4. Atualização deste `GUIA.md` quando a mudança alterar o produto
+- `SUPABASE_URL` e chave pública/anon podem ser usadas no frontend, com RLS corretamente configurado.
+- `SUPABASE_SERVICE_ROLE_KEY` é segredo exclusivo do servidor.
+- Nunca usar prefixo `VITE_` em service role, tokens ou segredos.
+- Visitantes só podem ler dados publicados conforme políticas RLS.
+- Visitantes não podem listar, ler, alterar ou apagar pedidos de outros clientes.
+- Criação de pedidos ocorre por endpoint server-side; não liberar INSERT público irrestrito em `orders`.
+- Validar e limitar payload, quantidades, texto e frequência.
+- Não armazenar dados de cartão.
+- Definir aviso de privacidade, finalidade, retenção e acesso aos dados pessoais antes do lançamento.
 
-`BEST_PLAN.MD` permanece como registro histórico das etapas anteriores. Não reabrir essas etapas para “tirar iFood do passado”.
+## 6. Regras de governança
 
----
-
-## 9. Como trabalhar neste repositório
-
-1. Leia este `GUIA.md` e o `AGENTS.md`.
-2. Confirme o estado real do Git (`git status`, `HEAD`, `origin/main`).
-3. Inspecione o código envolvido antes de propor mudança.
-4. Não invente dados comerciais.
-5. Faça a menor alteração correta possível.
-6. Preserve o que já funciona.
-7. Valide de verdade (não só “parece certo”).
-8. Atualize documentação diretamente afetada.
-9. Pare ao concluir o escopo autorizado.
-
-Para agentes de IA: o `AGENTS.md` é obrigatório.
-
----
-
-## 10. Documentos que permanecem
-
-| Arquivo | Função atual |
-|---------|--------------|
-| `GUIA.md` | **Este arquivo** — handoff e visão atual |
-| `AGENTS.md` | Regras de agentes |
-| `BEST_PLAN.MD` | Plano operacional vivo + histórico de etapas |
-| `README.md` | Entrada pública do repositório |
-| `documentacao/ASSETS.md` | Catálogo de mídia ativa |
-| `documentacao/qa/` | Evidências de auditoria |
-| `limpeza.MD` | Plano de limpeza ainda parcialmente ativo |
-
-Todo o resto em `documentacao/historico/` e prompts/snapshots antigos são **histórico**.
-
----
-
-## 11. Princípio permanente
-
-> **Honestidade radical.**  
-> Só publique o que for confirmado.  
-> Fotografia e vídeo reais primeiro.  
-> Sem canal de pedido no site.  
-> Código e Git mandam.
-
-| Pergunta | Arquivo |
-|----------|---------|
-| O que está no ar neste código | este GUIA |
-| O que vamos construir | ROADMAP.md |
-| Como um agente edita | AGENTS.md |
-| Qual foto pode vender | documentacao/ASSETS.md |
-| Etapas, migração, QA antigo | Apagados. Não usar. Git history se precisar |
-
-Branch de trabalho da retirada do iFood: `feat/sem-ifood`. `main` pode ainda ter o site anterior até o merge. Conferir a branch antes de editar.
-*Última atualização: 21/11/2026 — branch `feat/sem-ifood`. iFood retirado do sistema ativo. Plano das próximas melhorias está na seção 7.*
+1. `main` é a referência inicial desta revisão.
+2. Criar branch nova a partir do `main` atualizado para cada lote.
+3. Uma fase por PR, com escopo explícito.
+4. Não implementar preço, entrega, pagamento ou prazo por suposição.
+5. Atualizar este guia quando o estado real do código mudar.
+6. Atualizar o roadmap somente com evidência de implementação e validação.
+7. Não declarar fase concluída apenas porque o código foi escrito.
+8. Executar `npm run check` e `npm run test:e2e` nas mudanças aplicáveis.
+9. Registrar decisões comerciais e evidências no repositório.
+10. Não confundir abrir WhatsApp com mensagem enviada ou pedido aceito.
