@@ -90,12 +90,12 @@ describe('dados comerciais e demonstrativos', () => {
     expect(link).toHaveAttribute('rel', 'noopener noreferrer')
   })
 
-  it('exibe os nove produtos no cardápio público', () => {
+  it('não troca falha do catálogo pelos nove preços estáticos', async () => {
     expect(products).toHaveLength(9)
     render(<MenuSection />)
-    expect(screen.getByRole('heading', { level: 2, name: /produto é o protagonista/i })).toBeInTheDocument()
-    expect(screen.getByRole('group', { name: 'Filtrar por categoria' })).toBeInTheDocument()
-    expect(screen.getAllByRole('article')).toHaveLength(9)
+    expect(await screen.findByText('Cardápio indisponível')).toBeInTheDocument()
+    expect(screen.queryAllByRole('article')).toHaveLength(0)
+    expect(screen.queryByText('R$ 29,90')).not.toBeInTheDocument()
   })
 
   it('valida o layout preenchido apenas com fixture injetada', () => {

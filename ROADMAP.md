@@ -2,7 +2,7 @@
 
 > Este documento descreve o produto-alvo e a sequência de implantação.
 > O estado implementado está em `GUIA.md`.
-> Revisão documental baseada em `main`, em 21/11/2026.
+> Revisão documental baseada em `main` (`18ab1eb`), em 22/11/2026.
 > Supabase é obrigatório para catálogo, preços e pedidos. Esta decisão não é opcional nem depende de o WhatsApp ser suficiente.
 
 ## 1. Objetivo do produto
@@ -43,16 +43,17 @@ O sistema não deve alegar pagamento realizado, pedido aceito pela loja ou mensa
 | Pagamento online | Fora do MVP até contratação e integração de gateway |
 | Marketplace | Não reintroduzir iFood ou outro marketplace sem decisão explícita |
 
-## 3. Estado inicial conhecido
+## 3. Estado auditado em 22/11/2026
 
-- `main` possui site institucional React/Vite.
-- `src/data/menu.js` tem nove produtos e preços uniformes de R$ 29,90, sem confirmação de que sejam valores comerciais válidos.
-- `documentacao/ASSETS.md` classifica imagens de categorias e produtos como provisórias/ilustrativas.
-- Não há sacola, checkout ou pedidos implementados.
-- Há função Vercel em `api/reviews.js`, mas não foi localizada integração Supabase ou API de pedidos.
-- Endereço, horário e WhatsApp estão publicados em `src/data/contact.js`; devem ser reconfirmados para operação de pedidos.
+O inventário vivo está no `GUIA.md`. Resumo para não tratar código existente como fase aceita:
 
-Nenhum dos itens acima significa que o sistema de pedidos já esteja pronto.
+- Leitura de catálogo no Supabase existe, com fallback estático de demonstração.
+- Sacola em `localStorage`, checkout só de entrega, `POST /api/orders` e link de WhatsApp existem.
+- Pedido e itens não são uma transação; não há idempotência; opcionais não entram no total do servidor.
+- Taxa fallback de 500 centavos e raio digitado pelo cliente não são regra oficial (D3, D4).
+- Admin em `/admin` existe e não equivale à Fase 7.
+
+Nenhum desses itens fecha o aceite da fase correspondente.
 
 ## 4. Bloqueios comerciais
 
@@ -80,13 +81,13 @@ Cada fase deve ser entregue em PR separado, salvo dependência técnica que just
 | Fase | Entrega | Dependências / bloqueios | Status |
 |---|---|---|---|
 | 0 | Alinhamento documental, inventário técnico, confirmação de ambiente e decisões | Nenhuma alteração funcional | **Concluída** (Decisões D1-D10 confirmadas em `documentacao/DECISOES-PENDENTES.md`) |
-| 1 | Projeto Supabase, schema inicial, RLS, migrations e configuração segura dos ambientes | D10; política de acesso aprovada | **Concluída** (Projeto `sxpsewnfgpkppqivzvcc` ativo, migration aplicada, Vercel linkada com envs) |
-| 2 | Catálogo real vindo do Supabase, com categorias, produtos, preços, imagens e disponibilidade | D1, D2, D8 | Próxima fase |
-| 3 | Sacola, quantidades, opcionais e resumo calculado; estado local apenas como conveniência | Fase 2; D2 | Pendente |
-| 4 | Dados do cliente, entrega/retirada, validação de área, taxa, horário e total | D3, D4, D7, D9 | Pendente |
-| 5 | Endpoint server-side de finalização e gravação transacional de pedido, itens e snapshots | Fases 1–4; D5, D6, D9 | Pendente |
-| 6 | Confirmação do pedido e botão opcional de WhatsApp com resumo gerado a partir do pedido persistido | Fase 5; D5 | Pendente |
-| 7 | Operação do catálogo e acompanhamento de pedidos; começar com Supabase Dashboard restrito e avaliar painel próprio | D8; requisitos operacionais | Pendente |
+| 1 | Projeto Supabase, schema inicial, RLS, migrations e configuração segura dos ambientes | D10; política de acesso aprovada | **Concluída** na fundação (projeto `sxpsewnfgpkppqivzvcc`, duas migrations no repo, envs na Vercel). Backup e rotação de segredo não foram reauditados neste PR |
+| 2 | Catálogo real vindo do Supabase, com categorias, produtos, preços, imagens e disponibilidade | D1, D2, D8 | **Aceite técnico no código.** A UI não troca falha por `menu.js`. A carga do banco ainda é o seed de R$ 29,90 até a loja publicar preço real |
+| 3 | Sacola, quantidades, opcionais e resumo calculado; estado local apenas como conveniência | Fase 2; D2 | **Aceite técnico no código.** Sacola sem preço local; total recalculado pelo catálogo; item ausente bloqueia |
+| 4 | Dados do cliente, entrega/retirada, validação de área, taxa, horário e total | D3, D4, D7, D9 | **Parcial.** Taxa só da zona ativa. Sem retirada. Horário de aceite não configurado (D7) |
+| 5 | Endpoint server-side de finalização e gravação transacional de pedido, itens e snapshots | Fases 1–4; D5, D6, D9 | **Código da transação e da idempotência pronto.** Depende de aplicar `create_order` no Supabase. Pagamento na entrega segue o constraint já existente |
+| 6 | Confirmação do pedido e botão opcional de WhatsApp com resumo gerado a partir do pedido persistido | Fase 5; D5 | **Parcial, sem aceite.** `whatsappOrder.js` monta `wa.me` após o POST; não marca enviado/aceito/pago |
+| 7 | Operação do catálogo e acompanhamento de pedidos; começar com Supabase Dashboard restrito e avaliar painel próprio | D8; requisitos operacionais | **Parcial, sem aceite.** `/admin` com token no navegador; processo da loja não documentado como aceito |
 | 8 | QA integrado, segurança, acessibilidade, monitoramento, contingência e lançamento gradual | Fases anteriores aprovadas | Pendente |
 
 ### Fase 0 — alinhamento e inventário

@@ -17,9 +17,9 @@ Site institucional e catálogo digital da **Turquia Lanches**, em Parque Nanci, 
 
 ## Estado atual
 
-O código em `main` mantém uma Home institucional com cardápio em vitrine, localização, contato e avaliações. Não há sacola, checkout ou persistência de pedidos. O projeto usa React 18, React Router 7, Vite 8, Tailwind 3, Node 22, Vercel, Vitest e Playwright.
+Auditoria de `main` em `18ab1eb` (22/11/2026). Detalhe em [GUIA.md](GUIA.md).
 
-O cardápio em `src/data/menu.js` contém nove registros e preços de demonstração/pendentes de validação. As imagens de produto e categoria são classificadas como provisórias em `documentacao/ASSETS.md`. Não tratar esses registros como catálogo comercial aprovado.
+O cardápio público lê só o Supabase. Se a leitura falha, a página não mostra os nove itens de `src/data/menu.js`. Sacola guarda id e quantidade; o preço é recalculado. `POST /api/orders` grava pela função `create_order` (preço e taxa do banco, na mesma transação, com idempotência). Essa função precisa estar aplicada no Supabase remoto.
 
 ## Produto-alvo
 

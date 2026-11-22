@@ -28,6 +28,10 @@ describe('delivery calculations and whatsapp order tests', () => {
 
     const zOutside = matchDeliveryZone(12.0, zones)
     expect(zOutside).toBeNull()
+
+    expect(matchDeliveryZone(2.5, [])).toBeNull()
+    expect(matchDeliveryZone('zone-2', zones).feeCents).toBe(800)
+    expect(matchDeliveryZone('zone-inexistente', zones)).toBeNull()
   })
 
   it('gera link de whatsapp estruturado com dados do pedido persistido', () => {

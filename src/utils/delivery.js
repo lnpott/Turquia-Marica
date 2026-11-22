@@ -1,17 +1,8 @@
 /**
- * Utilitários para validação de área de entrega e cálculo de taxa por raio.
- * Coordenadas da Loja física: R. Canarinhos, 663 - Parque Nanci, Maricá - RJ (-22.9238, -42.8252 aprox)
- */
-export const STORE_COORDINATES = {
-  lat: -22.9238,
-  lng: -42.8252,
-}
-
-/**
- * Fórmula de Haversine para calcular distância esférica entre dois pontos (em km).
+ * Distância em km. A taxa não mora aqui: sem zona vinda do banco, não há preço.
  */
 export function calculateDistanceKm(lat1, lon1, lat2, lon2) {
-  const R = 6371 // Raio da Terra em km
+  const R = 6371
   const dLat = ((lat2 - lat1) * Math.PI) / 180
   const dLon = ((lon2 - lon1) * Math.PI) / 180
   const a =
@@ -24,28 +15,42 @@ export function calculateDistanceKm(lat1, lon1, lat2, lon2) {
   return R * c
 }
 
+export function sortDeliveryZones(zones = []) {
+  return [...zones].sort((a, b) => Number(a.max_radius_km) - Number(b.max_radius_km))
+}
+
 /**
- * Encontra a zona de entrega aplicável com base na distância em km.
+ * `selector` é o id da zona ou uma distância em km.
+ * Lista vazia nunca inventa taxa.
  */
-export function matchDeliveryZone(distanceKm, zones = []) {
-  if (!zones || zones.length === 0) {
-    // Zonas padrão caso o banco não responda
-    if (distanceKm <= 3.0) return { feeCents: 500, description: 'Raio até 3 km' }
-    if (distanceKm <= 6.0) return { feeCents: 800, description: 'Raio de 3 a 6 km' }
-    if (distanceKm <= 10.0) return { feeCents: 1200, description: 'Raio de 6 a 10 km' }
-    return null
+export function matchDeliveryZone(selector, zones = []) {
+  if (!zones || zones.length === 0 || selector == null || selector === '') return null
+
+  if (typeof selector === 'string') {
+    const zone = zones.find((entry) => entry.id === selector && entry.active !== false)
+    if (!zone) return null
+    return {
+      zoneId: zone.id,
+      feeCents: zone.fee_cents,
+      description: zone.description,
+      maxRadiusKm: Number(zone.max_radius_km),
+    }
   }
 
-  const sortedZones = [...zones].sort((a, b) => a.max_radius_km - b.max_radius_km)
+  const distanceKm = Number(selector)
+  if (!Number.isFinite(distanceKm) || distanceKm < 0) return null
+
+  const sortedZones = sortDeliveryZones(zones.filter((zone) => zone.active !== false))
   for (const zone of sortedZones) {
     if (distanceKm <= Number(zone.max_radius_km)) {
       return {
         zoneId: zone.id,
         feeCents: zone.fee_cents,
         description: zone.description,
+        maxRadiusKm: Number(zone.max_radius_km),
       }
     }
   }
 
-  return null // Fora da área de cobertura
+  return null
 }

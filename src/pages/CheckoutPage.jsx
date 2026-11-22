@@ -1,22 +1,28 @@
-import { useState, useMemo } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { MapPin, User, CreditCard, Banknote, QrCode, AlertCircle, ArrowLeft } from 'lucide-react'
 import { useCart } from '../contexts/CartContext'
 import { useCatalog } from '../hooks/useCatalog'
-import { matchDeliveryZone } from '../utils/delivery'
+import { quoteCart } from '../lib/quoteCart'
+import { formatCents } from '../lib/money'
+import { matchDeliveryZone, sortDeliveryZones } from '../utils/delivery'
 import SectionHeading from '../components/ui/SectionHeading'
+import UnavailableNotice from '../components/ui/UnavailableNotice'
 
 export default function CheckoutPage() {
   const navigate = useNavigate()
-  const { items, subtotalCents, clearCart } = useCart()
-  const { deliveryZones } = useCatalog()
+  const { items, clearCart } = useCart()
+  const { products, deliveryZones, status } = useCatalog()
+  const quote = quoteCart(items, products)
+  const zones = sortDeliveryZones(deliveryZones)
+  const idempotencyRef = useRef({ hash: '', key: '' })
 
   const [formData, setFormData] = useState({
     customerName: '',
     customerPhone: '',
     deliveryAddress: '',
     deliveryReference: '',
-    deliveryRadiusKm: '2.5', // Raio estimado padrão
+    zoneId: '',
     paymentMethod: 'card_delivery',
     paymentChangeFor: '',
     notes: '',
@@ -25,13 +31,14 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
 
-  const matchedZone = useMemo(() => {
-    const radius = parseFloat(formData.deliveryRadiusKm) || 2.5
-    return matchDeliveryZone(radius, deliveryZones)
-  }, [formData.deliveryRadiusKm, deliveryZones])
+  const matchedZone = useMemo(
+    () => matchDeliveryZone(formData.zoneId, zones),
+    [formData.zoneId, zones],
+  )
 
-  const deliveryFeeCents = matchedZone ? matchedZone.feeCents || matchedZone.fee_cents || 500 : 500
-  const totalCents = subtotalCents + deliveryFeeCents
+  const deliveryFeeCents = matchedZone ? matchedZone.feeCents : null
+  const totalCents = deliveryFeeCents == null ? null : quote.subtotalCents + deliveryFeeCents
+  const canSubmit = status === 'ready' && quote.issues.length === 0 && quote.lines.length > 0 && matchedZone && !submitting
 
   if (items.length === 0) {
     return (
@@ -52,24 +59,36 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (!canSubmit) return
     setSubmitting(true)
     setErrorMessage(null)
+
+    const body = {
+      customerName: formData.customerName,
+      customerPhone: formData.customerPhone,
+      deliveryAddress: formData.deliveryAddress,
+      deliveryReference: formData.deliveryReference,
+      zoneId: formData.zoneId,
+      paymentMethod: formData.paymentMethod,
+      paymentChangeFor: formData.paymentMethod === 'cash_delivery' ? formData.paymentChangeFor : null,
+      notes: formData.notes,
+      items: quote.lines.filter((line) => !line.unavailable).map((line) => ({
+        productId: line.productId,
+        quantity: line.quantity,
+        optionIds: line.optionIds,
+      })),
+    }
+
+    const hash = JSON.stringify(body)
+    if (idempotencyRef.current.hash !== hash) {
+      idempotencyRef.current = { hash, key: crypto.randomUUID() }
+    }
 
     try {
       const response = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          customerName: formData.customerName,
-          customerPhone: formData.customerPhone,
-          deliveryAddress: formData.deliveryAddress,
-          deliveryReference: formData.deliveryReference,
-          deliveryRadiusKm: parseFloat(formData.deliveryRadiusKm),
-          paymentMethod: formData.paymentMethod,
-          paymentChangeFor: formData.paymentMethod === 'cash_delivery' ? formData.paymentChangeFor : null,
-          notes: formData.notes,
-          items,
-        }),
+        body: JSON.stringify({ ...body, idempotencyKey: idempotencyRef.current.key }),
       })
 
       const data = await response.json()
@@ -78,7 +97,6 @@ export default function CheckoutPage() {
         throw new Error(data.message || data.error || 'Falha ao processar o pedido.')
       }
 
-      // Limpa a sacola e redireciona para a página de confirmação com os dados do pedido persistido
       clearCart()
       navigate('/pedido/confirmado', {
         state: {
@@ -90,7 +108,7 @@ export default function CheckoutPage() {
             paymentMethod: formData.paymentMethod,
             paymentChangeFor: formData.paymentChangeFor,
             notes: formData.notes,
-            items,
+            items: data.items || [],
           },
         },
       })
@@ -111,8 +129,28 @@ export default function CheckoutPage() {
       <SectionHeading
         eyebrow="Finalização de Pedido"
         title="Dados de Entrega e Pagamento"
-        description="Apenas entrega em domicílio. O pedido será registrado com segurança em nosso banco de dados."
+        description="O total é recalculado no servidor com o preço e a zona gravados no banco. O valor desta tela não é a cobrança."
       />
+
+      <p className="mt-4 text-sm text-on-surface-variant">
+        A janela de horário em que a loja aceita pedido ainda não foi configurada. O horário publicado no site não bloqueia este envio.
+      </p>
+
+      {status !== 'ready' && (
+        <UnavailableNotice
+          className="mt-6"
+          title="Catálogo indisponível"
+          description="Sem o catálogo não há preço nem taxa. O pedido não será enviado."
+        />
+      )}
+
+      {quote.issues.length > 0 && (
+        <UnavailableNotice
+          className="mt-6"
+          title="Sacola desatualizada"
+          description="Algum item saiu do catálogo ou o opcional não existe mais. Volte à sacola e remova antes de enviar."
+        />
+      )}
 
       {errorMessage && (
         <div className="mt-6 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 text-sm">
@@ -122,7 +160,6 @@ export default function CheckoutPage() {
       )}
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-8">
-        {/* Dados do Cliente */}
         <div className="rounded-lg border border-outline-variant bg-surface-container-low p-6 space-y-4">
           <h2 className="flex items-center gap-2 font-headline-sm text-lg font-bold text-on-surface">
             <User className="h-5 w-5 text-primary" />
@@ -139,9 +176,10 @@ export default function CheckoutPage() {
                 type="text"
                 name="customerName"
                 required
+                minLength={2}
+                maxLength={120}
                 value={formData.customerName}
                 onChange={handleChange}
-                placeholder="Ex: João da Silva"
                 className="mt-1.5 w-full rounded-lg border border-outline-variant bg-surface px-4 py-2.5 text-sm text-on-surface focus:border-primary focus:outline-none"
               />
             </div>
@@ -155,20 +193,20 @@ export default function CheckoutPage() {
                 type="tel"
                 name="customerPhone"
                 required
+                minLength={8}
+                maxLength={20}
                 value={formData.customerPhone}
                 onChange={handleChange}
-                placeholder="Ex: (21) 99999-9999"
                 className="mt-1.5 w-full rounded-lg border border-outline-variant bg-surface px-4 py-2.5 text-sm text-on-surface focus:border-primary focus:outline-none"
               />
             </div>
           </div>
         </div>
 
-        {/* Endereço de Entrega */}
         <div className="rounded-lg border border-outline-variant bg-surface-container-low p-6 space-y-4">
           <h2 className="flex items-center gap-2 font-headline-sm text-lg font-bold text-on-surface">
             <MapPin className="h-5 w-5 text-primary" />
-            Endereço de Entrega em Maricá
+            Entrega
           </h2>
 
           <div>
@@ -180,9 +218,10 @@ export default function CheckoutPage() {
               type="text"
               name="deliveryAddress"
               required
+              minLength={5}
+              maxLength={240}
               value={formData.deliveryAddress}
               onChange={handleChange}
-              placeholder="Ex: Rua das Gaivotas, 120 - Parque Nanci"
               className="mt-1.5 w-full rounded-lg border border-outline-variant bg-surface px-4 py-2.5 text-sm text-on-surface focus:border-primary focus:outline-none"
             />
           </div>
@@ -196,77 +235,70 @@ export default function CheckoutPage() {
               type="text"
               name="deliveryReference"
               required
+              minLength={2}
+              maxLength={160}
               value={formData.deliveryReference}
               onChange={handleChange}
-              placeholder="Ex: Próximo à praça / portão verde"
               className="mt-1.5 w-full rounded-lg border border-outline-variant bg-surface px-4 py-2.5 text-sm text-on-surface focus:border-primary focus:outline-none"
             />
           </div>
 
           <div>
-            <label htmlFor="deliveryRadiusKm" className="block text-xs font-bold uppercase tracking-wider text-on-surface-variant">
-              Estimativa de Distância da Loja (R. Canarinhos, 663)
+            <label htmlFor="zoneId" className="block text-xs font-bold uppercase tracking-wider text-on-surface-variant">
+              Zona de entrega *
             </label>
-            <select
-              id="deliveryRadiusKm"
-              name="deliveryRadiusKm"
-              value={formData.deliveryRadiusKm}
-              onChange={handleChange}
-              className="mt-1.5 w-full rounded-lg border border-outline-variant bg-surface px-4 py-2.5 text-sm text-on-surface focus:border-primary focus:outline-none"
-            >
-              <option value="2.5">Até 3 km (Parque Nanci e imediações) — R$ 5,00</option>
-              <option value="5.0">De 3 a 6 km (Região central/vizinhos) — R$ 8,00</option>
-              <option value="8.5">De 6 a 10 km (Maricá expandido) — R$ 12,00</option>
-            </select>
+            {zones.length === 0 ? (
+              <p className="mt-2 text-sm text-on-surface-variant">
+                Nenhuma zona ativa no banco. A entrega não tem taxa e o pedido fica bloqueado.
+              </p>
+            ) : (
+              <select
+                id="zoneId"
+                name="zoneId"
+                required
+                value={formData.zoneId}
+                onChange={handleChange}
+                className="mt-1.5 w-full rounded-lg border border-outline-variant bg-surface px-4 py-2.5 text-sm text-on-surface focus:border-primary focus:outline-none"
+              >
+                <option value="">Selecione a faixa</option>
+                {zones.map((zone) => (
+                  <option key={zone.id} value={zone.id}>
+                    {zone.description} — {formatCents(zone.fee_cents)}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
         </div>
 
-        {/* Forma de Pagamento */}
         <div className="rounded-lg border border-outline-variant bg-surface-container-low p-6 space-y-4">
           <h2 className="flex items-center gap-2 font-headline-sm text-lg font-bold text-on-surface">
             <CreditCard className="h-5 w-5 text-primary" />
-            Pagamento no Ato da Entrega
+            Pagamento no ato da entrega
           </h2>
 
           <div className="grid gap-3 sm:grid-cols-3">
-            <label className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border p-4 text-center transition-all ${formData.paymentMethod === 'card_delivery' ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-outline-variant text-on-surface'}`}>
-              <CreditCard className="h-6 w-6 mb-2" />
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="card_delivery"
-                checked={formData.paymentMethod === 'card_delivery'}
-                onChange={handleChange}
-                className="sr-only"
-              />
-              <span className="text-sm">Cartão (Maquininha)</span>
-            </label>
-
-            <label className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border p-4 text-center transition-all ${formData.paymentMethod === 'cash_delivery' ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-outline-variant text-on-surface'}`}>
-              <Banknote className="h-6 w-6 mb-2" />
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="cash_delivery"
-                checked={formData.paymentMethod === 'cash_delivery'}
-                onChange={handleChange}
-                className="sr-only"
-              />
-              <span className="text-sm">Dinheiro</span>
-            </label>
-
-            <label className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border p-4 text-center transition-all ${formData.paymentMethod === 'pix_delivery' ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-outline-variant text-on-surface'}`}>
-              <QrCode className="h-6 w-6 mb-2" />
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="pix_delivery"
-                checked={formData.paymentMethod === 'pix_delivery'}
-                onChange={handleChange}
-                className="sr-only"
-              />
-              <span className="text-sm">Pix na Entrega</span>
-            </label>
+            {[
+              ['card_delivery', 'Cartão (maquininha)', CreditCard],
+              ['cash_delivery', 'Dinheiro', Banknote],
+              ['pix_delivery', 'Pix na entrega', QrCode],
+            ].map(([value, label, Icon]) => (
+              <label
+                key={value}
+                className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border p-4 text-center transition-all ${formData.paymentMethod === value ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-outline-variant text-on-surface'}`}
+              >
+                <Icon className="h-6 w-6 mb-2" />
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value={value}
+                  checked={formData.paymentMethod === value}
+                  onChange={handleChange}
+                  className="sr-only"
+                />
+                <span className="text-sm">{label}</span>
+              </label>
+            ))}
           </div>
 
           {formData.paymentMethod === 'cash_delivery' && (
@@ -278,9 +310,9 @@ export default function CheckoutPage() {
                 id="paymentChangeFor"
                 type="text"
                 name="paymentChangeFor"
+                maxLength={40}
                 value={formData.paymentChangeFor}
                 onChange={handleChange}
-                placeholder="Ex: R$ 50,00 ou Não preciso de troco"
                 className="mt-1.5 w-full rounded-lg border border-outline-variant bg-surface px-4 py-2.5 text-sm text-on-surface focus:border-primary focus:outline-none"
               />
             </div>
@@ -294,38 +326,37 @@ export default function CheckoutPage() {
               id="notes"
               name="notes"
               rows={2}
+              maxLength={400}
               value={formData.notes}
               onChange={handleChange}
-              placeholder="Ex: Tirar cebola, sem maionese, interfone 102..."
               className="mt-1.5 w-full rounded-lg border border-outline-variant bg-surface px-4 py-2.5 text-sm text-on-surface focus:border-primary focus:outline-none"
             />
           </div>
         </div>
 
-        {/* Resumo Financeiro e Envio */}
         <div className="rounded-lg border border-outline-variant bg-surface-container p-6">
           <div className="space-y-2 border-b border-outline-variant pb-4 text-sm">
             <div className="flex justify-between text-on-surface-variant">
               <span>Subtotal dos itens</span>
-              <span>R$ {(subtotalCents / 100).toFixed(2).replace('.', ',')}</span>
+              <span>{formatCents(quote.subtotalCents)}</span>
             </div>
             <div className="flex justify-between text-on-surface-variant">
-              <span>Taxa de Entrega estimada</span>
-              <span>R$ {(deliveryFeeCents / 100).toFixed(2).replace('.', ',')}</span>
+              <span>Taxa da zona selecionada</span>
+              <span>{deliveryFeeCents == null ? '—' : formatCents(deliveryFeeCents)}</span>
             </div>
           </div>
 
           <div className="mt-4 flex justify-between font-headline-md text-xl font-extrabold text-on-surface">
-            <span>Total a Pagar na Entrega:</span>
-            <span className="text-primary">R$ {(totalCents / 100).toFixed(2).replace('.', ',')}</span>
+            <span>Total estimado</span>
+            <span className="text-primary">{totalCents == null ? '—' : formatCents(totalCents)}</span>
           </div>
 
           <button
             type="submit"
-            disabled={submitting}
+            disabled={!canSubmit}
             className="mt-6 flex w-full min-h-12 items-center justify-center rounded-lg bg-primary py-3.5 font-label-bold text-base text-on-primary shadow-lg transition-transform hover:bg-primary-hover active:scale-[0.98] disabled:opacity-50"
           >
-            {submitting ? 'Gravando Pedido no Sistema...' : 'Confirmar e Enviar Pedido'}
+            {submitting ? 'Gravando pedido…' : 'Confirmar pedido'}
           </button>
         </div>
       </form>

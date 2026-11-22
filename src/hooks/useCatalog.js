@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { getActiveCategories, getActiveProducts, getDeliveryZones } from '../services/catalog'
-import { categories as fallbackCategories, products as fallbackProducts } from '../data/menu'
+import { formatCents } from '../lib/money'
 
 /**
- * Hook para carregar o catálogo dinâmico via Supabase,
- * com fallback gracioso e transparente para o acervo estático caso offline.
+ * Catálogo público vem só do Supabase.
+ * Falha ou lista vazia não é substituída por menu.js.
  */
 export function useCatalog() {
   const [categories, setCategories] = useState([])
@@ -19,6 +19,7 @@ export function useCatalog() {
     async function loadCatalog() {
       try {
         setLoading(true)
+        setError(null)
         const [catRes, prodRes, zonesRes] = await Promise.all([
           getActiveCategories(),
           getActiveProducts(),
@@ -27,39 +28,33 @@ export function useCatalog() {
 
         if (!isMounted) return
 
-        if (catRes.data && catRes.data.length > 0) {
-          setCategories(catRes.data)
-        } else {
-          setCategories(fallbackCategories)
+        const failure = catRes.error || prodRes.error || zonesRes.error
+        if (failure) {
+          setCategories([])
+          setProducts([])
+          setDeliveryZones([])
+          setError(failure.message || 'CATALOG_UNAVAILABLE')
+          return
         }
 
-        if (prodRes.data && prodRes.data.length > 0) {
-          // Mapeia os dados do Supabase mantendo compatibilidade de apresentação
-          const mapped = prodRes.data.map((p) => {
-            const fallbackMatch = fallbackProducts.find((fp) => fp.id === p.id)
-            return {
-              ...p,
-              categoryId: p.category_id,
-              price: `R$ ${(p.price_cents / 100).toFixed(2).replace('.', ',')}`,
-              image: p.image_url || fallbackMatch?.image || null,
-              resolveImage: fallbackMatch?.resolveImage || null,
-              imageAlt: p.image_alt || fallbackMatch?.imageAlt || p.name,
-              isMock: false,
-            }
-          })
-          setProducts(mapped)
-        } else {
-          setProducts(fallbackProducts)
-        }
-
-        if (zonesRes.data) {
-          setDeliveryZones(zonesRes.data)
-        }
+        setCategories(catRes.data || [])
+        setProducts(
+          (prodRes.data || []).map((product) => ({
+            ...product,
+            categoryId: product.category_id,
+            price: formatCents(product.price_cents),
+            image: product.image_url || null,
+            imageAlt: product.image_alt || product.name,
+            isMock: false,
+          })),
+        )
+        setDeliveryZones(zonesRes.data || [])
       } catch (err) {
         if (!isMounted) return
-        setError(err)
-        setCategories(fallbackCategories)
-        setProducts(fallbackProducts)
+        setCategories([])
+        setProducts([])
+        setDeliveryZones([])
+        setError(err.message || 'CATALOG_UNAVAILABLE')
       } finally {
         if (isMounted) setLoading(false)
       }
@@ -72,5 +67,10 @@ export function useCatalog() {
     }
   }, [])
 
-  return { categories, products, deliveryZones, loading, error }
+  let status = 'ready'
+  if (loading) status = 'loading'
+  else if (error) status = 'error'
+  else if (products.length === 0) status = 'empty'
+
+  return { categories, products, deliveryZones, loading, error, status }
 }

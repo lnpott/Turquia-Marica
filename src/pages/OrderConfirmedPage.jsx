@@ -80,7 +80,7 @@ export default function OrderConfirmedPage() {
               <li key={idx} className="py-1.5 flex justify-between">
                 <span>{it.quantity}x {it.name || it.product_name}</span>
                 <span className="font-medium text-on-surface">
-                  R$ {(((it.unitPriceCents || it.unit_price_cents || 2990) * it.quantity) / 100).toFixed(2).replace('.', ',')}
+                  R$ {(((it.lineCents ?? it.total_price_cents ?? ((it.unitPriceCents || 0) * it.quantity)) ) / 100).toFixed(2).replace('.', ',')}
                 </span>
               </li>
             ))}
