@@ -11,35 +11,55 @@ export default function AdminPage() {
   const [editingPriceId, setEditingPriceId] = useState(null)
   const [newPriceReais, setNewPriceReais] = useState('')
 
-  const handleLogin = (e) => {
-    e.preventDefault()
-    if (!token.trim()) return
-    localStorage.setItem('turquia_admin_token', token)
-    setAuthenticated(true)
-  }
-
-  const loadAdminData = async () => {
-    if (!token) return
+  const loadAdminData = async (authToken = token) => {
+    if (!authToken) return false
     try {
       setLoading(true)
       setError(null)
       const res = await fetch('/api/admin', {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${authToken}` },
       })
-      if (!res.ok) {
-        if (res.status === 401) setAuthenticated(false)
-        throw new Error(`Erro ao carregar dados (${res.status})`)
+      const json = await res.json().catch(() => ({}))
+
+      if (res.status === 401) {
+        setAuthenticated(false)
+        localStorage.removeItem('turquia_admin_token')
+        setError('Token inválido ou expirado.')
+        return false
       }
-      const json = await res.json()
-      setData(json)
+
+      if (res.status === 503) {
+        setError(
+          json.error === 'ADMIN_TOKEN_NOT_CONFIGURED'
+            ? 'ADMIN_TOKEN não configurado no servidor.'
+            : 'Supabase não configurado no servidor.',
+        )
+        return false
+      }
+
+      if (!res.ok) {
+        const detail = [json.ordersMessage, json.productsMessage].filter(Boolean).join(' | ')
+        throw new Error(detail || `Erro ao carregar dados (${res.status})`)
+      }
+
+      setData({ orders: json.orders || [], products: json.products || [] })
+      setAuthenticated(true)
+      return true
     } catch (err) {
       setError(err.message)
+      return false
     } finally {
       setLoading(false)
     }
   }
 
-  // Acesso disparado pelo usuário
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    if (!token.trim()) return
+    localStorage.setItem('turquia_admin_token', token.trim())
+    await loadAdminData(token.trim())
+  }
+
   const handleRefresh = () => {
     loadAdminData()
   }
@@ -62,6 +82,11 @@ export default function AdminPage() {
         }),
       })
 
+      if (res.status === 401) {
+        setAuthenticated(false)
+        localStorage.removeItem('turquia_admin_token')
+        throw new Error('Sessão expirada')
+      }
       if (!res.ok) throw new Error('Falha ao atualizar preço')
       setEditingPriceId(null)
       setNewPriceReais('')
@@ -86,6 +111,11 @@ export default function AdminPage() {
         }),
       })
 
+      if (res.status === 401) {
+        setAuthenticated(false)
+        localStorage.removeItem('turquia_admin_token')
+        throw new Error('Sessão expirada')
+      }
       if (!res.ok) throw new Error('Falha ao atualizar status do pedido')
       loadAdminData()
     } catch (err) {
@@ -106,12 +136,15 @@ export default function AdminPage() {
             value={token}
             onChange={(e) => setToken(e.target.value)}
             className="w-full rounded-lg border border-outline-variant bg-surface px-4 py-3 text-sm focus:border-primary focus:outline-none"
+            autoComplete="current-password"
           />
+          {error && <p className="text-left text-sm text-red-700">{error}</p>}
           <button
             type="submit"
-            className="w-full rounded-lg bg-primary py-3 font-label-bold text-on-primary hover:bg-primary-hover"
+            disabled={loading || !token.trim()}
+            className="w-full rounded-lg bg-primary py-3 font-label-bold text-on-primary hover:bg-primary-hover disabled:opacity-60"
           >
-            Acessar Painel
+            {loading ? 'Validando…' : 'Acessar Painel'}
           </button>
         </form>
       </div>
@@ -143,6 +176,7 @@ export default function AdminPage() {
             onClick={() => {
               setAuthenticated(false)
               localStorage.removeItem('turquia_admin_token')
+              setError(null)
             }}
             className="rounded-lg border border-outline-variant bg-surface px-4 py-2.5 text-sm font-semibold text-error hover:bg-error/10"
           >
@@ -157,9 +191,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* Grid de Gestão */}
       <div className="grid gap-8 lg:grid-cols-2">
-        {/* Gestão de Catálogo e Preços */}
         <div className="rounded-lg border border-outline-variant bg-surface-container-low p-6">
           <h2 className="flex items-center gap-2 font-headline-sm text-lg font-bold text-on-surface mb-4">
             <DollarSign className="h-5 w-5 text-primary" />
@@ -216,7 +248,6 @@ export default function AdminPage() {
           </ul>
         </div>
 
-        {/* Gestão de Pedidos Recentes */}
         <div className="rounded-lg border border-outline-variant bg-surface-container-low p-6">
           <h2 className="flex items-center gap-2 font-headline-sm text-lg font-bold text-on-surface mb-4">
             <Package className="h-5 w-5 text-primary" />

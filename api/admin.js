@@ -1,12 +1,27 @@
 import process from 'node:process'
+import { timingSafeEqual } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL
 const supabaseServiceRole = process.env.SUPABASE_SERVICE_ROLE_KEY
+const adminToken = process.env.ADMIN_TOKEN
 
 function sendJson(response, statusCode, payload) {
   response.setHeader('Content-Type', 'application/json; charset=utf-8')
   return response.status(statusCode).json(payload)
+}
+
+/** Compara o Bearer com ADMIN_TOKEN sem vazar tamanho via early-return óbvio. */
+function isValidAdminToken(provided) {
+  if (!adminToken || typeof provided !== 'string' || provided.length === 0) return false
+  const expected = Buffer.from(adminToken)
+  const actual = Buffer.from(provided)
+  if (expected.length !== actual.length) {
+    // Mantém trabalho similar em tamanho errado
+    timingSafeEqual(expected, expected)
+    return false
+  }
+  return timingSafeEqual(expected, actual)
 }
 
 export default async function handler(request, response) {
@@ -14,18 +29,20 @@ export default async function handler(request, response) {
     return sendJson(response, 503, { error: 'SUPABASE_NOT_CONFIGURED' })
   }
 
-  const supabaseServer = createClient(supabaseUrl, supabaseServiceRole)
+  if (!adminToken) {
+    return sendJson(response, 503, { error: 'ADMIN_TOKEN_NOT_CONFIGURED' })
+  }
 
-  // Proteção básica via token de autorização
   const authHeader = request.headers.authorization || ''
-  const token = authHeader.replace(/^Bearer\s+/i, '')
+  const token = authHeader.replace(/^Bearer\s+/i, '').trim()
 
-  // O painel admin utiliza o supabaseServiceRole para validar autenticação administrativa
-  if (!token) {
+  if (!isValidAdminToken(token)) {
     return sendJson(response, 401, { error: 'UNAUTHORIZED' })
   }
 
-  // GET: Listar pedidos recentes e produtos para gestão rápida
+  // Service role só depois da autenticação. O Bearer do cliente NUNCA é a service role.
+  const supabaseServer = createClient(supabaseUrl, supabaseServiceRole)
+
   if (request.method === 'GET') {
     const { data: orders, error: ordersErr } = await supabaseServer
       .from('orders')
@@ -39,13 +56,18 @@ export default async function handler(request, response) {
       .order('display_order', { ascending: true })
 
     if (ordersErr || prodErr) {
-      return sendJson(response, 500, { error: 'FETCH_FAILED' })
+      return sendJson(response, 500, {
+        error: 'FETCH_FAILED',
+        ordersMessage: ordersErr?.message || null,
+        productsMessage: prodErr?.message || null,
+        ordersCode: ordersErr?.code || null,
+        productsCode: prodErr?.code || null,
+      })
     }
 
     return sendJson(response, 200, { orders, products })
   }
 
-  // PATCH: Atualização de status de pedido ou preço de produto pelo admin
   if (request.method === 'PATCH') {
     const { entity, id, updates } = request.body || {}
 
@@ -53,6 +75,10 @@ export default async function handler(request, response) {
       const allowed = {}
       if (updates.price_cents != null) allowed.price_cents = Math.max(0, parseInt(updates.price_cents, 10))
       if (updates.status) allowed.status = updates.status
+
+      if (Object.keys(allowed).length === 0) {
+        return sendJson(response, 400, { error: 'INVALID_PATCH_REQUEST' })
+      }
 
       const { data, error } = await supabaseServer
         .from('products')
@@ -68,6 +94,10 @@ export default async function handler(request, response) {
     if (entity === 'order' && id && updates) {
       const allowed = {}
       if (updates.status) allowed.status = updates.status
+
+      if (Object.keys(allowed).length === 0) {
+        return sendJson(response, 400, { error: 'INVALID_PATCH_REQUEST' })
+      }
 
       const { data, error } = await supabaseServer
         .from('orders')
