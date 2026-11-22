@@ -138,9 +138,7 @@ export default function AdminPage() {
             className="w-full rounded-lg border border-outline-variant bg-surface px-4 py-3 text-sm focus:border-primary focus:outline-none"
             autoComplete="current-password"
           />
-          {error && (
-            <p className="text-left text-sm text-red-700">{error}</p>
-          )}
+          {error && <p className="text-left text-sm text-red-700">{error}</p>}
           <button
             type="submit"
             disabled={loading || !token.trim()}
@@ -221,7 +219,7 @@ export default function AdminPage() {
                       />
                       <button
                         type="button"
-ms onClick={() => handleUpdateProductPrice(prod.id)}
+                        onClick={() => handleUpdateProductPrice(prod.id)}
                         className="p-1 text-green-600 hover:bg-green-50 rounded"
                       >
                         <Check className="h-4 w-4" />
