@@ -7,7 +7,7 @@ import ProductCard from '../product/ProductCard'
 import { useCatalog } from '../../hooks/useCatalog'
 
 function MenuSection({ items = null }) {
-  const { categories, products, loading, error, status } = useCatalog()
+  const { categories, products, loading, error, status, provisional } = useCatalog()
   const [activeCategory, setActiveCategory] = useState('todos')
   const usingOverride = Array.isArray(items)
   const displayItems = usingOverride ? items : products
@@ -23,16 +23,16 @@ function MenuSection({ items = null }) {
 
   let notice = null
   if (!usingOverride && loading) {
-    notice = { title: 'Carregando cardápio', description: 'Buscando categorias e preços no catálogo.' }
+    notice = { title: 'Carregando cardápio', description: 'Buscando categorias e produtos.' }
   } else if (!usingOverride && status === 'error') {
     notice = {
       title: 'Cardápio indisponível',
-      description: 'Não foi possível ler o catálogo. Nenhum cardápio de demonstração será exibido no lugar.',
+      description: 'Não foi possível montar a vitrine agora.',
     }
   } else if (!usingOverride && displayItems.length === 0) {
     notice = {
-      title: 'Produtos em confirmação',
-      description: 'O cardápio oficial ainda não foi disponibilizado. Nenhum produto, preço ou pedido fictício será exibido.',
+      title: 'Cardápio vazio',
+      description: 'Nenhum produto para mostrar.',
     }
   }
 
@@ -44,6 +44,12 @@ function MenuSection({ items = null }) {
           title={<>O produto é o <span className="text-primary">protagonista.</span></>}
           description="Conheça os produtos do nosso cardápio e encontre o seu favorito."
         />
+
+        {!usingOverride && provisional && !notice && (
+          <p className="mt-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+            Preços de referência (R$ 29,90). Ainda não são os valores finais da loja.
+          </p>
+        )}
 
         {notice ? (
           <Reveal className="mt-12">
