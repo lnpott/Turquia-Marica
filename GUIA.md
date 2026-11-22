@@ -1,8 +1,8 @@
 # GUIA — estado atual e direção aprovada
 
 > Este documento separa o que está implementado em `main` do que é apenas planejado.
-> Base da revisão: branch `main`, consultada em 21/11/2026.
-> Não interpretar o roadmap como funcionalidade já disponível.
+> Base da revisão: `main` em `18ab1eb` (22/11/2026).
+> Não marcar fase do roadmap como concluída só porque a rota existe.
 
 ## 1. Produto e objetivo
 
@@ -25,7 +25,7 @@ A Turquia Lanches possui um site institucional e uma vitrine de cardápio. A dir
 - React Router DOM 7.
 - Vite 8.
 - Tailwind CSS 3.
-- Node.js 22 ou superior (definido como `>=22.x` em `package.json`).
+- Node.js `22.x` em `package.json` (`engines`) e `.nvmrc`.
 - Supabase PostgreSQL (projeto dedicado `turquia-lanches`, ref `sxpsewnfgpkppqivzvcc`, região `sa-east-1`).
 - Vercel para hospedagem, funções server-side e variáveis de ambiente (projeto `turquia-marica`).
 - Vitest para testes unitários.
@@ -50,7 +50,7 @@ npm run audit:demo-leak
 ### Banco de dados e infraestrutura Supabase
 
 - Projeto hospedado: `turquia-lanches` (ref `sxpsewnfgpkppqivzvcc`) ativo na organização `lnpott's Org`.
-- Migrations versionadas no repositório em `supabase/migrations/` (migration inicial `20261121205545_init_schema.sql` aplicada no banco remoto).
+- Migrations versionadas: `20261121205545_init_schema.sql` e `20261121211412_delivery_zones_and_triggers.sql`.
 - Tabelas criadas com Row Level Security (RLS) habilitado:
   - `categories` (com carga inicial dos 5 grupos da vitrine);
   - `products` (com carga inicial dos 9 itens do catálogo atual, preços em centavos);
@@ -64,25 +64,46 @@ npm run audit:demo-leak
 
 ### Aplicação e rotas
 
-- `src/App.jsx` mantém a Home institucional em `/`.
+Confirmado em `src/App.jsx`:
+
+- `/` — Home institucional.
 - `/cardapio` redireciona para `/#cardapio`.
 - `/localizacao` redireciona para `/#localizacao`.
-- A rota de QA visual depende de `VITE_VISUAL_QA_DEMO=true`.
-- Não existem rotas implementadas de sacola, checkout ou confirmação de pedido.
-- O próprio comentário de `src/App.jsx` declara que não há canal de pedido no site.
+- `/sacola` — `CartPage`.
+- `/checkout` — `CheckoutPage`.
+- `/pedido/confirmado` — `OrderConfirmedPage`.
+- `/admin` — `AdminPage`.
+- `/visual-qa-demo` só com `VITE_VISUAL_QA_DEMO=true`.
+
+Essas rotas existem. Isso não significa catálogo oficial nem pedido aceito pela loja.
 
 ### Cardápio
 
-- `src/data/menu.js` é atualmente a fonte estática consumida pela vitrine.
-- Há nove registros de produtos.
-- Os preços encontrados são uniformemente `R$ 29,90`.
-- As categorias estão marcadas como `construction`.
-- A documentação de assets declara que imagens de categorias e produtos são provisórias/ilustrativas.
-- Os registros existentes não podem ser promovidos automaticamente a catálogo oficial nem utilizados para pedidos reais sem validação comercial.
+- A vitrine tenta ler o Supabase em `src/hooks/useCatalog.js` (`categories`, `products`, `delivery_zones`).
+- Preço vindo do banco é `price_cents`, exibido em reais. Produto do banco sai com `isMock: false`.
+- Se a consulta volta vazia **ou** falha, o hook cai em `src/data/menu.js`. Esse fallback tem nove itens, preço uniforme `R$ 29,90` e categorias em `construction`.
+- Imagens de produto e categoria continuam provisórias (`documentacao/ASSETS.md`).
+- A Fase 2 **não** está aceita: erro de rede vira cardápio estático, e o preço de demonstração ainda pode aparecer como se fosse o da loja.
+
+### Sacola e checkout (código presente, aceite aberto)
+
+- `CartContext` guarda itens em `localStorage` (`turquia_cart_items_v1`).
+- Preço gravado na sacola usa `product.price_cents` ou, se faltar, `2990`. O resumo local não recalcula pelo catálogo atual.
+- Checkout só trata entrega. O raio padrão no formulário é `2.5` km, digitado pelo cliente. Taxa cai em `500` centavos se não houver zona casada.
+- Não há fluxo de retirada. Não há validação de horário de aceite.
+
+### Backend e integrações
+
+- `api/reviews.js` — avaliações Google Places.
+- `src/lib/supabase.js` + `src/services/catalog.js` — leitura anon de categorias, produtos e zonas.
+- `POST /api/orders` (`api/orders.js`) usa service role. Recalcula preço unitário no banco, rejeita produto inativo, calcula taxa por zona (ou `500` centavos) e grava `orders` + `order_items` com snapshot. Status inicial `pending`.
+- A gravação **não** é uma transação SQL: insere o pedido e depois os itens; se os itens falham, apaga o pedido. Não há chave de idempotência. Opcionais da sacola são copiados, mas o total do servidor não soma o preço deles.
+- `src/services/whatsappOrder.js` monta `wa.me/5521964699374` depois da resposta persistida. Abrir o link não marca pedido enviado, aceito ou pago.
+- `api/admin.js` + `/admin` listam pedidos/produtos e alteram preço e status com token Bearer guardado no `localStorage`. Não substitui política de acesso do Supabase Dashboard.
 
 ### Contato conhecido no código
 
-A fonte atual é `src/data/contact.js`:
+A fonte atual é `src/data/contact.js` e, no WhatsApp do pedido, a mesma constante em `whatsappOrder.js`:
 
 - Endereço publicado: R. Canarinhos, 663 - Parque Nanci, Maricá - RJ, 24914-160.
 - Horário publicado: terça a domingo, 17h às 00h; segunda fechado.
@@ -90,30 +111,26 @@ A fonte atual é `src/data/contact.js`:
 - Instagram: `@turquialanches`.
 - Telefone convencional: indisponível.
 
-Esses dados foram observados no código. Antes de usá-los para regras de aceitação de pedidos, a loja deve confirmar que continuam corretos e que o WhatsApp publicado é o canal operacional que receberá pedidos.
+Esses dados foram lidos no código. Não foram reconfirmados com a loja nesta auditoria. Horário publicado não é janela de pedido.
 
-### Backend e integrações
+## 3. Auditoria de 22/11/2026
 
-- Existe uma função Vercel `api/reviews.js`, usada para consultar avaliações do Google Places.
-- `.env.example` contém `GOOGLE_PLACE_ID` e `GOOGLE_MAPS_API_KEY`, destinados exclusivamente ao servidor.
-- A função de avaliações é evidência de que o repositório já utiliza o padrão de funções server-side da Vercel.
-- Não foi localizada integração Supabase no `main` consultado.
-- Não foi localizado `supabase/`, migration SQL, cliente Supabase, API de pedidos ou endpoint `/api/health` no `main` consultado.
-- Não há persistência de pedidos implementada.
+Feita em `main` (`18ab1eb`). O que os documentos ainda diziam e o código desmente:
 
-A ausência foi verificada nos caminhos pesquisados; não equivale a uma auditoria byte a byte de todos os diretórios. Antes de implementar, o agente deve repetir a busca no checkout local.
+| Afirmação antiga | Evidência |
+|---|---|
+| Não há sacola, checkout nem pedido | Rotas em `src/App.jsx` |
+| Não há cliente Supabase nem `api` de pedidos | `src/services/catalog.js`, `api/orders.js` |
+| Node `>=22.x` | `package.json` está em `22.x` |
 
-## 3. Contradições documentais identificadas
+O que continua verdadeiro e impede declarar fase pronta:
 
-A documentação existente em `main` contém afirmações incompatíveis entre si:
-
-- `ROADMAP.md` descreve pedidos no futuro, mas condiciona o backend transacional a uma hipótese em que o WhatsApp não bastaria.
-- `GUIA.md` contém trechos que proíbem checkout, pedidos e backend transacional, embora o novo objetivo os exija.
-- `README.md` ainda declara que o site não é e-commerce e não encaminha pedidos.
-- `GUIA.md` contém referências operacionais à branch `feat/sem-ifood` e afirma que `main` poderia estar atrás, embora esta revisão tenha sido feita diretamente em `main`.
-- O texto do roadmap afirma que não haverá banco até uma fase posterior. Isso está revogado: Supabase é requisito estrutural obrigatório.
-
-Este pacote propõe substituir essas instruções contraditórias. Não afirma que o repositório já foi alterado.
+- Catálogo comercial oficial (D1) não foi validado. Fallback de `R$ 29,90` ainda entra na UI.
+- Preço da sacola pode divergir do banco até o `POST /api/orders`.
+- Pedido + itens não são uma transação; retry pode duplicar.
+- Entrega presume raio informado pelo cliente e taxa fallback de R$ 5,00.
+- Pagamento no checkout (`card_delivery`, `cash_delivery`, `pix_delivery`) não tem confirmação operacional registrada neste PR.
+- Admin por token no navegador não é o processo operacional da Fase 7.
 
 ## 4. Arquitetura aprovada para o produto futuro
 
