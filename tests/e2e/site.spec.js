@@ -172,16 +172,12 @@ test('Footer encerra a Home sem navegação redundante e não fica coberto no mo
   }
 })
 
-test('cardápio público exibe os produtos publicados, com filtro e sem dados fictícios', async ({ page }) => {
+test('cardápio público não substitui falha do catálogo por preço de demonstração', async ({ page }) => {
   await page.goto('/#cardapio')
   const section = page.locator('#cardapio')
-  // Estado atual (Etapa 29): nove produtos publicados com preço e filtro por categoria.
-  await expect(section.getByRole('group', { name: 'Filtrar por categoria' })).toHaveCount(1)
-  await expect(section.locator('article')).toHaveCount(9)
-  await expect(section.getByText('R$ 29,90').first()).toBeVisible()
-  // Nenhum dado demonstrativo nem pedido fictício.
-  await expect(section.getByText('R$ 00,00')).toHaveCount(0)
-  await expect(section.getByText(/em construção|em confirmação/i)).toHaveCount(0)
+  await expect(section.getByText('Cardápio indisponível')).toBeVisible()
+  await expect(section.locator('article')).toHaveCount(0)
+  await expect(section.getByText('R$ 29,90')).toHaveCount(0)
   await expect(section.locator('a[href*="ifood"]')).toHaveCount(0)
 })
 

@@ -79,25 +79,25 @@ Essas rotas existem. Isso não significa catálogo oficial nem pedido aceito pel
 
 ### Cardápio
 
-- A vitrine tenta ler o Supabase em `src/hooks/useCatalog.js` (`categories`, `products`, `delivery_zones`).
-- Preço vindo do banco é `price_cents`, exibido em reais. Produto do banco sai com `isMock: false`.
-- Se a consulta volta vazia **ou** falha, o hook cai em `src/data/menu.js`. Esse fallback tem nove itens, preço uniforme `R$ 29,90` e categorias em `construction`.
-- Imagens de produto e categoria continuam provisórias (`documentacao/ASSETS.md`).
-- A Fase 2 **não** está aceita: erro de rede vira cardápio estático, e o preço de demonstração ainda pode aparecer como se fosse o da loja.
+- A vitrine lê só o Supabase (`useCatalog`). Preço exibido é `price_cents`. Não há mais troca silenciosa por `src/data/menu.js`.
+- Falha de rede ou cliente ausente mostra "Cardápio indisponível" e zero produto. Lista vazia mostra "Produtos em confirmação".
+- A carga que a migration colocou no banco continua sendo o seed de R$ 29,90. Isso não é cardápio confirmado pela loja. O admin pode alterar `price_cents`.
+- Imagem pública só entra se `image_url` vier do banco. Arquivo ilustrativo de `menu.js` não completa o card.
 
 ### Sacola e checkout (código presente, aceite aberto)
 
-- `CartContext` guarda itens em `localStorage` (`turquia_cart_items_v1`).
-- Preço gravado na sacola usa `product.price_cents` ou, se faltar, `2990`. O resumo local não recalcula pelo catálogo atual.
-- Checkout só trata entrega. O raio padrão no formulário é `2.5` km, digitado pelo cliente. Taxa cai em `500` centavos se não houver zona casada.
-- Não há fluxo de retirada. Não há validação de horário de aceite.
+- `CartContext` guarda só `productId`, quantidade e `optionIds` em `localStorage`. Não guarda preço.
+- A sacola e o checkout recalculam com `quoteCart` a partir do catálogo atual. Item que sumiu fica marcado e bloqueia o envio.
+- Checkout só lista zonas ativas vindas do banco. Sem zona, não há taxa e o botão não envia. Não existe mais fallback de R$ 5,00 no cliente.
+- Não há retirada. Não há janela de horário configurada: o texto do checkout diz isso. O horário publicado não bloqueia o pedido (D7 continua aberto).
 
 ### Backend e integrações
 
 - `api/reviews.js` — avaliações Google Places.
 - `src/lib/supabase.js` + `src/services/catalog.js` — leitura anon de categorias, produtos e zonas.
-- `POST /api/orders` (`api/orders.js`) usa service role. Recalcula preço unitário no banco, rejeita produto inativo, calcula taxa por zona (ou `500` centavos) e grava `orders` + `order_items` com snapshot. Status inicial `pending`.
-- A gravação **não** é uma transação SQL: insere o pedido e depois os itens; se os itens falham, apaga o pedido. Não há chave de idempotência. Opcionais da sacola são copiados, mas o total do servidor não soma o preço deles.
+- `POST /api/orders` chama a função `create_order` (migration `20261122214600_create_order_rpc.sql`). Ela ignora preço do navegador, lê produto e opcional ativos, aplica a taxa da zona e grava pedido e itens na mesma transação. Status inicial `pending`.
+- A mesma `idempotency_key` devolve o pedido já gravado em vez de duplicar.
+- A função ainda precisa ser aplicada no projeto Supabase remoto. Sem isso o endpoint responde erro e não grava.
 - `src/services/whatsappOrder.js` monta `wa.me/5521964699374` depois da resposta persistida. Abrir o link não marca pedido enviado, aceito ou pago.
 - `api/admin.js` + `/admin` listam pedidos/produtos e alteram preço e status com token Bearer guardado no `localStorage`. Não substitui política de acesso do Supabase Dashboard.
 

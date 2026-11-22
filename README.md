@@ -19,9 +19,7 @@ Site institucional e catálogo digital da **Turquia Lanches**, em Parque Nanci, 
 
 Auditoria de `main` em `18ab1eb` (22/11/2026). Detalhe em [GUIA.md](GUIA.md).
 
-O site tem Home, vitrine, localização, contato e avaliações. Também tem rotas de sacola (`/sacola`), checkout (`/checkout`), confirmação (`/pedido/confirmado`) e admin (`/admin`), mais `POST /api/orders` no Supabase.
-
-Isso não é catálogo oficial nem lançamento. `src/data/menu.js` ainda entra como fallback (nove itens, `R$ 29,90`, categorias em construção). Imagens de produto seguem provisórias em `documentacao/ASSETS.md`. Fases 2 a 8 do roadmap continuam sem aceite.
+O cardápio público lê só o Supabase. Se a leitura falha, a página não mostra os nove itens de `src/data/menu.js`. Sacola guarda id e quantidade; o preço é recalculado. `POST /api/orders` grava pela função `create_order` (preço e taxa do banco, na mesma transação, com idempotência). Essa função precisa estar aplicada no Supabase remoto.
 
 ## Produto-alvo
 

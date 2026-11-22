@@ -1,51 +1,59 @@
-import { createContext, useContext, useState, useEffect, useMemo } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 
 const CartContext = createContext(null)
 const CART_STORAGE_KEY = 'turquia_cart_items_v1'
 
+function normalizeLine(raw) {
+  if (!raw || typeof raw.productId !== 'string' || !raw.productId) return null
+  const quantity = Math.floor(Number(raw.quantity))
+  if (!Number.isFinite(quantity) || quantity < 1 || quantity > 20) return null
+  const optionIds = Array.isArray(raw.optionIds)
+    ? raw.optionIds.filter((id) => typeof id === 'string')
+    : (raw.options || []).map((option) => option?.id).filter((id) => typeof id === 'string')
+  return { productId: raw.productId, quantity, optionIds }
+}
+
+function readStoredLines() {
+  try {
+    const stored = localStorage.getItem(CART_STORAGE_KEY)
+    const parsed = stored ? JSON.parse(stored) : []
+    if (!Array.isArray(parsed)) return []
+    return parsed.map(normalizeLine).filter(Boolean)
+  } catch {
+    return []
+  }
+}
+
 export function CartProvider({ children }) {
-  const [items, setItems] = useState(() => {
-    try {
-      const stored = localStorage.getItem(CART_STORAGE_KEY)
-      return stored ? JSON.parse(stored) : []
-    } catch {
-      return []
-    }
-  })
+  const [items, setItems] = useState(readStoredLines)
 
   useEffect(() => {
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items))
     } catch {
-      // Falha silenciosa em caso de restrição de storage
+      // storage indisponível
     }
   }, [items])
 
-  const addItem = (product, quantity = 1, options = []) => {
+  const addItem = (product, quantity = 1, optionIds = []) => {
+    const line = normalizeLine({
+      productId: product?.id,
+      quantity,
+      optionIds,
+    })
+    if (!line || (product?.status && product.status !== 'active')) return
+
     setItems((prev) => {
       const existingIndex = prev.findIndex(
-        (i) => i.productId === product.id && JSON.stringify(i.options) === JSON.stringify(options)
+        (item) => item.productId === line.productId && JSON.stringify(item.optionIds) === JSON.stringify(line.optionIds),
       )
-
       if (existingIndex > -1) {
         const next = [...prev]
-        next[existingIndex] = {
-          ...next[existingIndex],
-          quantity: next[existingIndex].quantity + quantity,
-        }
+        const merged = next[existingIndex].quantity + line.quantity
+        next[existingIndex] = { ...next[existingIndex], quantity: Math.min(20, merged) }
         return next
       }
-
-      return [
-        ...prev,
-        {
-          productId: product.id,
-          name: product.name,
-          unitPriceCents: product.price_cents || 2990,
-          quantity,
-          options,
-        },
-      ]
+      return [...prev, line]
     })
   }
 
@@ -54,13 +62,9 @@ export function CartProvider({ children }) {
       const next = [...prev]
       const current = next[index]
       if (!current) return prev
-
       const newQty = current.quantity + delta
-      if (newQty <= 0) {
-        return next.filter((_, i) => i !== index)
-      }
-
-      next[index] = { ...current, quantity: newQty }
+      if (newQty <= 0) return next.filter((_, i) => i !== index)
+      next[index] = { ...current, quantity: Math.min(20, newQty) }
       return next
     })
   }
@@ -73,34 +77,8 @@ export function CartProvider({ children }) {
     setItems([])
   }
 
-  const summary = useMemo(() => {
-    const totalItems = items.reduce((acc, item) => acc + item.quantity, 0)
-    const subtotalCents = items.reduce((acc, item) => {
-      const itemOptionTotal = (item.options || []).reduce(
-        (optAcc, opt) => optAcc + (opt.priceCents || 0),
-        0
-      )
-      return acc + (item.unitPriceCents + itemOptionTotal) * item.quantity
-    }, 0)
-
-    return {
-      totalItems,
-      subtotalCents,
-      formattedSubtotal: `R$ ${(subtotalCents / 100).toFixed(2).replace('.', ',')}`,
-    }
-  }, [items])
-
   return (
-    <CartContext.Provider
-      value={{
-        items,
-        addItem,
-        updateQuantity,
-        removeItem,
-        clearCart,
-        ...summary,
-      }}
-    >
+    <CartContext.Provider value={{ items, addItem, updateQuantity, removeItem, clearCart }}>
       {children}
     </CartContext.Provider>
   )
@@ -112,9 +90,6 @@ const defaultCartValue = {
   updateQuantity: () => {},
   removeItem: () => {},
   clearCart: () => {},
-  totalItems: 0,
-  subtotalCents: 0,
-  formattedSubtotal: 'R$ 0,00',
 }
 
 export function useCart() {
