@@ -4,11 +4,9 @@ import { buildOrderWhatsAppUrl } from '../src/services/whatsappOrder.js'
 
 describe('delivery calculations and whatsapp order tests', () => {
   it('calcula a distância corretamente com haversine', () => {
-    // Distância de um ponto a ele mesmo deve ser 0
     const d = calculateDistanceKm(-22.9238, -42.8252, -22.9238, -42.8252)
     expect(d).toBe(0)
 
-    // Distância aproximada para ponto vizinho em Maricá
     const d2 = calculateDistanceKm(-22.9238, -42.8252, -22.9200, -42.8200)
     expect(d2).toBeGreaterThan(0)
     expect(d2).toBeLessThan(5)
@@ -16,25 +14,19 @@ describe('delivery calculations and whatsapp order tests', () => {
 
   it('determina a taxa de entrega por raio em km', () => {
     const zones = [
-      { id: 'zone-1', max_radius_km: 3.0, fee_cents: 500, description: 'Até 3km' },
-      { id: 'zone-2', max_radius_km: 6.0, fee_cents: 800, description: 'Até 6km' },
+      { id: 'zone-1', max_radius_km: 3.0, fee_cents: 500, description: 'Até 3km', active: true },
+      { id: 'zone-2', max_radius_km: 6.0, fee_cents: 800, description: 'Até 6km', active: true },
     ]
 
-    const z1 = matchDeliveryZone(2.5, zones)
-    expect(z1.feeCents).toBe(500)
-
-    const z2 = matchDeliveryZone(5.5, zones)
-    expect(z2.feeCents).toBe(800)
-
-    const zOutside = matchDeliveryZone(12.0, zones)
-    expect(zOutside).toBeNull()
-
+    expect(matchDeliveryZone(2.5, zones).feeCents).toBe(500)
+    expect(matchDeliveryZone(5.5, zones).feeCents).toBe(800)
+    expect(matchDeliveryZone(12.0, zones)).toBeNull()
     expect(matchDeliveryZone(2.5, [])).toBeNull()
     expect(matchDeliveryZone('zone-2', zones).feeCents).toBe(800)
     expect(matchDeliveryZone('zone-inexistente', zones)).toBeNull()
   })
 
-  it('gera link de whatsapp estruturado com dados do pedido persistido', () => {
+  it('gera link de whatsapp com totais do pedido persistido', () => {
     const url = buildOrderWhatsAppUrl({
       orderNumber: 42,
       customerName: 'Cliente Teste',
@@ -51,5 +43,25 @@ describe('delivery calculations and whatsapp order tests', () => {
     expect(url).toContain(encodeURIComponent('PEDIDO #42'))
     expect(url).toContain(encodeURIComponent('Cliente Teste'))
     expect(url).toContain(encodeURIComponent('R$ 64,80'))
+  })
+
+  it('não monta link sem referência ou total do servidor', () => {
+    expect(
+      buildOrderWhatsAppUrl({
+        orderNumber: null,
+        subtotalCents: 100,
+        deliveryFeeCents: 0,
+        totalCents: 100,
+      }),
+    ).toBeNull()
+
+    expect(
+      buildOrderWhatsAppUrl({
+        orderNumber: 1,
+        subtotalCents: 100,
+        deliveryFeeCents: 0,
+        totalCents: undefined,
+      }),
+    ).toBeNull()
   })
 })
