@@ -2,6 +2,8 @@
 
 Marcar só com evidência. Assinatura da loja é obrigatória para “aceito em produção”.
 
+> Atualizado em 23/11/2026 — alinhado com `documentacao/PROXIMOS-PASSOS.md`.
+
 ## Técnico
 
 - [ ] Migration `create_order` aplicada no projeto Supabase de produção
@@ -20,6 +22,7 @@ Marcar só com evidência. Assinatura da loja é obrigatória para “aceito em 
 ## Comercial / loja
 
 - [ ] Preços reais publicados (substituir seed R$ 29,90)
+- [ ] Fotos reais publicadas (`image_url` preenchido)
 - [ ] Zonas de raio e taxas conferidas
 - [ ] Operador treinado no WhatsApp e no status do pedido
 - [ ] Texto de D7 (aceite a qualquer hora + confirmação pela loja) revisado
@@ -28,6 +31,7 @@ Marcar só com evidência. Assinatura da loja é obrigatória para “aceito em 
 ## Pós-deploy
 
 - [ ] Pedido de teste real gravado e localizado no Supabase
+- [ ] Pedido aparece corretamente no `/admin`
 - [ ] Rollback conhecido (redeploy do SHA anterior na Vercel)
 - [ ] Contato de emergência técnico e da loja
 
