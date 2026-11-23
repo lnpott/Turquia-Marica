@@ -1,7 +1,7 @@
 # GUIA — estado atual e direção aprovada
 
 > Este documento separa o que está implementado em `main` do que é apenas planejado.
-> Base da revisão: `main` em `18ab1eb` (22/11/2026).
+> Base da revisão: `main` em `53bdc06` (22/11/2026, pós #47–#50).
 > Não marcar fase do roadmap como concluída só porque a rota existe.
 
 ## 1. Produto e objetivo
@@ -50,7 +50,7 @@ npm run audit:demo-leak
 ### Banco de dados e infraestrutura Supabase
 
 - Projeto hospedado: `turquia-lanches` (ref `sxpsewnfgpkppqivzvcc`) ativo na organização `lnpott's Org`.
-- Migrations versionadas: `20261121205545_init_schema.sql` e `20261121211412_delivery_zones_and_triggers.sql`.
+- Migrations versionadas: `20261121205545_init_schema.sql`, `20261121211412_delivery_zones_and_triggers.sql` e `20261122214600_create_order_rpc.sql` (RPC `create_order`).
 - Tabelas criadas com Row Level Security (RLS) habilitado:
   - `categories` (com carga inicial dos 5 grupos da vitrine);
   - `products` (com carga inicial dos 9 itens do catálogo atual, preços em centavos);
@@ -79,10 +79,10 @@ Essas rotas existem. Isso não significa catálogo oficial nem pedido aceito pel
 
 ### Cardápio
 
-- A vitrine lê só o Supabase (`useCatalog`). Preço exibido é `price_cents`. Não há mais troca silenciosa por `src/data/menu.js`.
-- Falha de rede ou cliente ausente mostra "Cardápio indisponível" e zero produto. Lista vazia mostra "Produtos em confirmação".
-- A carga que a migration colocou no banco continua sendo o seed de R$ 29,90. Isso não é cardápio confirmado pela loja. O admin pode alterar `price_cents`.
-- Imagem pública só entra se `image_url` vier do banco. Arquivo ilustrativo de `menu.js` não completa o card.
+- `useCatalog` prefere o Supabase quando a resposta traz produtos **com** `image_url`.
+- Se a leitura falha, vem vazia **ou** nenhum produto remoto tem foto, a vitrine cai de volta em `src/data/menu.js` com `priceProvisional: true` e R$ 29,90 (#49). O aviso de preço provisório deve permanecer visível.
+- A carga seed no banco também é R$ 29,90 até a loja publicar preços reais via `/admin` ou Dashboard.
+- Imagens do seed remoto só entram se `image_url` estiver preenchido; caso contrário o fallback local com foto ilustrativa é usado.
 
 ### Sacola e checkout (código presente, aceite aberto)
 
@@ -95,11 +95,11 @@ Essas rotas existem. Isso não significa catálogo oficial nem pedido aceito pel
 
 - `api/reviews.js` — avaliações Google Places.
 - `src/lib/supabase.js` + `src/services/catalog.js` — leitura anon de categorias, produtos e zonas.
-- `POST /api/orders` chama a função `create_order` (migration `20261122214600_create_order_rpc.sql`). Ela ignora preço do navegador, lê produto e opcional ativos, aplica a taxa da zona e grava pedido e itens na mesma transação. Status inicial `pending`.
+- `POST /api/orders` chama a RPC `create_order` (migration no repo). Ignora preço do navegador, lê produto/opcional ativos, aplica taxa da zona e grava pedido + itens na mesma transação. Status inicial `pending`.
 - A mesma `idempotency_key` devolve o pedido já gravado em vez de duplicar.
-- A função ainda precisa ser aplicada no projeto Supabase remoto. Sem isso o endpoint responde erro e não grava.
-- `src/services/whatsappOrder.js` monta `wa.me/5521964699374` depois da resposta persistida. Abrir o link não marca pedido enviado, aceito ou pago.
-- `api/admin.js` + `/admin` listam pedidos/produtos e alteram preço e status com token Bearer guardado no `localStorage`. Não substitui política de acesso do Supabase Dashboard.
+- **A RPC ainda precisa estar aplicada no projeto Supabase remoto.** Sem isso o endpoint falha e não grava.
+- Confirmação (`OrderConfirmedPage`) afirma só “pedido gravado”; não afirma aceite da loja nem pagamento. WhatsApp é opcional e não muda status.
+- `api/admin.js` exige `ADMIN_TOKEN` no servidor (#50). Bearer errado → 401. Só depois usa service role. Processo em `documentacao/OPERACAO-ADMIN.md`.
 
 ### Contato conhecido no código
 
@@ -113,24 +113,26 @@ A fonte atual é `src/data/contact.js` e, no WhatsApp do pedido, a mesma constan
 
 Esses dados foram lidos no código. Não foram reconfirmados com a loja nesta auditoria. Horário publicado não é janela de pedido.
 
-## 3. Auditoria de 22/11/2026
+## 3. Estado em 22/11/2026 (`53bdc06`)
 
-Feita em `main` (`18ab1eb`). O que os documentos ainda diziam e o código desmente:
+Merges relevantes no mesmo dia: #47 (fases 2–5 técnicas), #48 (fases 6–8 em código/docs), #49 (cardápio provisório de volta), #50 (auth do admin).
 
-| Afirmação antiga | Evidência |
-|---|---|
-| Não há sacola, checkout nem pedido | Rotas em `src/App.jsx` |
-| Não há cliente Supabase nem `api` de pedidos | `src/services/catalog.js`, `api/orders.js` |
-| Node `>=22.x` | `package.json` está em `22.x` |
+| Tema | Realidade no código | Aceite de loja |
+|---|---|---|
+| Catálogo | Supabase se houver foto; senão `menu.js` provisório | **Não** — preços oficiais e fotos reais pendentes (D1) |
+| Sacola | IDs + `quoteCart`; sem preço confiado no storage | Técnico ok; depende de catálogo real |
+| Checkout | Só entrega; zona do banco; sem taxa inventada no cliente | **Parcial** — D3/D4/D7 |
+| Pedido | RPC `create_order` + idempotência no código | **Bloqueado** até migration no remoto |
+| WhatsApp | Após persistência; texto não marca enviado/aceito/pago | Canal a confirmar (D5) |
+| Admin | `/admin` + `ADMIN_TOKEN` server-side | Processo existe em doc; treino da loja pendente |
+| Lançamento | Checklist em `documentacao/CHECKLIST-LANCAMENTO.md` | **Não assinado** |
 
-O que continua verdadeiro e impede declarar fase pronta:
+O que ainda impede “pronto para operação real”:
 
-- Catálogo comercial oficial (D1) não foi validado. Fallback de `R$ 29,90` ainda entra na UI.
-- Preço da sacola pode divergir do banco até o `POST /api/orders`.
-- Pedido + itens não são uma transação; retry pode duplicar.
-- Entrega presume raio informado pelo cliente e taxa fallback de R$ 5,00.
-- Pagamento no checkout (`card_delivery`, `cash_delivery`, `pix_delivery`) não tem confirmação operacional registrada neste PR.
-- Admin por token no navegador não é o processo operacional da Fase 7.
+1. Aplicar `create_order` no Supabase de produção e validar um pedido de ponta a ponta.
+2. Publicar preços e fotos reais (sair do seed/provisório R$ 29,90).
+3. Confirmar zonas, WhatsApp operacional e regras de pagamento/horário com a loja.
+4. Preencher e assinar o checklist de lançamento.
 
 ## 4. Arquitetura aprovada para o produto futuro
 

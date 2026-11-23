@@ -2,7 +2,7 @@
 
 > Este documento descreve o produto-alvo e a sequência de implantação.
 > O estado implementado está em `GUIA.md`.
-> Revisão documental baseada em `main` (`18ab1eb`), em 22/11/2026.
+> Revisão documental baseada em `main` (`53bdc06`), em 22/11/2026.
 > Supabase é obrigatório para catálogo, preços e pedidos. Esta decisão não é opcional nem depende de o WhatsApp ser suficiente.
 
 ## 1. Objetivo do produto
@@ -43,17 +43,18 @@ O sistema não deve alegar pagamento realizado, pedido aceito pela loja ou mensa
 | Pagamento online | Fora do MVP até contratação e integração de gateway |
 | Marketplace | Não reintroduzir iFood ou outro marketplace sem decisão explícita |
 
-## 3. Estado auditado em 22/11/2026
+## 3. Estado em `main` (`53bdc06`)
 
-O inventário vivo está no `GUIA.md`. Resumo para não tratar código existente como fase aceita:
+Inventário vivo em `GUIA.md`. Resumo após #47–#50:
 
-- Leitura de catálogo no Supabase existe, com fallback estático de demonstração.
-- Sacola em `localStorage`, checkout só de entrega, `POST /api/orders` e link de WhatsApp existem.
-- Pedido e itens não são uma transação; não há idempotência; opcionais não entram no total do servidor.
-- Taxa fallback de 500 centavos e raio digitado pelo cliente não são regra oficial (D3, D4).
-- Admin em `/admin` existe e não equivale à Fase 7.
+- Catálogo: Supabase com foto; senão fallback `menu.js` provisório (R$ 29,90) com aviso (#49).
+- Sacola com `quoteCart`; checkout só entrega; zona e taxa do banco.
+- `create_order` no repositório (transação + idempotência); **aplicação no Supabase remoto ainda obrigatória**.
+- Confirmação + WhatsApp pós-persistência sem marcar enviado/aceito/pago (#48).
+- Admin com `ADMIN_TOKEN` no servidor (#50); processo em `documentacao/OPERACAO-ADMIN.md`.
+- Checklist de lançamento em `documentacao/CHECKLIST-LANCAMENTO.md` (não assinado).
 
-Nenhum desses itens fecha o aceite da fase correspondente.
+Código avançou; aceite comercial e operação real ainda não.
 
 ## 4. Bloqueios comerciais
 
@@ -81,14 +82,14 @@ Cada fase deve ser entregue em PR separado, salvo dependência técnica que just
 | Fase | Entrega | Dependências / bloqueios | Status |
 |---|---|---|---|
 | 0 | Alinhamento documental, inventário técnico, confirmação de ambiente e decisões | Nenhuma alteração funcional | **Concluída** (Decisões D1-D10 confirmadas em `documentacao/DECISOES-PENDENTES.md`) |
-| 1 | Projeto Supabase, schema inicial, RLS, migrations e configuração segura dos ambientes | D10; política de acesso aprovada | **Concluída** na fundação (projeto `sxpsewnfgpkppqivzvcc`, duas migrations no repo, envs na Vercel). Backup e rotação de segredo não foram reauditados neste PR |
-| 2 | Catálogo real vindo do Supabase, com categorias, produtos, preços, imagens e disponibilidade | D1, D2, D8 | **Aceite técnico no código.** A UI não troca falha por `menu.js`. A carga do banco ainda é o seed de R$ 29,90 até a loja publicar preço real |
-| 3 | Sacola, quantidades, opcionais e resumo calculado; estado local apenas como conveniência | Fase 2; D2 | **Aceite técnico no código.** Sacola sem preço local; total recalculado pelo catálogo; item ausente bloqueia |
-| 4 | Dados do cliente, entrega/retirada, validação de área, taxa, horário e total | D3, D4, D7, D9 | **Parcial.** Taxa só da zona ativa. Sem retirada. Horário de aceite não configurado (D7) |
-| 5 | Endpoint server-side de finalização e gravação transacional de pedido, itens e snapshots | Fases 1–4; D5, D6, D9 | **Código da transação e da idempotência pronto.** Depende de aplicar `create_order` no Supabase. Pagamento na entrega segue o constraint já existente |
-| 6 | Confirmação do pedido e botão opcional de WhatsApp com resumo gerado a partir do pedido persistido | Fase 5; D5 | **Parcial, sem aceite.** `whatsappOrder.js` monta `wa.me` após o POST; não marca enviado/aceito/pago |
-| 7 | Operação do catálogo e acompanhamento de pedidos; começar com Supabase Dashboard restrito e avaliar painel próprio | D8; requisitos operacionais | **Parcial, sem aceite.** `/admin` com token no navegador; processo da loja não documentado como aceito |
-| 8 | QA integrado, segurança, acessibilidade, monitoramento, contingência e lançamento gradual | Fases anteriores aprovadas | Pendente |
+| 1 | Projeto Supabase, schema inicial, RLS, migrations e configuração segura dos ambientes | D10; política de acesso aprovada | **Concluída** na fundação (projeto `sxpsewnfgpkppqivzvcc`, migrations no repo, envs na Vercel). Backup e rotação de segredo não foram reauditados neste PR |
+| 2 | Catálogo real vindo do Supabase, com categorias, produtos, preços, imagens e disponibilidade | D1, D2, D8 | **Parcial.** Código lê Supabase, mas #49 restaurou fallback `menu.js` provisório sem foto/falha. Preço oficial da loja pendente |
+| 3 | Sacola, quantidades, opcionais e resumo calculado; estado local apenas como conveniência | Fase 2; D2 | **Aceite técnico no código.** `quoteCart`; storage sem preço |
+| 4 | Dados do cliente, entrega/retirada, validação de área, taxa, horário e total | D3, D4, D7, D9 | **Parcial.** Só entrega; zona do banco; D7 sem janela de bloqueio |
+| 5 | Endpoint server-side de finalização e gravação transacional de pedido, itens e snapshots | Fases 1–4; D5, D6, D9 | **Código pronto no repo.** Falta aplicar RPC no Supabase remoto e teste E2E real |
+| 6 | Confirmação do pedido e botão opcional de WhatsApp com resumo gerado a partir do pedido persistido | Fase 5; D5 | **Aceite técnico no código.** Texto não afirma aceite/pagamento; WhatsApp opcional |
+| 7 | Operação do catálogo e acompanhamento de pedidos; começar com Supabase Dashboard restrito e avaliar painel próprio | D8; requisitos operacionais | **Parcial.** `/admin` + `ADMIN_TOKEN`; doc de operação existe; treino/aceite da loja pendente |
+| 8 | QA integrado, segurança, acessibilidade, monitoramento, contingência e lançamento gradual | Fases anteriores aprovadas | **Checklist criado; não assinado.** Pendente migration remota, preços reais e evidências |
 
 ### Fase 0 — alinhamento e inventário
 
@@ -164,7 +165,7 @@ Cada fase deve ser entregue em PR separado, salvo dependência técnica que just
 - Não marcar `sent`, `accepted` ou `paid` por inferência do navegador.
 - Registrar no máximo o evento de clique/abertura, se houver finalidade operacional e isso for claramente nomeado.
 
-**Aceite:** pedido permanece consultável no Supabase mesmo sem abertura/envio de WhatsApp; texto contém referência, itens e total consistentes.
+**Aceite:** pedido permanece consultável no Supabase mesmo se o cliente fechar a página ou não enviar a mensagem; texto contém referência, itens e total consistentes.
 
 ### Fase 7 — operação e administração
 
@@ -253,7 +254,31 @@ Em cada PR aplicável:
 - nenhuma credencial em artefatos públicos;
 - documentação atualizada.
 
-## 10. Fora do MVP
+## 10. Próximos passos após a Fase 8 / critérios de qualidade (seção 9)
+
+A sequência de fases 0–8 do MVP técnico está **implementada em grau desigual**. O que vem depois não é “fase 9 de feature”, e sim **operacionalização e endurecimento**:
+
+### Imediato (desbloqueia pedido real)
+
+1. Aplicar no Supabase de produção a migration `20261122214600_create_order_rpc.sql`.
+2. Definir `ADMIN_TOKEN` forte em todos os ambientes Vercel (sem `VITE_`).
+3. Pedido de teste ponta a ponta: sacola → checkout → RPC → linha em `orders` → WhatsApp opcional → status no `/admin`.
+4. Confirmar retry com a mesma `idempotency_key` (sem duplicar).
+
+### Comercial (D1–D9)
+
+5. Substituir seed R$ 29,90 por preços, nomes e fotos reais; preencher `image_url` para sair do fallback provisório.
+6. Validar zonas/taxas (D4) e se retirada entra no escopo (D3).
+7. Fechar texto operacional de WhatsApp e quem atende (D5); formas de pagamento na entrega (D6).
+8. Decidir se haverá janela de aceite automática (D7) ou só confirmação humana.
+
+### Lançamento e pós-MVP
+
+9. Percorrer e assinar `documentacao/CHECKLIST-LANCAMENTO.md`.
+10. Monitoramento mínimo: falhas de `POST /api/orders`, taxa de fallback provisório no cardápio, alertas Vercel.
+11. Só então evoluções fora do MVP (seção seguinte): painel mais rico, geocode de endereço, Pix online, etc.
+
+## 11. Fora do MVP
 
 - Aplicativo nativo.
 - Login obrigatório do cliente.
@@ -265,6 +290,6 @@ Em cada PR aplicável:
 - Painel administrativo próprio antes de comprovar necessidade.
 - Automação de WhatsApp Business/API sem decisão e contratação específicas.
 
-## 11. Regra de avanço
+## 12. Regra de avanço
 
 Não pular fases por conveniência. Uma fase pode ser dividida em PRs menores, mas não pode ser declarada concluída sem critérios de aceite, testes e evidências. Se uma decisão comercial estiver pendente, implementar apenas o que não dependa dela e manter a funcionalidade bloqueada em produção.
