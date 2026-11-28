@@ -33,7 +33,7 @@ function mapRemoteProduct(product) {
 
 /**
  * Prefere o catálogo do Supabase quando ele traz produtos com foto.
- * Falha de conexão é fail-closed; catálogo vazio ou sem fotos usa vitrine provisória.
+ * Falha de conexão, catálogo vazio ou sem fotos usa vitrine provisória (menu.js).
  */
 export function useCatalog() {
   const [categories, setCategories] = useState([])
@@ -61,10 +61,11 @@ export function useCatalog() {
 
         const failure = catRes.error || prodRes.error
         if (failure) {
-          setCategories([])
-          setProducts([])
-          setDeliveryZones([])
-          setProvisional(false)
+          // Fail-open para a vitrine: mostra menu local provisório em vez de "indisponível".
+          setCategories(fallback.categories)
+          setProducts(fallback.products)
+          setDeliveryZones(zonesRes.error ? [] : (zonesRes.data || []))
+          setProvisional(true)
           setError(failure)
           return
         }
@@ -86,10 +87,10 @@ export function useCatalog() {
         setProvisional(false)
       } catch (loadError) {
         if (!isMounted) return
-        setCategories([])
-        setProducts([])
+        setCategories(fallback.categories)
+        setProducts(fallback.products)
         setDeliveryZones([])
-        setProvisional(false)
+        setProvisional(true)
         setError(loadError)
       } finally {
         if (isMounted) setLoading(false)
@@ -105,8 +106,9 @@ export function useCatalog() {
 
   let status = 'ready'
   if (loading) status = 'loading'
-  else if (error) status = 'error'
   else if (products.length === 0) status = 'empty'
+  else if (error && provisional) status = 'ready'
+  else if (error) status = 'error'
 
   return { categories, products, deliveryZones, loading, error, status, provisional }
 }
