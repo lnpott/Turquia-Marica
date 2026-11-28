@@ -22,20 +22,17 @@ export default async function handler(request, response) {
     return sendJson(response, 503, { error: 'REVIEWS_NOT_CONFIGURED' })
   }
 
-  // Places API (New): o placeId vai no caminho da URL; autenticação pelo header
-  // X-Goog-Api-Key; campos solicitados declarados no X-Goog-FieldMask.
-  const url = `${GOOGLE_PLACES_DETAILS_URL}/${placeId}`
+  // Places API (New) usa GET; idioma é parâmetro de query e os campos são
+  // limitados explicitamente pelo FieldMask.
+  const url = `${GOOGLE_PLACES_DETAILS_URL}/${encodeURIComponent(placeId)}?languageCode=pt-BR`
 
   try {
     const googleResponse = await globalThis.fetch(url, {
-      method: 'POST',
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         'X-Goog-Api-Key': apiKey,
         'X-Goog-FieldMask': 'reviews,displayName,rating,userRatingCount,googleMapsUri',
-        'Accept-Language': 'pt-BR',
       },
-      body: JSON.stringify({ languageCode: 'pt-BR' }),
       signal: globalThis.AbortSignal.timeout(8000),
     })
     const data = await googleResponse.json()
@@ -48,7 +45,7 @@ export default async function handler(request, response) {
       return sendJson(response, 502, { error: 'GOOGLE_PLACES_HTTP_ERROR', status: googleResponse.status })
     }
 
-    // A Places API (New) responde HTTP 200 mesmo em erro, com o campo `error` no body.
+    // A Places API (New) pode devolver um campo error no body.
     if (data.error) {
       globalThis.console.error('[api/reviews] Places API (New) error:', {
         status: data.error.status,

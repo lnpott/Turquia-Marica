@@ -7,6 +7,8 @@ Marcar só com evidência. Assinatura da loja é obrigatória para “aceito em 
 ## Técnico
 
 - [ ] Migration `create_order` aplicada no projeto Supabase de produção
+- [ ] Migration de grants `20261123024500_create_order_grants.sql` aplicada (EXECUTE para service_role)
+- [ ] `POST /api/orders` devolve `201` com `orderNumber` (não só 500 genérico)
 - [ ] `SUPABASE_URL` / `VITE_SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` só no server
 - [ ] `ADMIN_TOKEN` definido e diferente de qualquer valor de exemplo
 - [ ] `npm run check` verde na branch a publicar
