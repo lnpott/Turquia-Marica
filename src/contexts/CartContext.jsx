@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useMemo } from 'react'
 
 const CartContext = createContext(null)
 const CART_STORAGE_KEY = 'turquia_cart_items_v1'
@@ -34,6 +34,11 @@ export function CartProvider({ children }) {
       // storage indisponível
     }
   }, [items])
+
+  const totalItems = useMemo(
+    () => items.reduce((sum, line) => sum + line.quantity, 0),
+    [items],
+  )
 
   const addItem = (product, quantity = 1, optionIds = []) => {
     const line = normalizeLine({
@@ -77,8 +82,13 @@ export function CartProvider({ children }) {
     setItems([])
   }
 
+  const value = useMemo(
+    () => ({ items, totalItems, addItem, updateQuantity, removeItem, clearCart }),
+    [items, totalItems],
+  )
+
   return (
-    <CartContext.Provider value={{ items, addItem, updateQuantity, removeItem, clearCart }}>
+    <CartContext.Provider value={value}>
       {children}
     </CartContext.Provider>
   )
@@ -86,6 +96,7 @@ export function CartProvider({ children }) {
 
 const defaultCartValue = {
   items: [],
+  totalItems: 0,
   addItem: () => {},
   updateQuantity: () => {},
   removeItem: () => {},
