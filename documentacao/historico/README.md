@@ -1,15 +1,8 @@
-# Histórico
+# Histórico (não usar como fonte de verdade)
 
-Os planos e auditorias antigos foram **removidos do repositório**.
+Exports HTML, assets provisórios e scripts de migração Stitch antigos.
 
-Não existem mais aqui: `BEST_PLAN`, `ROADMAP_MIGRACAO`, `limpeza`, relatório de auditoria, `design/` e `qa/`. O Git guarda o conteúdo nos commits anteriores, se alguém precisar olhar.
+**Não** use esta pasta para decidir escopo, preços, rotas ou deploy.
+Fontes atuais: `GUIA.md`, `ROADMAP.md`, `documentacao/REGISTRO-OPERACIONAL.md`.
 
-O que continua valendo:
-
-1. código e Git;
-2. [`/GUIA.md`](../../GUIA.md) — o que o site é agora;
-3. [`/ROADMAP.md`](../../ROADMAP.md) — para onde vai;
-4. [`/AGENTS.md`](../../AGENTS.md) — como um agente trabalha;
-5. [`/documentacao/ASSETS.md`](../ASSETS.md) — mídia.
-
-Esta pasta só guarda material que já era arquivo (exports, assets provisórios, referência Stitch). Não define produto nem escopo.
+Pode ser apagada em limpeza futura de repo sem afetar a aplicação.
