@@ -33,7 +33,7 @@ function mapRemoteProduct(product) {
 
 /**
  * Prefere o catálogo do Supabase quando ele traz produtos com foto.
- * Sem foto, vazio ou falha: volta a vitrine de menu.js (preço ainda provisório).
+ * Falha de conexão é fail-closed; catálogo vazio ou sem fotos usa vitrine provisória.
  */
 export function useCatalog() {
   const [categories, setCategories] = useState([])
@@ -60,15 +60,23 @@ export function useCatalog() {
         if (!isMounted) return
 
         const failure = catRes.error || prodRes.error
-        const remoteProducts = failure ? [] : (prodRes.data || []).map(mapRemoteProduct)
+        if (failure) {
+          setCategories([])
+          setProducts([])
+          setDeliveryZones([])
+          setProvisional(false)
+          setError(failure)
+          return
+        }
+
+        const remoteProducts = (prodRes.data || []).map(mapRemoteProduct)
         const hasPhoto = remoteProducts.some((product) => product.image)
 
-        if (failure || remoteProducts.length === 0 || !hasPhoto) {
+        if (remoteProducts.length === 0 || !hasPhoto) {
           setCategories(fallback.categories)
           setProducts(fallback.products)
           setDeliveryZones(zonesRes.error ? [] : (zonesRes.data || []))
           setProvisional(true)
-          setError(null)
           return
         }
 
@@ -76,13 +84,13 @@ export function useCatalog() {
         setProducts(remoteProducts)
         setDeliveryZones(zonesRes.error ? [] : (zonesRes.data || []))
         setProvisional(false)
-      } catch {
+      } catch (loadError) {
         if (!isMounted) return
-        setCategories(fallback.categories)
-        setProducts(fallback.products)
+        setCategories([])
+        setProducts([])
         setDeliveryZones([])
-        setProvisional(true)
-        setError(null)
+        setProvisional(false)
+        setError(loadError)
       } finally {
         if (isMounted) setLoading(false)
       }

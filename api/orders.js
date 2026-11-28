@@ -1,10 +1,13 @@
 import process from 'node:process'
+import { Buffer } from 'node:buffer'
 import { createClient } from '@supabase/supabase-js'
+import { validateOrderPayload } from './lib/orderPayload.js'
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL
 const supabaseServiceRole = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 const ERRORS = {
+  INVALID_JSON: [400, 'JSON inválido.'],
   INVALID_IDEMPOTENCY_KEY: [400, 'Identificador do pedido inválido.'],
   MISSING_CUSTOMER_FIELDS: [400, 'Nome, telefone, endereço e referência são obrigatórios.'],
   INVALID_PAYMENT_METHOD: [400, 'Forma de pagamento inválida.'],
@@ -21,11 +24,68 @@ function sendJson(response, statusCode, payload) {
   return response.status(statusCode).json(payload)
 }
 
+async function readBody(request) {
+  if (request.body && typeof request.body === 'object' && !Buffer.isBuffer(request.body)) {
+    return request.body
+  }
+  if (typeof request.body === 'string' && request.body.length > 0) {
+    try {
+      return JSON.parse(request.body)
+    } catch {
+      return null
+    }
+  }
+  if (typeof request.json === 'function') {
+    try {
+      return await request.json()
+    } catch {
+      return null
+    }
+  }
+  return {}
+}
+
 function mapRpcError(error) {
-  const text = `${error?.message || ''} ${error?.details || ''}`
-  const code = Object.keys(ERRORS).find((key) => text.includes(key))
-  if (!code) return [500, 'Não foi possível gravar o pedido.']
-  return ERRORS[code]
+  const text = `${error?.message || ''} ${error?.details || ''} ${error?.hint || ''}`
+  const business = Object.keys(ERRORS).find((key) => key !== 'INVALID_JSON' && text.includes(key))
+  if (business) {
+    const [status, message] = ERRORS[business]
+    return { status, message, reason: business, pgCode: error?.code || null }
+  }
+
+  if (/permission denied/i.test(text) || error?.code === '42501') {
+    return {
+      status: 503,
+      message: 'Sem permissão para gravar pedido. Confira SUPABASE_SERVICE_ROLE_KEY e o GRANT da RPC create_order.',
+      reason: 'RPC_PERMISSION_DENIED',
+      pgCode: error?.code || null,
+    }
+  }
+
+  if (/Could not find the function/i.test(text) || /schema cache/i.test(text) || error?.code === 'PGRST202') {
+    return {
+      status: 503,
+      message: 'RPC create_order ausente ou fora do schema cache. Aplique a migration no Supabase e recarregue o schema.',
+      reason: 'RPC_NOT_FOUND',
+      pgCode: error?.code || null,
+    }
+  }
+
+  if (/Invalid API key|JWT|expired/i.test(text)) {
+    return {
+      status: 503,
+      message: 'Chave do Supabase inválida no servidor. Confira SUPABASE_SERVICE_ROLE_KEY na Vercel.',
+      reason: 'INVALID_SERVICE_KEY',
+      pgCode: error?.code || null,
+    }
+  }
+
+  return {
+    status: 500,
+    message: 'Não foi possível gravar o pedido.',
+    reason: 'RPC_FAILED',
+    pgCode: error?.code || null,
+  }
 }
 
 export default async function handler(request, response) {
@@ -35,39 +95,45 @@ export default async function handler(request, response) {
   }
 
   if (!supabaseUrl || !supabaseServiceRole) {
-    return sendJson(response, 503, { error: 'SUPABASE_NOT_CONFIGURED' })
+    return sendJson(response, 503, { error: 'SUPABASE_NOT_CONFIGURED', reason: 'MISSING_ENV' })
   }
 
-  const body = request.body || {}
-  const payload = {
-    idempotencyKey: body.idempotencyKey,
-    customerName: body.customerName,
-    customerPhone: body.customerPhone,
-    deliveryAddress: body.deliveryAddress,
-    deliveryReference: body.deliveryReference,
-    zoneId: body.zoneId,
-    paymentMethod: body.paymentMethod,
-    paymentChangeFor: body.paymentChangeFor || null,
-    notes: body.notes || null,
-    items: Array.isArray(body.items)
-      ? body.items.map((item) => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          optionIds: Array.isArray(item.optionIds) ? item.optionIds : [],
-        }))
-      : [],
+  const body = await readBody(request)
+  if (body == null) {
+    const [status, message] = ERRORS.INVALID_JSON
+    return sendJson(response, status, { error: 'ORDER_REJECTED', message, reason: 'INVALID_JSON' })
   }
 
-  const supabaseServer = createClient(supabaseUrl, supabaseServiceRole)
-  const { data, error } = await supabaseServer.rpc('create_order', { payload })
+  const checked = validateOrderPayload(body)
+  if (!checked.ok) {
+    const [status, message] = ERRORS[checked.code] || [400, 'Pedido inválido.']
+    return sendJson(response, status, {
+      error: 'ORDER_REJECTED',
+      message,
+      reason: checked.code,
+    })
+  }
+
+  const supabaseServer = createClient(supabaseUrl, supabaseServiceRole, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  })
+
+  const { data, error } = await supabaseServer.rpc('create_order', { payload: checked.payload })
 
   if (error) {
-    const [status, message] = mapRpcError(error)
-    return sendJson(response, status, { error: 'ORDER_REJECTED', message })
+    const mapped = mapRpcError(error)
+    return sendJson(response, mapped.status, {
+      error: 'ORDER_REJECTED',
+      message: mapped.message,
+      reason: mapped.reason,
+      pgCode: mapped.pgCode,
+    })
   }
 
-  const items = Array.isArray(data?.items)
-    ? data.items.map((item) => ({
+  const result = typeof data === 'string' ? JSON.parse(data) : data
+
+  const items = Array.isArray(result?.items)
+    ? result.items.map((item) => ({
         productId: item.product_id,
         name: item.product_name,
         quantity: item.quantity,
@@ -76,15 +142,15 @@ export default async function handler(request, response) {
       }))
     : []
 
-  return sendJson(response, data?.replay ? 200 : 201, {
+  return sendJson(response, result?.replay ? 200 : 201, {
     success: true,
-    replay: Boolean(data?.replay),
-    orderId: data.orderId,
-    orderNumber: data.orderNumber,
-    subtotalCents: data.subtotalCents,
-    deliveryFeeCents: data.deliveryFeeCents,
-    totalCents: data.totalCents,
-    createdAt: data.createdAt,
+    replay: Boolean(result?.replay),
+    orderId: result.orderId,
+    orderNumber: result.orderNumber,
+    subtotalCents: result.subtotalCents,
+    deliveryFeeCents: result.deliveryFeeCents,
+    totalCents: result.totalCents,
+    createdAt: result.createdAt,
     items,
   })
 }

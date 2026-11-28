@@ -50,7 +50,7 @@ npm run audit:demo-leak
 ### Banco de dados e infraestrutura Supabase
 
 - Projeto hospedado: `turquia-lanches` (ref `sxpsewnfgpkppqivzvcc`) ativo na organização `lnpott's Org`.
-- Migrations versionadas: `20261121205545_init_schema.sql`, `20261121211412_delivery_zones_and_triggers.sql` e `20261122214600_create_order_rpc.sql` (RPC `create_order`).
+- Migrations versionadas: `20261121205545_init_schema.sql`, `20261121211412_delivery_zones_and_triggers.sql`, `20261122214600_create_order_rpc.sql` (RPC `create_order`) e `20261123024500_create_order_grants.sql` (GRANT service_role).
 - Tabelas criadas com Row Level Security (RLS) habilitado:
   - `categories` (com carga inicial dos 5 grupos da vitrine);
   - `products` (com carga inicial dos 9 itens do catálogo atual, preços em centavos);
@@ -95,9 +95,9 @@ Essas rotas existem. Isso não significa catálogo oficial nem pedido aceito pel
 
 - `api/reviews.js` — avaliações Google Places.
 - `src/lib/supabase.js` + `src/services/catalog.js` — leitura anon de categorias, produtos e zonas.
-- `POST /api/orders` chama a RPC `create_order` (migration no repo). Ignora preço do navegador, lê produto/opcional ativos, aplica taxa da zona e grava pedido + itens na mesma transação. Status inicial `pending`.
+- `POST /api/orders` valida o body antes da RPC, chama `create_order` e devolve `reason` estável em falha (`RPC_PERMISSION_DENIED`, `RPC_NOT_FOUND`, `INVALID_SERVICE_KEY`, códigos de negócio).
 - A mesma `idempotency_key` devolve o pedido já gravado em vez de duplicar.
-- **A RPC ainda precisa estar aplicada no projeto Supabase remoto.** Sem isso o endpoint falha e não grava.
+- Em produção (22/11/2026) a gravação ainda falhava com 500 genérico; ver §3.1.
 - Confirmação (`OrderConfirmedPage`) afirma só “pedido gravado”; não afirma aceite da loja nem pagamento. WhatsApp é opcional e não muda status.
 - `api/admin.js` exige `ADMIN_TOKEN` no servidor (#50). Bearer errado → 401. Só depois usa service role. Processo em `documentacao/OPERACAO-ADMIN.md`.
 
@@ -122,17 +122,27 @@ Merges relevantes no mesmo dia: #47 (fases 2–5 técnicas), #48 (fases 6–8 em
 | Catálogo | Supabase se houver foto; senão `menu.js` provisório | **Não** — preços oficiais e fotos reais pendentes (D1) |
 | Sacola | IDs + `quoteCart`; sem preço confiado no storage | Técnico ok; depende de catálogo real |
 | Checkout | Só entrega; zona do banco; sem taxa inventada no cliente | **Parcial** — D3/D4/D7 |
-| Pedido | RPC `create_order` + idempotência no código | **Bloqueado** até migration no remoto |
+| Pedido | RPC `create_order` + idempotência no código | **Bloqueado** até migration/grants e service role corretos no remoto |
 | WhatsApp | Após persistência; texto não marca enviado/aceito/pago | Canal a confirmar (D5) |
 | Admin | `/admin` + `ADMIN_TOKEN` server-side | Processo existe em doc; treino da loja pendente |
 | Lançamento | Checklist em `documentacao/CHECKLIST-LANCAMENTO.md` | **Não assinado** |
 
 O que ainda impede “pronto para operação real”:
 
-1. Aplicar `create_order` no Supabase de produção e validar um pedido de ponta a ponta.
+1. Aplicar `create_order` + grants no Supabase de produção e validar um pedido de ponta a ponta.
 2. Publicar preços e fotos reais (sair do seed/provisório R$ 29,90).
 3. Confirmar zonas, WhatsApp operacional e regras de pagamento/horário com a loja.
 4. Preencher e assinar o checklist de lançamento.
+
+## 3.1 Teste de gravação (22/11/2026 ~23:30 -03)
+
+`POST https://turquia-marica.vercel.app/api/orders` com payload válido (zona `zone-1`, produto `combo-1`) retornou **HTTP 500** genérico `ORDER_REJECTED` em todos os cenários (válido, zona inválida, sacola vazia). Não era `503 SUPABASE_NOT_CONFIGURED`: URL e alguma service key existem no servidor.
+
+Leitura REST com `anon` continua OK (categorias, 9 produtos seed, 3 zonas). A função `create_order` existe; chamada direta com `anon` responde `permission denied` (esperado).
+
+Interpretação: falha na execução da RPC com a chave do servidor (service role incorreta, sem `EXECUTE`, ou erro não mapeado). O handler foi endurecido para validar o body antes da RPC e devolver `reason` estável (`RPC_PERMISSION_DENIED`, `RPC_NOT_FOUND`, `INVALID_SERVICE_KEY`, etc.). Migration `20261123024500_create_order_grants.sql` reafirma `GRANT EXECUTE` à `service_role` e `NOTIFY pgrst, 'reload schema'`.
+
+**Ainda necessário em produção:** aplicar essa migration no Supabase, conferir `SUPABASE_SERVICE_ROLE_KEY` na Vercel e repetir o POST até obter `201` com `orderNumber`.
 
 ## 4. Arquitetura aprovada para o produto futuro
 
