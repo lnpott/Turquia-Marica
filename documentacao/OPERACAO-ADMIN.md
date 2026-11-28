@@ -13,11 +13,19 @@ Documento de processo (Fase 7). Não substitui o aceite presencial da loja.
 ## Acesso
 
 1. Definir `ADMIN_TOKEN` nas variáveis de ambiente da Vercel (Production, Preview, Development). **Nunca** prefixar com `VITE_`.
-2. O valor deve ser longo e aleatório. Não reutilizar a service role nem a anon key.
+2. Em produção o valor deve ser longo e aleatório. Não reutilizar a service role nem a anon key.
 3. Abrir `/admin` (URL não está no menu público).
 4. Informar o mesmo valor de `ADMIN_TOKEN`. O front envia `Authorization: Bearer …`; a API compara com `process.env.ADMIN_TOKEN` (comparação em tempo constante). Token errado → 401.
 5. A **service role** só é usada no servidor depois dessa validação. O Bearer do cliente **nunca** é a chave Supabase.
 6. Alternativa segura: Supabase Dashboard com usuário restrito, sem service role no laptop do balcão.
+
+### Estado em 28/11/2026
+
+- `/admin` sobe e autentica em produção.
+- Front sanitiza o token (remove BOM `U+FEFF` e espaços) antes do header e do `localStorage`.
+- API sanitiza `ADMIN_TOKEN`, `VITE_SUPABASE_URL` / `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` antes de usar (evita `TypeError: ByteString` / 65279).
+- Parse do Bearer corrigido (`\s` real, não literal `\\s`).
+- **Temporário:** `ADMIN_TOKEN` em produção está como senha simples `123` só para desbloquear o painel. **Trocar por token forte (≥32 caracteres aleatórios) antes de operação real.**
 
 ## Fluxo de pedido
 
@@ -37,3 +45,4 @@ Documento de processo (Fase 7). Não substitui o aceite presencial da loja.
 - Se `create_order` não estiver aplicada no projeto remoto, `POST /api/orders` falha e nenhum pedido é gravado.
 - Se o WhatsApp não abrir, o pedido permanece no banco e deve ser consultado no painel/Dashboard.
 - Se `/api/admin` retornar `FETCH_FAILED` com mensagem de tabela/relação, conferir migrations no projeto Supabase ligado à produção.
+- Se aparecer erro de ByteString / caractere 65279: alguma env var na Vercel foi colada com BOM. O código já limpa; ainda assim vale regravar a variável sem BOM e redeployar.

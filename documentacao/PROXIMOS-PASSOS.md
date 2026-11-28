@@ -1,115 +1,130 @@
 # Próximos passos operacionais — Turquia Lanches
 
-> Atualizado em 23/11/2026.
+> Atualizado em 28/11/2026.
 > Complementa a seção 10 do `ROADMAP.md` e o `CHECKLIST-LANCAMENTO.md`.
 > Este documento é a sequência de execução prática para sair do estado atual e chegar em operação real.
 
-## Status atual (main em 23/11/2026)
+## Status atual (main em 28/11/2026)
 
 | Tema | Situação |
 |---|---|
 | Código fases 2–8 | Implementado |
-| RPC `create_order` | Existe no repositório (`supabase/migrations/20261122214600_create_order_rpc.sql`) |
-| RPC aplicada em produção | **Não** — bloqueante |
-| `ADMIN_TOKEN` | Precisa ser definido na Vercel |
-| Cardápio | Ainda usa preço provisório R$ 29,90 quando não há foto no Supabase |
+| SPA `/admin` e rewrites | OK em produção |
+| Parse Bearer + sanitização BOM (front e API) | OK — commits no `main` de 28/11 |
+| `ADMIN_TOKEN` na Vercel | Configurado (valor **temporário** `123`) |
+| Painel `/admin` autentica e lista produtos | OK em produção |
+| RPC `create_order` no repositório | Existe (`supabase/migrations/20261122214600_create_order_rpc.sql` + grants) |
+| RPC aplicada em produção | **Conferir** — ainda bloqueante se não estiver |
+| Pedidos no painel | API responde; lista vazia até haver pedidos reais |
+| Cardápio | Seed / preços provisórios ainda presentes |
 | Checklist de lançamento | Não assinado |
 | Aceite comercial da loja | Pendente (preços, fotos, zonas, treino) |
 
----
+### O que foi feito em 28/11/2026 (registro)
 
-## Sequência obrigatória de execução
-
-### 1. Aplicar a RPC no Supabase de produção (bloqueante)
-
-**Objetivo:** permitir que `POST /api/orders` grave pedidos de verdade.
-
-1. Abrir o projeto Supabase `turquia-lanches` (ref `sxpsewnfgpkppqivzvcc`).
-2. Ir em **SQL Editor**.
-3. Colar o conteúdo completo de:
-   `supabase/migrations/20261122214600_create_order_rpc.sql`
-4. Executar (Run).
-5. Confirmar:
-   - A função `public.create_order(jsonb)` existe.
-   - Somente a role `service_role` tem `EXECUTE`.
-   - O índice único em `orders.idempotency_key` foi criado.
-
-**Aceite:** um pedido de teste via frontend grava linha em `orders` e `order_items`.
+1. Rota `/admin` acessível (SPA rewrite / cleanUrls).
+2. Correção do parse do header `Authorization: Bearer …` na API.
+3. Sanitização de BOM no front (`AdminPage.jsx`) e nas env vars do `api/admin.js`.
+4. `ADMIN_TOKEN` definido na Vercel (Production, Preview, Development) com valor temporário `123` para desbloquear o painel.
+5. Redeploy de produção; `GET /api/admin` com Bearer `123` retorna 200 e produtos.
 
 ---
 
-### 2. Configurar `ADMIN_TOKEN` na Vercel
+## Sequência de execução a partir de agora
 
-**Objetivo:** proteger o painel `/admin`.
+### A. Segurança do painel (rápido)
 
-1. Vercel → projeto `turquia-marica` → **Settings** → **Environment Variables**.
-2. Criar variável:
-   - Nome: `ADMIN_TOKEN`
-   - Valor: string longa e aleatória (mínimo 32 caracteres recomendado)
-   - Ambientes: **Production**, **Preview** e **Development**
-3. **Nunca** usar o prefixo `VITE_`.
-4. Não reutilizar a `SUPABASE_SERVICE_ROLE_KEY` nem a anon key.
+1. Gerar token forte (≥32 caracteres aleatórios).
+2. Atualizar `ADMIN_TOKEN` na Vercel (Production, Preview, Development).
+3. Redeploy (mudança de env sensível exige deploy novo).
+4. Entrar em `/admin` com o token novo; confirmar 401 com token errado.
 
-**Aceite:** acessar `/admin` com o token correto funciona; token errado retorna 401.
+**Aceite:** senha `123` fora de produção; só token forte funciona.
 
 ---
 
-### 3. Teste ponta a ponta (obrigatório)
+### B. RPC `create_order` em produção (bloqueante para pedidos reais)
 
-1. Abrir o site em produção (ou preview com as envs corretas).
-2. Adicionar itens na sacola.
-3. Ir para `/checkout`.
-4. Preencher dados do cliente e escolher zona ativa.
-5. Finalizar o pedido.
-6. Verificar:
-   - Resposta 200 com `orderId` e `orderNumber`
-   - Linha criada em `orders` (status `pending`)
-   - Itens criados em `order_items` com snapshots corretos
-   - Página `/pedido/confirmado` aparece
-   - Botão de WhatsApp opcional funciona (sem marcar como enviado/aceito/pago)
-7. Repetir o mesmo pedido com a **mesma `idempotencyKey`**:
-   - Deve retornar `replay: true`
-   - Não pode criar pedido duplicado
+**Objetivo:** `POST /api/orders` gravar pedidos de verdade.
 
-**Aceite:** pedido gravado atomicamente + idempotência validada.
+1. Abrir o projeto Supabase ligado à produção.
+2. **SQL Editor** → colar e executar, nesta ordem se ainda não estiverem aplicadas:
+   - `supabase/migrations/20261122214600_create_order_rpc.sql`
+   - `supabase/migrations/20261123024500_create_order_grants.sql`
+3. Confirmar:
+   - Função `public.create_order(jsonb)` existe.
+   - `EXECUTE` só para `service_role`.
+   - Índice único em `orders.idempotency_key`.
+
+**Aceite:** pedido de teste pelo site grava `orders` + `order_items`.
 
 ---
 
-### 4. Comercial (depende da loja)
+### C. Teste ponta a ponta
+
+1. Site em produção → itens na sacola → `/checkout`.
+2. Preencher dados e zona ativa → finalizar.
+3. Verificar:
+   - 200 com `orderId` / `orderNumber`
+   - Linha em `orders` (`pending`) e itens em `order_items`
+   - Página de confirmação
+   - Pedido aparece no `/admin`
+   - WhatsApp opcional não muda status
+4. Mesma `idempotencyKey` de novo → `replay: true`, sem duplicar.
+
+**Aceite:** pedido gravado + idempotência + visível no painel.
+
+---
+
+### D. Melhorias do painel (quando o fluxo acima estiver estável)
+
+Prioridade sugerida, sem inventar dados comerciais:
+
+1. Feedback visual ao mudar status de pedido (loading / sucesso / erro).
+2. Filtro ou abas por status (`pending`, `confirmed`, …).
+3. Atualização periódica ou botão “Atualizar” mais evidente.
+4. Edição de status de produto (`active` / indisponível) se a loja precisar.
+5. Mensagem clara quando não há pedidos ainda.
+
+Só implementar o que a loja for usar no dia a dia.
+
+---
+
+### E. Comercial (depende da loja)
 
 | Item | Ação | Responsável |
 |---|---|---|
 | Preços reais | Substituir seed R$ 29,90 | Loja (via `/admin` ou Dashboard) |
 | Fotos | Preencher `image_url` dos produtos | Loja |
 | Zonas e taxas | Conferir `delivery_zones` | Loja |
-| Texto D7 | Revisar aviso de “aceita pedido a qualquer hora + confirmação pela loja” | Loja |
-| Treino | Operador sabe usar WhatsApp + status do pedido | Loja |
+| Texto operacional | Revisar aviso de confirmação pela loja | Loja |
+| Treino | Operador: WhatsApp + status no painel | Loja |
 
 ---
 
-### 5. Lançamento
+### F. Lançamento
 
 1. Percorrer e assinar `documentacao/CHECKLIST-LANCAMENTO.md`.
-2. Fazer um pedido real de validação em produção.
-3. Confirmar que o pedido aparece no `/admin` e no WhatsApp da loja.
-4. Manter procedimento de rollback conhecido (redeploy do SHA anterior na Vercel).
-5. Monitoramento mínimo recomendado:
-   - Falhas de `POST /api/orders`
-   - Taxa de fallback do cardápio (preço provisório)
+2. Pedido real de validação em produção.
+3. Pedido no `/admin` e no WhatsApp da loja.
+4. Rollback conhecido (redeploy do SHA anterior na Vercel).
+5. Monitorar falhas de `POST /api/orders` e uso de preço provisório.
 
 ---
 
 ## Critério de “pronto para operação real”
 
-- [ ] Migration `create_order` aplicada em produção
-- [ ] `ADMIN_TOKEN` configurado em todos os ambientes
-- [ ] Pedido de teste gravado e localizado no Supabase
+- [x] `/admin` acessível e autenticando em produção
+- [x] Correções de Bearer e BOM no código
+- [ ] `ADMIN_TOKEN` forte (não a senha temporária `123`)
+- [ ] Migration `create_order` (+ grants) aplicada em produção
+- [ ] Pedido de teste gravado e localizado no Supabase e no `/admin`
 - [ ] Idempotência validada
-- [ ] Preços reais publicados (saiu do R$ 29,90)
+- [ ] Preços reais publicados (saiu do provisório)
 - [ ] Checklist de lançamento assinado pela loja e pelo técnico
 - [ ] Operador treinado no fluxo
 
-Somente após todos os itens acima a plataforma pode ser considerada em operação real.
+Somente após os itens em aberto a plataforma pode ser considerada em operação real.
 
 ---
 
