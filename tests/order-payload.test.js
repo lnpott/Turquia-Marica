@@ -29,4 +29,26 @@ describe('validateOrderPayload', () => {
     expect(validateOrderPayload({ ...base, idempotencyKey: 'abc' }).code).toBe('INVALID_IDEMPOTENCY_KEY')
     expect(validateOrderPayload({ ...base, paymentMethod: 'boleto' }).code).toBe('INVALID_PAYMENT_METHOD')
   })
+
+  it('recusa quantidades fracionárias em vez de arredondá-las para baixo', () => {
+    expect(validateOrderPayload({
+      ...base,
+      items: [{ productId: 'combo-1', quantity: 1.5, optionIds: [] }],
+    }).code).toBe('INVALID_QUANTITY')
+  })
+
+  it('recusa opcionais malformados em vez de descartá-los', () => {
+    expect(validateOrderPayload({
+      ...base,
+      items: [{ productId: 'combo-1', quantity: 1, optionIds: 'option-1' }],
+    }).code).toBe('INVALID_OPTIONS')
+    expect(validateOrderPayload({
+      ...base,
+      items: [{ productId: 'combo-1', quantity: 1, optionIds: [null] }],
+    }).code).toBe('INVALID_OPTIONS')
+  })
+
+  it('recusa item que não seja objeto', () => {
+    expect(validateOrderPayload({ ...base, items: [null] }).code).toBe('PRODUCT_UNAVAILABLE')
+  })
 })
