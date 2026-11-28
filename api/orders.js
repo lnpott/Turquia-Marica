@@ -1,4 +1,5 @@
 import process from 'node:process'
+import { Buffer } from 'node:buffer'
 import { createClient } from '@supabase/supabase-js'
 import { validateOrderPayload } from './lib/orderPayload.js'
 
