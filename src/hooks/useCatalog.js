@@ -6,6 +6,29 @@ import { categories as localCategories, products as localProducts } from '../dat
 const PROVISIONAL_CENTS = 2990
 const REMOTE_TIMEOUT_MS = 2500
 
+/** Fotos provisórias do menu local, indexadas por id do produto. */
+const localImageById = Object.fromEntries(
+  localProducts
+    .filter((product) => product.id && product.image)
+    .map((product) => [
+      product.id,
+      { image: product.image, imageAlt: product.imageAlt || product.name },
+    ]),
+)
+
+const localCategoryImageById = Object.fromEntries(
+  localCategories
+    .filter((category) => category.id && (category.image || category.fallbackImage))
+    .map((category) => [
+      category.id,
+      {
+        image: category.image || category.fallbackImage || null,
+        fallbackImage: category.fallbackImage || null,
+        imageAlt: category.imageAlt || category.name,
+      },
+    ]),
+)
+
 function localCatalog() {
   return {
     categories: localCategories,
@@ -22,13 +45,25 @@ function localCatalog() {
 }
 
 function mapRemoteProduct(product) {
+  const local = localImageById[product.id]
+  const remoteImage = product.image_url || null
   return {
     ...product,
     categoryId: product.category_id,
     price: formatCents(product.price_cents),
-    image: product.image_url || null,
-    imageAlt: product.image_alt || product.name,
+    image: remoteImage || local?.image || null,
+    imageAlt: product.image_alt || local?.imageAlt || product.name,
     priceProvisional: false,
+  }
+}
+
+function mapRemoteCategory(category) {
+  const local = localCategoryImageById[category.id]
+  return {
+    ...category,
+    image: category.image_url || local?.image || null,
+    fallbackImage: local?.fallbackImage || null,
+    imageAlt: category.image_alt || local?.imageAlt || category.name,
   }
 }
 
@@ -94,7 +129,7 @@ async function fetchRemoteCatalog() {
   const remoteProducts = (prodRes.data || []).map(mapRemoteProduct)
 
   // Catálogo oficial é o Supabase. Sem produtos remotos, mantém o menu local.
-  // Foto não é mais condição — o admin e o banco mandam na lista e no preço.
+  // Foto do banco prevalece; se vazia, reaproveita a do menu.js pelo mesmo id.
   if (remoteProducts.length === 0) {
     return {
       categories: fallback.categories,
@@ -106,7 +141,7 @@ async function fetchRemoteCatalog() {
   }
 
   return {
-    categories: catRes.data || [],
+    categories: (catRes.data || []).map(mapRemoteCategory),
     products: remoteProducts,
     deliveryZones: zonesRes.error ? [] : (zonesRes.data || []),
     error: null,
@@ -185,7 +220,7 @@ function getSnapshot() {
 
 /**
  * Prefere o catálogo do Supabase quando há produtos ativos.
- * Mostra menu local na hora; remoto substitui se responder a tempo.
+ * Preço e lista vêm do banco; foto local preenche quando image_url está vazio.
  * Cache compartilhado evita refetch ao abrir a sacola.
  */
 export function useCatalog() {
