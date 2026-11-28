@@ -2,8 +2,14 @@ import { useState } from 'react'
 import { ShieldCheck, RefreshCw, Edit2, Check, Package, DollarSign } from 'lucide-react'
 import SectionHeading from '../components/ui/SectionHeading'
 
+/** Remove BOM (U+FEFF) e espaços — evita TypeError ByteString no header Authorization. */
+function sanitizeToken(value) {
+  if (typeof value !== 'string') return ''
+  return value.replace(/^\uFEFF/, '').trim()
+}
+
 export default function AdminPage() {
-  const [token, setToken] = useState(() => localStorage.getItem('turquia_admin_token') || '')
+  const [token, setToken] = useState(() => sanitizeToken(localStorage.getItem('turquia_admin_token') || ''))
   const [authenticated, setAuthenticated] = useState(false)
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState({ orders: [], products: [] })
@@ -12,12 +18,13 @@ export default function AdminPage() {
   const [newPriceReais, setNewPriceReais] = useState('')
 
   const loadAdminData = async (authToken = token) => {
-    if (!authToken) return false
+    const clean = sanitizeToken(authToken)
+    if (!clean) return false
     try {
       setLoading(true)
       setError(null)
       const res = await fetch('/api/admin', {
-        headers: { Authorization: `Bearer ${authToken}` },
+        headers: { Authorization: `Bearer ${clean}` },
       })
       const json = await res.json().catch(() => ({}))
 
@@ -55,9 +62,11 @@ export default function AdminPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault()
-    if (!token.trim()) return
-    localStorage.setItem('turquia_admin_token', token.trim())
-    await loadAdminData(token.trim())
+    const clean = sanitizeToken(token)
+    if (!clean) return
+    setToken(clean)
+    localStorage.setItem('turquia_admin_token', clean)
+    await loadAdminData(clean)
   }
 
   const handleRefresh = () => {
@@ -68,12 +77,13 @@ export default function AdminPage() {
     const priceCents = Math.round(parseFloat(newPriceReais.replace(',', '.')) * 100)
     if (isNaN(priceCents) || priceCents < 0) return
 
+    const clean = sanitizeToken(token)
     try {
       const res = await fetch('/api/admin', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${clean}`,
         },
         body: JSON.stringify({
           entity: 'product',
@@ -97,12 +107,13 @@ export default function AdminPage() {
   }
 
   const handleUpdateOrderStatus = async (orderId, newStatus) => {
+    const clean = sanitizeToken(token)
     try {
       const res = await fetch('/api/admin', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${clean}`,
         },
         body: JSON.stringify({
           entity: 'order',
@@ -141,7 +152,7 @@ export default function AdminPage() {
           {error && <p className="text-left text-sm text-red-700">{error}</p>}
           <button
             type="submit"
-            disabled={loading || !token.trim()}
+            disabled={loading || !sanitizeToken(token)}
             className="w-full rounded-lg bg-primary py-3 font-label-bold text-on-primary hover:bg-primary-hover disabled:opacity-60"
           >
             {loading ? 'Validando…' : 'Acessar Painel'}
