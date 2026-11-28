@@ -3,9 +3,15 @@ import { Buffer } from 'node:buffer'
 import { timingSafeEqual } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL
-const supabaseServiceRole = process.env.SUPABASE_SERVICE_ROLE_KEY
-const adminToken = process.env.ADMIN_TOKEN
+/** Remove BOM (U+FEFF) e espaços de env vars — evita TypeError ByteString. */
+function cleanEnv(value) {
+  if (typeof value !== 'string') return value
+  return value.replace(/^\uFEFF/, '').trim()
+}
+
+const supabaseUrl = cleanEnv(process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL)
+const supabaseServiceRole = cleanEnv(process.env.SUPABASE_SERVICE_ROLE_KEY)
+const adminToken = cleanEnv(process.env.ADMIN_TOKEN)
 
 function sendJson(response, statusCode, payload) {
   response.setHeader('Content-Type', 'application/json; charset=utf-8')
