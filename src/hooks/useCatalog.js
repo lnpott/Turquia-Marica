@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useSyncExternalStore } from 'react'
 import { getActiveCategories, getActiveProducts, getDeliveryZones } from '../services/catalog'
 import { formatCents } from '../lib/money'
 import { categories as localCategories, products as localProducts } from '../data/menu'
 
 const PROVISIONAL_CENTS = 2990
+const REMOTE_TIMEOUT_MS = 2500
 
 function localCatalog() {
   return {
@@ -31,84 +32,167 @@ function mapRemoteProduct(product) {
   }
 }
 
+function withTimeout(promise, ms) {
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => {
+      resolve({ timedOut: true })
+    }, ms)
+    promise
+      .then((value) => {
+        clearTimeout(timer)
+        resolve({ timedOut: false, value })
+      })
+      .catch((error) => {
+        clearTimeout(timer)
+        resolve({ timedOut: false, error })
+      })
+  })
+}
+
+/** Estado compartilhado: uma carga para toda a app (home + sacola + checkout). */
+const fallback = localCatalog()
+let catalogState = {
+  categories: fallback.categories,
+  products: fallback.products,
+  deliveryZones: [],
+  loading: true,
+  refreshing: false,
+  error: null,
+  provisional: true,
+  status: 'ready',
+}
+const listeners = new Set()
+let loadPromise = null
+
+function emit() {
+  listeners.forEach((listener) => listener())
+}
+
+function setCatalogState(patch) {
+  catalogState = { ...catalogState, ...patch }
+  emit()
+}
+
+async function fetchRemoteCatalog() {
+  const [catRes, prodRes, zonesRes] = await Promise.all([
+    getActiveCategories(),
+    getActiveProducts(),
+    getDeliveryZones(),
+  ])
+
+  const failure = catRes.error || prodRes.error
+  if (failure) {
+    return {
+      categories: fallback.categories,
+      products: fallback.products,
+      deliveryZones: zonesRes.error ? [] : (zonesRes.data || []),
+      error: failure,
+      provisional: true,
+    }
+  }
+
+  const remoteProducts = (prodRes.data || []).map(mapRemoteProduct)
+  const hasPhoto = remoteProducts.some((product) => product.image)
+
+  if (remoteProducts.length === 0 || !hasPhoto) {
+    return {
+      categories: fallback.categories,
+      products: fallback.products,
+      deliveryZones: zonesRes.error ? [] : (zonesRes.data || []),
+      error: null,
+      provisional: true,
+    }
+  }
+
+  return {
+    categories: catRes.data || [],
+    products: remoteProducts,
+    deliveryZones: zonesRes.error ? [] : (zonesRes.data || []),
+    error: null,
+    provisional: false,
+  }
+}
+
+function ensureCatalogLoaded() {
+  if (loadPromise) return loadPromise
+
+  loadPromise = (async () => {
+    setCatalogState({ loading: true, refreshing: true })
+
+    const result = await withTimeout(fetchRemoteCatalog(), REMOTE_TIMEOUT_MS)
+
+    if (result.timedOut) {
+      // Mantém vitrine local imediata; não bloqueia a UI.
+      setCatalogState({
+        loading: false,
+        refreshing: false,
+        provisional: true,
+        error: new Error('Timeout ao consultar o catálogo remoto'),
+        status: 'ready',
+      })
+      // Continua a promessa em background sem travar de novo a UI.
+      fetchRemoteCatalog()
+        .then((remote) => {
+          setCatalogState({
+            ...remote,
+            loading: false,
+            refreshing: false,
+            status: remote.products.length === 0 ? 'empty' : 'ready',
+          })
+        })
+        .catch(() => {
+          setCatalogState({ loading: false, refreshing: false, status: 'ready' })
+        })
+      return catalogState
+    }
+
+    if (result.error) {
+      setCatalogState({
+        categories: fallback.categories,
+        products: fallback.products,
+        deliveryZones: [],
+        loading: false,
+        refreshing: false,
+        error: result.error,
+        provisional: true,
+        status: 'ready',
+      })
+      return catalogState
+    }
+
+    const remote = result.value
+    setCatalogState({
+      ...remote,
+      loading: false,
+      refreshing: false,
+      status: remote.products.length === 0 ? 'empty' : 'ready',
+    })
+    return catalogState
+  })()
+
+  return loadPromise
+}
+
+function subscribe(listener) {
+  listeners.add(listener)
+  return () => listeners.delete(listener)
+}
+
+function getSnapshot() {
+  return catalogState
+}
+
 /**
  * Prefere o catálogo do Supabase quando ele traz produtos com foto.
- * Falha de conexão, catálogo vazio ou sem fotos usa vitrine provisória (menu.js).
+ * Mostra menu local na hora; remoto só substitui se responder a tempo e com foto.
+ * Cache compartilhado evita refetch ao abrir a sacola.
  */
 export function useCatalog() {
-  const [categories, setCategories] = useState([])
-  const [products, setProducts] = useState([])
-  const [deliveryZones, setDeliveryZones] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [provisional, setProvisional] = useState(false)
+  const state = useSyncExternalStore(subscribe, getSnapshot, getSnapshot)
 
   useEffect(() => {
-    let isMounted = true
-
-    async function loadCatalog() {
-      const fallback = localCatalog()
-      try {
-        setLoading(true)
-        setError(null)
-        const [catRes, prodRes, zonesRes] = await Promise.all([
-          getActiveCategories(),
-          getActiveProducts(),
-          getDeliveryZones(),
-        ])
-
-        if (!isMounted) return
-
-        const failure = catRes.error || prodRes.error
-        if (failure) {
-          // Fail-open para a vitrine: mostra menu local provisório em vez de "indisponível".
-          setCategories(fallback.categories)
-          setProducts(fallback.products)
-          setDeliveryZones(zonesRes.error ? [] : (zonesRes.data || []))
-          setProvisional(true)
-          setError(failure)
-          return
-        }
-
-        const remoteProducts = (prodRes.data || []).map(mapRemoteProduct)
-        const hasPhoto = remoteProducts.some((product) => product.image)
-
-        if (remoteProducts.length === 0 || !hasPhoto) {
-          setCategories(fallback.categories)
-          setProducts(fallback.products)
-          setDeliveryZones(zonesRes.error ? [] : (zonesRes.data || []))
-          setProvisional(true)
-          return
-        }
-
-        setCategories(catRes.data || [])
-        setProducts(remoteProducts)
-        setDeliveryZones(zonesRes.error ? [] : (zonesRes.data || []))
-        setProvisional(false)
-      } catch (loadError) {
-        if (!isMounted) return
-        setCategories(fallback.categories)
-        setProducts(fallback.products)
-        setDeliveryZones([])
-        setProvisional(true)
-        setError(loadError)
-      } finally {
-        if (isMounted) setLoading(false)
-      }
-    }
-
-    loadCatalog()
-
-    return () => {
-      isMounted = false
-    }
+    ensureCatalogLoaded()
   }, [])
 
-  let status = 'ready'
-  if (loading) status = 'loading'
-  else if (products.length === 0) status = 'empty'
-  else if (error && provisional) status = 'ready'
-  else if (error) status = 'error'
-
-  return { categories, products, deliveryZones, loading, error, status, provisional }
+  return state
 }
