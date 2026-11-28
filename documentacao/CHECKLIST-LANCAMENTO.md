@@ -2,13 +2,13 @@
 
 Marcar só com evidência. Assinatura da loja é obrigatória para “aceito em produção”.
 
+> Atualizado em 28/11/2026 — alinhado com `PROXIMOS-PASSOS.md` e `APPLY-RPC-SUPABASE.md`.
+
 ## Técnico
 
-- [ ] Migration `create_order` aplicada no projeto Supabase de produção
-- [ ] Migration de grants `20261123024500_create_order_grants.sql` aplicada (EXECUTE para service_role)
-- [ ] `POST /api/orders` devolve `201` com `orderNumber` (não só 500 genérico)
-- [ ] `SUPABASE_URL` / `VITE_SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` só no server
-- [ ] `ADMIN_TOKEN` definido e diferente de qualquer valor de exemplo
+- [ ] Migration `create_order` (+ grants) aplicada no projeto Supabase de produção (`APPLY-RPC-SUPABASE.md`)
+- [x] `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` e `SUPABASE_SERVICE_ROLE_KEY` nos ambientes Vercel
+- [x] `ADMIN_TOKEN` definido (sensitive, sem prefixo `VITE_`) em Production / Preview / Development
 - [ ] `npm run check` verde na branch a publicar
 - [ ] `npm run test:e2e` sem falha crítica
 - [ ] Bundle sem vazamento de demo (`audit:demo-leak`)
@@ -22,6 +22,7 @@ Marcar só com evidência. Assinatura da loja é obrigatória para “aceito em 
 ## Comercial / loja
 
 - [ ] Preços reais publicados (substituir seed R$ 29,90)
+- [ ] Fotos reais publicadas (`image_url` preenchido)
 - [ ] Zonas de raio e taxas conferidas
 - [ ] Operador treinado no WhatsApp e no status do pedido
 - [ ] Texto de D7 (aceite a qualquer hora + confirmação pela loja) revisado
@@ -30,6 +31,7 @@ Marcar só com evidência. Assinatura da loja é obrigatória para “aceito em 
 ## Pós-deploy
 
 - [ ] Pedido de teste real gravado e localizado no Supabase
+- [ ] Pedido aparece corretamente no `/admin`
 - [ ] Rollback conhecido (redeploy do SHA anterior na Vercel)
 - [ ] Contato de emergência técnico e da loja
 
