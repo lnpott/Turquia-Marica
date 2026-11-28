@@ -35,7 +35,7 @@ export default async function handler(request, response) {
   }
 
   const authHeader = request.headers.authorization || ''
-  const token = authHeader.replace(/^Bearer\\s+/i, '').trim()
+  const token = authHeader.replace(/^Bearer\s+/i, '').trim()
 
   if (!isValidAdminToken(token)) {
     return sendJson(response, 401, { error: 'UNAUTHORIZED' })
