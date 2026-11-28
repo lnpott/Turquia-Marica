@@ -5,7 +5,7 @@ const PAYMENTS = new Set(['card_delivery', 'cash_delivery', 'pix_delivery'])
  * Não confia em preço enviado pelo cliente.
  */
 export function validateOrderPayload(body) {
-  if (!body || typeof body !== 'object') {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
     return { ok: false, code: 'INVALID_JSON' }
   }
 
@@ -43,17 +43,34 @@ export function validateOrderPayload(body) {
 
   const items = []
   for (const item of body.items) {
-    const productId = typeof item?.productId === 'string' ? item.productId.trim() : ''
-    const quantity = Math.floor(Number(item?.quantity))
+    if (!item || typeof item !== 'object' || Array.isArray(item)) {
+      return { ok: false, code: 'PRODUCT_UNAVAILABLE' }
+    }
+
+    const productId = typeof item.productId === 'string' ? item.productId.trim() : ''
     if (!productId) return { ok: false, code: 'PRODUCT_UNAVAILABLE' }
-    if (!Number.isFinite(quantity) || quantity < 1 || quantity > 20) {
+
+    const quantity = Number(item.quantity)
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 20) {
       return { ok: false, code: 'INVALID_QUANTITY' }
     }
-    const optionIds = Array.isArray(item.optionIds)
-      ? item.optionIds.filter((id) => typeof id === 'string')
-      : []
+
+    if (item.optionIds != null && !Array.isArray(item.optionIds)) {
+      return { ok: false, code: 'INVALID_OPTIONS' }
+    }
+
+    const optionIds = (item.optionIds ?? []).map((id) => (
+      typeof id === 'string' ? id.trim() : ''
+    ))
+    if (optionIds.some((id) => !id)) {
+      return { ok: false, code: 'INVALID_OPTIONS' }
+    }
+
     items.push({ productId, quantity, optionIds })
   }
+
+  const paymentChangeFor = body.paymentChangeFor == null ? null : String(body.paymentChangeFor).trim()
+  const notes = body.notes == null ? null : String(body.notes).trim()
 
   return {
     ok: true,
@@ -65,8 +82,8 @@ export function validateOrderPayload(body) {
       deliveryReference,
       zoneId,
       paymentMethod: body.paymentMethod,
-      paymentChangeFor: body.paymentChangeFor || null,
-      notes: body.notes || null,
+      paymentChangeFor: paymentChangeFor || null,
+      notes: notes || null,
       items,
     },
   }
