@@ -92,9 +92,10 @@ async function fetchRemoteCatalog() {
   }
 
   const remoteProducts = (prodRes.data || []).map(mapRemoteProduct)
-  const hasPhoto = remoteProducts.some((product) => product.image)
 
-  if (remoteProducts.length === 0 || !hasPhoto) {
+  // Catálogo oficial é o Supabase. Sem produtos remotos, mantém o menu local.
+  // Foto não é mais condição — o admin e o banco mandam na lista e no preço.
+  if (remoteProducts.length === 0) {
     return {
       categories: fallback.categories,
       products: fallback.products,
@@ -183,8 +184,8 @@ function getSnapshot() {
 }
 
 /**
- * Prefere o catálogo do Supabase quando ele traz produtos com foto.
- * Mostra menu local na hora; remoto só substitui se responder a tempo e com foto.
+ * Prefere o catálogo do Supabase quando há produtos ativos.
+ * Mostra menu local na hora; remoto substitui se responder a tempo.
  * Cache compartilhado evita refetch ao abrir a sacola.
  */
 export function useCatalog() {
