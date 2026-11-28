@@ -2,6 +2,7 @@
 
 > Este documento separa o que está implementado em `main` do que é apenas planejado.
 > Base da revisão: `main` em `53bdc06` (22/11/2026, pós #47–#50).
+> Verificação adicional de sacola/carrinho: 28/11/2026.
 > Não marcar fase do roadmap como concluída só porque a rota existe.
 
 ## 1. Produto e objetivo
@@ -90,6 +91,20 @@ Essas rotas existem. Isso não significa catálogo oficial nem pedido aceito pel
 - A sacola e o checkout recalculam com `quoteCart` a partir do catálogo atual. Item que sumiu fica marcado e bloqueia o envio.
 - Checkout só lista zonas ativas vindas do banco. Sem zona, não há taxa e o botão não envia. Não existe mais fallback de R$ 5,00 no cliente.
 - Não há retirada. Não há janela de horário configurada: o texto do checkout diz isso. O horário publicado não bloqueia o pedido (D7 continua aberto).
+
+#### Verificação de implementação da sacola (28/11/2026)
+
+Conferido no código em `main`:
+
+| Arquivo | Papel | Status |
+|---|---|---|
+| `src/contexts/CartContext.jsx` | Estado da sacola + persistência local (`turquia_cart_items_v1`) | **Implementado** — só `productId`, `quantity`, `optionIds`; sem preço |
+| `src/lib/quoteCart.js` | Recálculo de preços a partir do catálogo atual | **Implementado** — marca indisponível, bloqueia envio se houver issues |
+| `src/pages/CartPage.jsx` | UI da sacola (`/sacola`) | **Implementado** — quantidade, remover, esvaziar, subtotal, CTA para checkout |
+| `src/pages/CheckoutPage.jsx` | Finalização | **Implementado** — usa `useCart` + `quoteCart` |
+| `src/App.jsx` | Rotas `/sacola` e `/checkout` | **Presentes** |
+
+Conclusão: a sacola (carrinho) **está implementada de fato** no sistema. Aceite técnico da Fase 3 permanece válido. Dependências comerciais (catálogo real, preços oficiais) continuam abertas.
 
 ### Backend e integrações
 
