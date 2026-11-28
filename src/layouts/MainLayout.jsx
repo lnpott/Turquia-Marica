@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import BottomNavBar from '../components/layout/BottomNavBar'
+import CartBar from '../components/layout/CartBar'
 import Footer from '../components/layout/Footer'
 import Header from '../components/layout/Header'
 
@@ -34,6 +35,7 @@ function MainLayout() {
         </div>
       </main>
       <Footer />
+      <CartBar />
       <BottomNavBar />
     </div>
   )
